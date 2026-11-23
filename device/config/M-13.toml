@@ -1,0 +1,8 @@
+meter_id = "M-13"
+venue_id = "V-BUEA-MOLYK1"
+cell_id = "624-01-0412-01733"
+fw = "agent-0.1.0"
+mode = "demo"
+sonacam_url = "http://192.168.137.1:8000"
+input = "file:data/playlists/molyko.m3u"
+heartbeat_s = 60
