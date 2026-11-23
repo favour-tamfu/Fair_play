@@ -6,7 +6,8 @@ __pycache__/
 .pytest_cache/
 
 # Data, audio, secrets — never committed (docs/02 §2)
-data/
+/data/
+!core/tests/data/*.wav
 media/
 device/secrets/
 device/state/
@@ -15,6 +16,7 @@ server/anchors/tamper_backup.json
 .env
 *.seed
 *.wav
+!core/tests/data/*.wav
 *.mp3
 *.m4a
 *.flac
