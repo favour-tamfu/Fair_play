@@ -1,8 +1,8 @@
-# STATUS B — updated 2026-11-23 23:15
-Current task: B-T02 Docker stack (written; blocked on Docker Desktop not starting)
-Done: B-T00, B-T01, MC0 (tag cp-0)
-Next up: finish B-T02, then B-T03 ingest API, B-T04 catalogue, B-T05 matcher → MC1
-Next merge checkpoint: MC1 (when both ready, D-003) — my items: Docker stack ⏳ ingest ⏳ catalogue ⏳ matcher ⏳
-Blockers: Docker Desktop "unable to start" on Laptop B
+# STATUS B — updated 2026-11-24 00:20
+Current task: B-T03 Ingest API + meter registry + API fixtures (next)
+Done: B-T00, B-T01, MC0 (cp-0), B-T02
+Next up: B-T03, B-T04, B-T05 → MC1
+Next merge checkpoint: MC1 (when both ready, D-003) — my items: Docker stack ✅ ingest ⏳ catalogue ⏳ matcher ⏳
+Blockers: none
 Open requests to A: R-002 (clamp loudness of silent windows)
-Health: scripts\test_b.ps1 → 147 passed, 6 skipped (DB tests need the stack)
+Health: scripts\test_b.ps1 → 153 passed (core + server incl. DB); docker compose: api+db healthy, 4 workers up

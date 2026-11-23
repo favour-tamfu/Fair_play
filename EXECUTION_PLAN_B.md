@@ -67,7 +67,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - **Check:** `pytest core -q` green on both laptops.
 
 ## Phase 3 — Server foundation  → **MC1**
-- [~] 3.1 **B-T02** Docker Compose (db, api, worker_fp, worker_match, worker_play, scheduler), Dockerfile, migrations `001_init.sql`, `/health`, `firewall_b.ps1`
+- [x] 3.1 **B-T02** Docker Compose (db, api, worker_fp, worker_match, worker_play, scheduler), Dockerfile, migrations `001_init.sql`, `/health`, `firewall_b.ps1`
   - Check: `docker compose up -d` healthy; `curl localhost:8000/health`; A's netcheck green
 - [ ] 3.2 **B-T03** Ingest API (`/v1/batches`, `/bulk`, `/heartbeat`, `/meters/register`), meter key loading, SSE bus over Postgres NOTIFY, API fixtures for A, `send_fixtures.py`
   - Check: test vectors give 200, 401, 422; duplicate and 409 cases; `curl -N /api/v1/feed` shows `batch` events
@@ -124,3 +124,5 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Mon 23:15 | 2.8 MC0 | main = b/work + a/work (clean), cp0_b.ps1 GREEN on main (core 154 passed, golden MATCH), tag **cp-0** pushed; b/work = main. D-004 MC0, D-005 Claude Code declared in README only (no commit trailers). **Phase 2 done** |
 | Mon 23:25 | MC0 real-key check | A's `batch_M07.json` (saved locally in gitignored data/cp0/): `check_batch` → signature verified with committed `M-07.pub.json`; peaks (194) and loudness (−9.0) identical to Laptop B's own extraction of tone_mix.wav. **All MC0 items verified** |
 | Mon 23:55 | test with A (prep) | `server/tools/match_offline.py` (no Docker needed): user WAV (68.9 s) self-test 12/12; simulated meter (start 3.7 s, noise −6 dB) 6/6 matched, but scores 11–78 vs threshold 8 → thin margin off the frame grid. Waiting for A's mic batches |
+| Tue 00:05 | song fingerprint check with A | `w1tde-ZgpvbxiTQAZjm-4A.wav`: file SHA 3fa304f4…, peaks SHA 2dd8c9d2… (472 peaks), hashes SHA b157cc49… (2198) — **identical on A and B** (user confirmed) |
+| Tue 00:20 | 3.1 B-T02 | Image built; `docker compose up -d` → 6 services up, api+db healthy; /health ok db:true; 001_init applied once (19 tables); restart keeps data; B tests 153 passed (DB tests now run). Pending network leg: `firewall_b.ps1` (admin) + A netcheck on hotspot |
