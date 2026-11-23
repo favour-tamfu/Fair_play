@@ -4,14 +4,13 @@ A batch is one 10 s window's peaks plus metadata, signed with the meter's Ed2551
 The canonical bytes are defined in contract §3.2. This module is the device-side copy of
 that rule; once B's core.signing lands, both must produce identical bytes (MC0 check).
 """
-import base64
 import json
 from datetime import datetime, timezone
 
-import nacl.exceptions
-import nacl.signing
 import numpy as np
 
+from fairplay_core import signing as _signing
+from fairplay_core.schema import canonical_bytes  # noqa: F401  (contract §3.2, same bytes as B)
 from fairplay_core.constants import FP_VERSION, SCHEMA_VERSION, WINDOW_S
 from fairplay_core.peaks import peaks_to_b64
 
@@ -22,25 +21,14 @@ def format_window_start(epoch_s: float) -> str:
     return dt.strftime("%Y-%m-%dT%H:%M:%S.") + f"{dt.microsecond // 1000:03d}Z"
 
 
-def canonical_bytes(fields: dict) -> bytes:
-    """Contract §3.2: JSON of all fields except 'sig', sorted keys, no spaces, UTF-8."""
-    body = {k: v for k, v in fields.items() if k != "sig"}
-    return json.dumps(body, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
-
-
 def sign_fields(seed: bytes, fields: dict) -> str:
-    signed = nacl.signing.SigningKey(seed).sign(canonical_bytes(fields)).signature
-    return base64.b64encode(signed).decode("ascii")
+    """Ed25519 signature (base64) over the contract §3.2 canonical bytes, via fairplay_core."""
+    return _signing.sign_dict(seed, fields)
 
 
 def verify_fields(public_key_b64: str, obj: dict) -> bool:
-    """True if obj['sig'] is a valid Ed25519 signature over its canonical bytes."""
-    try:
-        key = nacl.signing.VerifyKey(base64.b64decode(public_key_b64))
-        key.verify(canonical_bytes(obj), base64.b64decode(obj["sig"]))
-        return True
-    except (nacl.exceptions.BadSignatureError, KeyError, ValueError):
-        return False
+    """True if obj['sig'] is a valid signature over its canonical bytes (fairplay_core)."""
+    return _signing.verify_dict(public_key_b64, obj)
 
 
 def build_batch(cfg: dict, seq: int, window_start_utc: float, peaks: np.ndarray, loudness_db: float, seed: bytes) -> dict:
