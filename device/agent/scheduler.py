@@ -50,7 +50,11 @@ class Scheduler:
         pos = 0         # absolute sample index just after the last appended sample
         next_start = 0  # absolute sample index where the next window starts
 
-        for wall, block in blocks:
+        for item in blocks:
+            if item is None:  # gap: audio was lost before the next block; start over from it
+                t0, buf, buf_start, pos, next_start = None, np.empty(0, dtype=np.float32), 0, 0, 0
+                continue
+            wall, block = item
             block = np.asarray(block, dtype=np.float32).reshape(-1)
             if t0 is None:
                 t0 = float(wall)

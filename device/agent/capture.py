@@ -47,16 +47,23 @@ class MicSource:
         self.samplerate = samplerate
         self.blocksize = blocksize
         self.overflows = 0
+        self.dropped = 0  # blocks lost because the queue was full (each one is a gap)
 
     @staticmethod
     def _pick_wasapi_input() -> Optional[int]:
+        """The WASAPI default input, but only if it actually opens at 48 kHz; else None (default device)."""
         import sounddevice as sd
 
         for api in sd.query_hostapis():
             if "WASAPI" in api["name"]:
                 idx = api.get("default_input_device", -1)
-                if idx is not None and idx >= 0:
-                    return idx
+                if idx is None or idx < 0:
+                    return None
+                try:
+                    sd.check_input_settings(device=idx, samplerate=CAPTURE_RATE, channels=1, dtype="float32")
+                except sd.PortAudioError:
+                    return None
+                return idx
         return None
 
     def blocks(self, duration_s: Optional[float] = None) -> Iterator[Block]:
@@ -73,6 +80,7 @@ class MicSource:
                 q.put_nowait((wall, indata[:, 0].copy()))
             except queue.Full:
                 self.overflows += 1
+                self.dropped += 1
 
         def open_stream(device):
             return sd.InputStream(
@@ -90,14 +98,19 @@ class MicSource:
             stream = open_stream(None)  # fall back to the default input device
 
         started = time.monotonic()
+        seen_drops = 0
         with stream:
             while True:
                 if duration_s is not None and time.monotonic() - started >= duration_s:
                     break
                 try:
-                    yield q.get(timeout=1.0)
+                    item = q.get(timeout=1.0)
                 except queue.Empty:
                     continue
+                if self.dropped > seen_drops:
+                    seen_drops = self.dropped
+                    yield None  # a gap: the scheduler restarts its windows at the next block
+                yield item
 
 
 class FileSource:
@@ -165,6 +178,10 @@ def _resample(x: np.ndarray, sr_in: int, sr_out: int) -> np.ndarray:
     return resample_poly(x, frac.numerator, frac.denominator).astype(np.float32)
 
 
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+DEBUG_DIR = os.path.join(REPO_ROOT, "data", "debug")  # always under the repo, whatever the working folder
+
+
 def _save_debug(win: Window, folder: str) -> str:
     import soundfile as sf
 
@@ -200,7 +217,7 @@ def main(argv=None) -> int:
         stamp = datetime.fromtimestamp(win.start_utc, tz=timezone.utc).isoformat(timespec="seconds")
         print(f"window {count}: start {stamp}  peaks {win.peaks.size}  loudness {win.loudness_db} dBFS")
         if args.save_debug_wav:
-            print(f"  saved {_save_debug(win, os.path.join('data', 'debug'))}")
+            print(f"  saved {_save_debug(win, DEBUG_DIR)}")
     if count == 0:
         print("no complete window captured (capture longer or use --mode demo)")
     return 0
