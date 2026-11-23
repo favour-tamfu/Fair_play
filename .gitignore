@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+
+# Data, audio, secrets — never committed (docs/02 §2)
+data/
+media/
+device/secrets/
+device/state/
+server/anchors/*.jsonl
+server/anchors/tamper_backup.json
+.env
+*.seed
+*.wav
+*.mp3
+*.m4a
+*.flac
+
+# Tooling
+node_modules/

@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fairplay-core"
+version = "0.1.0"
+description = "Fair Play shared core: fingerprint constants, peak extraction, batch schema, signing, landmarks"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "numpy==2.1.3",
+    "scipy==1.14.1",
+    "pynacl==1.5.0",
+    "pydantic==2.9.2",
+]
+
+[tool.setuptools]
+packages = ["fairplay_core"]
