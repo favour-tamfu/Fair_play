@@ -51,8 +51,8 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [x] 1.6 `contract/CHANGES.md` (`## c-1.0 …`), `README.md` skeleton (pitch, Quick start placeholder, Declarations table, "Built with Claude Code"), `requirements-dev.txt`
 - [x] 1.7 `scripts/test_b.ps1`
 - [x] 1.8 venv: `py -3.11 -m venv .venv` → `pip install -e core` → `import` check
-- [ ] 1.9 Commit `[B-T00] bootstrap`, push `main`, create and push `a/work` and `b/work`
-- [ ] 1.10 Handoff `handoffs/B/<date>_<time>_B-T00.md` + STATUS_B; tell Person A (send them the START_HERE "Person A" message)
+- [x] 1.9 Commit `[B-T00] bootstrap`, push `main`, create and push `a/work` and `b/work`
+- [x] 1.10 Handoff `handoffs/B/<date>_<time>_B-T00.md` + STATUS_B; tell Person A (send them the START_HERE "Person A" message)
 - **Check:** `git ls-remote` shows `main`, `a/work`, `b/work`; A has cloned.
 
 ## Phase 2 — B-T01 Core: schema, signing, landmarks  → **MC0**
@@ -113,3 +113,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Mon 21:45 | 1.3 | docs + kit files copied; rename applied (SoundProof→Fair Play, soundproof_core→fairplay_core, compare-flat field → `misallocated_fairplay_fcfa`); D-002, D-003 in DECISIONS.md. This plan now lives only in the repo |
 | Mon 21:50 | 1.4–1.7 | .gitignore, .gitattributes, core/pyproject.toml, constants.py (diff vs contract §2: identical), CHANGES.md, README skeleton + Declarations, requirements-dev.txt, scripts/test_b.ps1 |
 | Mon 21:55 | 1.8 | venv (Python 3.11.0); `import fairplay_core` → fp-1.0, 311 frames/window; test_b.ps1 → "no B tests exist yet" |
+| Mon 22:00 | 1.9–1.10 | Pushed main/a/work/b/work @ 6162b9a; handoff B-T00 + STATUS_B on b/work. **Phase 1 done** |
