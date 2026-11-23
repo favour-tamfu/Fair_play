@@ -1,0 +1,32 @@
+{
+  "song_id": "S-000001",
+  "title": "Demo Upload One",
+  "artist_name": "Mock Artist 01",
+  "isrc": null,
+  "iswc": null,
+  "duration_s": 212.0,
+  "status": "ready",
+  "n_hashes": 4211,
+  "uploaded_at": "2026-11-24T20:10:00.000Z",
+  "duplicate_of": null,
+  "owners": [
+    {
+      "name": "Mock Artist 01",
+      "role": "singer",
+      "share_pct": 50,
+      "momo": "+237699000001"
+    },
+    {
+      "name": "Mock Composer 01",
+      "role": "composer",
+      "share_pct": 30,
+      "momo": "+237699000002"
+    },
+    {
+      "name": "Mock Producer 01",
+      "role": "producer",
+      "share_pct": 20,
+      "momo": "+237699000003"
+    }
+  ]
+}
