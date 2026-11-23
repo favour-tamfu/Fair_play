@@ -1,4 +1,4 @@
-﻿# Agent B quick tests (docs/02 Â§3 step 5). Run from repo root: .\scripts\test_b.ps1
+# Agent B quick tests (docs/02 §3 step 5). Run from repo root: .\scripts\test_b.ps1
 $ErrorActionPreference = "Stop"
 Set-Location (Split-Path $PSScriptRoot -Parent)
 . .\.venv\Scripts\Activate.ps1
