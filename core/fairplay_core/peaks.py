@@ -124,4 +124,6 @@ def rms_dbfs(x: np.ndarray) -> float:
     """RMS level in dBFS, rounded to 1 decimal."""
     x = np.asarray(x, dtype=np.float64)
     rms = float(np.sqrt(np.mean(np.square(x)))) if x.size else 0.0
-    return round(20.0 * np.log10(rms + 1e-12), 1)
+    level = 20.0 * np.log10(rms + 1e-12)
+    # Contract c-1.0 §3.1: loudness_db is in -100..0. Silence floors at -100; clipped input caps at 0.
+    return round(float(min(0.0, max(-100.0, level))), 1)
