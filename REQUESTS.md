@@ -13,7 +13,7 @@ Note: `.gitignore` now ignores only the top-level `/data/` and allows `core/test
 Also available for A: `contract/fixtures/batches/tv_*.json` (test meter M-90, key in tv_keys.json — test only) and `python -m server.tools.check_batch <batch.json> <pub.json>` to check one of your signed batches exactly like the server will.
 Workaround meanwhile: cp0_b.ps1 prints "SKIP golden SHA" until peaks.py and the WAV exist.
 
-## R-002 — 2026-11-23 23:15 — B → A — Silent windows: clamp loudness_db to −100..0 before signing
+## R-002 — 2026-11-23 23:05 — B → A — Silent windows: clamp loudness_db to −100..0 before signing
 Why: `rms_dbfs` of digital silence returns −240.0. Contract §3.1 (and batch.schema.json) allows −100..0, so the server answers 422 and the device moves the batch to `dead`. Silence is real (virtual-meter gaps between songs, muted mic). Found by B running A's `build_batch` on `np.zeros(80000)` (a/work @ 4615239).
 Ask: in `device/agent/batcher.build_batch`, use `max(-100.0, min(0.0, round(loudness, 1)))` (or clamp inside `rms_dbfs`), and add a test for a silent window.
 Also (suggestion, not blocking): `batcher.sign_fields/canonical_bytes` duplicate `fairplay_core.signing.sign_dict/canonical_bytes`. They are identical today (B checked: 20/20 A-built batches give the same signature as `sign_dict`, and validate against schema + model). Switching to the core functions avoids future drift.
