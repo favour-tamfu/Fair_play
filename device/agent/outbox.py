@@ -37,12 +37,20 @@ class Outbox:
                 (int(batch["seq"]), json.dumps(batch, sort_keys=True), self._now()),
             )
 
-    def peek(self, n: int) -> List[Tuple[int, dict, int]]:
-        """Oldest first: list of (seq, batch, attempts)."""
+    def peek(self, n: int, exclude=None) -> List[Tuple[int, dict, int]]:
+        """Oldest first: list of (seq, batch, attempts). Seqs in `exclude` are skipped."""
+        skip = sorted({int(s) for s in (exclude or ())})
         with closing(sqlite3.connect(self.path, timeout=10)) as con:
-            rows = con.execute(
-                "SELECT seq, json, attempts FROM outbox ORDER BY seq LIMIT ?", (int(n),)
-            ).fetchall()
+            if skip:
+                marks = ",".join("?" * len(skip))
+                rows = con.execute(
+                    f"SELECT seq, json, attempts FROM outbox WHERE seq NOT IN ({marks}) ORDER BY seq LIMIT ?",
+                    (*skip, int(n)),
+                ).fetchall()
+            else:
+                rows = con.execute(
+                    "SELECT seq, json, attempts FROM outbox ORDER BY seq LIMIT ?", (int(n),)
+                ).fetchall()
         return [(seq, json.loads(js), att) for seq, js, att in rows]
 
     def ack(self, seq: int) -> None:
