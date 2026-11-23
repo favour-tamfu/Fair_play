@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ledger_status.schema.json",
+  "title": "GET /api/v1/ledger/status",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "intact": {
+      "type": "boolean"
+    },
+    "broken_at_play_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^P-[0-9A-Za-z]{4,32}$"
+    },
+    "plays_checked": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "last_root": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "last_anchor": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "hour": {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+            },
+            "root": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "via": {
+              "enum": [
+                "file",
+                "sepolia"
+              ]
+            },
+            "tx_ref": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "hour",
+            "root",
+            "via",
+            "tx_ref"
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "intact",
+    "broken_at_play_id",
+    "plays_checked",
+    "last_root",
+    "last_anchor"
+  ]
+}

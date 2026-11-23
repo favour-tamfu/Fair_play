@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "flags.schema.json",
+  "title": "GET /api/v1/flags",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "flag_id": {
+        "type": [
+          "integer",
+          "string"
+        ]
+      },
+      "type": {
+        "enum": [
+          "loop",
+          "cooldown",
+          "concentration",
+          "low_audience",
+          "duplicate_suspected",
+          "clock_skew",
+          "meter_moved"
+        ]
+      },
+      "song_id": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^S-(?:[0-9]{6}|M[0-9]{4})$"
+      },
+      "venue_id": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^V-[A-Z]{3,10}-[A-Z0-9]{3,12}$"
+      },
+      "detail": {
+        "type": "string"
+      },
+      "created_at": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+      }
+    },
+    "required": [
+      "flag_id",
+      "type",
+      "song_id",
+      "venue_id",
+      "detail",
+      "created_at"
+    ]
+  }
+}
