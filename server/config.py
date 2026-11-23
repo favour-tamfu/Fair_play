@@ -37,4 +37,10 @@ DATABASE_URL = (os.environ.get("DATABASE_URL") or _from_dotenv("DATABASE_URL")
 
 # Workers
 JOB_POLL_S = 0.5                 # how often an idle worker checks the job board
+
+# Catalogue (B-T04, contract §5)
+UPLOAD_MAX_BYTES = 30 * 1024 * 1024
+UPLOAD_EXTENSIONS = {".mp3", ".wav", ".m4a", ".flac"}
+DUP_SLICES = (0.2, 0.5, 0.8)     # duplicate check: 10 s slices at 20 %, 50 %, 80 % of the new song (brief §5.4)
+DUP_MIN_HITS = 2                 # ≥ 2 slices matching the same existing song → duplicate_suspected
 WORKER_IDLE_LOG_S = 300          # placeholder workers log "alive" this often

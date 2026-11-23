@@ -18,7 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from fairplay_core.schema import format_utc
 from server import config
-from server.api import feed, ingest
+from server.api import feed, ingest, songs
 from server.api.events import bus
 from server.db import connect, ping
 from server.db.migrate import migrate
@@ -50,6 +50,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:8080", "http
                    allow_methods=["*"], allow_headers=["*"])
 app.include_router(ingest.router)
 app.include_router(feed.router)
+app.include_router(songs.router)
 
 
 @app.get("/health")
