@@ -63,7 +63,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [x] 2.5 JSON Schemas (draft 2020-12), all 13 files from contract §9
 - [x] 2.6 Test vectors `tv_keys.json`, `tv_batch_valid/badsig/badversion.json`
 - [x] 2.7 `scripts/cp0_b.ps1`; handoff; push `b/work`
-- [ ] 2.8 **MC0 merge** (`b/work` then `a/work` → `main`), joint test (same SHA from `extract_peaks` on both laptops, cross-verify a signature), tag `cp-0`
+- [x] 2.8 **MC0 merge** (`b/work` then `a/work` → `main`), joint test (same SHA from `extract_peaks` on both laptops, cross-verify a signature), tag `cp-0`
 - **Check:** `pytest core -q` green on both laptops.
 
 ## Phase 3 — Server foundation  → **MC1**
@@ -121,3 +121,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Mon 22:19 | 2.6–2.7 | Test vectors (M-90, deterministic) + check_batch + golden_sha + cp0_b.ps1 (GREEN, golden SHA waits for A); R-001 to A; handoff B-T01. test_b.ps1 → 147 passed. **B-T01 done; next = MC0 when A is ready** |
 | Mon 22:47 | 3.1a–c (written) | requirements, Dockerfile, compose (6 services), .env (local), config, 001_init.sql, migrate, job board, /health, worker stubs, firewall script, DB tests. Not yet run: **Docker Desktop stopped ("unable to start")**; DB tests skip (2 passed, 6 skipped) |
 | Mon 23:05 | MC0 check of A | a/work @ 4615239: only A-owned files; core 154 passed on A's branch; golden SHA a0544f53… MATCH on Laptop B; 20/20 A-built batches = identical signatures, schema+model valid; M-07.pub.json valid. Bug found → R-002 (silence → loudness −240 dB → 422). Log times corrected to real commit times (earlier rows were estimates) |
+| Mon 23:15 | 2.8 MC0 | main = b/work + a/work (clean), cp0_b.ps1 GREEN on main (core 154 passed, golden MATCH), tag **cp-0** pushed; b/work = main. D-004 MC0, D-005 Claude Code declared in README only (no commit trailers). **Phase 2 done** |
