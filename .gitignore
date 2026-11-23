@@ -7,7 +7,6 @@ __pycache__/
 
 # Data, audio, secrets — never committed (docs/02 §2)
 /data/
-!core/tests/data/*.wav
 media/
 device/secrets/
 device/state/
@@ -16,10 +15,12 @@ server/anchors/tamper_backup.json
 .env
 *.seed
 *.wav
-!core/tests/data/*.wav
 *.mp3
 *.m4a
 *.flac
 
 # Tooling
 node_modules/
+
+# Exception: tiny synthetic test tones used by core tests / MC0 golden SHA (no music, no rights issue)
+!core/tests/data/*.wav

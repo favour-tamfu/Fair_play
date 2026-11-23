@@ -1,0 +1,8 @@
+{
+  "meter_id": "M-90",
+  "venue_id": "V-BUEA-CIMFEST",
+  "public_key_b64": "gAOErfzTKQkG3P5p6bmXTdSHg5CyqfBKntw5zhiVRRc=",
+  "created_at": "2026-11-23T21:00:00Z",
+  "seed_hex": "4a26e70a0a1aaecc16fbf35995f148826ec4a9ad00c930ee48068e5b8becba64",
+  "note": "TEST ONLY - this seed is public; never use it for a real meter"
+}

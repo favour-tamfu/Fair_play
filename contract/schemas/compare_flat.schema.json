@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "compare_flat.schema.json",
+  "title": "GET /api/v1/compare-flat",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "pot_fcfa": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "n_artists": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "flat_each_fcfa": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "misallocated_flat_fcfa": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "misallocated_fairplay_fcfa": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "basis": {
+      "const": "mock_month_truth"
+    }
+  },
+  "required": [
+    "pot_fcfa",
+    "n_artists",
+    "flat_each_fcfa",
+    "misallocated_flat_fcfa",
+    "misallocated_fairplay_fcfa",
+    "basis"
+  ]
+}

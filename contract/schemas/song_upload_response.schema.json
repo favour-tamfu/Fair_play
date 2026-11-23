@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "song_upload_response.schema.json",
+  "title": "POST /api/v1/songs → 201",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "song_id": {
+      "type": "string",
+      "pattern": "^S-(?:[0-9]{6}|M[0-9]{4})$"
+    },
+    "status": {
+      "const": "uploaded"
+    }
+  },
+  "required": [
+    "song_id",
+    "status"
+  ]
+}

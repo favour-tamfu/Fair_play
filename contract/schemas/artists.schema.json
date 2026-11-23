@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "artists.schema.json",
+  "title": "GET /api/v1/artists",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "artist_name": {
+        "type": "string"
+      },
+      "songs": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^S-(?:[0-9]{6}|M[0-9]{4})$"
+        }
+      }
+    },
+    "required": [
+      "artist_name",
+      "songs"
+    ]
+  }
+}
