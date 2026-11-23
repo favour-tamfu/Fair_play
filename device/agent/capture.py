@@ -6,17 +6,16 @@ FileSource - WAV/FLAC/OGG via soundfile, MP3 via ffmpeg; used by virtual meters 
 Both yield (wall_time_of_first_sample, float32 mono 48 kHz block) pairs, which
 device.agent.scheduler.Scheduler turns into 10 s windows.
 
-CLI:
+CLI (run from the repo root, venv active):
     python -m device.agent.capture --seconds 25 --mode demo
-    python -m device.agent.capture --seconds 25 --input file:data\\songs\\x.wav --save-debug-wav
+    python -m device.agent.capture --seconds 25 --mode demo --input file:data\\songs\\cc0_test_01.wav
+    python -m device.agent.capture --seconds 25 --mode demo --save-debug-wav
 """
 import argparse
-import math
 import os
 import queue
 import shutil
 import subprocess
-import threading
 import time
 from datetime import datetime, timezone
 from fractions import Fraction
@@ -28,6 +27,16 @@ from fairplay_core.constants import CAPTURE_RATE
 from device.agent.scheduler import Scheduler, Window
 
 Block = Tuple[float, np.ndarray]
+
+
+def wall_time_of_block(time_info, now: float) -> float:
+    """Wall-clock time of the first sample of a block, from a sounddevice callback.
+
+    time_info.currentTime is the stream clock now; inputBufferAdcTime is when the
+    block's first sample was captured. Their difference is the input latency, so
+    the block started (currentTime - adc) seconds before `now`.
+    """
+    return now - (time_info.currentTime - time_info.inputBufferAdcTime)
 
 
 class MicSource:
@@ -51,15 +60,15 @@ class MicSource:
         return None
 
     def blocks(self, duration_s: Optional[float] = None) -> Iterator[Block]:
+        """Yield blocks until duration_s has passed (forever if None)."""
         import sounddevice as sd
 
         q: "queue.Queue[Block]" = queue.Queue(maxsize=600)  # about 60 s of 0.1 s blocks
-        state = {"offset": None}
 
         def callback(indata, frames, time_info, status):
             if status:
                 self.overflows += 1
-            wall = state["offset"] + time_info.inputBufferAdcTime
+            wall = wall_time_of_block(time_info, time.time())
             try:
                 q.put_nowait((wall, indata[:, 0].copy()))
             except queue.Full:
@@ -80,10 +89,8 @@ class MicSource:
         except sd.PortAudioError:
             stream = open_stream(None)  # fall back to the default input device
 
+        started = time.monotonic()
         with stream:
-            # Map PortAudio stream time to wall-clock time once, at start.
-            state["offset"] = time.time() - stream.time
-            started = time.monotonic()
             while True:
                 if duration_s is not None and time.monotonic() - started >= duration_s:
                     break
@@ -115,6 +122,7 @@ class FileSource:
         self.duration_s = duration_s
 
     def load(self) -> np.ndarray:
+        """Whole file as float32 mono at 48 kHz, cut to duration_s if given."""
         ext = os.path.splitext(self.path)[1].lower()
         if ext == ".mp3":
             x = self._load_mp3()
@@ -180,11 +188,9 @@ def _parse_args(argv=None):
 def main(argv=None) -> int:
     args = _parse_args(argv)
     if args.input == "mic":
-        source = MicSource(device=args.device)
-        blocks = source.blocks(duration_s=args.seconds)
+        blocks = MicSource(device=args.device).blocks(duration_s=args.seconds)
     elif args.input.startswith("file:"):
-        source = FileSource(args.input[len("file:") :], realtime=False, duration_s=args.seconds)
-        blocks = source.blocks()
+        blocks = FileSource(args.input[len("file:") :], realtime=False, duration_s=args.seconds).blocks()
     else:
         raise SystemExit("--input must be 'mic' or 'file:<path>'")
 
