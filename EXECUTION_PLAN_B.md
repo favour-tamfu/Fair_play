@@ -61,8 +61,8 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [x] 2.3 `landmarks.py`: `make_hashes`, `MemoryIndex`, `match_window` → `MatchResult`
 - [x] 2.4 Tests: `test_schema.py`, `test_signing.py`, `test_landmarks.py` (hand-made hashes; synthetic 3-song match with shift 100, 30% dropped, 20% extra; random query rejected)
 - [x] 2.5 JSON Schemas (draft 2020-12), all 13 files from contract §9
-- [ ] 2.6 Test vectors `tv_keys.json`, `tv_batch_valid/badsig/badversion.json`
-- [ ] 2.7 `scripts/cp0_b.ps1`; handoff; push `b/work`
+- [x] 2.6 Test vectors `tv_keys.json`, `tv_batch_valid/badsig/badversion.json`
+- [x] 2.7 `scripts/cp0_b.ps1`; handoff; push `b/work`
 - [ ] 2.8 **MC0 merge** (`b/work` then `a/work` → `main`), joint test (same SHA from `extract_peaks` on both laptops, cross-verify a signature), tag `cp-0`
 - **Check:** `pytest core -q` green on both laptops.
 
@@ -118,3 +118,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Mon 22:35 | 2.2 | `signing.py` (Ed25519 sign/verify, key files, RFC 8032 vector) + test_signing.py → core total 65 passed |
 | Mon 22:55 | 2.3–2.4 | `landmarks.py` (vectorised make_hashes = loop reference, MemoryIndex, match_window, slice_peaks) + test_landmarks.py → core total 107 passed. Synthetic margin: noisy slice 50/50 accepted (score ≥352), random 0/200 (max 5); 5-min song hashed in 33 ms |
 | Mon 23:10 | 2.5 | 16 JSON Schemas (13 from §9 + songs, song, artists) + test_contract_schemas.py; clarifications logged in contract/CHANGES.md → test_b.ps1: 142 passed |
+| Mon 23:35 | 2.6–2.7 | Test vectors (M-90, deterministic) + check_batch + golden_sha + cp0_b.ps1 (GREEN, golden SHA waits for A); R-001 to A; handoff B-T01. test_b.ps1 → 147 passed. **B-T01 done; next = MC0 when A is ready** |
