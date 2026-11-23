@@ -51,23 +51,23 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [x] 1.6 `contract/CHANGES.md` (`## c-1.0 …`), `README.md` skeleton (pitch, Quick start placeholder, Declarations table, "Built with Claude Code"), `requirements-dev.txt`
 - [x] 1.7 `scripts/test_b.ps1`
 - [x] 1.8 venv: `py -3.11 -m venv .venv` → `pip install -e core` → `import` check
-- [ ] 1.9 Commit `[B-T00] bootstrap`, push `main`, create and push `a/work` and `b/work`
-- [ ] 1.10 Handoff `handoffs/B/<date>_<time>_B-T00.md` + STATUS_B; tell Person A (send them the START_HERE "Person A" message)
+- [x] 1.9 Commit `[B-T00] bootstrap`, push `main`, create and push `a/work` and `b/work`
+- [x] 1.10 Handoff `handoffs/B/<date>_<time>_B-T00.md` + STATUS_B; tell Person A (send them the START_HERE "Person A" message)
 - **Check:** `git ls-remote` shows `main`, `a/work`, `b/work`; A has cloned.
 
 ## Phase 2 — B-T01 Core: schema, signing, landmarks  → **MC0**
-- [ ] 2.1 `schema.py`: `Batch`, `Heartbeat`, `Calibration` (pydantic v2), `canonical_bytes()`
-- [ ] 2.2 `signing.py`: `generate_seed`, `public_key_b64`, `sign_dict`, `verify_dict`, `load_pub`, `load_seed` (+ `sign_batch` / `verify_batch` aliases that PLAN_A uses)
-- [ ] 2.3 `landmarks.py`: `make_hashes`, `MemoryIndex`, `match_window` → `MatchResult`
-- [ ] 2.4 Tests: `test_schema.py`, `test_signing.py`, `test_landmarks.py` (hand-made hashes; synthetic 3-song match with shift 100, 30% dropped, 20% extra; random query rejected)
-- [ ] 2.5 JSON Schemas (draft 2020-12), all 13 files from contract §9
-- [ ] 2.6 Test vectors `tv_keys.json`, `tv_batch_valid/badsig/badversion.json`
-- [ ] 2.7 `scripts/cp0_b.ps1`; handoff; push `b/work`
+- [x] 2.1 `schema.py`: `Batch`, `Heartbeat`, `Calibration` (pydantic v2), `canonical_bytes()`
+- [x] 2.2 `signing.py`: `generate_seed`, `public_key_b64`, `sign_dict`, `verify_dict`, `load_pub`, `load_seed` (+ `sign_batch` / `verify_batch` aliases that PLAN_A uses)
+- [x] 2.3 `landmarks.py`: `make_hashes`, `MemoryIndex`, `match_window` → `MatchResult`
+- [x] 2.4 Tests: `test_schema.py`, `test_signing.py`, `test_landmarks.py` (hand-made hashes; synthetic 3-song match with shift 100, 30% dropped, 20% extra; random query rejected)
+- [x] 2.5 JSON Schemas (draft 2020-12), all 13 files from contract §9
+- [x] 2.6 Test vectors `tv_keys.json`, `tv_batch_valid/badsig/badversion.json`
+- [x] 2.7 `scripts/cp0_b.ps1`; handoff; push `b/work`
 - [ ] 2.8 **MC0 merge** (`b/work` then `a/work` → `main`), joint test (same SHA from `extract_peaks` on both laptops, cross-verify a signature), tag `cp-0`
 - **Check:** `pytest core -q` green on both laptops.
 
 ## Phase 3 — Server foundation  → **MC1**
-- [ ] 3.1 **B-T02** Docker Compose (db, api, worker_fp, worker_match, worker_play, scheduler), Dockerfile, migrations `001_init.sql`, `/health`, `firewall_b.ps1`
+- [~] 3.1 **B-T02** Docker Compose (db, api, worker_fp, worker_match, worker_play, scheduler), Dockerfile, migrations `001_init.sql`, `/health`, `firewall_b.ps1`
   - Check: `docker compose up -d` healthy; `curl localhost:8000/health`; A's netcheck green
 - [ ] 3.2 **B-T03** Ingest API (`/v1/batches`, `/bulk`, `/heartbeat`, `/meters/register`), meter key loading, SSE bus over Postgres NOTIFY, API fixtures for A, `send_fixtures.py`
   - Check: test vectors give 200, 401, 422; duplicate and 409 cases; `curl -N /api/v1/feed` shows `batch` events
@@ -110,6 +110,14 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Mon 21:25 | 0.1–0.3 | Decisions recorded; autocrlf=false; `docker run hello-world` → "Hello from Docker!" |
 | Mon 21:30 | 1.1 | Cloned into `Fair_Play\repo`; branch `main`, no commits, origin = favour-tamfu/Fair_play |
 | Mon 21:35 | 1.2 | Skeleton created: 14 placeholder files (`.gitkeep`s; `__init__.py` in `core/fairplay_core/` and `server/`) |
-| Mon 21:45 | 1.3 | docs + kit files copied; rename applied (SoundProof→Fair Play, soundproof_core→fairplay_core, compare-flat field → `misallocated_fairplay_fcfa`); D-002, D-003 in DECISIONS.md. This plan now lives only in the repo |
-| Mon 21:50 | 1.4–1.7 | .gitignore, .gitattributes, core/pyproject.toml, constants.py (diff vs contract §2: identical), CHANGES.md, README skeleton + Declarations, requirements-dev.txt, scripts/test_b.ps1 |
-| Mon 21:55 | 1.8 | venv (Python 3.11.0); `import fairplay_core` → fp-1.0, 311 frames/window; test_b.ps1 → "no B tests exist yet" |
+| Mon 21:33 | 1.3 | docs + kit files copied; rename applied (SoundProof→Fair Play, soundproof_core→fairplay_core, compare-flat field → `misallocated_fairplay_fcfa`); D-002, D-003 in DECISIONS.md. This plan now lives only in the repo |
+| Mon 21:34 | 1.4–1.7 | .gitignore, .gitattributes, core/pyproject.toml, constants.py (diff vs contract §2: identical), CHANGES.md, README skeleton + Declarations, requirements-dev.txt, scripts/test_b.ps1 |
+| Mon 21:35 | 1.8 | venv (Python 3.11.0); `import fairplay_core` → fp-1.0, 311 frames/window; test_b.ps1 → "no B tests exist yet" |
+| Mon 21:36 | 1.9–1.10 | Pushed main/a/work/b/work @ 6162b9a; handoff B-T00 + STATUS_B on b/work. **Phase 1 done** |
+| Mon 21:50 | 2.1 | `schema.py` (Batch, Heartbeat, Calibration, canonical_bytes, time helpers) + test_schema.py → 37 passed |
+| Mon 21:54 | 2.2 | `signing.py` (Ed25519 sign/verify, key files, RFC 8032 vector) + test_signing.py → core total 65 passed |
+| Mon 22:02 | 2.3–2.4 | `landmarks.py` (vectorised make_hashes = loop reference, MemoryIndex, match_window, slice_peaks) + test_landmarks.py → core total 107 passed. Synthetic margin: noisy slice 50/50 accepted (score ≥352), random 0/200 (max 5); 5-min song hashed in 33 ms |
+| Mon 22:15 | 2.5 | 16 JSON Schemas (13 from §9 + songs, song, artists) + test_contract_schemas.py; clarifications logged in contract/CHANGES.md → test_b.ps1: 142 passed |
+| Mon 22:19 | 2.6–2.7 | Test vectors (M-90, deterministic) + check_batch + golden_sha + cp0_b.ps1 (GREEN, golden SHA waits for A); R-001 to A; handoff B-T01. test_b.ps1 → 147 passed. **B-T01 done; next = MC0 when A is ready** |
+| Mon 22:47 | 3.1a–c (written) | requirements, Dockerfile, compose (6 services), .env (local), config, 001_init.sql, migrate, job board, /health, worker stubs, firewall script, DB tests. Not yet run: **Docker Desktop stopped ("unable to start")**; DB tests skip (2 passed, 6 skipped) |
+| Mon 23:05 | MC0 check of A | a/work @ 4615239: only A-owned files; core 154 passed on A's branch; golden SHA a0544f53… MATCH on Laptop B; 20/20 A-built batches = identical signatures, schema+model valid; M-07.pub.json valid. Bug found → R-002 (silence → loudness −240 dB → 422). Log times corrected to real commit times (earlier rows were estimates) |

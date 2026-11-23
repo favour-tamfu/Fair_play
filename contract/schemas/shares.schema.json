@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "shares.schema.json",
+  "title": "GET /api/v1/shares (sorted by share desc)",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "stats_run_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^R-[0-9]{14}$"
+    },
+    "rule_version": {
+      "type": "string"
+    },
+    "pot_fcfa": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "escrow_share": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "song_id": {
+            "type": "string",
+            "pattern": "^S-(?:[0-9]{6}|M[0-9]{4})$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "artist_name": {
+            "type": "string"
+          },
+          "raw_plays": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "weighted_plays": {
+            "type": "number",
+            "minimum": 0
+          },
+          "share": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "ci_low": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "ci_high": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "amount_fcfa": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "song_id",
+          "title",
+          "artist_name",
+          "raw_plays",
+          "weighted_plays",
+          "share",
+          "ci_low",
+          "ci_high",
+          "amount_fcfa",
+          "flags"
+        ]
+      }
+    }
+  },
+  "required": [
+    "stats_run_id",
+    "rule_version",
+    "pot_fcfa",
+    "escrow_share",
+    "rows"
+  ]
+}

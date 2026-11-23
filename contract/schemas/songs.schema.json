@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "songs.schema.json",
+  "title": "GET /api/v1/songs",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "song_id": {
+        "type": "string",
+        "pattern": "^S-(?:[0-9]{6}|M[0-9]{4})$"
+      },
+      "title": {
+        "type": "string"
+      },
+      "artist_name": {
+        "type": "string"
+      },
+      "isrc": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "iswc": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "duration_s": {
+        "type": [
+          "number",
+          "null"
+        ],
+        "minimum": 0
+      },
+      "status": {
+        "enum": [
+          "uploaded",
+          "processing",
+          "ready",
+          "duplicate_suspected",
+          "failed"
+        ]
+      },
+      "n_hashes": {
+        "type": "integer",
+        "minimum": 0
+      },
+      "uploaded_at": {
+        "type": "string",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+      },
+      "duplicate_of": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "pattern": "^S-(?:[0-9]{6}|M[0-9]{4})$"
+      }
+    },
+    "required": [
+      "song_id",
+      "title",
+      "artist_name",
+      "isrc",
+      "iswc",
+      "duration_s",
+      "status",
+      "n_hashes",
+      "uploaded_at",
+      "duplicate_of"
+    ]
+  }
+}

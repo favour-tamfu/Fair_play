@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "payouts.schema.json",
+  "title": "GET /api/v1/payouts",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "pot_fcfa": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "frozen": {
+      "type": "boolean"
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "owner_name": {
+            "type": "string"
+          },
+          "role": {
+            "enum": [
+              "singer",
+              "composer",
+              "producer",
+              "publisher"
+            ]
+          },
+          "song_id": {
+            "type": "string",
+            "pattern": "^S-(?:[0-9]{6}|M[0-9]{4})$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "amount_fcfa": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "momo": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "sent_mock"
+            ]
+          }
+        },
+        "required": [
+          "owner_name",
+          "role",
+          "song_id",
+          "title",
+          "amount_fcfa",
+          "momo",
+          "status"
+        ]
+      }
+    },
+    "total_fcfa": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "pot_fcfa",
+    "frozen",
+    "rows",
+    "total_fcfa"
+  ]
+}
