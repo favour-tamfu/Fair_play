@@ -84,7 +84,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [x] 4.4 **B-T09** Fair-play weights `sr-1.0` + modifiers; T-SR-1/2/3 exact
 - [x] 4.5 **B-T10** Estimation + bootstrap ranges + `run_stats` + shares API (<20 s per mode on the mock month)
 - [x] 4.6 **B-T11** Mock month importer (read from `origin/a/work` with `git show`) + compare-flat + migration 002 (chain namespace)
-- [ ] 4.7 **B-T12** Payouts (largest remainder, total == pot) + WIPO CSV + frozen
+- [x] 4.7 **B-T12** Payouts (largest remainder, total == pot) + WIPO CSV + frozen — as decided in D-015: artist cumulative shares, no money
 - [ ] 4.8 **MC2 merge** + joint test, tag `cp-2`. Keep the stack stable for the industry clinic
 
 ## Phase 5 — Polish features  → **MC3 / MC4**
@@ -147,3 +147,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 09:50 | Song package → catalogue | package fixes (KRYS M merged, Locko row, counts, manifest); import_catalogue tool: FP-001…060 → S-000013…072 all ready; duplicate check now needs slices in line (3 false alarms fixed); 180/180 clips recognised; R-008 (show % not FCFA). test_b 284 passed |
 | Tue 10:15 | B-T11 mock month + compare-flat | migration 006 (chain namespace, mock_meters, window_slots, mock_truth); import 91 139 plays in 11 s incl. stats; compare-flat flat 40.58 M vs Fair Play 3.93 M FCFA misallocated (pot 100 M, 94 artists); loop song S-M0150 101 plays at AKWA01 → 31.75 counted (cooldown flag); quiet hours flagged 25/25; promo not flagged (R-009). D-013. test_b 290 passed |
 | Tue 10:30 | D-014 mock month on the real catalogue (user) | catalogue_month.py (seeded) on A's bars/meters + 60 catalogue songs; imported 65 635 plays; loop S-000068 66 plays → 28 counted, loop flag ×9; quiet hours 210 plays flagged; compare-flat 24 artists: flat 40.29 M vs Fair Play 2.91 M FCFA misallocated; promo still unflagged (decision open). R-010. test_b 292 passed |
+| Tue 10:50 | B-T12 per D-015 (user) | artists earn the sum of their songs' shares: GET /api/v1/artist-shares (24 artists, sum 1.0; Locko 17.47 %, 7 songs), artist page `share`, usage report CSV (WIPO Connect prototype, shares only), frozen on broken ledger; artist_owners tool (60 songs, artist 100 %); no money; c-1.2 PROPOSED, R-011. test_b 297 passed |

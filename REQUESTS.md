@@ -76,3 +76,12 @@ Answer (A, time):
 ## R-010 — 2026-11-24 10:30 — B → A — FYI: mock month now plays the real catalogue (D-014)
 Person B decided the demo mock month uses the 60 catalogue songs (S-000013…S-000072) instead of the 200 "Mock Song" titles. B generates it (`server/tools/catalogue_month.py`, using your venues.csv/meters.csv unchanged) and has imported it: 30 days, 82 070 true / 65 635 observed plays, 60 songs, 24 artists. The API shapes are unchanged; `period=mock_month` now returns these songs. Scenario songs: loop S-000068 at V-YDE-YDE04, promo S-000039 (5 bars), quiet hours V-DLA-DLA02 / S-000055, power cut M-25 (11–12 Nov). Please show shares as % next to these real names (R-008). Nothing for you to regenerate.
 Answer (A, time):
+
+## R-011 — 2026-11-24 10:50 — B → A — Money tab → "What each artist earned" (c-1.2 PROPOSED, D-015)
+Why: Person B decided earnings are per artist (sum of their songs' shares) and no money is shown; artists are registered as 100 % owners of their songs (mock).
+Ask:
+1. ACK c-1.2 (contract/CHANGES.md): new `GET /api/v1/artist-shares?period=&mode=` (fixture `contract/fixtures/api/artist_shares.json`), `share` on the artist page, usage report CSV at `/api/v1/export/usage_report.csv?period=`.
+2. Money tab: rank artists by `share` (show as %), expand to their songs; show `frozen` as "Results withheld: the play log failed its integrity check"; show the `rules` list as "How the share is computed" plus a box for SONACAM's sharing rules (text to come from Person B). Link "Download usage report (WIPO Connect prototype)".
+3. Stop showing `amount_fcfa` / pot / payouts anywhere (artist page: show `share` as %). compare-flat can stay as the pitch's flat-vs-Fair-Play example (computed numbers).
+Workaround meanwhile: endpoints are live on B now; old fields still returned.
+Answer (A, time):

@@ -1,0 +1,88 @@
+{
+  "period": "mock_month",
+  "mode": "standardised",
+  "stats_run_id": "R-20261124092032",
+  "rule_version": "sr-1.0",
+  "frozen": false,
+  "rules": [
+    "Every play a meter confirms is counted by the fair-play rules sr-1.0: repeats of the same song in a short time count less (1, 1, 0.5, 0.25) and then not at all for a 2-hour cooldown; loops, quiet rooms and concentrated plays are flagged for SONACAM review.",
+    "Each meter's counted plays are divided by its catch rate (a meter that catches 80 % of songs: 4 heard â‰ˆ 5 played).",
+    "A song's share = its counted plays Ã· the counted plays of all songs in the period.",
+    "An artist's share = the sum of the shares of all the artist's songs (artists are paid per artist, not per song).",
+    "In this prototype each artist is registered as the 100 % owner of their own songs (mock ownership)."
+  ],
+  "rows": [
+    {
+      "rank": 1,
+      "artist_name": "Locko",
+      "share": 0.17472170158624406,
+      "n_songs": 7,
+      "raw_plays": 11670,
+      "counted_plays": 10775.25,
+      "songs": [
+        {
+          "song_id": "S-000029",
+          "title": "Ndutu",
+          "share": 0.07675552477228051,
+          "raw_plays": 5572,
+          "counted_plays": 4731.0
+        },
+        {
+          "song_id": "S-000031",
+          "title": "Thank you Lord",
+          "share": 0.025524483734849703,
+          "raw_plays": 1602,
+          "counted_plays": 1582.75
+        }
+      ]
+    },
+    {
+      "rank": 2,
+      "artist_name": "Mr. Leo",
+      "share": 0.10981673641057292,
+      "n_songs": 6,
+      "raw_plays": 6941,
+      "counted_plays": 6802.5,
+      "songs": [
+        {
+          "song_id": "S-000039",
+          "title": "Jamais-Jamais",
+          "share": 0.02873964843330533,
+          "raw_plays": 1858,
+          "counted_plays": 1777.25
+        },
+        {
+          "song_id": "S-000042",
+          "title": "Partout",
+          "share": 0.02840078939771262,
+          "raw_plays": 1805,
+          "counted_plays": 1756.25
+        }
+      ]
+    },
+    {
+      "rank": 3,
+      "artist_name": "Magasco",
+      "share": 0.09998001198385942,
+      "n_songs": 2,
+      "raw_plays": 7994,
+      "counted_plays": 6161.25,
+      "songs": [
+        {
+          "song_id": "S-000034",
+          "title": "Power (#DonnerDonner)",
+          "share": 0.09431281537623906,
+          "raw_plays": 7642,
+          "counted_plays": 5809.75
+        },
+        {
+          "song_id": "S-000033",
+          "title": "POWER",
+          "share": 0.005667196607620358,
+          "raw_plays": 352,
+          "counted_plays": 351.5
+        }
+      ]
+    }
+  ]
+}

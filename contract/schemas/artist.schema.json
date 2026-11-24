@@ -166,6 +166,12 @@
           "reasons"
         ]
       }
+    },
+    "share": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1.000001,
+      "description": "c-1.2: the artist's cumulative share (sum of their songs' shares)"
     }
   },
   "required": [

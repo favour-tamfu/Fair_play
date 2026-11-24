@@ -22,3 +22,10 @@
 - 2026-11-24 05:40 — B — Semantics per D-011 (no shape change): `shares.rows[].ci_low` = `ci_high` = `share` (full coverage, no sampling range); `shares.escrow_share` = 0 and `overview.unidentified_music_min` = 0 always (unidentified music is not recorded). `venues[].stratum/bars_in_stratum` are descriptive only. Fixtures `contract/fixtures/api/overview.json`, `shares_raw.json`, `shares_standardised.json` regenerated accordingly.
 
 - 2026-11-24 05:18 — A — ACK c-1.1 (upload limit 30 MB -> 50 MB). A-T12 portal will check 50 MB and show the new error text. No objection. Meter path (batches) is not affected.
+
+## c-1.2 — 2026-11-24 10:50 — PROPOSED (B) — artists earn a cumulative share; no money (D-015)
+- Additive: `GET /api/v1/artist-shares?period=&mode=` → `{"period","mode","stats_run_id","rule_version","frozen","rules":[str],"rows":[{"rank","artist_name","share","n_songs","raw_plays","counted_plays","songs":[{"song_id","title","share","raw_plays","counted_plays"}]}]}` (`artist_shares.schema.json`, fixture `artist_shares.json`). An artist's share = sum of their songs' shares; rows sum to 1; `frozen=true` (ledger not intact) → `rows` empty. `rules` = plain-language rule text for the page.
+- Additive: `GET /api/v1/artists/{name}` gets `share` (the artist's cumulative share).
+- Additive: `GET /api/v1/export/usage_report.csv?period=&mode=` — usage report, prototype format for WIPO Connect import, shares only (columns `song_id,isrc,iswc,title,artist_name,period_start,period_end,raw_plays,counted_plays,share,artist_share,rule_version,stats_run_id`).
+- Deprecated (kept so no page breaks; pages should stop showing them): `amount_fcfa` in `shares.rows`, `artist`, and the `payouts` endpoint. This version ends at what each artist truly earned (the share); paying it out is not modelled.
+- Status: waiting for A's ACK (R-011).

@@ -13,6 +13,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
 from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import PlainTextResponse
 from fastapi.concurrency import run_in_threadpool
 
 from fairplay_core.schema import format_utc, parse_utc
@@ -20,6 +21,7 @@ from server import config
 from server.db import connect
 from server.ledger import audit
 from server.money import largest_remainder
+from server.stats import artists as artist_stats
 from server.stats import compare
 from server.stats.periods import ACTIVE, period_sql
 
@@ -184,6 +186,55 @@ async def payouts(period: str = PERIOD, pot: int = Query(config.POT_DEFAULT_FCFA
     return await run_in_threadpool(_payouts, period, pot)
 
 
+def _artist_shares(period: str, mode: str) -> dict:
+    with connect() as c:
+        return artist_stats.artist_shares(c, period, mode)
+
+
+@router.get("/artist-shares")
+async def artist_shares(period: str = PERIOD, mode: str = MODE):
+    """What each artist truly earned: the sum of their songs' shares (B-T12, D-015). Frozen if the ledger is broken."""
+    return await run_in_threadpool(_artist_shares, period, mode)
+
+
+USAGE_COLUMNS = ["song_id", "isrc", "iswc", "title", "artist_name", "period_start", "period_end", "raw_plays",
+                 "counted_plays", "share", "artist_share", "rule_version", "stats_run_id"]
+
+
+def _usage_report(period: str, mode: str) -> str:
+    import csv
+    import io
+    with connect() as c:
+        body = artist_stats.artist_shares(c, period, mode)
+        run = None
+        if body["stats_run_id"]:
+            run = c.execute("SELECT params FROM stats_runs WHERE stats_run_id = %s", (body["stats_run_id"],)).fetchone()
+        meta = {r["song_id"]: r for r in c.execute("SELECT song_id, isrc, iswc FROM songs")}
+    f = io.StringIO()
+    f.write("# Fair Play usage report: prototype format for WIPO Connect import (not an official WIPO format). "
+            "Shares only, no money (D-015).\n")
+    if body["frozen"]:
+        f.write("# FROZEN: the play ledger is not intact; no report until it is fixed.\n")
+    w = csv.writer(f, lineterminator="\n")
+    w.writerow(USAGE_COLUMNS)
+    p = (run or {}).get("params") or {}
+    for a in body["rows"]:
+        for s in a["songs"]:
+            m = meta.get(s["song_id"], {})
+            w.writerow([s["song_id"], m.get("isrc") or "", m.get("iswc") or "", s["title"], a["artist_name"],
+                        p.get("period_start", ""), p.get("period_end", ""), s["raw_plays"], s["counted_plays"],
+                        f"{s['share']:.6f}",
+                        f"{a['share']:.6f}", body["rule_version"], body["stats_run_id"]])
+    return f.getvalue()
+
+
+@router.get("/export/usage_report.csv", response_class=PlainTextResponse)
+async def usage_report(period: str = PERIOD, mode: str = MODE):
+    text = await run_in_threadpool(_usage_report, period, mode)
+    return PlainTextResponse(text, media_type="text/csv",
+                             headers={"Content-Disposition": f'attachment; filename="usage_report_wipo_connect_prototype_{period}.csv"'})
+
+
 def _compare_flat(pot: int) -> dict:
     with connect() as c:
         return compare.compare_flat(c, pot)
@@ -235,7 +286,8 @@ def _artist(name: str, period: str, mode: str) -> Optional[dict]:
                                 "plays_raw": r["plays_raw"], "plays_counted": float(r["plays_counted"])} for r in by_venue],
             "plays_by_day": [{"date": r["date"], "plays_raw": r["plays_raw"], "plays_counted": float(r["plays_counted"])}
                              for r in by_day],
-            "amount_fcfa": sum(r["amount_fcfa"] for r in rows if r["song_id"] in ids), "recent": recent}
+            "amount_fcfa": sum(r["amount_fcfa"] for r in rows if r["song_id"] in ids),
+            "share": sum(r["share"] for r in rows if r["song_id"] in ids), "recent": recent}
 
 
 @router.get("/artists/{artist_name}")
