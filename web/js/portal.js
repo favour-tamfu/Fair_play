@@ -80,7 +80,9 @@ async function submit(ev) {
   try {
     const res = await uploadWithProgress(form);
     $("ok").textContent = `Uploaded as ${res.song_id}. It will show as ready once fingerprinted.`;
+    const me = $("artist").value;
     $("form").reset();
+    $("artist").value = me;
     document.getElementById("owners").innerHTML = "";
     document.getElementById("owners").appendChild(ownerRow({ share_pct: 100 }));
     sumShares();
@@ -94,21 +96,26 @@ async function submit(ev) {
 }
 
 const STATUS_TEXT = {
-  uploaded: "uploaded", processing: "processing…", ready: "ready",
-  duplicate_suspected: "possible duplicate: waiting for SONACAM review", failed: "failed",
+  uploaded: "Uploaded", processing: "Processing", ready: "Ready",
+  duplicate_suspected: "Possible duplicate", failed: "Failed",
 };
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
+// Only the signed-in artist's songs (the artist field is filled by me.js and read-only).
 async function loadCatalogue() {
   let songs = [];
   try {
     const url = MOCK ? "../contract/fixtures/api/songs.json" : "/api/v1/songs";
     songs = await (await fetch(url, { cache: "no-store" })).json();
   } catch (_) { songs = []; }
-  $("cat").innerHTML = songs.map((s) => `<tr>
-      <td>${s.title}</td><td>${s.artist_name}</td>
-      <td><span class="chip2 s-${s.status}">${STATUS_TEXT[s.status] || s.status}</span></td>
-      <td>${s.duplicate_of ? `same as ${s.duplicate_of}` : ""}</td></tr>`).join("");
-  return songs.some((s) => s.status === "processing" || s.status === "uploaded");
+  const me = $("artist").value.trim();
+  const mine = me ? songs.filter((s) => s.artist_name === me) : songs;
+  $("cat").innerHTML = mine.map((s) => `<tr>
+      <td><b>${esc(s.title)}</b></td>
+      <td><span class="chip2 s-${s.status}">${STATUS_TEXT[s.status] || esc(s.status)}</span></td>
+      <td>${s.duplicate_of ? `Same audio as ${esc(s.duplicate_of)}, waiting for review` : s.status === "ready" ? "Recognised in every metered bar" : ""}</td></tr>`).join("")
+    || `<tr><td colspan="3" class="empty">No songs declared yet.</td></tr>`;
+  return mine.some((s) => s.status === "processing" || s.status === "uploaded");
 }
 
 async function pollWhileProcessing() {
@@ -119,4 +126,5 @@ $("add-owner").addEventListener("click", () => { $("owners").appendChild(ownerRo
 $("form").addEventListener("submit", submit);
 $("owners").appendChild(ownerRow({ share_pct: 100 }));
 sumShares();
-pollWhileProcessing();
+// wait a moment so me.js has set the signed-in artist before the catalogue is filtered
+setTimeout(pollWhileProcessing, 300);

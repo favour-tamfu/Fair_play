@@ -14,8 +14,8 @@
   <div class="gn-row">
     <a class="gn-mark" href="index.html" aria-label="Fair Play home"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
     <a href="index.html" aria-current="page">Overview</a>
-    <a href="artist.html">Artist portal</a>
-    <a href="portal.html">Declare a song</a>
+    <a href="artist.html">Artists</a>
+    <a href="portal.html">Artist portal</a>
     <a href="#how">How it works</a>
   </div>
 </nav>
@@ -71,6 +71,14 @@
         <div class="sq photo" style="--img:url('../assets/img/mic.webp')" role="img" aria-label="A singer smiling on stage with a microphone"></div>
         <div class="sq text"><span class="sq-n">03</span><h3>Shared by real use.</h3><p>The bar money is split by counted plays, not flat advances. Bars keep paying the levy they already pay.</p></div>
       </div>
+    </div>
+  </section>
+
+  <!-- Full-bleed photo band -->
+  <section class="band" style="--img:url('../assets/img/party.webp')">
+    <div class="band-text">
+      <h2>Made for the maquis,<br>the snack-bar and the club.</h2>
+      <p>Wherever music plays, the meter listens for songs, never for people.</p>
     </div>
   </section>
 
@@ -131,6 +139,19 @@
     </div>
   </section>
 
+  <!-- Live from the bars: the real event stream -->
+  <section class="live">
+    <div class="wrap split">
+      <div class="split-text">
+        <p class="b-eye">Live</p>
+        <h2>Live from<br>the bars.</h2>
+        <p>Every play a meter confirms appears here within seconds, with the bar and the time. This list is the system's own feed.</p>
+        <span class="live-state" id="live-state">Connecting</span>
+      </div>
+      <div class="live-card"><ol class="live-list" id="live-list"><li class="live-empty">Waiting for the first play…</li></ol></div>
+    </div>
+  </section>
+
   <!-- For artists: square photo with the iPhone stepping out of it -->
   <section class="artists" id="artists">
     <div class="wrap split">
@@ -138,7 +159,7 @@
         <p class="b-eye">For artists</p>
         <h2>See every bar<br>that played you.</h2>
         <p>Your share of bar plays, your rank, each song and each bar, updated as the meters hear your music.</p>
-        <a class="pill big" href="artist.html">Open the artist portal</a>
+        <a class="pill big" href="portal.html">Open your artist portal</a>
       </div>
       <div class="stage">
         <div class="stage-photo" style="--img:url('../assets/img/mic.webp')" aria-hidden="true"></div>
@@ -189,6 +210,20 @@
     </div>
   </section>
 
+  <!-- Questions -->
+  <section class="faq">
+    <div class="wrap">
+      <h2 class="center">Questions.</h2>
+      <div class="faq-list">
+        <details><summary>Does the meter record what people say?</summary><p>No. The meter turns short slices of sound into fingerprints of the music's strongest peaks and throws the sound away. Speech is not kept, and no audio is sent.</p></details>
+        <details><summary>Do bars pay more?</summary><p>No. The levy is already in the price of the drinks a bar buys. Fair Play only changes how that money is shared between artists.</p></details>
+        <details><summary>How is an artist's share calculated?</summary><p>A song's share is its counted plays divided by all counted plays in the period. An artist's share is the sum of their songs' shares. Repeats of the same song in a short time count less.</p></details>
+        <details><summary>What if someone changes a play after it is logged?</summary><p>Every play is chained to the one before it, and each hour's chain is published. A changed play breaks the chain, the dashboard turns red and the results are withheld until the log is restored.</p></details>
+        <details><summary>Which songs can the meter recognise?</summary><p>Songs declared in the catalogue. Once a song is declared, its fingerprint is added and bars playing it are counted from then on.</p></details>
+      </div>
+    </div>
+  </section>
+
   <!-- Keep exploring -->
   <section class="explore grey">
     <div class="wrap">
@@ -196,11 +231,11 @@
       <div class="ex-cols">
         <a class="ex-card" href="artist.html">
           <div class="ex-img"><img src="assets/img/mic.webp" alt="" loading="lazy"></div>
-          <p class="new">Artists</p><h4>Artist portal</h4><p>Find your name and see your plays.</p><span class="more">Find your plays</span>
+          <p class="new">Public data</p><h4>Artists</h4><p>Search any artist and see their plays, bars and share.</p><span class="more">Explore artists</span>
         </a>
         <a class="ex-card" href="portal.html">
           <div class="ex-img"><img src="assets/img/dj.webp" alt="" loading="lazy"></div>
-          <p class="new">Catalogue</p><h4>Declare a song</h4><p>Add a song so the meters can recognise it.</p><span class="more">Declare a song</span>
+          <p class="new">For artists</p><h4>Artist portal</h4><p>Sign in, declare your songs and follow every bar that plays them.</p><span class="more">Open your portal</span>
         </a>
         <a class="ex-card" href="#how">
           <div class="ex-img"><img src="assets/img/party.webp" alt="" loading="lazy"></div>

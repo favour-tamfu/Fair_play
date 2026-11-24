@@ -3,62 +3,151 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fair Play · Upload a song</title>
-<link rel="stylesheet" href="css/app.css">
-<style>
-  .wrap { max-width: 880px; margin: 0 auto; padding: 16px; }
-  form { display: grid; gap: 10px; }
-  label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
-  input, select { font: inherit; padding: 7px 9px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
-  .owner { display: grid; grid-template-columns: 2fr 1.2fr 1fr 1.6fr auto; gap: 6px; align-items: end; }
-  .err { color: var(--red); font-size: 13px; min-height: 18px; }
-  .ok { color: var(--teal); font-size: 13px; }
-  .chip2 { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 12px; }
-  .s-uploaded { background: var(--chip); color: var(--muted); }
-  .s-processing { background: #fff3d6; color: var(--amber); }
-  .s-ready { background: #d8f2ee; color: var(--teal); }
-  .s-duplicate_suspected { background: #fbe3e0; color: var(--red); }
-  .s-failed { background: #fbe3e0; color: var(--red); }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  td, th { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; }
-  @media (max-width: 600px) { .owner { grid-template-columns: 1fr 1fr; } }
-</style>
+<meta name="theme-color" content="#000000">
+<meta name="robots" content="noindex">
+<title>Artist portal · Fair Play</title>
+<link rel="stylesheet" href="css/landing.css">
+<link rel="stylesheet" href="css/pages.css">
 </head>
-<body>
-<header class="top"><div class="brand">Fair Play <span>· upload a song</span></div></header>
-<main class="wrap">
-  <form id="form">
-    <label>Audio file (MP3, WAV, M4A or FLAC, at most 50 MB)
-      <input type="file" id="file" accept=".mp3,.wav,.m4a,.flac,audio/*" required>
-    </label>
-    <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-      <label>Title <input id="title" required maxlength="200"></label>
-      <label>Artist name <input id="artist" required maxlength="200"></label>
-      <label>ISRC (optional) <input id="isrc" maxlength="20"></label>
-      <label>ISWC (optional) <input id="iswc" maxlength="20"></label>
+<body class="page portal">
+
+<nav class="globalnav" aria-label="Site">
+  <div class="gn-row">
+    <a class="gn-mark" href="index.html" aria-label="Fair Play home"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+    <a href="index.html">Overview</a>
+    <a href="artist.html">Artists</a>
+    <a href="portal.html" aria-current="page">Artist portal</a>
+    <a href="index.html#how">How it works</a>
+  </div>
+</nav>
+
+<!-- Sign in (demo: no password until the rights society issues real accounts) -->
+<main id="signin" hidden>
+  <section class="signin">
+    <div class="signin-card">
+      <svg class="signin-mark" viewBox="0 0 20 20" aria-hidden="true"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <h1>Sign in to your<br>artist portal.</h1>
+      <p class="muted">Declare your songs, follow every bar that plays them and see your share.</p>
+      <form id="signin-form">
+        <label>Artist name
+          <input id="signin-name" list="artist-names" autocomplete="off" required placeholder="Your artist name">
+          <datalist id="artist-names"></datalist>
+        </label>
+        <button class="pill big" type="submit">Continue</button>
+        <p class="err" id="signin-err"></p>
+      </form>
+      <p class="demo-note">Prototype sign-in: there is no password yet. Real artist accounts will come from the rights society's membership records.</p>
     </div>
-
-    <div>
-      <div style="font-size:13px;color:var(--muted);margin-bottom:4px">Owners (shares must add up to 100)</div>
-      <div id="owners" style="display:grid;gap:6px"></div>
-      <button type="button" id="add-owner">+ add owner</button>
-      <span id="share-sum" class="note" style="margin-left:8px"></span>
-    </div>
-
-    <label style="grid-template-columns:auto 1fr;align-items:start">
-      <input type="checkbox" id="consent" required>
-      <span>I own or represent the rights to this recording and agree to its use for royalty monitoring.</span>
-    </label>
-
-    <div><button type="submit" class="on" id="submit">Upload</button>
-      <span id="progress" class="note"></span></div>
-    <div class="err" id="err"></div>
-    <div class="ok" id="ok"></div>
-  </form>
-
-  <h2 style="font-size:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:24px">Catalogue</h2>
-  <table><thead><tr><th>title</th><th>artist</th><th>status</th><th>detail</th></tr></thead><tbody id="cat"></tbody></table>
+  </section>
 </main>
+
+<!-- The artist's own portal -->
+<main id="me" hidden>
+  <section class="cover" style="--img:url('../assets/img/mic.webp')"></section>
+  <section class="wrap profile-head">
+    <div class="ph-avatar" id="me-avatar">–</div>
+    <div class="ph-text">
+      <h1 id="me-name">–</h1>
+      <p class="muted" id="me-line"></p>
+    </div>
+    <div class="ph-actions">
+      <button class="pill big" data-tab="declare">Declare a song</button>
+      <a class="btn-plain" id="me-public" href="artist.html">View public page</a>
+      <button class="btn-plain" id="signout">Sign out</button>
+    </div>
+  </section>
+  <nav class="wrap tabs" aria-label="Portal">
+    <button data-tab="activity" class="on">Activity</button>
+    <button data-tab="songs">My songs</button>
+    <button data-tab="declare">Declare a song</button>
+  </nav>
+
+  <section class="grey portal-body">
+    <div class="wrap portal-grid">
+      <!-- left column: about -->
+      <aside class="side">
+        <div class="card">
+          <h3>Your numbers</h3>
+          <div class="side-stats">
+            <div><b id="s-counted">–</b><span>plays counted</span></div>
+            <div><b id="s-bars">–</b><span>bars</span></div>
+            <div><b id="s-songs">–</b><span>songs</span></div>
+            <div><b id="s-share">–</b><span>share of bar plays</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Your top bars</h3>
+          <div id="s-bars-list"></div>
+        </div>
+      </aside>
+
+      <!-- main column -->
+      <div class="main-col">
+        <!-- Activity -->
+        <div class="tab-panel" data-panel="activity">
+          <button class="composer" data-tab="declare">
+            <span class="ph-mini" id="me-mini">–</span>
+            <span class="composer-field">Declare a new song…</span>
+          </button>
+          <div class="card"><h3>Top songs <span class="soft">this period</span></h3><div class="top-songs" id="top-songs"></div></div>
+          <div id="feed-posts"></div>
+        </div>
+
+        <!-- My songs -->
+        <div class="tab-panel" data-panel="songs" hidden>
+          <div class="card">
+            <h3>My songs <span class="soft">status in the catalogue</span></h3>
+            <table class="cat"><thead><tr><th>Title</th><th>Status</th><th>Detail</th></tr></thead><tbody id="cat"></tbody></table>
+          </div>
+        </div>
+
+        <!-- Declare a song (only here, inside the portal) -->
+        <div class="tab-panel" data-panel="declare" hidden>
+          <div class="form-card">
+            <h3 class="form-title">Declare a song.</h3>
+            <p class="muted" style="margin:-6px 0 22px">Add the recording once. It is fingerprinted and checked for duplicates, then every bar that plays it is counted for you.</p>
+            <form id="form">
+              <label>Audio file <small>MP3, WAV, M4A or FLAC, at most 50 MB</small>
+                <input type="file" id="file" accept=".mp3,.wav,.m4a,.flac,audio/*" required>
+              </label>
+              <div class="fields">
+                <label>Title <input id="title" required maxlength="200" placeholder="Song title"></label>
+                <label>Artist name <input id="artist" required maxlength="200" readonly></label>
+                <label>ISRC <small>optional</small> <input id="isrc" maxlength="20" placeholder="e.g. CM-XXX-26-00001"></label>
+                <label>ISWC <small>optional</small> <input id="iswc" maxlength="20" placeholder="e.g. T-123.456.789-0"></label>
+              </div>
+              <div>
+                <p class="f-label">Owners <small>shares must add up to 100</small> <span id="share-sum" class="sum"></span></p>
+                <div id="owners"></div>
+                <button type="button" id="add-owner">+ Add an owner</button>
+              </div>
+              <label class="consent">
+                <input type="checkbox" id="consent" required>
+                <span>I own or represent the rights to this recording and agree to its use for royalty monitoring.</span>
+              </label>
+              <div class="submit-row">
+                <button type="submit" class="pill big" id="submit">Declare song</button>
+                <span id="progress" class="muted"></span>
+              </div>
+              <div class="err" id="err"></div>
+              <div class="ok" id="ok"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>Fair Play is a prototype built at the CIMFEST Hackathon 2026.</p>
+    <p>Times are Cameroon time. Recordings are only used to fingerprint the song.</p>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<script type="module" src="js/site.js"></script>
+<script type="module" src="js/me.js"></script>
 <script type="module" src="js/portal.js"></script>
 </body>
 </html>

@@ -126,3 +126,8 @@ Answer (A, 2026-11-24 13:10): noted; goes on the admin page (A-T17) with an in-p
 - The dashboard accepts `?period=mock_month`.
 Ask: when you pull a/work, open the dashboard at the new address; update any script or note that opens `/`.
 Answer (B, time):
+## R-018 — 2026-11-24 16:30 — A → B — Artist accounts for the artist portal
+- `/portal.html` is now the artist's own portal (profile, activity feed of their plays, their songs, and the only place to declare a song). `/artist.html` is the public data pool (anyone can search any artist).
+- Sign-in is a prototype: the artist picks their name from `GET /api/v1/artists` and it is kept in the browser. There is no password, so anyone can act as any artist.
+Ask: when there is time, an artist login (e.g. `POST /api/v1/auth/login` returning a session, and `POST /api/v1/songs` checking that `artist_name` belongs to the signed-in artist). Until then the portal says on screen that sign-in is a prototype.
+Answer (B, time):

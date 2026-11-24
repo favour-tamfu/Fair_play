@@ -2,6 +2,7 @@
 // Share = the artist's songs' counted plays / all counted plays (D-015, c-1.3); no money in this version.
 // Now-playing card lights up live when a meter confirms a play of one of their songs (SSE "play").
 import { MOCK, get, feed, fmtHm, fmtDateTime } from "./api.js";
+import { VIEW, project, outlinePath } from "./cameroon.js";
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -64,17 +65,24 @@ async function load() {
   $("name").textContent = artistName;
   $("avatar").textContent = initials(artistName);
   $("watermark").textContent = artistName;
-  $("songs-line").textContent = `${(a.songs || []).length} song${(a.songs || []).length === 1 ? "" : "s"} in the SONACAM catalogue`;
+  $("songs-line").textContent = `${(a.songs || []).length} song${(a.songs || []).length === 1 ? "" : "s"} in the catalogue`;
   mySongs = new Set((a.songs || []).map((s) => s.song_id));
   for (const v of a.plays_by_venue || []) venueNames.set(v.venue_id, `${v.name}, ${v.city}`);
 
-  // The three round controls: share, rank, counted plays.
-  const share = a.share ?? (row ? row.share : null);
-  $("share").textContent = shares && shares.frozen ? "held" : fmtPct(share);
-  $("rank").textContent = row ? `#${row.rank}` : "–";
-  $("rank-label").textContent = row && shares ? `Rank (of ${shares.rows.length} artists)` : "Rank";
+  // Tiles: share, rank, counted plays, each with a line saying what the number is made of.
   const counted = (a.plays_by_venue || []).reduce((t, v) => t + (v.plays_counted || 0), 0);
+  const heard = (a.plays_by_venue || []).reduce((t, v) => t + (v.plays_raw || 0), 0);
+  let share = a.share ?? (row ? row.share : null), total = null;
+  try { total = (await get("overview", period)).plays_counted; } catch (_) { /* no total */ }
+  if (share == null && total) share = counted / total;   // not in the last stats run yet: computed from the counts shown
+  $("share").textContent = shares && shares.frozen ? "Held" : fmtPct(share);
+  $("share-sub").textContent = shares && shares.frozen ? "Withheld until the play log is restored."
+    : total ? `of ${fmtInt(total)} plays counted in this period` : "";
+  $("rank").textContent = row ? `#${row.rank}` : "–";
+  $("rank-label").textContent = row && shares ? `of ${shares.rows.length} artists` : "Ranked after the next stats run";
   $("counted").textContent = fmtInt(counted);
+  $("counted-sub").textContent = `${fmtInt(heard)} heard, in ${(a.plays_by_venue || []).length} bars`;
+  drawMap(a.plays_by_venue || []);
 
   // Songs, with each song's share when the stats run has it.
   const songShare = new Map((row ? row.songs : []).map((s) => [s.song_id, s]));
@@ -96,7 +104,8 @@ async function load() {
   const days = a.plays_by_day || [];
   const maxD = Math.max(1, ...days.map((d) => d.plays_counted || 0));
   $("chart").innerHTML = days.map((d) => `<i title="${esc(d.date)}: ${fmtInt(d.plays_counted)} counted" style="height:${(100 * (d.plays_counted || 0)) / maxD}%"></i>`).join("");
-  $("chart-range").textContent = days.length ? `${days[0].date.slice(5)} → ${days[days.length - 1].date.slice(5)}` : "";
+  $("chart-range").textContent = days.length ? `${fmtInt(days.reduce((t, d) => t + (d.plays_counted || 0), 0))} counted` : "";
+  $("chart-x").innerHTML = days.map((d) => `<span>${new Date(d.date + "T12:00:00Z").toLocaleDateString("en-GB", { weekday: "short" })}</span>`).join("");
 
   const recent = (a.recent || []).slice(0, 12);
   $("recent").innerHTML = recent.map((p) => `<div class="row"><span>${esc(p.title || p.song_id)}</span><span class="sub" style="grid-column:auto">${fmtDateTime(p.started_at)}</span>
@@ -106,6 +115,34 @@ async function load() {
   renderNow(false);
 
   $("foot").textContent = `${shares && shares.stats_run_id ? `${shares.rule_version} · run ${shares.stats_run_id} · ` : ""}times in Cameroon time${MOCK ? " · mock data" : ""}`;
+}
+
+// Map of the bars that played this artist: dot size follows counted plays.
+async function drawMap(byVenue) {
+  const svg = $("pmap");
+  if (!svg) return;
+  let venues = [];
+  try { venues = await get("venues", period); } catch (_) { /* outline only */ }
+  const coords = new Map(venues.map((v) => [v.venue_id, v]));
+  const max = Math.max(1, ...byVenue.map((v) => v.plays_counted || 0));
+  const parts = [`<path class="land" d="${outlinePath()}"/>`];
+  for (const v of venues) {
+    if (byVenue.some((b) => b.venue_id === v.venue_id)) continue;
+    const [x, y] = project(v.lat, v.lon);
+    parts.push(`<circle class="other" cx="${x}" cy="${y}" r="4"/>`);
+  }
+  let shown = 0;
+  for (const b of byVenue) {
+    const v = coords.get(b.venue_id);
+    if (!v) continue;
+    const [x, y] = project(v.lat, v.lon);
+    parts.push(`<circle class="hit" cx="${x}" cy="${y}" r="${(7 + 11 * Math.sqrt((b.plays_counted || 0) / max)).toFixed(1)}"><title>${esc(b.name)}, ${esc(b.city)}: ${fmtInt(b.plays_counted)} counted</title></circle>`);
+    shown += 1;
+  }
+  svg.setAttribute("viewBox", `0 0 ${VIEW.w} ${VIEW.h}`);
+  svg.innerHTML = parts.join("");
+  const cities = new Set(byVenue.map((b) => b.city));
+  $("map-sub").textContent = shown ? `${byVenue.length} bars, ${cities.size} cities` : "";
 }
 
 function toast(text) {
@@ -119,8 +156,8 @@ function toast(text) {
 async function finder() {
   $("profile").hidden = true;
   $("finder").hidden = false;
-  document.title = "Artist portal · Fair Play";
-  $("foot").textContent = `Fair Play is SONACAM's bar-play measurement. Shares are indicative until SONACAM closes the period.${MOCK ? " Mock data." : ""}`;
+  document.title = "Artists · Fair Play";
+  $("foot").textContent = `Shares are indicative until the period is closed.${MOCK ? " Mock data." : ""}`;
   let artists = [], shares = null;
   try {
     const r = await fetch(MOCK ? "../contract/fixtures/api/artists.json" : "/api/v1/artists", { cache: "no-store" });
@@ -130,15 +167,24 @@ async function finder() {
   try { shares = await get("artist_shares", "live", "standardised"); } catch (_) { /* list without shares */ }
   const byName = new Map(((shares && !shares.frozen && shares.rows) || []).map((r) => [r.artist_name, r]));
   const link = (n) => `artist.html?name=${encodeURIComponent(n)}${MOCK ? "&mock=1" : ""}`;
+  // Leaders of the month (computed shares of the closed mock month).
+  try {
+    const m = await get("artist_shares", "mock_month", "standardised");
+    $("leaders").style.setProperty("--n", Math.max(1, Math.min(4, m.rows.length)));
+    $("leaders").innerHTML = m.frozen ? `<div class="empty">Results are withheld until the play log is restored.</div>`
+      : m.rows.slice(0, 4).map((r) => `<a class="leader" href="${link(r.artist_name)}"><span class="l-rank">${r.rank}</span>
+        <span class="l-av">${esc(initials(r.artist_name))}</span><b>${esc(r.artist_name)}</b>
+        <span class="l-share">${fmtPct(r.share)}</span><span class="l-sub">${fmtInt(r.counted_plays)} plays counted, ${r.n_songs} song${r.n_songs === 1 ? "" : "s"}</span></a>`).join("");
+  } catch (_) { $("leaders").closest("section").hidden = true; }
   const render = () => {
     const q = $("q").value.trim().toLowerCase();
     const list = artists.filter((a) => !q || a.artist_name.toLowerCase().includes(q))
       .sort((a, b) => a.artist_name.localeCompare(b.artist_name, "fr"));
     $("artist-list").innerHTML = list.map((a) => {
       const s = byName.get(a.artist_name);
-      return `<a class="row artist-link" href="${link(a.artist_name)}"><span>${esc(a.artist_name)}</span>
-        <span class="num">${s ? fmtPct(s.share) : ""}</span>
-        <span class="sub">${a.songs.length} song${a.songs.length === 1 ? "" : "s"}${s ? `, rank #${s.rank} this period` : ""}</span></a>`;
+      return `<a class="artist-link" href="${link(a.artist_name)}"><span class="l-av">${esc(initials(a.artist_name))}</span>
+        <div><span class="a-name">${esc(a.artist_name)}</span>
+        <span class="sub">${a.songs.length} song${a.songs.length === 1 ? "" : "s"}${s ? `, ${fmtPct(s.share)} live, rank #${s.rank}` : ""}</span></div></a>`;
     }).join("") || `<div class="empty">No artist matches "${esc(q)}". Check the spelling, or declare your songs with SONACAM first.</div>`;
   };
   $("q").addEventListener("input", render);

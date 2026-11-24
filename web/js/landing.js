@@ -1,6 +1,6 @@
 // Landing page. Every number shown is computed by the system (API, or the fixtures with ?mock=1).
 // No scroll animation and no counters: values are written once when the data arrives.
-import { MOCK, get } from "./api.js";
+import { MOCK, get, feed, fmtTime } from "./api.js";
 import { VIEW, project, outlinePath } from "./cameroon.js";
 
 const $ = (id) => document.getElementById(id);
@@ -85,6 +85,20 @@ async function trustTiles() {
     ["Latest play", root ? `${root.slice(0, 16)}…` : "no plays yet"]];
   $("chain").innerHTML = blocks.map(([t, h], i) => `${i ? '<span class="link"></span>' : ""}<div class="blk${i === 3 ? " last" : ""}"><b>${t}</b>${i === 3 ? "chain hash" : "&nbsp;"}<code>${esc(h)}</code></div>`).join("");
 }
+
+// Live from the bars: plays and recognised songs from the event stream (the fixture replay with ?mock=1).
+const liveItems = [];
+const venueName = new Map();
+get("venues", "live").then((vs) => vs.forEach((v) => venueName.set(v.venue_id, `${v.name}, ${v.city}`))).catch(() => {});
+feed(({ event, data }) => {
+  $("live-state").textContent = MOCK ? "Replaying sample events" : "Connected";
+  $("live-state").classList.add("on");
+  if (event !== "play" && !(event === "match" && data.accepted)) return;
+  liveItems.unshift({ kind: event === "play" ? "Play" : "Heard", title: data.title || data.song_id, where: venueName.get(data.venue_id) || data.venue_id || "",
+    time: fmtTime(data.started_at || data.window_start) });
+  liveItems.length = Math.min(liveItems.length, 6);
+  $("live-list").innerHTML = liveItems.map((i) => `<li><span class="li-kind">${i.kind}</span><div><b>${esc(i.title)}</b><span>${esc(i.where)}</span></div><time>${i.time}</time></li>`).join("");
+});
 
 numbers(); mapTile(); compareTile(); sharesTiles(); trustTiles();
 

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#000000">
-<title>Artist portal · Fair Play</title>
+<title>Artists · Fair Play</title>
 <link rel="stylesheet" href="css/landing.css">
 <link rel="stylesheet" href="css/pages.css">
 </head>
@@ -14,19 +14,19 @@
   <div class="gn-row">
     <a class="gn-mark" href="index.html" aria-label="Fair Play home"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
     <a href="index.html">Overview</a>
-    <a href="artist.html" aria-current="page">Artist portal</a>
-    <a href="portal.html">Declare a song</a>
+    <a href="artist.html" aria-current="page">Artists</a>
+    <a href="portal.html">Artist portal</a>
     <a href="index.html#how">How it works</a>
   </div>
 </nav>
 
-<nav class="localnav" aria-label="Artist portal">
+<nav class="localnav" aria-label="Artists">
   <div class="ln-row">
-    <a class="ln-title" href="artist.html">Artist portal</a>
+    <a class="ln-title" href="artist.html">Artists</a>
     <div class="ln-links">
       <a href="artist.html">Find an artist</a>
       <a href="#paid">How you get paid</a>
-      <a class="pill" href="portal.html">Declare a song</a>
+      <a class="pill" href="portal.html">Artist portal</a>
     </div>
   </div>
 </nav>
@@ -34,7 +34,7 @@
 <!-- Finder: shown when no ?name= -->
 <main id="finder" hidden>
   <section class="wrap p-head">
-    <p class="eyebrow">Artist portal</p>
+    <p class="eyebrow">Public data</p>
     <h1>Find your plays.</h1>
     <p class="lede">Search your name to see your share of bar plays, the bars that played you and your recent plays.</p>
   </section>
@@ -44,8 +44,12 @@
       <input id="q" type="search" placeholder="Search by artist name" autocomplete="off">
     </label>
   </section>
-  <section class="grey p-section" style="margin-top:50px">
-    <div class="wrap"><div id="artist-list"><div class="empty">Loading artists…</div></div></div>
+  <section class="wrap leaders-wrap">
+    <h2 class="small-h">Leading this month.</h2>
+    <div class="leaders" id="leaders"></div>
+  </section>
+  <section class="grey p-section" style="margin-top:60px">
+    <div class="wrap"><h2 class="small-h">All artists.</h2><div id="artist-list"><div class="empty">Loading artists…</div></div></div>
   </section>
 </main>
 
@@ -73,9 +77,9 @@
 
   <section class="wrap">
     <div class="tiles">
-      <div class="tile"><span>Share of bar plays</span><b id="share">–</b></div>
-      <div class="tile"><span id="rank-label">Rank</span><b id="rank">–</b></div>
-      <div class="tile"><span>Plays counted</span><b id="counted">–</b></div>
+      <div class="tile"><span>Share of bar plays</span><div><b id="share">–</b><small id="share-sub"></small></div></div>
+      <div class="tile"><span>Rank</span><div><b id="rank">–</b><small id="rank-label"></small></div></div>
+      <div class="tile"><span>Plays counted</span><div><b id="counted">–</b><small id="counted-sub"></small></div></div>
       <div class="tile dark now" id="now">
         <span><i class="pulse" id="now-dot"></i><em id="now-label" style="font-style:normal">Last heard</em></span>
         <div>
@@ -90,11 +94,16 @@
 
   <section class="grey p-section" style="margin-top:70px">
     <div class="wrap">
-      <div class="cards2">
-        <div class="card"><h3>Your songs</h3><div id="songs"></div></div>
-        <div class="card"><h3>Bars that played you</h3><div id="venues"></div></div>
-        <div class="card"><h3>Plays by day <span class="soft" id="chart-range"></span></h3><div class="chart" id="chart"></div></div>
-        <div class="card"><h3>Recent plays</h3><div id="recent"></div></div>
+      <div class="cols2">
+        <div class="col">
+          <div class="card"><h3>Your songs</h3><div id="songs"></div></div>
+          <div class="card map-card"><h3>Where you were played <span class="soft" id="map-sub"></span></h3><svg id="pmap" viewBox="0 0 400 560" role="img" aria-label="Map of the bars that played this artist"></svg></div>
+          <div class="card"><h3>Plays by day <span class="soft" id="chart-range"></span></h3><div class="chart" id="chart"></div><div class="chart-x" id="chart-x"></div></div>
+        </div>
+        <div class="col">
+          <div class="card"><h3>Bars that played you</h3><div id="venues"></div></div>
+          <div class="card"><h3>Recent plays</h3><div id="recent"></div></div>
+        </div>
       </div>
     </div>
   </section>
