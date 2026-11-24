@@ -82,7 +82,16 @@ function addFeed(evt) {
 
 // D-011: every bar is metered and there is no sampling, so ci_low = ci_high = share: no range bar.
 // D-009: audience and concentration are review flags only; they never change the money.
+// Money is only final when a period's statistics are final. The live period is still open, so it
+// shows shares only; a closed period (the mock month here) shows the amounts for that period.
+// When B adds a period status to the API, use it instead of this rule.
+function periodIsClosed(period) {
+  return period !== "live";
+}
+
 function renderShares(s) {
+  const closed = periodIsClosed(state.period);
+  document.getElementById("th-amount").textContent = closed ? "FCFA (final)" : "FCFA";
   const rows = s.rows.slice(0, 15);
   const max = Math.max(...rows.map((r) => r.share), 0.01);
   const tb = document.getElementById("shares");
@@ -94,10 +103,11 @@ function renderShares(s) {
       <td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.weighted_plays)}</td>
       <td>${fmtPct(r.share)}</td>
       <td><div class="bar"><i style="left:0;width:${w}%"></i></div></td>
-      <td class="n">${fmtFcfa(r.amount_fcfa)}</td><td>${flags}</td></tr>`;
+      <td class="n">${closed ? fmtFcfa(r.amount_fcfa) : '<span class="note">at period close</span>'}</td><td>${flags}</td></tr>`;
   }).join("");
-  document.getElementById("shares-note").textContent =
-    `${s.rule_version} · run ${s.stats_run_id} · pot ${fmtFcfa(s.pot_fcfa)} · flags are for SONACAM review and do not change the amounts`;
+  document.getElementById("shares-note").textContent = closed
+    ? `${s.rule_version} · run ${s.stats_run_id} · closed period · pot ${fmtFcfa(s.pot_fcfa)} · amounts are final for this period · flags are for SONACAM review`
+    : `${s.rule_version} · run ${s.stats_run_id} · period still open · shares can still change · amounts are calculated when the period closes and its statistics are final`;
 }
 
 async function loadShares() {

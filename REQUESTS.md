@@ -51,3 +51,7 @@ Answer (B, time):
 - Monitor totals at the end: made 601, acked 601, queued 0, missing 0, dead 0.
 - Please run step 5 (sequence check on M-07, late flags, no duplicate plays) and report here.
 Answer (B, time): 
+
+## R-009 — 2026-11-24 10:03 — A → B — Proposed contract change c-1.2: period status for shares and payouts
+See contract/CHANGES.md c-1.2. Until it is agreed, A's web shows amounts only for the mock month (a closed period) and shows "at period close" for the live period.
+Answer (B, time): 
