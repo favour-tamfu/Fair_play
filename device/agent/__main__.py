@@ -15,6 +15,7 @@ import httpx
 
 from device.agent.batcher import build_batch
 from device.agent.capture import FileSource, MicSource
+from device.agent.eventlog import EventLog
 from device.agent.outbox import Outbox
 from device.agent.scheduler import Scheduler
 from device.agent.state import MeterState
@@ -57,7 +58,8 @@ def run(argv=None) -> int:
     state = MeterState(meter)
     outbox = Outbox(os.path.join(STATE_DIR, f"{meter}_outbox.db"))
     client = httpx.Client(base_url=cfg["sonacam_url"])
-    uploader = Uploader(outbox, client, cfg, seed, heartbeat_s=float(cfg.get("heartbeat_s", 60)))
+    events = EventLog(os.path.join(STATE_DIR, f"{meter}_events.jsonl"))
+    uploader = Uploader(outbox, client, cfg, seed, heartbeat_s=float(cfg.get("heartbeat_s", 60)), log=events.append)
     screen = StatusScreen(cfg, mode, input_spec, uploader, outbox)
 
     stop = threading.Event()
@@ -72,6 +74,8 @@ def run(argv=None) -> int:
             batch = build_batch(cfg, seq, win.start_utc, win.peaks, win.loudness_db, seed)
             outbox.put(batch)
             stamp = datetime.fromtimestamp(win.start_utc, tz=timezone.utc).isoformat(timespec="seconds")
+            events.append("window", seq=seq, window_start=batch["window_start"], peaks=int(win.peaks.size),
+                          loudness_db=win.loudness_db, input=input_spec)
             screen.note_window(seq, stamp, int(win.peaks.size), win.loudness_db)
     except KeyboardInterrupt:
         pass
