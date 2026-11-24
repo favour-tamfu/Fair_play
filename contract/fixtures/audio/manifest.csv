@@ -1,0 +1,2 @@
+file,sha256,format,sample_rate_hz,channels,bits,duration_s,rights,notes
+cc0_test_01.wav,3fa304f4030b3ab1ff5f512f26756cd2cf93acc9da86603832c7307e573d1248,wav,48000,1,16,68.9,CC0 (owner statement),title and artist not recorded; audio NOT in git, share by USB into data\songs\

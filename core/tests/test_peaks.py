@@ -162,4 +162,5 @@ def test_out_of_band_bins_never_peak():
 
 def test_rms_dbfs_rounding():
     assert rms_dbfs(np.ones(100)) == 0.0
-    assert rms_dbfs(np.zeros(100)) <= -199.0
+    assert rms_dbfs(np.zeros(100)) == -100.0
+    assert rms_dbfs(np.full(100, 2.0)) == 0.0  # clipped input caps at 0 dBFS

@@ -6,17 +6,16 @@ FileSource - WAV/FLAC/OGG via soundfile, MP3 via ffmpeg; used by virtual meters 
 Both yield (wall_time_of_first_sample, float32 mono 48 kHz block) pairs, which
 device.agent.scheduler.Scheduler turns into 10 s windows.
 
-CLI:
+CLI (run from the repo root, venv active):
     python -m device.agent.capture --seconds 25 --mode demo
-    python -m device.agent.capture --seconds 25 --input file:data\\songs\\x.wav --save-debug-wav
+    python -m device.agent.capture --seconds 25 --mode demo --input file:data\\songs\\cc0_test_01.wav
+    python -m device.agent.capture --seconds 25 --mode demo --save-debug-wav
 """
 import argparse
-import math
 import os
 import queue
 import shutil
 import subprocess
-import threading
 import time
 from datetime import datetime, timezone
 from fractions import Fraction
@@ -30,6 +29,16 @@ from device.agent.scheduler import Scheduler, Window
 Block = Tuple[float, np.ndarray]
 
 
+def wall_time_of_block(time_info, now: float) -> float:
+    """Wall-clock time of the first sample of a block, from a sounddevice callback.
+
+    time_info.currentTime is the stream clock now; inputBufferAdcTime is when the
+    block's first sample was captured. Their difference is the input latency, so
+    the block started (currentTime - adc) seconds before `now`.
+    """
+    return now - (time_info.currentTime - time_info.inputBufferAdcTime)
+
+
 class MicSource:
     """Laptop microphone, 48 kHz mono, float32."""
 
@@ -38,32 +47,40 @@ class MicSource:
         self.samplerate = samplerate
         self.blocksize = blocksize
         self.overflows = 0
+        self.dropped = 0  # blocks lost because the queue was full (each one is a gap)
 
     @staticmethod
     def _pick_wasapi_input() -> Optional[int]:
+        """The WASAPI default input, but only if it actually opens at 48 kHz; else None (default device)."""
         import sounddevice as sd
 
         for api in sd.query_hostapis():
             if "WASAPI" in api["name"]:
                 idx = api.get("default_input_device", -1)
-                if idx is not None and idx >= 0:
-                    return idx
+                if idx is None or idx < 0:
+                    return None
+                try:
+                    sd.check_input_settings(device=idx, samplerate=CAPTURE_RATE, channels=1, dtype="float32")
+                except sd.PortAudioError:
+                    return None
+                return idx
         return None
 
     def blocks(self, duration_s: Optional[float] = None) -> Iterator[Block]:
+        """Yield blocks until duration_s has passed (forever if None)."""
         import sounddevice as sd
 
         q: "queue.Queue[Block]" = queue.Queue(maxsize=600)  # about 60 s of 0.1 s blocks
-        state = {"offset": None}
 
         def callback(indata, frames, time_info, status):
             if status:
                 self.overflows += 1
-            wall = state["offset"] + time_info.inputBufferAdcTime
+            wall = wall_time_of_block(time_info, time.time())
             try:
                 q.put_nowait((wall, indata[:, 0].copy()))
             except queue.Full:
                 self.overflows += 1
+                self.dropped += 1
 
         def open_stream(device):
             return sd.InputStream(
@@ -80,17 +97,20 @@ class MicSource:
         except sd.PortAudioError:
             stream = open_stream(None)  # fall back to the default input device
 
+        started = time.monotonic()
+        seen_drops = 0
         with stream:
-            # Map PortAudio stream time to wall-clock time once, at start.
-            state["offset"] = time.time() - stream.time
-            started = time.monotonic()
             while True:
                 if duration_s is not None and time.monotonic() - started >= duration_s:
                     break
                 try:
-                    yield q.get(timeout=1.0)
+                    item = q.get(timeout=1.0)
                 except queue.Empty:
                     continue
+                if self.dropped > seen_drops:
+                    seen_drops = self.dropped
+                    yield None  # a gap: the scheduler restarts its windows at the next block
+                yield item
 
 
 class FileSource:
@@ -115,6 +135,7 @@ class FileSource:
         self.duration_s = duration_s
 
     def load(self) -> np.ndarray:
+        """Whole file as float32 mono at 48 kHz, cut to duration_s if given."""
         ext = os.path.splitext(self.path)[1].lower()
         if ext == ".mp3":
             x = self._load_mp3()
@@ -157,6 +178,10 @@ def _resample(x: np.ndarray, sr_in: int, sr_out: int) -> np.ndarray:
     return resample_poly(x, frac.numerator, frac.denominator).astype(np.float32)
 
 
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+DEBUG_DIR = os.path.join(REPO_ROOT, "data", "debug")  # always under the repo, whatever the working folder
+
+
 def _save_debug(win: Window, folder: str) -> str:
     import soundfile as sf
 
@@ -180,11 +205,9 @@ def _parse_args(argv=None):
 def main(argv=None) -> int:
     args = _parse_args(argv)
     if args.input == "mic":
-        source = MicSource(device=args.device)
-        blocks = source.blocks(duration_s=args.seconds)
+        blocks = MicSource(device=args.device).blocks(duration_s=args.seconds)
     elif args.input.startswith("file:"):
-        source = FileSource(args.input[len("file:") :], realtime=False, duration_s=args.seconds)
-        blocks = source.blocks()
+        blocks = FileSource(args.input[len("file:") :], realtime=False, duration_s=args.seconds).blocks()
     else:
         raise SystemExit("--input must be 'mic' or 'file:<path>'")
 
@@ -194,7 +217,7 @@ def main(argv=None) -> int:
         stamp = datetime.fromtimestamp(win.start_utc, tz=timezone.utc).isoformat(timespec="seconds")
         print(f"window {count}: start {stamp}  peaks {win.peaks.size}  loudness {win.loudness_db} dBFS")
         if args.save_debug_wav:
-            print(f"  saved {_save_debug(win, os.path.join('data', 'debug'))}")
+            print(f"  saved {_save_debug(win, DEBUG_DIR)}")
     if count == 0:
         print("no complete window captured (capture longer or use --mode demo)")
     return 0

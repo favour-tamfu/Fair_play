@@ -3,8 +3,11 @@
 demo  = a 10 s window every 10 s (continuous)
 field = a 10 s window every 60 s (the other 50 s are skipped)
 
-Each emitted Window carries everything the batcher needs: the 48 kHz samples,
-the 8 kHz samples, the RMS loudness and the extracted peaks.
+Input is an iterable of (wall_time_of_first_sample, float32 block) pairs from
+device.agent.capture. Blocks must be contiguous (no gaps).
+
+Each emitted Window carries what the batcher needs: 48 kHz samples, 8 kHz samples,
+RMS loudness (from the 48 kHz window) and the peaks extracted from the 8 kHz window.
 """
 from dataclasses import dataclass
 from typing import Iterable, Iterator, Tuple
@@ -20,11 +23,11 @@ PERIOD_S = {"demo": 10, "field": 60}
 
 @dataclass
 class Window:
-    start_utc: float        # epoch seconds of the first sample in the window
+    start_utc: float        # epoch seconds of the first sample of the window
     samples48: np.ndarray   # float32 mono, 48 kHz, WINDOW_S seconds
     x8: np.ndarray          # float32 mono, 8 kHz
-    loudness_db: float      # RMS dBFS (1 decimal)
-    peaks: np.ndarray       # structured peaks from core.peaks.extract_peaks
+    loudness_db: float      # RMS dBFS of samples48, 1 decimal, in -100..0
+    peaks: np.ndarray       # structured peaks from fairplay_core.peaks.extract_peaks
 
 
 class Scheduler:
@@ -35,18 +38,23 @@ class Scheduler:
         self.period_s = PERIOD_S[mode]
 
     def windows(self, blocks: Iterable[Tuple[float, np.ndarray]]) -> Iterator[Window]:
-        """Consume (wall_time_of_first_sample, float32 block) pairs and yield Windows.
+        """Yield one Window per period, as soon as enough audio has arrived.
 
-        Blocks are assumed contiguous (no gaps); the first block's wall time anchors all windows.
+        The first block's wall time anchors the window start times:
+        window k starts at t0 + k * period_s.
         """
         period = self.period_s * CAPTURE_RATE
         t0 = None
         buf = np.empty(0, dtype=np.float32)
-        buf_start = 0          # absolute sample index of buf[0]
-        pos = 0                # absolute sample index just after the last appended sample
-        next_start = 0         # absolute sample index where the next window starts
+        buf_start = 0   # absolute sample index of buf[0]
+        pos = 0         # absolute sample index just after the last appended sample
+        next_start = 0  # absolute sample index where the next window starts
 
-        for wall, block in blocks:
+        for item in blocks:
+            if item is None:  # gap: audio was lost before the next block; start over from it
+                t0, buf, buf_start, pos, next_start = None, np.empty(0, dtype=np.float32), 0, 0, 0
+                continue
+            wall, block = item
             block = np.asarray(block, dtype=np.float32).reshape(-1)
             if t0 is None:
                 t0 = float(wall)
