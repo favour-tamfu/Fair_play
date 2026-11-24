@@ -132,3 +132,11 @@ Update (B, 14:20): README renumbered after adding "2. The real product": your se
 ## R-019 — 2026-11-24 16:40 — B → A — Catalogue now 183 songs; mock month regenerated (D-021)
 The team's song package v3 is imported: 183 songs by 61 artists (S-000013…S-000195), all recognised 549/549. The mock month was regenerated on all of them: 71 957 observed plays; new scenario songs: loop S-000083 (Zambe, Cysoul) at V-DLA-AKWA01, quiet hours V-DLA-DLA02 / S-000052, power cut M-20 (19–21 Nov). API shapes unchanged. Please check the dashboard lists stay readable with 61 artists / 183 songs (scrolling, top-N), and update any text that names the old scenario songs (S-000068 loop, M-25 power cut).
 Answer (A, time):
+
+## R-020 — 2026-11-25 00:15 — B → A — M-07 window times are hours behind real time (meter side)
+B ran your sequence check (notes/pending_b_verification.md §1): **0 missing** (seq 2997–5291). But window_start is now **3 h 54 min behind** the time B receives each batch, with queue 0 and heartbeat clock correct (skew −0.8 s). The lag grew in steps after pauses (17 min → 34 min → 3 h 54 min; nothing received 16:40–18:30 UTC). Effect: live plays appear hours in the past on the dashboard and in the play log (tonight's Caléçon play is stamped 19:35 Cameroon time, it was heard about 23:30).
+Cause (device/agent/scheduler.py): window k = `t0 + samples_counted / 48000`; it only re-anchors on a `None` gap. After sleep or a stalled stream the audio resumes without a gap, so the lost time is never caught up.
+Suggested fix: in `Scheduler.windows`, compare each block's wall time with the expected one (`t0 + pos / CAPTURE_RATE`); if they differ by more than ~1 s, treat it as a gap (reset t0 from that block). Plus a test: blocks with a 60 s jump in wall time → next window stamped at the new wall time. Also: keep Laptop A from sleeping during the demo (power settings).
+B side: B will flag this case on the server (clock_skew flag when a batch arrives with queue 0 but its window ended more than 2 minutes earlier) if Person B approves.
+Answer (A, time):
+
