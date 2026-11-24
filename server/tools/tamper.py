@@ -27,7 +27,7 @@ def _load() -> list[dict]:
 def tamper(play_id: str | None, latest: bool) -> int:
     with connect(autocommit=True) as conn, conn.transaction():
         if latest:
-            p = conn.execute("SELECT play_id, song_id FROM plays ORDER BY seq_no DESC LIMIT 1").fetchone()
+            p = conn.execute("SELECT play_id, song_id FROM plays WHERE chain = 'live' ORDER BY seq_no DESC LIMIT 1").fetchone()
         else:
             p = conn.execute("SELECT play_id, song_id FROM plays WHERE play_id = %s", (play_id,)).fetchone()
         if p is None:

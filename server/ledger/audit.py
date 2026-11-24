@@ -19,8 +19,8 @@ from server.ledger.anchor import hour_hashes
 from server.ledger.merkle import merkle_root
 
 FINGERPRINT_SQL = """
-SELECT count(*) AS n, md5(string_agg(concat_ws('|', seq_no, play_id, meter_id, venue_id, song_id, started_at,
-       duration_s, n_windows, prev_chain_hash, chain_hash), ',' ORDER BY seq_no)) AS fp FROM plays
+SELECT count(*) AS n, md5(string_agg(concat_ws('|', chain, seq_no, play_id, meter_id, venue_id, song_id, started_at,
+       duration_s, n_windows, prev_chain_hash, chain_hash), ',' ORDER BY chain, seq_no)) AS fp FROM plays
 """
 _cache: dict[str, Any] = {"key": None, "result": None}
 
@@ -36,9 +36,12 @@ def full_audit(conn: psycopg.Connection) -> dict[str, Any]:
     prev = chain.GENESIS
     n = 0
     with conn.cursor() as cur:
-        cur.execute("SELECT play_id, meter_id, venue_id, song_id, started_at, duration_s, n_windows, prev_chain_hash, "
-                    "chain_hash FROM plays ORDER BY seq_no")
+        cur.execute("SELECT chain, play_id, meter_id, venue_id, song_id, started_at, duration_s, n_windows, "
+                    "prev_chain_hash, chain_hash FROM plays ORDER BY chain, seq_no")
+        current = None
         for row in cur:
+            if row["chain"] != current:        # D-013: each chain (live, mock) starts from its own genesis
+                current, prev = row["chain"], chain.GENESIS
             n += 1
             expected = chain.link(prev, row)
             if broken is None and (row["prev_chain_hash"] != prev or row["chain_hash"] != expected):

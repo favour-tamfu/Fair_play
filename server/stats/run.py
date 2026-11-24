@@ -42,13 +42,23 @@ def load_plays(conn, period: str) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=cols)
 
 
-def load_meters(conn, meter_ids: list[str]) -> pd.DataFrame:
-    """Catch rate per meter (D-011: no opening hours, no listening fraction)."""
-    rows = conn.execute("SELECT meter_id, catch_rate FROM meters WHERE meter_id = ANY(%s)", (meter_ids,)).fetchall()
+def load_meters(conn, meter_ids: list[str], period: str = "live") -> pd.DataFrame:
+    """Catch rate per meter (D-011: no opening hours, no listening fraction). Mock month: the mock meters (D-013)."""
+    table = "mock_meters" if period == "mock_month" else "meters"
+    rows = conn.execute(f"SELECT meter_id, catch_rate FROM {table} WHERE meter_id = ANY(%s)", (meter_ids,)).fetchall()
     return pd.DataFrame(rows, columns=["meter_id", "catch_rate"])
 
 
-def load_loudness_thresholds(conn, venue_ids: list[str], start: datetime, end: datetime) -> pd.DataFrame:
+def load_loudness_thresholds(conn, venue_ids: list[str], start: datetime, end: datetime,
+                             period: str = "live") -> pd.DataFrame:
+    """Venue loudness percentile for the audience flag (live windows).
+
+    Mock month: none (D-013). A's windows_observed slots are on another loudness scale than plays_observed
+    (slots about -22 dB at every hour, plays about -28 dB), so a slot percentile would mark ~38 % of plays quiet.
+    The audience flag then uses its other test only: plays outside the venue's active hours.
+    """
+    if period == "mock_month":
+        return pd.DataFrame(columns=["venue_id", "n_windows", "threshold_db"])
     rows = conn.execute("""SELECT m.venue_id, count(*) AS n_windows,
                                   percentile_cont(%s) WITHIN GROUP (ORDER BY w.loudness_db) AS threshold_db
                            FROM windows w JOIN meters m USING (meter_id)
@@ -93,7 +103,7 @@ def run_stats(conn: psycopg.Connection, period: str = "live", mode: str = "stand
         if mode == "standardised":
             songs = pd.DataFrame(conn.execute("SELECT song_id, duration_s FROM songs").fetchall(),
                                  columns=["song_id", "duration_s"])
-            fp = compute_weights(plays, songs, loudness_thresholds=load_loudness_thresholds(conn, venue_ids, start, end))
+            fp = compute_weights(plays, songs, loudness_thresholds=load_loudness_thresholds(conn, venue_ids, start, end, period))
             weights, flags, rule = fp.weights, fp.flags, config.RULE_VERSION
         else:
             weights = pd.DataFrame({"play_id": plays["play_id"], "weight": 1.0, "reasons": [[] for _ in range(len(plays))]})
@@ -101,7 +111,7 @@ def run_stats(conn: psycopg.Connection, period: str = "live", mode: str = "stand
 
         pw = plays[["play_id", "meter_id", "song_id"]].merge(weights, on="play_id") if not plays.empty else \
             pd.DataFrame(columns=["play_id", "meter_id", "song_id", "weight"])
-        est = estimate.estimate_shares(pw, load_meters(conn, meter_ids))
+        est = estimate.estimate_shares(pw, load_meters(conn, meter_ids, period))
 
         rid = new_run_id(conn, now)
         params = {"pot_fcfa": pot_fcfa, "escrow_share": 0.0, "n_plays": int(len(plays)),       # D-011: no escrow

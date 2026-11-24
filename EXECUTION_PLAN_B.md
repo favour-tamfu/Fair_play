@@ -83,7 +83,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [x] 4.3 **B-T08** Read API v1 + SSE feed + static `web/`, responses checked against schemas
 - [x] 4.4 **B-T09** Fair-play weights `sr-1.0` + modifiers; T-SR-1/2/3 exact
 - [x] 4.5 **B-T10** Estimation + bootstrap ranges + `run_stats` + shares API (<20 s per mode on the mock month)
-- [ ] 4.6 **B-T11** Mock month importer (read from `origin/a/work` with `git show`) + compare-flat + migration 002 (chain namespace)
+- [x] 4.6 **B-T11** Mock month importer (read from `origin/a/work` with `git show`) + compare-flat + migration 002 (chain namespace)
 - [ ] 4.7 **B-T12** Payouts (largest remainder, total == pot) + WIPO CSV + frozen
 - [ ] 4.8 **MC2 merge** + joint test, tag `cp-2`. Keep the stack stable for the industry clinic
 
@@ -145,3 +145,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 07:43 | MC1 joint test (06:32–06:42 UTC) | PASS: 3/3 songs live via A's mic (S-000007, S-000012, S-000009); Wi-Fi cut 2 min 37 s → 15 queued batches 717–731 delivered in order, M-07 seq 5–747 0 gaps 0 dups, 0 corrections, ledger intact. cp-1 tag after A confirms |
 | Tue 07:50 | D-012 (user) | clocks correct (UTC vs Cameroon UTC+1); server logs now Cameroon time (TZ=Africa/Douala), flag texts local; R-007 asks A to convert times on the pages |
 | Tue 09:50 | Song package → catalogue | package fixes (KRYS M merged, Locko row, counts, manifest); import_catalogue tool: FP-001…060 → S-000013…072 all ready; duplicate check now needs slices in line (3 false alarms fixed); 180/180 clips recognised; R-008 (show % not FCFA). test_b 284 passed |
+| Tue 10:15 | B-T11 mock month + compare-flat | migration 006 (chain namespace, mock_meters, window_slots, mock_truth); import 91 139 plays in 11 s incl. stats; compare-flat flat 40.58 M vs Fair Play 3.93 M FCFA misallocated (pot 100 M, 94 artists); loop song S-M0150 101 plays at AKWA01 → 31.75 counted (cooldown flag); quiet hours flagged 25/25; promo not flagged (R-009). D-013. test_b 290 passed |

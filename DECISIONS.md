@@ -69,3 +69,10 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 
 ## D-012 — 2026-11-24 07:50 — B (Person B, human) — People see Cameroon time; data stays UTC
 - Stored data, the API and IDs (`R-yyyymmddHHMMSS`) stay UTC (contract §1). Everything a person reads is shown in Cameroon time (Africa/Douala, UTC+1, no DST): server logs (compose `TZ=Africa/Douala` for the Python services; Postgres stays UTC), flag texts ("… (Cameroon time)"), B's handoffs/log rows. The web pages convert on display (REQUESTS R-007 to A).
+
+## D-013 — 2026-11-24 10:15 — B — Mock month import: chain namespace, mock meters, window slots, compare-flat basis
+- **Two ledger chains** (`plays.chain`, migration 006; the plan's "002_chain_namespace" became 006 because 002 was taken): `live` (meters, never wiped) and `mock` (mock month, rebuilt on every re-import, hash-chained in event-time order from its own genesis). The auditor walks each chain from its own genesis; anchors, the playlogger rebuild and the tamper tool use the live chain only.
+- **Mock meters in `mock_meters`** (all 30, `catch_rate = catch_rate_true`, i.e. calibrated meters). `meters` gets source-mock rows only for IDs not already used: A's mock IDs M-11/M-12/M-13 are also A's real virtual meters (M-12/M-13 at other venues), whose rows (keys, last_seq) are kept. Stats for `mock_month` read catch rates from `mock_meters`.
+- **windows_observed.csv stored as 10-minute slots** (`window_slots`), not expanded. Not used for the audience flag: A's slot loudness (≈ −22 dB at every hour) is on another scale than the plays (≈ −28 dB at V-YDE-BASTO1), so a slot percentile marked 38 % of plays "quiet". Mock month audience flag = active-hours test only (it catches the 04:00 quiet-hours scenario: 25/25 plays).
+- **compare-flat** (brief §7.4) per artist of the mock catalogue: truth = share of `plays_true` (each 1); flat = 1/n_artists; Fair Play = latest standardised mock_month run; misallocated = 0.5 × pot × Σ|S − S_true|.
+- Mock songs: source mock, status ready, no hashes (never matched live). Mock venues that already exist (live venue, A's virtual-meter venues) keep their source and get the descriptive fields.

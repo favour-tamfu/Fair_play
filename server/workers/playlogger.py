@@ -86,7 +86,7 @@ def rebuild_day(conn: psycopg.Connection, meter: dict, d: date) -> dict:
 
     existing = conn.execute(
         """SELECT p.play_id, p.song_id, p.started_at, x.ended_at FROM plays p JOIN play_extents x USING (play_id)
-           WHERE p.meter_id = %s AND x.venue_day = %s
+           WHERE p.chain = 'live' AND p.meter_id = %s AND x.venue_day = %s
              AND NOT EXISTS (SELECT 1 FROM play_corrections c WHERE c.play_id = p.play_id AND c.reason = %s)
            ORDER BY p.started_at""", (meter["meter_id"], d, SUPERSEDED)).fetchall()
     used: set[str] = set()

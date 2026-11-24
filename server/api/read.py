@@ -20,6 +20,7 @@ from server import config
 from server.db import connect
 from server.ledger import audit
 from server.money import largest_remainder
+from server.stats import compare
 from server.stats.periods import ACTIVE, period_sql
 
 router = APIRouter(prefix="/api/v1")
@@ -183,11 +184,15 @@ async def payouts(period: str = PERIOD, pot: int = Query(config.POT_DEFAULT_FCFA
     return await run_in_threadpool(_payouts, period, pot)
 
 
+def _compare_flat(pot: int) -> dict:
+    with connect() as c:
+        return compare.compare_flat(c, pot)
+
+
 @router.get("/compare-flat")
 async def compare_flat(pot: int = Query(config.POT_DEFAULT_FCFA, ge=0)):
-    """Empty-but-valid until B-T11 imports the mock month (n_artists = 0 means: not computed yet)."""
-    return {"pot_fcfa": pot, "n_artists": 0, "flat_each_fcfa": 0, "misallocated_flat_fcfa": 0,
-            "misallocated_fairplay_fcfa": 0, "basis": "mock_month_truth"}
+    """Flat split vs Fair Play against the mock month truth (B-T11, brief §7.4); n_artists = 0: not computed yet."""
+    return await run_in_threadpool(_compare_flat, pot)
 
 
 def _artists() -> list[dict]:

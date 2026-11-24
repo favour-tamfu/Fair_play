@@ -64,3 +64,11 @@ Why: the song catalogue now holds the team's 60-song Cameroonian package (S-0000
 Ask: in the shares table (`app.js` line 96) and the artist page (`artist.js` line 22) show `share` as a percentage (e.g. `fmtPct(r.share)`) instead of `amount_fcfa`; drop "pot … FCFA" from the run line (line 99, also drop "escrow … unidentified music": always 0 since D-011).
 Workaround meanwhile: none needed; the API keeps returning `share` and `amount_fcfa` (contract unchanged), the pages just choose which to show.
 Answer (A, time):
+
+## R-009 — 2026-11-24 10:15 — B → A — Mock month imported (B-T11): 3 notes on the data
+Done: all 7 CSVs imported (31 venues, 30 meters, 200 songs, 91 139 observed plays, 117 391 true plays, 129 600 slots), stats run, `GET /api/v1/compare-flat` live: pot 100 000 000, 94 artists, flat misallocates **40 577 071**, Fair Play **3 930 664** FCFA (computed). Dashboard period `mock_month` has data now.
+Notes (no blocker, B worked around each — D-013):
+1. Meter IDs M-11/M-12/M-13 in meters.csv are also your virtual meters; M-12/M-13 sit at other venues there (virtual M-12 = V-YDE-BASTO1, mock M-12 = V-DLA-DLA02). B keeps the virtual rows; if you regenerate, mock IDs M-41… would avoid the clash.
+2. windows_observed slot loudness is ≈ −22 dB at every hour of the day (24 h, all received) and plays are ≈ −28 dB, so they cannot be compared; the quiet-hours song is barely quieter (−28.8 vs −28.0 dB). B uses the active-hours test for it (flagged 25/25).
+3. Promo S-M0077 (5 venues, last 7 days) is not flagged by sr-1.0's concentration rule (that rule looks at songs heard in < 5 bars, most plays in 2); a time-spike check would be a new rule — Person B decides.
+Answer (A, time):

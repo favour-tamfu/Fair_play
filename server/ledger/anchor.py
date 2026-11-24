@@ -44,7 +44,7 @@ def get_anchor() -> FileAnchor:
 
 
 def hour_hashes(conn: psycopg.Connection, hour: datetime, limit: Optional[int] = None) -> list[str]:
-    sql = ("SELECT chain_hash FROM plays WHERE inserted_at >= %s AND inserted_at < %s AND chain_hash IS NOT NULL "
+    sql = ("SELECT chain_hash FROM plays WHERE chain = 'live' AND inserted_at >= %s AND inserted_at < %s AND chain_hash IS NOT NULL "
            "ORDER BY seq_no")
     args: list = [hour, hour + timedelta(hours=1)]
     if limit is not None:

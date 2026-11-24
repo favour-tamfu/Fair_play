@@ -33,9 +33,12 @@ def link(prev: str, play: dict[str, Any]) -> str:
     return hashlib.sha256((prev + canonical(play)).encode("utf-8")).hexdigest()
 
 
-def append(conn: psycopg.Connection, play: dict[str, Any]) -> tuple[str, str]:
-    """Return (prev_chain_hash, chain_hash) for a play about to be inserted (caller inserts both)."""
+def append(conn: psycopg.Connection, play: dict[str, Any], chain: str = "live") -> tuple[str, str]:
+    """Return (prev_chain_hash, chain_hash) for a play about to be inserted (caller inserts both, with this chain).
+
+    D-013: chains are namespaced (plays.chain): "live" (meters, never wiped) and "mock" (mock month import).
+    """
     conn.execute("SELECT pg_advisory_xact_lock(%s)", (CHAIN_LOCK,))
-    row = conn.execute("SELECT chain_hash FROM plays ORDER BY seq_no DESC LIMIT 1").fetchone()
+    row = conn.execute("SELECT chain_hash FROM plays WHERE chain = %s ORDER BY seq_no DESC LIMIT 1", (chain,)).fetchone()
     prev = row["chain_hash"] if row and row["chain_hash"] else GENESIS
     return prev, link(prev, play)
