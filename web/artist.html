@@ -3,100 +3,124 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#1e3a8a">
-<title>Fair Play · artist</title>
-<link rel="stylesheet" href="css/app.css">
-<link rel="stylesheet" href="css/artist.css">
+<meta name="theme-color" content="#000000">
+<title>Artist portal · Fair Play</title>
+<link rel="stylesheet" href="css/landing.css">
+<link rel="stylesheet" href="css/pages.css">
 </head>
-<body class="corp">
-<header class="site">
-  <div class="wrap site-row">
-    <a class="logo" href="index.html">Fair Play <span>SONACAM</span></a>
-    <nav class="site-nav">
-      <a href="index.html">Overview</a>
-      <a href="artist.html" class="on">Artist portal</a>
-      <a href="portal.html">Declare a song</a>
-    </nav>
+<body class="page">
+
+<nav class="globalnav" aria-label="Site">
+  <div class="gn-row">
+    <a class="gn-mark" href="index.html" aria-label="Fair Play home"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+    <a href="index.html">Overview</a>
+    <a href="artist.html" aria-current="page">Artist portal</a>
+    <a href="portal.html">Declare a song</a>
+    <a href="index.html#how">How it works</a>
   </div>
-</header>
+</nav>
 
-<main class="wrap finder" id="finder" hidden>
-  <div class="page-head"><div>
-    <h1>Artist portal</h1>
-    <div class="muted">Find your name to see your share of bar plays, the bars that played you and your recent plays.</div>
-  </div></div>
-  <label class="search"><span class="sr">Search for an artist</span>
-    <input id="q" type="search" placeholder="Search by artist name" autocomplete="off">
-  </label>
-  <div class="box"><div id="artist-list"><div class="empty">Loading artists…</div></div></div>
-</main>
-
-<main class="wrap" id="profile">
-  <div class="page-head">
-    <div class="who">
-      <div class="avatar" id="avatar" aria-hidden="true"></div>
-      <div>
-        <div class="eyebrow">Artist · SONACAM member</div>
-        <h1 id="name">–</h1>
-        <div class="muted" id="songs-line"></div>
-      </div>
-    </div>
-    <div class="actions">
-      <div class="seg" role="group" aria-label="period">
-        <button data-period="live" class="on">Live</button>
-        <button data-period="mock_month">Month</button>
-      </div>
-      <button id="share-link">Copy link</button>
+<nav class="localnav" aria-label="Artist portal">
+  <div class="ln-row">
+    <a class="ln-title" href="artist.html">Artist portal</a>
+    <div class="ln-links">
+      <a href="artist.html">Find an artist</a>
+      <a href="#paid">How you get paid</a>
+      <a class="pill" href="portal.html">Declare a song</a>
     </div>
   </div>
-  <span id="watermark" hidden></span>
+</nav>
 
-  <section class="stats">
-    <div class="stat"><span>Share of bar plays</span><b id="share">–</b></div>
-    <div class="stat"><span id="rank-label">Rank</span><b id="rank">–</b></div>
-    <div class="stat"><span>Plays counted</span><b id="counted">–</b></div>
-    <div class="stat now" id="now">
-      <span><i class="pulse" id="now-dot"></i><em id="now-label">Last heard</em></span>
-      <b id="now-title">–</b>
-      <small id="now-where"></small>
-      <div class="track"><i id="now-progress"></i></div>
-      <small class="times"><span id="now-start"></span><span id="now-ago"></span></small>
-    </div>
+<!-- Finder: shown when no ?name= -->
+<main id="finder" hidden>
+  <section class="wrap p-head">
+    <p class="eyebrow">Artist portal</p>
+    <h1>Find your plays.</h1>
+    <p class="lede">Search your name to see your share of bar plays, the bars that played you and your recent plays.</p>
   </section>
-
-  <div class="cols">
-    <section class="box">
-      <h2>Your songs</h2>
-      <div id="songs"></div>
-    </section>
-    <section class="box">
-      <h2>Bars that played your songs</h2>
-      <div id="venues"></div>
-    </section>
-    <section class="box">
-      <h2>Plays by day <span class="muted" id="chart-range"></span></h2>
-      <div class="chart" id="chart"></div>
-    </section>
-    <section class="box">
-      <h2>Recent plays</h2>
-      <div id="recent"></div>
-    </section>
-  </div>
-
-  <section class="box how">
-    <h2>How you get paid</h2>
-    <ol>
-      <li>Bars pay a copyright levy on the drinks they buy. It is collected for SONACAM and the other rights societies.</li>
-      <li>A Fair Play meter in each bar recognises the songs played. No sound leaves the bar.</li>
-      <li>Your share is your songs' counted plays divided by all counted plays. Repeats of the same song in a short time count less.</li>
-      <li>SONACAM applies its distribution rules and pays you.</li>
-    </ol>
-    <p class="muted">Shares are indicative until SONACAM closes the period.</p>
+  <section class="wrap">
+    <label class="search"><span class="sr">Search for an artist</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="q" type="search" placeholder="Search by artist name" autocomplete="off">
+    </label>
+  </section>
+  <section class="grey p-section" style="margin-top:50px">
+    <div class="wrap"><div id="artist-list"><div class="empty">Loading artists…</div></div></div>
   </section>
 </main>
 
-<footer class="site-foot"><div class="wrap" id="foot"></div></footer>
+<!-- Profile: shown with ?name= -->
+<main id="profile">
+  <section class="wrap p-head">
+    <div class="p-row">
+      <div class="who">
+        <div class="avatar" id="avatar" aria-hidden="true"></div>
+        <div>
+          <h1 id="name">–</h1>
+          <div class="muted" id="songs-line"></div>
+        </div>
+      </div>
+      <div class="actions">
+        <div class="seg" role="group" aria-label="period">
+          <button data-period="live" class="on">Live</button>
+          <button data-period="mock_month">Month</button>
+        </div>
+        <button class="btn-plain" id="share-link">Copy link</button>
+      </div>
+    </div>
+    <span id="watermark" hidden></span>
+  </section>
+
+  <section class="wrap">
+    <div class="tiles">
+      <div class="tile"><span>Share of bar plays</span><b id="share">–</b></div>
+      <div class="tile"><span id="rank-label">Rank</span><b id="rank">–</b></div>
+      <div class="tile"><span>Plays counted</span><b id="counted">–</b></div>
+      <div class="tile dark now" id="now">
+        <span><i class="pulse" id="now-dot"></i><em id="now-label" style="font-style:normal">Last heard</em></span>
+        <div>
+          <b id="now-title">–</b>
+          <small id="now-where"></small>
+          <div class="track"><i id="now-progress"></i></div>
+          <div class="times"><span id="now-start"></span><span id="now-ago"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="grey p-section" style="margin-top:70px">
+    <div class="wrap">
+      <div class="cards2">
+        <div class="card"><h3>Your songs</h3><div id="songs"></div></div>
+        <div class="card"><h3>Bars that played you</h3><div id="venues"></div></div>
+        <div class="card"><h3>Plays by day <span class="soft" id="chart-range"></span></h3><div class="chart" id="chart"></div></div>
+        <div class="card"><h3>Recent plays</h3><div id="recent"></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section class="p-section" id="paid">
+  <div class="wrap">
+    <h2>How you get paid.</h2>
+    <div class="paid">
+      <div><b>1</b><p>Bars pay a copyright levy on the drinks they buy.</p></div>
+      <div><b>2</b><p>A meter in each bar recognises the songs. No sound leaves the bar.</p></div>
+      <div><b>3</b><p>Your share is your counted plays divided by all counted plays.</p></div>
+      <div><b>4</b><p>Your rights society applies its rules and pays you.</p></div>
+    </div>
+    <p class="fineprint">Shares are indicative until the period is closed. Repeats of the same song in a short time count less, so looping a song in one bar does not inflate it.</p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p id="foot">Fair Play is a prototype built at the CIMFEST Hackathon 2026.</p>
+    <p>Times are Cameroon time.</p>
+  </div>
+</footer>
 <div class="toast" id="toast" role="status"></div>
+<script type="module" src="js/site.js"></script>
 <script type="module" src="js/artist.js"></script>
 </body>
 </html>
