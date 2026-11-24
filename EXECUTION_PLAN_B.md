@@ -79,7 +79,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 
 ## Phase 4 — Plays, ledger, read API, rules  → **MC2**
 - [x] 4.1 **B-T06** Play logger (event time, chorus-safe, late batches, restart-safe, unidentified music) + its 6 tests
-- [ ] 4.2 **B-T07** Ledger chain, Merkle root, FileAnchor, auditor, `tamper.py`
+- [x] 4.2 **B-T07** Ledger chain, Merkle root, FileAnchor, auditor, `tamper.py`
 - [ ] 4.3 **B-T08** Read API v1 + SSE feed + static `web/`, responses checked against schemas
 - [ ] 4.4 **B-T09** Fair-play weights `sr-1.0` + modifiers; T-SR-1/2/3 exact
 - [ ] 4.5 **B-T10** Estimation + bootstrap ranges + `run_stats` + shares API (<20 s per mode on the mock month)
@@ -133,3 +133,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 02:15 | MC1 merge (A) + A-mimic | main 5984759 (A: 13 commits, runner/TUI/R-002 fix). core 154, golden MATCH, B 212, A 52. Upload cap 50 MB = c-1.1 PROPOSED (R-003). Ms. Jackson S-000009 ready; All Falls Down = dup of S-000007 (correct). A's device code → B: 57/57 batches byte-identical to B, 57/57 right song, 50/57 exact position (misses = ±52.7 s repeats on off-grid windows) |
 | Tue 02:35 | half-hop index (D-006) | Catalogue indexes grid phases 0 and +128 samples; re-indexed live. A-mimic re-run: exact position 50/57 → **57/57**, weakest score 18–20 → **249–335**. Worst case (¼–⅜ frame off + 10 dB noise): 60/60 song + position, min 65. test_b → 214 passed |
 | Tue 02:55 | 4.1 B-T06 | Play logger live: brief §6 + D-007 (strays never split plays), recompute-and-reconcile per venue-night, chained at confirmation, extents for growth, corrections never edits. Live evening with network cut: 3 plays, 0 corrections, 9 late batches slotted in. test_b → 237 passed |
+| Tue 03:20 | 4.2 B-T07 | Auditor + Merkle + FileAnchor + scheduler + tamper tool live. Hour 01:00 UTC anchored (11 plays). Tamper rehearsal ×3: RED ~1.0 s, GREEN ~1.0 s, right play named. test_b → 248 passed |

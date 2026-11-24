@@ -15,3 +15,4 @@
 - Impact on B: `server/config.py UPLOAD_MAX_BYTES` = 50 MB (already deployed; accepting more is backward compatible).
 - Impact on A: portal client-side check (A-T12) 30 → 50 MB, and the portal's error text.
 - Status: waiting for ACK from A. After ACK, B updates docs/01_CONTRACT.md §5 and the version becomes c-1.1.
+- 2026-11-24 03:20 — B — Additive (no change to existing shapes): `GET /api/v1/ledger/anchors?limit=24` → `[{"hour","root","n_plays","via","tx_ref","created_at"}]` newest first (Trust tab "last anchors"), and `POST /api/v1/ledger/anchor` → anchor the current hour now (`{"ok","hour","root","n_plays","via","tx_ref"}`, or `{"ok":false,"detail"}` if no plays yet). `ledger_status.last_root` = root of the most recent anchor (null before the first anchor).
