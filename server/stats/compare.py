@@ -2,7 +2,7 @@
 
     compare_flat(conn, pot_fcfa) -> compare_flat.schema.json body
 
-Per artist of the mock catalogue (the flat advance is paid per artist):
+Per artist of the mock month's catalogue (mock songs, or catalogue songs that have true plays):
   S_true[a]  = artist's share of the TRUE plays (mock_truth: what really played, every play counts 1)
   flat       = 1 / n_artists for everyone
   Fair Play  = artist's share in the latest standardised mock_month stats run (sum of its songs' shares)
@@ -29,7 +29,8 @@ def compare_flat(conn, pot_fcfa: int) -> dict[str, Any]:
                            AND finished_at IS NOT NULL ORDER BY finished_at DESC LIMIT 1""").fetchone()
     rid = run["stats_run_id"] if run else None
     artists = [r["artist_name"] for r in conn.execute(
-        "SELECT DISTINCT artist_name FROM songs WHERE source = 'mock' AND artist_name IS NOT NULL ORDER BY 1")]
+        """SELECT DISTINCT s.artist_name FROM songs s WHERE s.artist_name IS NOT NULL AND (s.source = 'mock'
+           OR EXISTS (SELECT 1 FROM mock_truth t WHERE t.song_id = s.song_id)) ORDER BY 1""")]
     true = pd.DataFrame(conn.execute("""SELECT s.artist_name, count(*) AS n FROM mock_truth t
                                         JOIN songs s USING (song_id) GROUP BY 1""").fetchall(),
                         columns=["artist_name", "n"])

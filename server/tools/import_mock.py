@@ -8,7 +8,8 @@ are never touched.
                            and only get the descriptive fields: name, city, lat/lon, size, stratum)
   meters.csv            -> mock_meters (all 30, catch_rate = catch_rate_true: emulates calibrated meters) and
                            meters (source mock) for IDs not already used by a live/virtual meter
-  songs_synthetic.csv   -> songs (source mock, status ready, no hashes) + owners_synthetic.csv -> owners
+  songs_synthetic.csv   -> songs (source mock, status ready, no hashes) + owners_synthetic.csv -> owners;
+                           ids already in the catalogue (e.g. catalogue_month.py) are used as they are
   plays_observed.csv    -> plays (source mock, chain 'mock'), hash-chained in time order from their own genesis
   windows_observed.csv  -> window_slots (10-minute aggregates, stored as they are)
   plays_true.csv        -> mock_truth (ground truth for compare-flat only)
@@ -129,12 +130,15 @@ def import_mock(conn, folder: Path = DEFAULT_DIR) -> dict:
                                (r.meter_id, r.venue_id, _num(r.catch_rate_true))).fetchone()
             if got is None:
                 clash.append(r.meter_id)
+        sdf = d["songs_synthetic.csv"]
+        existing = {r["song_id"] for r in conn.execute("SELECT song_id FROM songs WHERE song_id = ANY(%s)",
+                                                         (list(sdf["song_id"]),))}   # catalogue songs: keep as they are
         _copy(conn, "COPY songs (song_id, title, artist_name, isrc, duration_s, status, source) FROM STDIN",
               ((r.song_id, r.title, r.artist_name, r.isrc or None, _num(r.duration_s), "ready", "mock")
-               for r in d["songs_synthetic.csv"].itertuples(index=False)))
+               for r in sdf.itertuples(index=False) if r.song_id not in existing))
         _copy(conn, "COPY owners (song_id, owner_name, role, share_pct, momo) FROM STDIN",
               ((r.song_id, r.owner_name, r.role, _num(r.share_pct), r.momo or None)
-               for r in d["owners_synthetic.csv"].itertuples(index=False)))
+               for r in d["owners_synthetic.csv"].itertuples(index=False) if r.song_id not in existing))
 
         po = d["plays_observed.csv"].copy()
         po["t"] = pd.to_datetime(po["started_at"], utc=True)
@@ -162,7 +166,7 @@ def import_mock(conn, folder: Path = DEFAULT_DIR) -> dict:
               ((r.true_play_id, r.venue_id, r.song_id, r.started_at, _num(r.duration_s), r.scenario)
                for r in d["plays_true.csv"].itertuples(index=False)))
     out = {"venues": len(d["venues.csv"]), "meters": len(m), "meters_kept_live": clash,
-           "songs": len(d["songs_synthetic.csv"]), "owners": len(d["owners_synthetic.csv"]), "plays": len(rows),
+           "songs": len(sdf), "songs_from_catalogue": len(existing), "owners": len(d["owners_synthetic.csv"]), "plays": len(rows),
            "window_slots": len(d["windows_observed.csv"]), "true_plays": len(d["plays_true.csv"]),
            "chain_head": prev, "import_ms": int((time.monotonic() - t0) * 1000)}
     log.info("mock month imported: %s", out)

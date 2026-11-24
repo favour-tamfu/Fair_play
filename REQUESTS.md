@@ -72,3 +72,7 @@ Notes (no blocker, B worked around each — D-013):
 2. windows_observed slot loudness is ≈ −22 dB at every hour of the day (24 h, all received) and plays are ≈ −28 dB, so they cannot be compared; the quiet-hours song is barely quieter (−28.8 vs −28.0 dB). B uses the active-hours test for it (flagged 25/25).
 3. Promo S-M0077 (5 venues, last 7 days) is not flagged by sr-1.0's concentration rule (that rule looks at songs heard in < 5 bars, most plays in 2); a time-spike check would be a new rule — Person B decides.
 Answer (A, time):
+
+## R-010 — 2026-11-24 10:30 — B → A — FYI: mock month now plays the real catalogue (D-014)
+Person B decided the demo mock month uses the 60 catalogue songs (S-000013…S-000072) instead of the 200 "Mock Song" titles. B generates it (`server/tools/catalogue_month.py`, using your venues.csv/meters.csv unchanged) and has imported it: 30 days, 82 070 true / 65 635 observed plays, 60 songs, 24 artists. The API shapes are unchanged; `period=mock_month` now returns these songs. Scenario songs: loop S-000068 at V-YDE-YDE04, promo S-000039 (5 bars), quiet hours V-DLA-DLA02 / S-000055, power cut M-25 (11–12 Nov). Please show shares as % next to these real names (R-008). Nothing for you to regenerate.
+Answer (A, time):

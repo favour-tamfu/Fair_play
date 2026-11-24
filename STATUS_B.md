@@ -5,4 +5,4 @@ Next up: B-T11; MC1 joint test over hotspot (later)
 Next merge checkpoint: MC1 (when both ready, D-003) — my items: Docker stack ✅ ingest ✅ catalogue ✅ matcher ✅ cp1_b.ps1 ✅
 Blockers: none
 Open requests to A: R-003 (ACK c-1.1 upload 50 MB); R-002 answer line; R-006 (D-009/D-011 effects on mock month + dashboard)
-Health: scripts\test_b.ps1 → 290 passed; live feed shows batch/meter/match/play/ledger events
+Health: scripts\test_b.ps1 → 292 passed; live feed shows batch/meter/match/play/ledger events

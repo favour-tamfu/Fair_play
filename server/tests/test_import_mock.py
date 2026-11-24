@@ -149,3 +149,51 @@ def test_bad_month_rejected_nothing_written(db, tmp_path, kw, why):
         with pytest.raises(MockDataError, match=why):
             import_mock(c, write_month(tmp_path / "mm", **kw))
         assert c.execute("SELECT count(*) AS n FROM plays WHERE chain = 'mock'").fetchone()["n"] == 0
+
+
+# ---------------------------------------------------------------- mock month on the real catalogue (catalogue_month)
+
+def small_world():
+    from server.tools import catalogue_month as cm
+    songs = pd.DataFrame([(f"S-{i:06d}", f"Song {i}", f"Artist {i % 3}", "", 200.0 + i) for i in range(13, 21)],
+                         columns=["song_id", "title", "artist_name", "isrc", "duration_s"])
+    venues = pd.read_csv(cm.A_DIR / "venues.csv", dtype=str, keep_default_na=False).head(8)
+    meters = pd.read_csv(cm.A_DIR / "meters.csv", dtype=str, keep_default_na=False)
+    return cm, songs, venues, meters[meters["venue_id"].isin(venues["venue_id"])]
+
+
+def test_catalogue_month_is_seeded_and_has_scenarios():
+    cm, songs, venues, meters = small_world()
+    g1, g2 = cm.generate(songs, venues, meters, seed=7, days=10), cm.generate(songs, venues, meters, seed=7, days=10)
+    assert g1["plays_observed"] == g2["plays_observed"] and g1["plays_true"] == g2["plays_true"]
+    assert cm.generate(songs, venues, meters, seed=8, days=10)["plays_true"] != g1["plays_true"]
+    used = {p[2] for p in g1["plays_true"]}
+    assert used <= set(songs["song_id"]) and len(used) == len(songs)          # only (and all) catalogue songs
+    assert {p[5] for p in g1["plays_true"]} >= {"normal", "loop", "quiet_hours"}
+    assert len(g1["plays_observed"]) < len(g1["plays_true"])                  # catch rate < 1 misses some
+    cut_meter = g1["scenario"]["power_cut"][0]
+    assert any(s[0] == cut_meter and s[3] == 0 for s in g1["slots"])
+
+
+def test_import_uses_existing_catalogue_songs(db, tmp_path):
+    cm, songs, venues, meters = small_world()
+    venues = pd.concat([venues, pd.DataFrame([{"venue_id": "V-BUEA-CIMFEST", "name": "CIMFEST demo table"}])])
+    with connect(db, autocommit=True) as c:
+        for r in songs.itertuples(index=False):
+            c.execute("INSERT INTO songs (song_id, title, artist_name, duration_s, status, n_hashes, source) "
+                      "VALUES (%s,%s,%s,%s,'ready',99,'upload')", (r.song_id, r.title, r.artist_name, r.duration_s))
+        g = cm.generate(songs, venues, meters, seed=7, days=5)
+        out = tmp_path / "cm"
+        v_csv, m_csv = tmp_path / "v.csv", tmp_path / "m.csv"
+        venues.to_csv(v_csv, index=False)
+        meters.to_csv(m_csv, index=False)
+        cm.write(out, g, v_csv, m_csv)
+        for _ in range(2):                                                     # re-import keeps the songs
+            r = import_mock(c, out)
+            assert r["songs_from_catalogue"] == len(songs)
+        rows = c.execute("SELECT source, n_hashes FROM songs").fetchall()
+        assert len(rows) == len(songs) and all(x["source"] == "upload" and x["n_hashes"] == 99 for x in rows)
+        assert c.execute("SELECT count(*) AS n FROM plays WHERE chain = 'mock'").fetchone()["n"] == len(g["plays_observed"])
+        from server.stats.run import run_both
+        run_both(c, "mock_month")
+        assert compare.compare_flat(c, POT)["n_artists"] == 3
