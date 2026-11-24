@@ -3,26 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Fair Play by SONACAM: every song played in a Cameroonian bar is recognised, counted and shared fairly.">
+<meta name="description" content="Fair Play: every song played in a bar is recognised, counted and shared fairly.">
 <meta name="theme-color" content="#000000">
-<title>Fair Play · SONACAM</title>
+<title>Fair Play</title>
 <link rel="stylesheet" href="css/landing.css">
 </head>
 <body>
 
-<!-- SONACAM site navigation (the public website this page belongs to) -->
-<nav class="globalnav" aria-label="SONACAM">
+<nav class="globalnav" aria-label="Site">
   <div class="gn-row">
-    <a class="gn-logo" href="https://www.sonacam.org" rel="noopener">SONACAM</a>
-    <a href="https://www.sonacam.org" rel="noopener">Home</a>
-    <a href="index.html" aria-current="page">Fair Play</a>
+    <a class="gn-mark" href="index.html" aria-label="Fair Play home"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+    <a href="index.html" aria-current="page">Overview</a>
     <a href="artist.html">Artist portal</a>
     <a href="portal.html">Declare a song</a>
-    <a href="https://www.sonacam.org" rel="noopener">Contact</a>
+    <a href="#how">How it works</a>
   </div>
 </nav>
 
-<!-- Product navigation, sticky -->
 <nav class="localnav" aria-label="Fair Play">
   <div class="ln-row">
     <a class="ln-title" href="#top">Fair Play</a>
@@ -31,183 +28,184 @@
       <a href="#numbers">Numbers</a>
       <a href="#artists">For artists</a>
       <a href="#trust">Trust</a>
-      <a href="#how">How it works</a>
       <a class="pill" href="artist.html">Find your plays</a>
     </div>
   </div>
 </nav>
 
 <main id="top">
-  <!-- 1. Hero: black, photo, gradient title, laptop overlapping into the next section -->
+  <!-- Hero -->
   <section class="hero">
-    <div class="hero-photo" aria-hidden="true"></div>
-    <div class="hero-inner">
-      <p class="hero-eyebrow">SONACAM presents</p>
-      <h1 class="hero-title">Fair Play.</h1>
-      <p class="hero-tag">Every play counts.</p>
-      <p class="hero-sub">Bars already pay a levy on every crate. Now it is shared by what they really play.</p>
-      <div class="hero-cta">
-        <a class="pill big" href="artist.html">Find your plays</a>
-        <a class="more light" href="#how">See how it works</a>
-      </div>
+    <p class="hero-name">Fair Play</p>
+    <h1>Every play counts.</h1>
+    <p class="hero-sub">Bars already pay a levy on the drinks they buy.<br>Now it is shared by what they really play.</p>
+    <div class="hero-cta">
+      <a class="pill big" href="artist.html">Find your plays</a>
+      <a class="more dark" href="#how">See how it works</a>
     </div>
-    <figure class="laptop reveal">
-      <div class="lid"><img src="assets/img/shot-dashboard.webp" alt="The SONACAM dashboard showing who earned what, the map of metered bars and live activity" width="1600" height="1000"></div>
-      <div class="base"></div>
+    <figure class="macbook">
+      <div class="mb-lid">
+        <div class="mb-cam"></div>
+        <div class="mb-screen"><img src="assets/img/shot-dashboard.webp" alt="The Fair Play dashboard showing who earned what, the map of metered bars and live activity" width="1600" height="1000"></div>
+      </div>
+      <div class="mb-deck"><span></span></div>
     </figure>
   </section>
 
-  <!-- 2. Get the highlights: horizontal gallery -->
-  <section class="highlights" id="highlights">
-    <div class="wrap hl-head">
+  <!-- Highlights: static grid, caption under each image -->
+  <section class="highlights grey" id="highlights">
+    <div class="wrap">
       <h2>Get the highlights.</h2>
-      <div class="hl-nav">
-        <button class="round" id="hl-prev" aria-label="Previous highlight">‹</button>
-        <button class="round" id="hl-next" aria-label="Next highlight">›</button>
+      <div class="hl-grid">
+        <figure class="hl big">
+          <div class="hl-img"><img src="assets/img/bottles.webp" alt="A bar with bottles on shelves and two speakers on the wall"></div>
+          <figcaption><b>A meter in every bar.</b> A small box next to the speaker recognises each song. Every bar is counted, none is guessed.</figcaption>
+        </figure>
+        <figure class="hl big">
+          <div class="hl-img"><img src="assets/img/dj.webp" alt="A DJ's hands on a mixing controller"></div>
+          <figcaption><b>No sound leaves the bar.</b> Only short fingerprints are sent. The music itself, and every conversation, stays in the room.</figcaption>
+        </figure>
+        <figure class="hl">
+          <div class="hl-img"><img src="assets/img/mic.webp" alt="A singer smiling on stage with a microphone" loading="lazy"></div>
+          <figcaption><b>Artists see it live.</b> Which bar played your song, and how your share moves.</figcaption>
+        </figure>
+        <figure class="hl">
+          <div class="hl-img"><img src="assets/img/outdoor-bar.webp" alt="A bartender at an outdoor bar at night" loading="lazy"></div>
+          <figcaption><b>Nothing changes at the counter.</b> Bars keep paying the levy they already pay.</figcaption>
+        </figure>
+        <figure class="hl">
+          <div class="hl-img"><img src="assets/img/yaounde.webp" alt="Aerial view of Yaoundé" loading="lazy"></div>
+          <figcaption><b>Shared by real use.</b> The bar money is split by counted plays, not flat advances.</figcaption>
+        </figure>
       </div>
     </div>
-    <div class="hl-track" id="hl-track" tabindex="0" aria-label="Highlights">
-      <article class="hl-card" style="--img:url('../assets/img/bottles.webp')">
-        <p><b>A meter in every bar.</b> A small box next to the speaker recognises each song. Every bar is counted, none is guessed.</p>
-      </article>
-      <article class="hl-card dark" style="--img:url('../assets/img/dj.webp')">
-        <p><b>No sound leaves the bar.</b> Only short fingerprints are sent. The music itself, and every conversation, stays in the room.</p>
-      </article>
-      <article class="hl-card" style="--img:url('../assets/img/mic.webp')">
-        <p><b>Artists see it live.</b> When a bar plays your song, your phone knows which bar, and your share moves.</p>
-      </article>
-      <article class="hl-card" style="--img:url('../assets/img/outdoor-bar.webp')">
-        <p><b>Nothing changes at the counter.</b> Bars keep paying the levy they already pay. Nothing new to fill in.</p>
-      </article>
-      <article class="hl-card" style="--img:url('../assets/img/yaounde.webp')">
-        <p><b>Shared by real use.</b> SONACAM splits the bar money by counted plays instead of flat advances.</p>
-      </article>
-    </div>
-    <div class="hl-dots" id="hl-dots" aria-hidden="true"></div>
   </section>
 
-  <!-- 3. Numbers, computed by the system -->
+  <!-- Numbers (computed) -->
   <section class="numbers" id="numbers">
     <div class="wrap">
       <h2 class="center">Counted, not estimated.</h2>
       <p class="intro center">Every number on this page is computed by Fair Play from the meters' plays.</p>
       <div class="stats">
-        <div class="stat reveal"><b class="count" id="n-counted">–</b><span>plays counted in the live demo</span></div>
-        <div class="stat reveal"><b class="count" id="n-meters">–</b><span>meters online right now</span></div>
-        <div class="stat reveal"><b class="count" id="n-bars">–</b><span>bars on the map</span></div>
-        <div class="stat reveal"><b class="count" id="n-artists">–</b><span>artists earning in the mock month</span></div>
+        <div class="stat"><b id="n-counted">–</b><span>plays counted in the live demo</span></div>
+        <div class="stat"><b id="n-meters">–</b><span>meters online right now</span></div>
+        <div class="stat"><b id="n-bars">–</b><span>bars on the map</span></div>
+        <div class="stat"><b id="n-artists">–</b><span>artists earning in the mock month</span></div>
       </div>
     </div>
   </section>
 
-  <!-- 4. Bento grid -->
-  <section class="bento-wrap">
+  <!-- Bento -->
+  <section class="bento-wrap grey">
     <div class="wrap">
       <h2>Fairer by design.</h2>
       <div class="bento">
-        <article class="b b-compare reveal">
+        <article class="b b-compare">
           <p class="b-eye">Flat split vs Fair Play</p>
           <h3>Less money to the wrong artists.</h3>
           <p class="cmp-big"><b id="cmp-ratio">–</b><span>less of the pot paid to the wrong artists than a flat equal split</span></p>
-          <div class="cmp" id="cmp">
-            <div class="cmp-row"><span>Flat equal split</span><div class="cmp-bar"><i class="bad" id="cmp-flat"></i></div><b id="cmp-flat-v">–</b></div>
+          <div class="cmp">
+            <div class="cmp-row"><span>Flat equal split</span><div class="cmp-bar"><i class="flat" id="cmp-flat"></i></div><b id="cmp-flat-v">–</b></div>
             <div class="cmp-row"><span>Fair Play</span><div class="cmp-bar"><i id="cmp-fp"></i></div><b id="cmp-fp-v">–</b></div>
           </div>
-          <p class="b-note" id="cmp-note">Share of the pot paid to the wrong artists, mock month, against what really played.</p>
+          <p class="b-note" id="cmp-note">Share of the pot paid to the wrong artists in the mock month, against what really played.</p>
         </article>
-        <article class="b b-map reveal">
+        <article class="b b-map">
           <p class="b-eye">Across Cameroon</p>
           <h3 id="map-title">Every metered bar.</h3>
           <svg id="mini-map" viewBox="0 0 400 560" role="img" aria-label="Map of Cameroon with the metered bars"></svg>
         </article>
-        <article class="b b-dark b-quiet reveal">
-          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 24v16M26 18v28M34 22v20M42 28v8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M8 8l48 48" stroke="#f5822a" stroke-width="3.5" stroke-linecap="round"/></svg>
+        <article class="b b-black b-quiet">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 24v16M26 18v28M34 22v20M42 28v8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M10 10l44 44" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>
           <h3>Fingerprints in.<br>Sound out.</h3>
           <p>The meter keeps no recording.</p>
         </article>
-        <article class="b b-top reveal">
+        <article class="b b-top">
           <p class="b-eye">Mock month</p>
           <h3>Top artists.</h3>
           <ol class="toplist" id="toplist"></ol>
         </article>
-        <article class="b b-dark b-hash reveal">
-          <p class="b-eye light">Play log</p>
-          <h3 id="hash-status">Checking…</h3>
-          <code id="hash-root">––––––––––––––––</code>
+        <article class="b b-black b-hash">
+          <p class="b-eye">Play log</p>
+          <h3 id="hash-status">Checking.</h3>
+          <code id="hash-root"></code>
           <p id="hash-note"></p>
         </article>
       </div>
     </div>
   </section>
 
-  <!-- 5. For artists: phone composite with live data -->
-  <section class="split" id="artists">
-    <div class="split-text">
-      <p class="b-eye">For artists</p>
-      <h2>See every bar<br>that played you.</h2>
-      <p>Your share of bar plays, your rank, each song and each bar, updated as the meters hear your music.</p>
-      <a class="pill big" href="artist.html">Open the artist portal</a>
-    </div>
-    <div class="split-visual">
-      <div class="glow" aria-hidden="true"></div>
-      <div class="phone reveal">
-        <div class="island"></div>
-        <div class="screen">
-          <div class="ps-status"><span id="ps-time">9:41</span><span>●●●</span></div>
-          <div class="ps-head"><div class="ps-avatar" id="ps-avatar">–</div><div><small>Artist</small><b id="ps-name">–</b></div></div>
-          <div class="ps-cards">
-            <div><small>Share of bar plays</small><b id="ps-share">–</b></div>
-            <div><small>Rank</small><b id="ps-rank">–</b></div>
+  <!-- For artists: iPhone with live data -->
+  <section class="artists" id="artists">
+    <div class="wrap split">
+      <div class="split-text">
+        <p class="b-eye">For artists</p>
+        <h2>See every bar<br>that played you.</h2>
+        <p>Your share of bar plays, your rank, each song and each bar, updated as the meters hear your music.</p>
+        <a class="pill big" href="artist.html">Open the artist portal</a>
+      </div>
+      <div class="split-visual">
+        <div class="iphone">
+          <span class="btn b1"></span><span class="btn b2"></span><span class="btn b3"></span><span class="btn b4"></span>
+          <div class="ip-screen">
+            <div class="ip-island"></div>
+            <div class="ps-status"><span id="ps-time">9:41</span><span class="ps-icons"><i></i><i></i><i></i></span></div>
+            <p class="ps-app">Fair Play</p>
+            <div class="ps-head"><div class="ps-avatar" id="ps-avatar">–</div><div><small>Artist</small><b id="ps-name">–</b></div></div>
+            <div class="ps-cards">
+              <div><small>Share of bar plays</small><b id="ps-share">–</b></div>
+              <div><small>Rank</small><b id="ps-rank">–</b></div>
+              <div><small>Plays counted</small><b id="ps-counted">–</b></div>
+              <div><small>Plays heard</small><b id="ps-heard">–</b></div>
+            </div>
+            <p class="ps-label">Your songs</p>
+            <div class="ps-list" id="ps-songs"></div>
+            <p class="ps-foot" id="ps-foot"></p>
+            <div class="ps-home"></div>
           </div>
-          <div class="ps-list" id="ps-songs"></div>
-          <div class="ps-toast"><i></i>Your song is playing at a bar now</div>
-          <p class="ps-foot" id="ps-foot"></p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 6. Trust: dark section with the chain -->
+  <!-- Trust (black) -->
   <section class="trust" id="trust">
     <div class="wrap">
-      <p class="b-eye light center">For SONACAM</p>
       <h2 class="center">A play log nobody<br>can quietly change.</h2>
-      <p class="intro center light">Each play is sealed to the one before it and published every hour. Change one past play and the chain breaks, the dashboard turns red and the results are withheld.</p>
+      <p class="intro center">Each play is sealed to the one before it and published every hour. Change one past play and the chain breaks, the dashboard turns red and the results are withheld.</p>
       <div class="chain" id="chain" aria-hidden="true"></div>
     </div>
   </section>
 
-  <!-- 7. How it works -->
-  <section class="how wrap" id="how">
-    <h2 class="center">From a song in a bar<br>to a fair share.</h2>
-    <ol class="steps">
-      <li class="reveal"><div class="step-img"><img src="assets/img/outdoor-bar.webp" alt="A bartender at an outdoor bar at night" loading="lazy"></div>
-        <span class="num">01</span><h4>A song plays.</h4><p>Music plays in the bar as it always does.</p></li>
-      <li class="reveal"><div class="step-img meter"><svg viewBox="0 0 120 120" aria-hidden="true"><rect x="22" y="30" width="76" height="60" rx="14" fill="#fff"/><circle cx="60" cy="60" r="18" fill="none" stroke="#0f53f0" stroke-width="4"/><path d="M60 46v28M52 52v16M68 52v16" stroke="#0f53f0" stroke-width="4" stroke-linecap="round"/></svg></div>
-        <span class="num">02</span><h4>The meter recognises it.</h4><p>Short fingerprints are matched against the SONACAM catalogue. The sound is thrown away.</p></li>
-      <li class="reveal"><div class="step-img"><img src="assets/img/yaounde.webp" alt="Aerial view of Yaoundé" loading="lazy"></div>
-        <span class="num">03</span><h4>The play is counted.</h4><p>Repeats of the same song in a short time count less, so looping a song does not inflate it.</p></li>
-      <li class="reveal"><div class="step-img"><img src="assets/img/mic.webp" alt="A singer smiling on stage with a microphone" loading="lazy"></div>
-        <span class="num">04</span><h4>SONACAM shares the levy.</h4><p>Each artist's share follows their plays. SONACAM applies its rules and pays its members.</p></li>
-    </ol>
+  <!-- How it works -->
+  <section class="how" id="how">
+    <div class="wrap">
+      <h2 class="center">From a song in a bar<br>to a fair share.</h2>
+      <ol class="steps">
+        <li><div class="step-img"><img src="assets/img/outdoor-bar.webp" alt="" loading="lazy"></div><span class="num">1</span><h4>A song plays.</h4><p>Music plays in the bar as it always does.</p></li>
+        <li><div class="step-img meter"><svg viewBox="0 0 120 120" aria-hidden="true"><rect x="24" y="32" width="72" height="56" rx="14" fill="#fff"/><path d="M48 52v16M56 46v28M64 50v20M72 56v8" stroke="#1d1d1f" stroke-width="4" stroke-linecap="round"/></svg></div><span class="num">2</span><h4>The meter recognises it.</h4><p>Short fingerprints are matched against the song catalogue. The sound is thrown away.</p></li>
+        <li><div class="step-img"><img src="assets/img/yaounde.webp" alt="" loading="lazy"></div><span class="num">3</span><h4>The play is counted.</h4><p>Repeats of the same song in a short time count less, so looping a song does not inflate it.</p></li>
+        <li><div class="step-img"><img src="assets/img/mic.webp" alt="" loading="lazy"></div><span class="num">4</span><h4>The levy is shared.</h4><p>Each artist's share follows their plays, and the rights society pays its members.</p></li>
+      </ol>
+    </div>
   </section>
 
-  <!-- 8. Keep exploring -->
-  <section class="explore">
+  <!-- Keep exploring -->
+  <section class="explore grey">
     <div class="wrap">
       <h2 class="center">Keep exploring Fair Play.</h2>
       <div class="ex-cols">
-        <a class="ex-card reveal" href="artist.html">
-          <div class="ex-img" style="--img:url('../assets/img/mic.webp')"></div>
+        <a class="ex-card" href="artist.html">
+          <div class="ex-img"><img src="assets/img/mic.webp" alt="" loading="lazy"></div>
           <p class="new">Artists</p><h4>Artist portal</h4><p>Find your name and see your plays.</p><span class="more">Find your plays</span>
         </a>
-        <a class="ex-card reveal" href="portal.html">
-          <div class="ex-img" style="--img:url('../assets/img/dj.webp')"></div>
+        <a class="ex-card" href="portal.html">
+          <div class="ex-img"><img src="assets/img/dj.webp" alt="" loading="lazy"></div>
           <p class="new">Catalogue</p><h4>Declare a song</h4><p>Add a song so the meters can recognise it.</p><span class="more">Declare a song</span>
         </a>
-        <a class="ex-card reveal" href="https://www.sonacam.org" rel="noopener">
-          <div class="ex-img" style="--img:url('../assets/img/party.webp')"></div>
-          <p class="new">Bars</p><h4>Get a meter</h4><p>Ask SONACAM about a meter for your bar.</p><span class="more">Contact SONACAM</span>
+        <a class="ex-card" href="#how">
+          <div class="ex-img"><img src="assets/img/party.webp" alt="" loading="lazy"></div>
+          <p class="new">Bars</p><h4>How the meter works</h4><p>Small, silent, and it keeps no sound.</p><span class="more">Learn more</span>
         </a>
       </div>
     </div>
@@ -216,9 +214,8 @@
 
 <footer class="foot">
   <div class="wrap">
-    <p>Fair Play is a prototype built for SONACAM at the CIMFEST Hackathon 2026. Figures on this page come from the system's test data and are computed by it.</p>
-    <p class="credits">Photos: basungavisual (Pexels), kelly (Pexels), Kingsley Hemans, Bongani Ngcobo, Ato Aikins and Daniel (Unsplash), under the Pexels and Unsplash licences.</p>
-    <p>SONACAM, Société Nationale Camerounaise de l'Art Musical</p>
+    <p>Fair Play is a prototype built at the CIMFEST Hackathon 2026. Figures on this page come from the system's test data and are computed by it.</p>
+    <p>Photos: basungavisual (Pexels), kelly (Pexels), Kingsley Hemans, Bongani Ngcobo, Ato Aikins and Daniel (Unsplash), under the Pexels and Unsplash licences.</p>
   </div>
 </footer>
 
