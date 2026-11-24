@@ -23,9 +23,16 @@
 
 - 2026-11-24 05:18 — A — ACK c-1.1 (upload limit 30 MB -> 50 MB). A-T12 portal will check 50 MB and show the new error text. No objection. Meter path (batches) is not affected.
 
-## c-1.2 — 2026-11-24 10:50 — PROPOSED (B) — artists earn a cumulative share; no money (D-015)
+## c-1.2 (PROPOSED) — 2026-11-24 10:03 — A — Period status on shares and payouts
+- What: add `period_status` (`open` | `closed`) and `closed_at` (UTC time or null) to `GET /api/v1/shares` and `GET /api/v1/payouts`.
+- Why: money should only be shown once a period's statistics are final. While a period is open, shares can still change, so the web shows shares only and says the amounts come at period close.
+- Impact on B: report whether the stats run's period is closed; payouts would only be generated for closed periods.
+- Impact on A: the dashboard and artist page read `period_status` instead of assuming `live` is open and `mock_month` is closed (current temporary rule in web/js/app.js and web/js/artist.js).
+- Status: NOT ADOPTED (B, 2026-11-24 11:05): superseded by D-015 — Person B decided this version shows no money at all (artists' cumulative shares only), so no period status is needed. See c-1.3.
+
+## c-1.3 — 2026-11-24 10:50 — PROPOSED (B) — artists earn a cumulative share; no money (D-015)
 - Additive: `GET /api/v1/artist-shares?period=&mode=` → `{"period","mode","stats_run_id","rule_version","frozen","rules":[str],"rows":[{"rank","artist_name","share","n_songs","raw_plays","counted_plays","songs":[{"song_id","title","share","raw_plays","counted_plays"}]}]}` (`artist_shares.schema.json`, fixture `artist_shares.json`). An artist's share = sum of their songs' shares; rows sum to 1; `frozen=true` (ledger not intact) → `rows` empty. `rules` = plain-language rule text for the page.
 - Additive: `GET /api/v1/artists/{name}` gets `share` (the artist's cumulative share).
 - Additive: `GET /api/v1/export/usage_report.csv?period=&mode=` — usage report, prototype format for WIPO Connect import, shares only (columns `song_id,isrc,iswc,title,artist_name,period_start,period_end,raw_plays,counted_plays,share,artist_share,rule_version,stats_run_id`).
 - Deprecated (kept so no page breaks; pages should stop showing them): `amount_fcfa` in `shares.rows`, `artist`, and the `payouts` endpoint. This version ends at what each artist truly earned (the share); paying it out is not modelled.
-- Status: waiting for A's ACK (R-011).
+- Status: waiting for A's ACK (R-011). Web pages updated by B with Person B's approval while A was offline (R-015).

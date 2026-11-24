@@ -85,7 +85,7 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 
 ## D-015 — 2026-11-24 10:50 — B (Person B, human) — B-T12: artists earn a cumulative share; no money; mock ownership
 - Earnings are **per artist**: an artist's share = the sum of the shares of all their songs (credited lead artist, `songs.artist_name`). `GET /api/v1/artist-shares` ranks the artists; the artist page gets `share`.
-- **No money is computed in this version.** The system ends at what each artist truly earned (their cumulative percentage). The planned pot × share, owner splits, rounding, mock Mobile Money statements and `sent_mock` status are dropped; `amount_fcfa` fields stay in the shapes only so no page breaks (deprecated in c-1.2). Money examples belong to the pitch, with fake names, computed by the code if shown.
+- **No money is computed in this version.** The system ends at what each artist truly earned (their cumulative percentage). The planned pot × share, owner splits, rounding, mock Mobile Money statements and `sent_mock` status are dropped; `amount_fcfa` fields stay in the shapes only so no page breaks (deprecated in c-1.3). Money examples belong to the pitch, with fake names, computed by the code if shown.
 - **Mock ownership:** each catalogue song's artist is registered as its 100 % owner (`server/tools/artist_owners.py`, only where a song has no owners; no MoMo invented). The page shows the sharing rules (API `rules` text; SONACAM's own rules text to be supplied by Person B).
 - **Frozen** stays: if the ledger is not intact, artist shares and the usage report are withheld (rows empty / "FROZEN").
 - The usage report (WIPO Connect prototype format) lists shares, not amounts.

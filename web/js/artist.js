@@ -19,7 +19,9 @@ async function load() {
   $("songs").textContent = (a.songs || []).map((s) => s.title).join(" · ");
   const counted = (a.plays_by_venue || []).reduce((t, v) => t + (v.plays_counted || 0), 0);
   $("counted").textContent = fmtInt(counted);
-  $("amount").textContent = fmtInt(a.amount_fcfa);
+  // The amount is only shown once the period is closed and its statistics are final.
+  const closed = new URLSearchParams(location.search).get("period") === "closed";
+  $("amount").textContent = closed ? `${fmtInt(a.amount_fcfa)} FCFA` : "paid at period close";
   $("venues").innerHTML = (a.plays_by_venue || []).map((v) => `
     <div class="row"><span>${v.name} <span class="muted">${v.city}</span></span>
     <span>${fmtInt(v.plays_counted)} counted · ${fmtInt(v.plays_raw)} raw</span></div>`).join("")

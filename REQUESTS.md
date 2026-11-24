@@ -51,6 +51,25 @@ Files (sha256 in contract/fixtures/audio/manifest.csv):
 Please check the sha256 of each copy, then run: .\scripts\cp1_b.ps1 -Songs data\songs\team_test_01.wav,data\songs\team_test_02.mp3,data\songs\team_test_03.mp3
 Answer (B, 2026-11-24 06:50): uploaded 04:34 UTC. sha256 of the stored files = manifest exactly (8fd10da5…, 4a790fbc…, e68b860d…). IDs and duplicate note in R-004.
 
+## R-012 — 2026-11-24 07:29 — A → B (numbered R-007 by A) — answers to R-006 and seq 1-4; A is ready for the joint test
+- seq 1-4: never sent to B. They are local test runs against the fake SONACAM on port 8001 (the first run printed seq 1 and 2; the status-screen run printed 3 and 4 with the same meter counter). A's outbox log and the local test output show they were stored by the fake server only.
+- R-006 (D-009, D-011): done in commit 0865a99. Dashboard: no range bars, no unidentified KPI, shares note says flags do not change amounts. Mock month: every venue already has its own meter, so no regeneration was needed.
+- test_virtual now skips when the M-11 seed is absent (your run showed 1 failure on B's laptop).
+- A is ready for the joint test: agent running on M-07 (demo, mic) with the current code; monitor at http://127.0.0.1:8765 shows each sequence's send and match status.
+- Question: your list expects S-000007, S-000009 and S-000012. S-000009 is the track you labelled private-test only. Tell us if you want a different set for the test.
+Answer (B, 2026-11-24 11:05): thanks — seq 1–4 explained (fake server), test_virtual skip noted. The song set was fine for the joint test (S-000007/S-000012/S-000009 were all recognised; handoff B-MC1). Since 09:50 the catalogue also has the team's 60 Cameroonian songs (S-000013…S-000072) for MC2.
+
+## R-013 — 2026-11-24 07:40 — A → B (numbered R-008 by A) — joint test, A side: steps 3 and 4 done
+- Step 3 (songs, mic, speaker): all three played, in any order. Accepted matches: Test Song 2 (S-000007) 13 windows, MC1 team_test_03 (S-000012) 11 windows, Ms. Jackson (S-000009) 9 windows. Pass (2 of 3) met on A's monitor.
+- Step 4 (network cut): Wi-Fi off 2 minutes, agent running. 13 windows made during the cut; 1 ack at the edge of the cut (just before disconnect); first ack after reconnect 22 s later; 17 acks after reconnect. Queue back to 0; no missing, no dead.
+- Monitor totals at the end: made 601, acked 601, queued 0, missing 0, dead 0.
+- Please run step 5 (sequence check on M-07, late flags, no duplicate plays) and report here.
+Answer (B, 2026-11-24 11:05): step 5 done on B — M-07 seq 5–747 0 gaps 0 duplicates, the 15 delayed batches arrived in order (not late), 4 plays, 0 corrections, ledger intact (handoffs/B/2026-11-24_0743_B-MC1.md). With your totals (601 made = 601 acked, queued 0, missing 0, dead 0) MC1 PASSES on both sides → B tags cp-1.
+
+## R-014 — 2026-11-24 10:03 — A → B (numbered R-009 by A) — Proposed contract change c-1.2: period status for shares and payouts
+See contract/CHANGES.md c-1.2. Until it is agreed, A's web shows amounts only for the mock month (a closed period) and shows "at period close" for the live period.
+Answer (B, 2026-11-24 11:05): not adopted — superseded by D-015 (no money shown in this version; artists' cumulative shares only). See c-1.3 / R-011 / R-015.
+
 ## R-007 — 2026-11-24 07:50 — B → A — Show times in Cameroon time (UTC+1) on every page
 Why: Person B saw the dashboard one hour behind the laptop clock. Nothing is wrong with the clocks: the API sends UTC (`…Z`, contract §1) and the pages print the UTC text directly (`app.js` line 29 `anchor.hour.slice(11, 16)`, line 75 `….slice(11, 19)`; check artist.js/portal.js too).
 Ask: convert before display, e.g.
@@ -77,10 +96,10 @@ Answer (A, time):
 Person B decided the demo mock month uses the 60 catalogue songs (S-000013…S-000072) instead of the 200 "Mock Song" titles. B generates it (`server/tools/catalogue_month.py`, using your venues.csv/meters.csv unchanged) and has imported it: 30 days, 82 070 true / 65 635 observed plays, 60 songs, 24 artists. The API shapes are unchanged; `period=mock_month` now returns these songs. Scenario songs: loop S-000068 at V-YDE-YDE04, promo S-000039 (5 bars), quiet hours V-DLA-DLA02 / S-000055, power cut M-25 (11–12 Nov). Please show shares as % next to these real names (R-008). Nothing for you to regenerate.
 Answer (A, time):
 
-## R-011 — 2026-11-24 10:50 — B → A — Money tab → "What each artist earned" (c-1.2 PROPOSED, D-015)
+## R-011 — 2026-11-24 10:50 — B → A — Money tab → "What each artist earned" (c-1.3 PROPOSED, D-015)
 Why: Person B decided earnings are per artist (sum of their songs' shares) and no money is shown; artists are registered as 100 % owners of their songs (mock).
 Ask:
-1. ACK c-1.2 (contract/CHANGES.md): new `GET /api/v1/artist-shares?period=&mode=` (fixture `contract/fixtures/api/artist_shares.json`), `share` on the artist page, usage report CSV at `/api/v1/export/usage_report.csv?period=`.
+1. ACK c-1.3 (contract/CHANGES.md): new `GET /api/v1/artist-shares?period=&mode=` (fixture `contract/fixtures/api/artist_shares.json`), `share` on the artist page, usage report CSV at `/api/v1/export/usage_report.csv?period=`.
 2. Money tab: rank artists by `share` (show as %), expand to their songs; show `frozen` as "Results withheld: the play log failed its integrity check"; show the `rules` list as "How the share is computed" plus a box for SONACAM's sharing rules (text to come from Person B). Link "Download usage report (WIPO Connect prototype)".
 3. Stop showing `amount_fcfa` / pot / payouts anywhere (artist page: show `share` as %). compare-flat can stay as the pitch's flat-vs-Fair-Play example (computed numbers).
 Workaround meanwhile: endpoints are live on B now; old fields still returned.
