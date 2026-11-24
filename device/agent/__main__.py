@@ -3,6 +3,7 @@
   python -m device.agent run --config device\\config\\M-07.toml [--mode demo|field] [--input mic|file:<path>]
 
 Stop with Ctrl+C. Everything unsent stays in the outbox (device/state/) and is sent on the next start.
+run_pipeline() is shared with the virtual meters (device/virtual).
 """
 import argparse
 import os
@@ -45,46 +46,71 @@ def _blocks(input_spec: str):
     raise SystemExit(f"input must be 'mic' or 'file:<path>', got {input_spec!r}")
 
 
+def _wait_for_empty_outbox(outbox, timeout_s: float) -> None:
+    import time
+    end = time.monotonic() + timeout_s
+    while outbox.count() > 0 and time.monotonic() < end:
+        time.sleep(0.1)
+
+
+def run_pipeline(cfg: dict, mode: str, blocks, input_label: str, state_dir: str = STATE_DIR,
+                 show_screen: bool = True, client=None, drain_timeout_s: float = 60.0) -> int:
+    """Send every window from `blocks` as signed batches. Returns the number of windows made."""
+    meter = cfg["meter_id"]
+    os.makedirs(state_dir, exist_ok=True)
+    seed = load_seed(meter)
+    state = MeterState(meter, state_dir)
+    outbox = Outbox(os.path.join(state_dir, f"{meter}_outbox.db"))
+    own_client = client is None
+    if own_client:
+        client = httpx.Client(base_url=cfg["sonacam_url"])
+    events = EventLog(os.path.join(state_dir, f"{meter}_events.jsonl"))
+    uploader = Uploader(outbox, client, cfg, seed, heartbeat_s=float(cfg.get("heartbeat_s", 60)), log=events.append)
+    screen = StatusScreen(cfg, mode, input_label, uploader, outbox)
+
+    stop = threading.Event()
+    worker = threading.Thread(target=uploader.run, args=(stop,), daemon=True)
+    worker.start()
+    view = None
+    if show_screen:
+        view = StatusLoop(screen)
+        view.start()
+
+    made = 0
+    finished = False
+    try:
+        for win in Scheduler(mode).windows(blocks):
+            seq = state.next_seq()
+            batch = build_batch(cfg, seq, win.start_utc, win.peaks, win.loudness_db, seed)
+            outbox.put(batch)
+            stamp = datetime.fromtimestamp(win.start_utc, tz=timezone.utc).isoformat(timespec="seconds")
+            events.append("window", seq=seq, window_start=batch["window_start"], peaks=int(win.peaks.size),
+                          loudness_db=win.loudness_db, input=input_label)
+            screen.note_window(seq, stamp, int(win.peaks.size), win.loudness_db)
+            made += 1
+        finished = True
+    except KeyboardInterrupt:
+        pass
+    finally:
+        if finished:
+            # the audio ended normally: send what is queued before stopping (a Ctrl+C does not wait)
+            _wait_for_empty_outbox(outbox, drain_timeout_s)
+        if view is not None:
+            view.stop()
+        stop.set()
+        worker.join(timeout=10)
+        if own_client:
+            client.close()
+    return made
+
+
 def run(argv=None) -> int:
     args = _parse(argv)
     with open(args.config, "rb") as fh:
         cfg = tomllib.load(fh)
     mode = args.mode or cfg.get("mode", "demo")
     input_spec = args.input or cfg.get("input", "mic")
-    meter = cfg["meter_id"]
-
-    os.makedirs(STATE_DIR, exist_ok=True)
-    seed = load_seed(meter)
-    state = MeterState(meter)
-    outbox = Outbox(os.path.join(STATE_DIR, f"{meter}_outbox.db"))
-    client = httpx.Client(base_url=cfg["sonacam_url"])
-    events = EventLog(os.path.join(STATE_DIR, f"{meter}_events.jsonl"))
-    uploader = Uploader(outbox, client, cfg, seed, heartbeat_s=float(cfg.get("heartbeat_s", 60)), log=events.append)
-    screen = StatusScreen(cfg, mode, input_spec, uploader, outbox)
-
-    stop = threading.Event()
-    worker = threading.Thread(target=uploader.run, args=(stop,), daemon=True)
-    worker.start()
-    view = StatusLoop(screen)
-    view.start()
-
-    try:
-        for win in Scheduler(mode).windows(_blocks(input_spec)):
-            seq = state.next_seq()
-            batch = build_batch(cfg, seq, win.start_utc, win.peaks, win.loudness_db, seed)
-            outbox.put(batch)
-            stamp = datetime.fromtimestamp(win.start_utc, tz=timezone.utc).isoformat(timespec="seconds")
-            events.append("window", seq=seq, window_start=batch["window_start"], peaks=int(win.peaks.size),
-                          loudness_db=win.loudness_db, input=input_spec)
-            screen.note_window(seq, stamp, int(win.peaks.size), win.loudness_db)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        view.stop()
-        stop.set()
-        worker.join(timeout=10)
-        client.close()
-        print("stopped; unsent batches stay in the outbox:", outbox.count())
+    run_pipeline(cfg, mode, _blocks(input_spec), input_spec)
     return 0
 
 
