@@ -293,6 +293,8 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "l" || e.key === "m") document.querySelector(`[data-period="${e.key === "l" ? "live" : "mock_month"}"]`).click();
 });
 
+// ?period=mock_month opens the dashboard on the closed mock month (used for screenshots and the pitch).
+if (new URLSearchParams(location.search).get("period") === "mock_month") { state.period = "mock_month"; setOn("period", "mock_month"); }
 const startTab = location.hash.slice(1);
 if (["overview", "songs", "trust"].includes(startTab)) showTab(startTab);
 $("mode-note").textContent = MOCK ? " · mock data (?mock=1)" : "";

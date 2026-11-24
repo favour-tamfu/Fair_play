@@ -13,15 +13,25 @@
   <div class="wrap site-row">
     <a class="logo" href="index.html">Fair Play <span>SONACAM</span></a>
     <nav class="site-nav">
-      <a href="index.html">Dashboard</a>
-      <a href="artist.html" class="on">Artists</a>
-      <a href="portal.html">Upload</a>
-      <a href="admin.html">Admin</a>
+      <a href="index.html">Overview</a>
+      <a href="artist.html" class="on">Artist portal</a>
+      <a href="portal.html">Declare a song</a>
     </nav>
   </div>
 </header>
 
-<main class="wrap">
+<main class="wrap finder" id="finder" hidden>
+  <div class="page-head"><div>
+    <h1>Artist portal</h1>
+    <div class="muted">Find your name to see your share of bar plays, the bars that played you and your recent plays.</div>
+  </div></div>
+  <label class="search"><span class="sr">Search for an artist</span>
+    <input id="q" type="search" placeholder="Search by artist name" autocomplete="off">
+  </label>
+  <div class="box"><div id="artist-list"><div class="empty">Loading artists…</div></div></div>
+</main>
+
+<main class="wrap" id="profile">
   <div class="page-head">
     <div class="who">
       <div class="avatar" id="avatar" aria-hidden="true"></div>

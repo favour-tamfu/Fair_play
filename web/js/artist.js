@@ -5,7 +5,7 @@ import { MOCK, get, feed, fmtHm, fmtDateTime } from "./api.js";
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
-const name = params.get("name") || "Mock Artist 01";
+const name = params.get("name");   // no name: show the artist finder (public artist portal)
 let period = params.get("period") === "mock_month" ? "mock_month" : "live";
 const fmtInt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("fr-FR"));
 const fmtPct = (x) => (x == null ? "–" : (100 * x).toFixed(x < 0.1 ? 2 : 1) + "%");
@@ -115,6 +115,39 @@ function toast(text) {
   setTimeout(() => t.classList.remove("show"), 6000);
 }
 
+// ---------- artist finder (no ?name=) ----------
+async function finder() {
+  $("profile").hidden = true;
+  $("finder").hidden = false;
+  document.title = "Artist portal · Fair Play";
+  $("foot").textContent = `Fair Play is SONACAM's bar-play measurement. Shares are indicative until SONACAM closes the period.${MOCK ? " Mock data." : ""}`;
+  let artists = [], shares = null;
+  try {
+    const r = await fetch(MOCK ? "../contract/fixtures/api/artists.json" : "/api/v1/artists", { cache: "no-store" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    artists = await r.json();
+  } catch (e) { $("artist-list").innerHTML = `<div class="empty">Could not load the artists. Try again in a moment.</div>`; return; }
+  try { shares = await get("artist_shares", "live", "standardised"); } catch (_) { /* list without shares */ }
+  const byName = new Map(((shares && !shares.frozen && shares.rows) || []).map((r) => [r.artist_name, r]));
+  const link = (n) => `artist.html?name=${encodeURIComponent(n)}${MOCK ? "&mock=1" : ""}`;
+  const render = () => {
+    const q = $("q").value.trim().toLowerCase();
+    const list = artists.filter((a) => !q || a.artist_name.toLowerCase().includes(q))
+      .sort((a, b) => a.artist_name.localeCompare(b.artist_name, "fr"));
+    $("artist-list").innerHTML = list.map((a) => {
+      const s = byName.get(a.artist_name);
+      return `<a class="row artist-link" href="${link(a.artist_name)}"><span>${esc(a.artist_name)}</span>
+        <span class="num">${s ? fmtPct(s.share) : ""}</span>
+        <span class="sub">${a.songs.length} song${a.songs.length === 1 ? "" : "s"}${s ? `, rank #${s.rank} this period` : ""}</span></a>`;
+    }).join("") || `<div class="empty">No artist matches "${esc(q)}". Check the spelling, or declare your songs with SONACAM first.</div>`;
+  };
+  $("q").addEventListener("input", render);
+  render();
+  $("q").focus();
+}
+if (!name) { finder(); }
+else {
+
 // Period switch (keeps it in the URL so the link can be shared).
 document.querySelectorAll("[data-period]").forEach((b) => b.addEventListener("click", () => {
   period = b.dataset.period;
@@ -139,3 +172,4 @@ feed(({ event, data }) => {
   toast(`🔊 ${data.title} is playing at ${venueNames.get(data.venue_id) || data.venue_id || "a bar"}`);
   setTimeout(() => { $("now").classList.remove("live"); renderNow(false); }, 120000);
 });
+}   // end of profile mode

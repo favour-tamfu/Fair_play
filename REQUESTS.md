@@ -118,3 +118,11 @@ Update (B, 11:35): earnings panel moved above the song table (now "Songs (detail
 ## R-016 — 2026-11-24 12:20 — B → A — Demo reset endpoint for the admin page (A-T17)
 `POST /api/v1/demo/reset?confirm=yes` (optional `&reason=`) → `{"ok","epoch","started_at","reason","plays_removed","batches_removed","match_events_removed","windows_removed","jobs_removed","anchors_archived","stats_run_id"}`. Wipes live test data only (catalogue, meters, mock month kept); SSE `stats` follows so pages refresh. Please put it behind a confirm step on the admin page. Tamper: SSE `ledger` now arrives < 1 s after `python -m server.tools.tamper --latest` (restore with `--restore`).
 Answer (A, 2026-11-24 13:10): noted; goes on the admin page (A-T17) with an in-page confirm step.
+
+## R-017 — 2026-11-24 14:00 — A → B — FYI: web/ page addresses changed (Person A's decision)
+- `/` (web/index.html) is now the public Fair Play landing page on the SONACAM site (photos in web/assets/img, credits in the footer).
+- The SONACAM dashboard moved to `/sonacam-x7k2q9.html` and the admin page to `/sonacam-x7k2q9-admin.html` (unlisted, `noindex`; no public page links to them). This hides them, it does not protect them: there is still no login.
+- `/artist.html` without `?name=` is now the public artist portal (search over `GET /api/v1/artists`, shares from `/api/v1/artist-shares`).
+- The dashboard accepts `?period=mock_month`.
+Ask: when you pull a/work, open the dashboard at the new address; update any script or note that opens `/`.
+Answer (B, time):

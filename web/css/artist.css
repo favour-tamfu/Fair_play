@@ -65,3 +65,12 @@ body.corp { background: var(--bg); }
   .site-nav { gap: 14px; }
   .logo span { display: none; }
 }
+
+/* artist finder (public artist portal without a name) */
+.search { display: block; margin: 0 0 14px; }
+.search input { width: 100%; font: inherit; font-size: 17px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink); }
+.search input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+a.artist-link { color: var(--ink); text-decoration: none; }
+a.artist-link:hover { background: var(--chip); }
+a.artist-link span:first-child { font-weight: 600; }

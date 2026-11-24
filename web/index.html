@@ -3,130 +3,178 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fair Play · SONACAM view</title>
-<link rel="stylesheet" href="css/app.css">
+<meta name="description" content="Fair Play by SONACAM: every song played in a Cameroonian bar is recognised, counted and shared fairly.">
+<meta name="theme-color" content="#ffffff">
+<title>Fair Play · SONACAM</title>
+<link rel="stylesheet" href="css/landing.css">
 </head>
-<body class="dash">
-<header class="top">
-  <div class="brand">Fair Play <span>· SONACAM view</span></div>
-  <nav class="tabs" role="tablist" aria-label="views">
-    <button role="tab" data-tab="overview" class="on">Overview</button>
-    <button role="tab" data-tab="songs">Songs</button>
-    <button role="tab" data-tab="trust">Trust</button>
-  </nav>
-  <div class="seg" role="group" aria-label="period">
-    <button data-period="live" class="on">Live</button>
-    <button data-period="mock_month">Mock month</button>
+<body>
+
+<!-- SONACAM site navigation (the public website this page belongs to) -->
+<nav class="globalnav" aria-label="SONACAM">
+  <div class="gn-row">
+    <a class="gn-logo" href="https://www.sonacam.org" rel="noopener">SONACAM</a>
+    <a href="https://www.sonacam.org" rel="noopener">Home</a>
+    <a href="index.html" aria-current="page">Fair Play</a>
+    <a href="artist.html">Artist portal</a>
+    <a href="portal.html">Declare a song</a>
+    <a href="https://www.sonacam.org" rel="noopener">Contact</a>
   </div>
-  <div class="seg" role="group" aria-label="counting">
-    <button data-mode="standardised" class="on" title="Fair-play rules applied (repeats count less, catch rate corrected)">Standardised</button>
-    <button data-mode="raw" title="Every confirmed play counts 1">Raw</button>
+</nav>
+
+<!-- Product navigation, sticky like a product page -->
+<nav class="localnav" aria-label="Fair Play">
+  <div class="ln-row">
+    <a class="ln-title" href="#top">Fair Play</a>
+    <div class="ln-links">
+      <a href="#how">How it works</a>
+      <a href="#artists">For artists</a>
+      <a href="#bars">For bars</a>
+      <a href="#trust">Trust</a>
+      <a class="pill" href="artist.html">Find your plays</a>
+    </div>
   </div>
-  <div class="clock" id="clock"></div>
-  <button class="ledger" id="ledger" data-goto="trust">Log —</button>
-</header>
+</nav>
 
-<section class="kpis">
-  <div class="kpi"><span>Meters online</span><b id="k-meters">–</b></div>
-  <div class="kpi"><span>Plays heard</span><b id="k-raw">–</b></div>
-  <div class="kpi"><span>Plays counted</span><b id="k-counted">–</b></div>
-  <div class="kpi"><span>Artists with plays</span><b id="k-artists">–</b></div>
-  <div class="kpi"><span>Songs ready to match</span><b id="k-songs">–</b></div>
-</section>
-
-<main>
-  <!-- Overview: where it plays, who earns, what just happened -->
-  <section class="view on" id="view-overview">
-    <div class="ov">
-      <section class="panel map-panel">
-        <div class="head"><h2>Where music is playing</h2><span class="note" id="map-note"></span></div>
-        <div class="map-wrap">
-          <svg id="map" viewBox="0 0 400 560" role="img" aria-label="Map of Cameroon with the metered bars"></svg>
-          <div class="map-toast" id="map-toast"></div>
-        </div>
-        <div class="legend">
-          <span><i class="dot live"></i>Live meter at this table</span>
-          <span><i class="dot on"></i>Meter online</span>
-          <span><i class="dot off"></i>Meter offline or simulated</span>
-        </div>
-      </section>
-
-      <section class="panel earn-panel">
-        <div class="head">
-          <h2>Who earned what</h2>
-          <a class="dl" id="usage-dl" href="#" download>Download usage report (CSV)</a>
-        </div>
-        <p class="hero-line" id="earn-hero"></p>
-        <div class="frozen" id="earn-frozen">Results withheld: a recorded play was changed after it was logged (tamper check failed). Nothing is published until the log is restored.</div>
-        <div class="scroll">
-          <table class="earn">
-            <thead><tr><th>#</th><th>Artist</th><th class="n">Songs</th><th class="n">Heard</th><th class="n">Counted</th><th class="n">Share</th><th class="barcol"></th></tr></thead>
-            <tbody id="earn"></tbody>
-          </table>
-        </div>
-        <div class="compare" id="compare"></div>
-        <p class="note" id="earn-note">An artist earns for all their songs together: their songs' shares are added up. Click an artist to see the songs.</p>
-      </section>
-
-      <section class="panel feed-panel">
-        <div class="head"><h2>Live activity</h2><span class="live-dot" id="feed-state">connecting</span></div>
-        <ol id="feed" class="feed"></ol>
-      </section>
+<main id="top">
+  <!-- Hero -->
+  <section class="hero wrap">
+    <h1>Every song played in a bar.<br>Counted. Shared fairly.</h1>
+    <p class="lede">Bars already pay a copyright levy on the drinks they buy. Fair Play listens in each bar, recognises the songs and shares that money by what was really played.</p>
+    <div class="hero-cta">
+      <a class="pill big" href="artist.html">Find your plays</a>
+      <a class="more" href="#how">See how it works</a>
     </div>
   </section>
 
-  <!-- Songs: every song's share, with review flags -->
-  <section class="view" id="view-songs">
-    <section class="panel full">
-      <div class="head"><h2>Songs</h2><span class="note" id="shares-note"></span></div>
-      <div class="scroll">
-        <table>
-          <thead><tr><th>#</th><th>Title</th><th>Artist</th><th class="n">Heard</th><th class="n">Counted</th><th class="n">Share</th><th class="barcol"></th><th>Review flags</th></tr></thead>
-          <tbody id="shares"></tbody>
-        </table>
-      </div>
-      <p class="note">Flags are for SONACAM review only; they never change a song's count (D-009).</p>
-    </section>
+  <section class="stage wrap" aria-label="The Fair Play dashboard at a bar">
+    <div class="stage-photo" role="img" aria-label="A crowd dancing at a party"></div>
+    <figure class="laptop">
+      <div class="lid"><img src="assets/img/shot-dashboard.webp" alt="The SONACAM dashboard: who earned what, the map of metered bars and the live activity" width="1600" height="1000"></div>
+      <div class="base"></div>
+    </figure>
   </section>
 
-  <!-- Trust: is the play log intact, and how anyone can check it -->
-  <section class="view" id="view-trust">
-    <div class="trust">
-      <section class="panel">
-        <div class="head"><h2>Play log</h2></div>
-        <div class="status" id="trust-status">–</div>
-        <dl class="facts">
-          <dt>Plays checked</dt><dd id="t-checked">–</dd>
-          <dt>Latest chain hash</dt><dd class="mono" id="t-root">–</dd>
-          <dt>Last public anchor</dt><dd id="t-anchor">–</dd>
-        </dl>
-      </section>
-      <section class="panel">
-        <div class="head"><h2>Hourly anchors</h2><span class="note">Published Merkle roots, in Cameroon time</span></div>
-        <div class="scroll">
-          <table>
-            <thead><tr><th>Hour</th><th class="n">Plays</th><th>Root</th><th>Published in</th></tr></thead>
-            <tbody id="anchors"></tbody>
-          </table>
+  <!-- What it gives you -->
+  <section class="gives wrap">
+    <p class="kicker">Fair Play gives SONACAM</p>
+    <div class="tiles">
+      <div class="tile">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 34V20l16-10 16 10v14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M18 34v-8h12v8" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="20" r="2.5" fill="currentColor"/></svg>
+        <p>A meter in every bar,<br>not a sample of a few</p>
+      </div>
+      <div class="tile">
+        <b id="live-counted">–</b>
+        <p>plays counted<br><span id="live-label">so far</span></p>
+      </div>
+      <div class="tile">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><rect x="11" y="21" width="26" height="19" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M16 21v-5a8 8 0 0 1 16 0v5" fill="none" stroke="currentColor" stroke-width="2.5"/></svg>
+        <p>Every play signed<br>and chained to the last</p>
+      </div>
+      <div class="tile">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 18v12M20 13v22M26 16v16M32 20v8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M6 6l36 36" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        <p>No sound ever<br>leaves the bar</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- For artists: phone composite with live data -->
+  <section class="split grey" id="artists">
+    <div class="split-text">
+      <svg class="glyph" viewBox="0 0 48 48" aria-hidden="true"><path d="M30 8v22a6 6 0 1 1-4-5.7V12l14-4v16a6 6 0 1 1-4-5.7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>
+      <h2>See every bar<br>that played you.</h2>
+      <p>Your share of bar plays, your rank, each song and each bar, updated as the meters hear your music.</p>
+      <a class="more" href="artist.html">Open the artist portal</a>
+    </div>
+    <div class="split-visual">
+      <div class="phone">
+        <div class="island"></div>
+        <div class="screen" id="phone-screen">
+          <div class="ps-status"><span id="ps-time">9:41</span><span>●●●</span></div>
+          <div class="ps-head"><div class="ps-avatar" id="ps-avatar">–</div><div><small>Artist</small><b id="ps-name">–</b></div></div>
+          <div class="ps-cards">
+            <div><small>Share of bar plays</small><b id="ps-share">–</b></div>
+            <div><small>Rank</small><b id="ps-rank">–</b></div>
+          </div>
+          <div class="ps-list" id="ps-songs"></div>
+          <p class="ps-foot" id="ps-foot"></p>
         </div>
-      </section>
-      <section class="panel">
-        <div class="head"><h2>How to check it yourself</h2></div>
-        <ol class="howto">
-          <li>Each bar's meter signs every 10-second sample with its own key, so the server cannot invent samples.</li>
-          <li>Every confirmed play is chained to the one before it: its hash covers the previous hash and the play (meter, bar, song, time, length).</li>
-          <li>Every hour the server publishes one Merkle root of that hour's plays in the public anchors file.</li>
-          <li>Changing or deleting any past play breaks the chain and no longer matches the published root. The banner turns red and the results are withheld until the log is restored.</li>
-        </ol>
-      </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- Two half tiles -->
+  <section class="halves wrap">
+    <article class="half" id="bars">
+      <p class="eyebrow">For bars</p>
+      <h3>Nothing changes<br>at the counter.</h3>
+      <p>The levy is already in the price of the drinks you buy. A small meter next to your speaker recognises the songs. It keeps no recording and never listens to conversations.</p>
+      <a class="more" href="#how">How the meter works</a>
+      <div class="half-img"><img src="assets/img/bottles.webp" alt="A bar with bottles on shelves and two speakers on the wall" loading="lazy"></div>
+    </article>
+    <article class="half" id="trust">
+      <p class="eyebrow">For SONACAM</p>
+      <h3>A play log nobody<br>can quietly change.</h3>
+      <p>Each play is chained to the one before it and published every hour. Change one past play and the dashboard turns red until the log is restored.</p>
+      <a class="more" href="#how">How the log is checked</a>
+      <div class="half-img dark"><img src="assets/img/dj.webp" alt="A DJ's hands on a mixing controller" loading="lazy"></div>
+    </article>
+  </section>
+
+  <!-- How it works -->
+  <section class="how wrap" id="how">
+    <h2 class="center">From a song in a bar<br>to a fair share.</h2>
+    <ol class="steps">
+      <li><div class="step-img"><img src="assets/img/outdoor-bar.webp" alt="A bartender at an outdoor bar at night" loading="lazy"></div>
+        <h4>A song plays</h4><p>Music plays in the bar as it always does.</p></li>
+      <li><div class="step-img meter"><svg viewBox="0 0 120 120" aria-hidden="true"><rect x="22" y="30" width="76" height="60" rx="12" fill="#fff"/><circle cx="60" cy="60" r="18" fill="none" stroke="#0f53f0" stroke-width="4"/><path d="M60 46v28M52 52v16M68 52v16" stroke="#0f53f0" stroke-width="4" stroke-linecap="round"/></svg></div>
+        <h4>The meter recognises it</h4><p>Short audio fingerprints are matched against the SONACAM catalogue. The sound itself is thrown away.</p></li>
+      <li><div class="step-img"><img src="assets/img/yaounde.webp" alt="Aerial view of Yaoundé" loading="lazy"></div>
+        <h4>The play is counted</h4><p>Repeats of the same song in a short time count less, so looping a song does not inflate it.</p></li>
+      <li><div class="step-img"><img src="assets/img/mic.webp" alt="A singer smiling on stage with a microphone" loading="lazy"></div>
+        <h4>SONACAM shares the levy</h4><p>Each artist's share follows their plays. SONACAM applies its rules and pays its members.</p></li>
+    </ol>
+  </section>
+
+  <!-- Who it is for -->
+  <section class="who grey">
+    <div class="wrap">
+      <h2 class="center">Who is Fair Play for?</h2>
+      <div class="who-cols">
+        <div class="who-col">
+          <div class="who-img"><img src="assets/img/mic.webp" alt="" loading="lazy"></div>
+          <p class="new">Artists</p>
+          <h4>SONACAM members</h4>
+          <p>See where and how often your songs are played, and the share they earn.</p>
+          <a class="pill" href="artist.html">Find your plays</a>
+        </div>
+        <div class="who-col">
+          <div class="who-img"><img src="assets/img/party.webp" alt="" loading="lazy"></div>
+          <p class="new">Bars</p>
+          <h4>Bars, lounges and clubs</h4>
+          <p>Play your music as usual. The meter is small, silent and keeps no sound.</p>
+          <a class="more" href="#bars">Learn more</a>
+        </div>
+        <div class="who-col">
+          <div class="who-img"><img src="assets/img/yaounde.webp" alt="" loading="lazy"></div>
+          <p class="new">SONACAM</p>
+          <h4>Distribution teams</h4>
+          <p>Share the bar levy from a play log you can check, export and defend.</p>
+          <a class="more" href="https://www.sonacam.org" rel="noopener">Contact SONACAM</a>
+        </div>
+      </div>
     </div>
   </section>
 </main>
 
 <footer class="foot">
-  <span id="rule">rule —</span>. Every number is computed from the meters' plays. Times are Cameroon time.<span id="mode-note"></span>
+  <div class="wrap">
+    <p>Fair Play is a prototype built for SONACAM at the CIMFEST Hackathon 2026. Figures on this page come from the system's test data and are computed by it.</p>
+    <p class="credits">Photos: basungavisual (Pexels), kelly (Pexels), Kingsley Hemans, Bongani Ngcobo, Ato Aikins and Daniel (Unsplash), used under the Pexels and Unsplash licences.</p>
+    <p>SONACAM · Société Nationale Camerounaise de l'Art Musical</p>
+  </div>
 </footer>
 
-<script type="module" src="js/app.js"></script>
+<script type="module" src="js/landing.js"></script>
 </body>
 </html>
