@@ -53,29 +53,26 @@
   </section>
 </main>
 
-<!-- Profile: shown with ?name= -->
+<!-- Profile: shown with ?name= (artist page in the style of a music app's artist page) -->
 <main id="profile">
-  <section class="wrap p-head">
-    <div class="p-row">
-      <div class="who">
-        <div class="avatar" id="avatar" aria-hidden="true"></div>
+  <section class="am-hero" id="am-hero">
+    <div class="am-hero-in wrap">
+      <div class="am-id">
+        <button class="am-round" id="share-link" aria-label="Copy the link to this artist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M8 8l4-4 4 4M5 13v6h14v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div>
           <h1 id="name">–</h1>
-          <div class="muted" id="songs-line"></div>
+          <p id="songs-line"></p>
         </div>
       </div>
-      <div class="actions">
-        <div class="seg" role="group" aria-label="period">
-          <button data-period="live" class="on">Live</button>
-          <button data-period="mock_month">Month</button>
-        </div>
-        <button class="btn-plain" id="share-link">Copy link</button>
+      <div class="seg dark" role="group" aria-label="period">
+        <button data-period="live" class="on">Live</button>
+        <button data-period="mock_month">Month</button>
       </div>
     </div>
-    <span id="watermark" hidden></span>
+    <span id="avatar" hidden></span><span id="watermark" hidden></span>
   </section>
 
-  <section class="wrap">
+  <section class="wrap am-block">
     <div class="tiles">
       <div class="tile"><span>Share of bar plays</span><div><b id="share">–</b><small id="share-sub"></small></div></div>
       <div class="tile"><span>Rank</span><div><b id="rank">–</b><small id="rank-label"></small></div></div>
@@ -92,20 +89,26 @@
     </div>
   </section>
 
-  <section class="grey p-section" style="margin-top:70px">
-    <div class="wrap">
-      <div class="cols2">
-        <div class="col">
-          <div class="card"><h3>Your songs</h3><div id="songs"></div></div>
-          <div class="card map-card"><h3>Where you were played <span class="soft" id="map-sub"></span></h3><svg id="pmap" viewBox="0 0 400 560" role="img" aria-label="Map of the bars that played this artist"></svg></div>
-          <div class="card"><h3>Plays by day <span class="soft" id="chart-range"></span></h3><div class="chart" id="chart"></div><div class="chart-x" id="chart-x"></div></div>
-        </div>
-        <div class="col">
-          <div class="card"><h3>Bars that played you</h3><div id="venues"></div></div>
-          <div class="card"><h3>Recent plays</h3><div id="recent"></div></div>
-        </div>
-      </div>
+  <section class="wrap am-block">
+    <h2 class="am-h">Top songs <span>›</span></h2>
+    <div class="am-grid" id="songs"></div>
+  </section>
+
+  <section class="am-block">
+    <h2 class="am-h wrap">Bars that played this artist <span>›</span></h2>
+    <div class="am-shelf" id="venues"></div>
+  </section>
+
+  <section class="wrap am-block">
+    <div class="cols2">
+      <div class="card map-card"><h3>Where they were played <span class="soft" id="map-sub"></span></h3><svg id="pmap" viewBox="0 0 400 560" role="img" aria-label="Map of the bars that played this artist"></svg></div>
+      <div class="card"><h3>Plays by day <span class="soft" id="chart-range"></span></h3><div class="chart tall" id="chart"></div><div class="chart-x" id="chart-x"></div></div>
     </div>
+  </section>
+
+  <section class="wrap am-block last">
+    <h2 class="am-h">Recent plays <span>›</span></h2>
+    <div class="am-grid" id="recent"></div>
   </section>
 </main>
 

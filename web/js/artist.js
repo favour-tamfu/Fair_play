@@ -12,6 +12,9 @@ const fmtInt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("fr-FR")
 const fmtPct = (x) => (x == null ? "–" : (100 * x).toFixed(x < 0.1 ? 2 : 1) + "%");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const initials = (n) => n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+// Square artwork: one of the site photos, picked from the name so it stays the same for the same song or bar.
+const ART = ["bottles", "dj", "mic", "outdoor-bar", "yaounde", "party"];
+const artFor = (s) => `assets/img/${ART[[...String(s)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % ART.length]}.webp`;
 
 const venueNames = new Map();     // venue_id -> "Name, City"
 let mySongs = new Set();
@@ -87,19 +90,22 @@ async function load() {
   // Songs, with each song's share when the stats run has it.
   const songShare = new Map((row ? row.songs : []).map((s) => [s.song_id, s]));
   const maxSong = Math.max(0.0001, ...[...songShare.values()].map((s) => s.share));
-  $("songs").innerHTML = (a.songs || []).map((s) => {
+  // Top songs: rows with square artwork (song plays counted from the recent list when there is no stats row).
+  const recentCount = new Map();
+  for (const p of a.recent || []) recentCount.set(p.song_id, (recentCount.get(p.song_id) || 0) + 1);
+  $("songs").innerHTML = (a.songs || []).map((s, i) => {
     const st = songShare.get(s.song_id);
-    return `<div class="row"><span>${esc(s.title)}</span><span class="num">${st ? fmtPct(st.share) : "–"}</span>
-      <span class="sub">${st ? `${fmtInt(st.counted_plays)} counted · ${fmtInt(st.raw_plays)} heard` : "no counted plays yet"}</span>
-      ${st ? `<span class="meter"><i style="width:${(100 * st.share / maxSong).toFixed(1)}%"></i></span>` : ""}</div>`;
+    const line = st ? `${fmtPct(st.share)} · ${fmtInt(st.counted_plays)} counted`
+      : recentCount.get(s.song_id) ? `${recentCount.get(s.song_id)} of the last ${(a.recent || []).length} plays` : "No counted plays yet";
+    return `<div class="am-row"><img src="${artFor(s.title)}" alt=""><span class="am-n">${i + 1}</span><div><b>${esc(s.title)}</b><span>${line}</span></div></div>`;
   }).join("") || `<div class="empty">No songs yet.</div>`;
 
+  // Bars: a shelf of square tiles, most counted first.
   const venues = [...(a.plays_by_venue || [])].sort((x, y) => (y.plays_counted || 0) - (x.plays_counted || 0));
-  const maxV = Math.max(1, ...venues.map((v) => v.plays_counted || 0));
-  $("venues").innerHTML = venues.map((v) => `<div class="row"><span>${esc(v.name)}</span><span class="num">${fmtInt(v.plays_counted)}</span>
-    <span class="sub">${esc(v.city)} · ${fmtInt(v.plays_raw)} heard</span>
-    <span class="meter"><i style="width:${(100 * (v.plays_counted || 0) / maxV).toFixed(1)}%"></i></span></div>`).join("")
-    || `<div class="empty">No bar has played you in this period yet.</div>`;
+  $("venues").innerHTML = venues.map((v) => `<figure class="am-tile"><div class="am-art" style="background-image:url('${artFor(v.venue_id)}')"><span>${fmtInt(v.plays_counted)}</span></div>
+    <figcaption><b>${esc(v.name)}</b><span>${esc(v.city)} · ${fmtInt(v.plays_counted)} counted</span></figcaption></figure>`).join("")
+    || `<div class="empty wrap">No bar has played this artist in this period yet.</div>`;
+  $("am-hero").style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.72) 100%), url('${artFor(artistName)}')`;
 
   const days = a.plays_by_day || [];
   const maxD = Math.max(1, ...days.map((d) => d.plays_counted || 0));
@@ -108,8 +114,8 @@ async function load() {
   $("chart-x").innerHTML = days.map((d) => `<span>${new Date(d.date + "T12:00:00Z").toLocaleDateString("en-GB", { weekday: "short" })}</span>`).join("");
 
   const recent = (a.recent || []).slice(0, 12);
-  $("recent").innerHTML = recent.map((p) => `<div class="row"><span>${esc(p.title || p.song_id)}</span><span class="sub" style="grid-column:auto">${fmtDateTime(p.started_at)}</span>
-    <span class="sub">${esc(venueNames.get(p.venue_id) || p.venue_id || "")}</span></div>`).join("")
+  $("recent").innerHTML = recent.map((p) => `<div class="am-row"><img src="${artFor(p.title || p.song_id)}" alt=""><div><b>${esc(p.title || p.song_id)}</b>
+    <span>${esc((venueNames.get(p.venue_id) || p.venue_id || "").split(",")[0])}</span><span>${fmtDateTime(p.started_at)}</span></div></div>`).join("")
     || `<div class="empty">No recent plays.</div>`;
   lastPlay = recent[0] || null;
   renderNow(false);
