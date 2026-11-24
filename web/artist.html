@@ -2,49 +2,93 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#7a1606">
 <title>Fair Play · artist</title>
-<link rel="stylesheet" href="css/app.css">
-<style>
-  .wrap { max-width: 520px; margin: 0 auto; padding: 14px 16px 40px; }
-  h1 { font-size: 22px; margin: 6px 0 2px; }
-  .sub { color: var(--muted); font-size: 13px; }
-  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
-  .card { background: var(--chip); border-radius: 10px; padding: 12px; }
-  .card span { display: block; color: var(--muted); font-size: 12px; }
-  .card b { font-size: 20px; }
-  .banner { display: none; background: var(--teal); color: #fff; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 14px; }
-  .banner.show { display: block; }
-  h2 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 18px 0 6px; }
-  .row { display: flex; justify-content: space-between; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
-  .chart { display: flex; align-items: flex-end; gap: 3px; height: 90px; }
-  .chart i { flex: 1; background: var(--teal); opacity: .6; border-radius: 3px 3px 0 0; min-height: 2px; }
-  .muted { color: var(--muted); font-size: 12px; }
-</style>
+<link rel="stylesheet" href="css/artist.css">
 </head>
 <body>
-<main class="wrap">
-  <div class="sub">Fair Play · artist page</div>
-  <h1 id="name">–</h1>
-  <div class="sub" id="songs"></div>
+<div class="stage">
+  <!-- Wide screens (projector): the pitch line next to the phone -->
+  <aside class="pitch">
+    <div class="meta"><span>Fair Play</span><span>for SONACAM members</span></div>
+    <h1 class="headline">Every play<br>in every bar,<br><em>counted.</em></h1>
+    <p class="lede">Bars pay a levy on the drinks they buy. Fair Play listens in each bar and shares that money by what was really played, not by a flat advance.</p>
+    <ol class="steps">
+      <li>A meter in the bar recognises the song. No sound leaves the bar.</li>
+      <li>Every play is signed and chained, so nobody can change it later.</li>
+      <li>Your share follows your plays. SONACAM pays you.</li>
+    </ol>
+  </aside>
 
-  <div class="banner" id="banner"></div>
+  <main class="phone" id="phone">
+    <div class="watermark" id="watermark" aria-hidden="true"></div>
 
-  <div class="cards">
-    <div class="card"><span>counted plays</span><b id="counted">–</b></div>
-    <div class="card"><span>share of all plays</span><b id="share">–</b></div>
-  </div>
+    <header class="bar">
+      <a class="icon" href="index.html" aria-label="Back to the dashboard">‹</a>
+      <div class="period" role="group" aria-label="period">
+        <button data-period="live" class="on">Live</button>
+        <button data-period="mock_month">Month</button>
+      </div>
+      <button class="icon" id="share-link" aria-label="Copy the link to this page">⤴</button>
+    </header>
 
-  <h2>Bars that played your song</h2>
-  <div id="venues"></div>
+    <section class="hero">
+      <div class="avatar" id="avatar" aria-hidden="true"></div>
+      <div class="who">
+        <div class="eyebrow">Artist · SONACAM member</div>
+        <h2 id="name">–</h2>
+        <div class="songs-line" id="songs-line"></div>
+      </div>
+    </section>
 
-  <h2>Plays by day</h2>
-  <div class="chart" id="chart"></div>
-  <div class="muted" id="chart-range"></div>
+    <!-- Now playing: the last play of one of this artist's songs; lights up live on SSE -->
+    <section class="now" id="now">
+      <div class="now-head"><span class="pulse" id="now-dot"></span><span id="now-label">Last heard</span></div>
+      <div class="now-title" id="now-title">–</div>
+      <div class="now-where" id="now-where"></div>
+      <div class="track"><i id="now-progress"></i></div>
+      <div class="track-times"><span id="now-start"></span><span id="now-ago"></span></div>
+    </section>
 
-  <h2>Recent plays</h2>
-  <div id="recent"></div>
-</main>
+    <section class="controls">
+      <div class="ctl"><b id="share">–</b><span>your share of bar plays</span></div>
+      <div class="ctl big"><b id="rank">–</b><span>rank</span></div>
+      <div class="ctl"><b id="counted">–</b><span>plays counted</span></div>
+    </section>
+
+    <section class="card">
+      <h3>Your songs</h3>
+      <div id="songs"></div>
+    </section>
+
+    <section class="card">
+      <h3>Bars that played you</h3>
+      <div id="venues"></div>
+    </section>
+
+    <section class="card">
+      <h3>Plays by day <span class="soft" id="chart-range"></span></h3>
+      <div class="chart" id="chart"></div>
+    </section>
+
+    <section class="card">
+      <h3>Recent plays</h3>
+      <div id="recent"></div>
+    </section>
+
+    <section class="card how">
+      <h3>How you get paid</h3>
+      <p>Bars pay a copyright levy on the drinks they buy. It is collected for SONACAM and the other rights societies.</p>
+      <p>Until now that money had no playlist, so it was shared with flat advances. Fair Play meters record which songs the bars actually play.</p>
+      <p>Your share is your songs' counted plays divided by all counted plays. SONACAM applies its rules and pays you.</p>
+      <p class="fine">Shares here are indicative until SONACAM closes the period. Repeats of the same song in a short time count less, so looping a song in one bar does not inflate it.</p>
+    </section>
+
+    <div class="toast" id="toast" role="status"></div>
+    <footer class="foot" id="foot"></footer>
+  </main>
+</div>
 <script type="module" src="js/artist.js"></script>
 </body>
 </html>
