@@ -31,6 +31,29 @@ def test_uploader_logs_acks_and_parks(tmp_path):
     assert ("parked", 2) in kinds
 
 
+def test_network_recovery_is_logged_as_ok(tmp_path):
+    class Flaky:
+        def __init__(self):
+            self.calls = 0
+
+        def post(self, path, json=None, timeout=None):
+            self.calls += 1
+            if self.calls == 1:
+                raise OSError("connection refused")
+            from device.tests.test_uploader_faults import Resp
+            return Resp(200, {"ack": json["seq"], "status": "stored"})
+
+    log = EventLog(str(tmp_path / "e.jsonl"))
+    ob = Outbox(str(tmp_path / "o.db"))
+    ob.put({"seq": 1, "meter_id": "M-07", "sig": "x", "peaks_b64": ""})
+    up = Uploader(ob, Flaky(), CFG, SEED, sleep=lambda s: None, rand=lambda: 0.5, log=log.append)
+    up.drain_once()          # fails: network DOWN/RETRYING logged
+    up.drain_once()          # succeeds: network OK logged
+    states = [e["state"] for e in log.read() if e["event"] == "network"]
+    assert states[-1] == "OK"
+    assert up.network_state == "OK"
+
+
 def test_monitor_flags_a_made_batch_that_was_never_acked(tmp_path):
     state_dir = str(tmp_path)
     log = EventLog(os.path.join(state_dir, "M-07_events.jsonl"))

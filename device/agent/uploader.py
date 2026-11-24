@@ -78,6 +78,13 @@ class Uploader:
         self.log("network", state=self.network_state, error=self.last_error)
         self.sleep(base * (0.8 + 0.4 * self.rand()))
 
+    def _recovered(self) -> None:
+        """The server answered: clear the failure count and log the return to OK (once per outage)."""
+        if self.failures:
+            self.log("network", state="OK", error=None)
+        self.failures = 0
+        self.last_error = None
+
     def _pause(self) -> None:
         """A batch-level refusal: short wait, does not change the network state."""
         self.sleep(PAUSE_S * (0.8 + 0.4 * self.rand()))
@@ -127,8 +134,7 @@ class Uploader:
             self.outbox.ack(seq)
             self.acked += 1
             self.last_ack_seq = seq
-            self.failures = 0
-            self.last_error = None
+            self._recovered()
             self.log("acked", seq=seq, status="stored", http=200)
             return True
         if code in KEEP_CODES:
@@ -194,8 +200,7 @@ class Uploader:
                 self.last_error = f"{item.get('error')} (batch {seq} parked)"
                 self.log("parked", seq=seq, reason=str(item.get("error")), bulk=True)
         if changed:
-            self.failures = 0
-            self.last_error = None
+            self._recovered()
             return True
         self._pause()
         return False
