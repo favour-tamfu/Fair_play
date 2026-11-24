@@ -81,7 +81,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [x] 4.1 **B-T06** Play logger (event time, chorus-safe, late batches, restart-safe, unidentified music) + its 6 tests
 - [x] 4.2 **B-T07** Ledger chain, Merkle root, FileAnchor, auditor, `tamper.py`
 - [x] 4.3 **B-T08** Read API v1 + SSE feed + static `web/`, responses checked against schemas
-- [ ] 4.4 **B-T09** Fair-play weights `sr-1.0` + modifiers; T-SR-1/2/3 exact
+- [x] 4.4 **B-T09** Fair-play weights `sr-1.0` + modifiers; T-SR-1/2/3 exact
 - [ ] 4.5 **B-T10** Estimation + bootstrap ranges + `run_stats` + shares API (<20 s per mode on the mock month)
 - [ ] 4.6 **B-T11** Mock month importer (read from `origin/a/work` with `git show`) + compare-flat + migration 002 (chain namespace)
 - [ ] 4.7 **B-T12** Payouts (largest remainder, total == pot) + WIPO CSV + frozen
@@ -135,3 +135,5 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 02:55 | 4.1 B-T06 | Play logger live: brief §6 + D-007 (strays never split plays), recompute-and-reconcile per venue-night, chained at confirmation, extents for growth, corrections never edits. Live evening with network cut: 3 plays, 0 corrections, 9 late batches slotted in. test_b → 237 passed |
 | Tue 03:20 | 4.2 B-T07 | Auditor + Merkle + FileAnchor + scheduler + tamper tool live. Hour 01:00 UTC anchored (11 plays). Tamper rehearsal ×3: RED ~1.0 s, GREEN ~1.0 s, right play named. test_b → 248 passed |
 | Tue 03:45 | 4.3 B-T08 | Read API v1 live (overview, venues, plays, shares, flags, payouts, compare-flat, artists, artist) + static web at /. 11 live responses schema-valid; live venue has coords. test_b → 257 passed |
+| Tue 04:10 | live feed check | /api/v1/feed captured live: batch, meter, match, play, ledger (tamper red → restore green) events all shown live (synth_1 on M-90) |
+| Tue 04:30 | 4.4 B-T09 | sr-1.0 weights + loop/audience/concentration (D-008). T-SR-1/2/3 exact; = reference algorithm on 9,000 random plays. test_b → 276 passed |
