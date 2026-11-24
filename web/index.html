@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fair Play · SONACAM view</title>
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">Fair Play <span>· SONACAM view</span></div>
+  <div class="period" role="group" aria-label="period">
+    <button data-period="live" class="on">Live</button>
+    <button data-period="mock_month">Mock month</button>
+  </div>
+  <div class="rule" id="rule">rule —</div>
+  <div class="ledger" id="ledger">ledger —</div>
+</header>
+
+<section class="kpis">
+  <div class="kpi"><span>meters online</span><b id="k-meters">–</b></div>
+  <div class="kpi"><span>plays raw</span><b id="k-raw">–</b></div>
+  <div class="kpi"><span>plays counted</span><b id="k-counted">–</b></div>
+  <div class="kpi"><span>songs ready</span><b id="k-songs">–</b></div>
+  <div class="kpi"><span>unidentified music</span><b id="k-unid">–</b></div>
+</section>
+
+<main class="grid">
+  <section class="panel map-panel">
+    <h2>Venues</h2>
+    <svg id="map" viewBox="0 0 400 420" role="img" aria-label="venue map"></svg>
+  </section>
+
+  <section class="panel feed-panel">
+    <h2>Live feed</h2>
+    <ol id="feed" class="feed"></ol>
+  </section>
+
+  <section class="panel shares-panel">
+    <div class="shares-head">
+      <h2>Shares</h2>
+      <div class="mode" role="group" aria-label="mode">
+        <button data-mode="standardised" class="on">Standardised</button>
+        <button data-mode="raw">Raw</button>
+      </div>
+    </div>
+    <table>
+      <thead><tr><th>#</th><th>title</th><th>artist</th><th class="n">raw</th><th class="n">counted</th><th>share</th><th>range</th><th class="n">FCFA</th><th>flags</th></tr></thead>
+      <tbody id="shares"></tbody>
+    </table>
+    <p class="note" id="shares-note"></p>
+  </section>
+</main>
+
+<footer class="foot">
+  Mock data is illustrative. Numbers come from the rule version shown above; nothing here is measured outside the code.
+  <span id="mode-note"></span>
+</footer>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
