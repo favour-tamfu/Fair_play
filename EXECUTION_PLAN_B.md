@@ -137,3 +137,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 03:45 | 4.3 B-T08 | Read API v1 live (overview, venues, plays, shares, flags, payouts, compare-flat, artists, artist) + static web at /. 11 live responses schema-valid; live venue has coords. test_b → 257 passed |
 | Tue 04:10 | live feed check | /api/v1/feed captured live: batch, meter, match, play, ledger (tamper red → restore green) events all shown live (synth_1 on M-90) |
 | Tue 04:30 | 4.4 B-T09 | sr-1.0 weights + loop/audience/concentration (D-008). T-SR-1/2/3 exact; = reference algorithm on 9,000 random plays. test_b → 276 passed |
+| Tue 04:50 | D-009 (user decision) | audience factor + concentration check = review flags only, no weight change (switch MODIFIERS_ADJUST_WEIGHTS, tested both ways). test_b → 278 passed |

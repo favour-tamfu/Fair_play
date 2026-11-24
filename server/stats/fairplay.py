@@ -12,8 +12,10 @@ Inputs (extra columns are ignored):
 Order of rules (brief §7.2 "applied after 7.1, multiplicatively"):
     1. repeat streak + cooldown (§7.1 reference algorithm, exactly)  -> streak_1..4 | cooldown
     2. loop flag (no weight change; 7.1 already limits it)            -> + loop
-    3. audience factor x0.5                                           -> + low_audience
-    4. concentration cap per (song, venue)                            -> + concentration_cap
+    3. audience check                                                 -> + low_audience
+    4. concentration check per song                                   -> + concentration
+D-009: steps 3-4 only flag for SONACAM review; they change the weight (x0.5 / cap) only when
+config.MODIFIERS_ADJUST_WEIGHTS is True (brief §7.2 original). Streak/cooldown is the only automatic weight.
 """
 from __future__ import annotations
 
@@ -112,14 +114,15 @@ def compute_weights(plays: pd.DataFrame, songs: Optional[pd.DataFrame] = None,
     flags += loop_flags
 
     low, aud_flags = modifiers.low_audience(p, t_ns, windows)
-    for i in np.flatnonzero(low & (w > 0)):
+    for i in np.flatnonzero(low):
         reasons[i].append("low_audience")
-    w = np.where(low, w * config.AUDIENCE_FACTOR, w)
+    if config.MODIFIERS_ADJUST_WEIGHTS:
+        w = np.where(low, w * config.AUDIENCE_FACTOR, w)
     flags += aud_flags
 
-    w, capped, conc_flags = modifiers.concentration_cap(p, w)
-    for i in np.flatnonzero(capped):
-        reasons[i].append("concentration_cap")
+    w, over, conc_flags = modifiers.concentration_cap(p, w, apply=config.MODIFIERS_ADJUST_WEIGHTS)
+    for i in np.flatnonzero(over):
+        reasons[i].append("concentration")
     flags += conc_flags
 
     out = pd.DataFrame({"play_id": p["play_id"].to_numpy(), "weight": w, "reasons": reasons})

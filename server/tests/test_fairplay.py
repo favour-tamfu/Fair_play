@@ -156,7 +156,23 @@ def spread_night(n, venue="V-1", start="20:00", every_min=6):
     return plays([(at(start) + timedelta(minutes=every_min * i), f"S-{i}") for i in range(n)], venue=venue)
 
 
-def test_low_audience_quiet_room_halves():
+@pytest.fixture
+def adjust(monkeypatch):
+    """Brief §7.2 original behaviour: modifiers change the weights (off by default, D-009)."""
+    monkeypatch.setattr(config, "MODIFIERS_ADJUST_WEIGHTS", True)
+
+
+def test_low_audience_quiet_room_flag_only_by_default():
+    assert config.MODIFIERS_ADJUST_WEIGHTS is False                              # D-009
+    df = spread_night(10)
+    df["loudness_db"] = [-20.0] * 9 + [-70.0]
+    windows = pd.DataFrame({"meter_id": "M-V-1", "loudness_db": np.linspace(-60, -10, 120), "received": True})
+    w, _, r = run(df, windows=windows)
+    assert w == [1] * 10 and r.weights["reasons"].iloc[-1] == ["streak_1", "low_audience"]
+    assert [(f["type"], f["detail"]) for f in r.flags] ==         [("low_audience", "1 plays for review (quiet room: 1, outside active hours: 0)")]
+
+
+def test_low_audience_quiet_room_halves_when_enabled(adjust):
     df = spread_night(10)
     df["loudness_db"] = [-20.0] * 9 + [-70.0]
     windows = pd.DataFrame({"meter_id": "M-V-1", "loudness_db": np.linspace(-60, -10, 120), "received": True})
@@ -164,22 +180,22 @@ def test_low_audience_quiet_room_halves():
     assert w == [1] * 9 + [0.5] and r.weights["reasons"].iloc[-1] == ["streak_1", "low_audience"]
     assert [f["type"] for f in r.flags] == ["low_audience"]
     few = windows.iloc[: config.AUDIENCE_MIN_WINDOWS - 1]                        # D-008: too few windows -> no test
-    assert run(df, windows=few)[0] == [1] * 10
+    assert run(df, windows=few)[2].flags == []
 
 
-def test_low_audience_outside_active_hours():
+def test_low_audience_outside_active_hours(adjust):
     df = spread_night(60, every_min=1)                                            # 20:00-20:59 local
     odd = plays([("10:30", "X")]).assign(play_id="P-odd")
     w, _, r = run(pd.concat([df, odd], ignore_index=True))
     assert w[-1] == 0.5 and w[:-1] == [1] * 60
     assert "outside active hours: 1" in r.flags[0]["detail"]
     small = pd.concat([df.iloc[:20], odd], ignore_index=True)                    # D-008: < 50 plays -> no test
-    assert run(small)[0] == [1] * 21
+    assert run(small)[0] == [1] * 21 and run(small)[2].flags == []
 
 
 # ---------------------------------------------------------------- concentration cap
 
-def test_concentration_cap_and_flag():
+def promo_world():
     rows = []
     for v in range(6):                                  # 6 venues, each with 6 one-off songs -> median weighted plays = 1
         rows += [(at("20:00") + timedelta(minutes=10 * i), f"S-{v}-{i}") for i in range(6)]
@@ -189,19 +205,32 @@ def test_concentration_cap_and_flag():
     for k in range(9):
         t = at("18:00") + timedelta(days=k)
         promo += [(t, "P"), (t + timedelta(minutes=1), "Q1"), (t + timedelta(minutes=2), "Q2"), (t + timedelta(minutes=3), "Q3")]
-    df = pd.concat([df, plays(promo, venue="V-0").assign(play_id=lambda d: "Pp" + d["play_id"])], ignore_index=True)
+    return pd.concat([df, plays(promo, venue="V-0").assign(play_id=lambda d: "Pp" + d["play_id"])], ignore_index=True)
+
+
+def test_concentration_flag_only_by_default():
+    df = promo_world()
+    r = compute_weights(df)
+    wp = r.weights[df["song_id"].to_numpy() == "P"]
+    assert wp["weight"].sum() == 9 and all("concentration" in rs for rs in wp["reasons"])
+    assert any(f["song_id"] == "P" and f["detail"].endswith("cap 5 per venue, 1 venue(s) above it (for review)")
+               for f in r.flags if f["type"] == "concentration")
+
+
+def test_concentration_cap_when_enabled(adjust):
+    df = promo_world()
     r = compute_weights(df)
     wp = r.weights[df["song_id"].to_numpy() == "P"]
     cap = max(config.CONC_CAP_MIN, config.CONC_CAP_MULT * 1.0)                    # = 5
     assert wp["weight"].sum() == pytest.approx(cap)
-    assert all("concentration_cap" in rs for rs in wp["reasons"])
+    assert all("concentration" in rs for rs in wp["reasons"])
     conc = [f for f in r.flags if f["type"] == "concentration"]
     assert any(f["song_id"] == "P" and "cap 5 per venue, 1 venue(s) capped" in f["detail"] for f in conc)
     # Q1..Q3 (9 plays each, also only in V-0) are capped too; one-off songs are flagged but untouched (1 <= cap)
     assert r.weights[df["song_id"].str.startswith("S-").to_numpy()]["weight"].eq(1).all()
 
 
-def test_concentration_skipped_with_few_venues_in_period():
+def test_concentration_skipped_with_few_venues_in_period(adjust):
     rows = []                                                                     # one venue (live demo)
     for k in range(12):
         t = at("18:00") + timedelta(days=k)

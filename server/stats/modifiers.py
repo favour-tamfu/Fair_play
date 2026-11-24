@@ -102,17 +102,19 @@ def low_audience(p: pd.DataFrame, t_ns: np.ndarray, windows: Optional[pd.DataFra
     if low.any():
         g = pd.DataFrame({"venue_id": venue, "quiet": quiet, "off": off, "low": low}).groupby("venue_id", sort=True).sum()
         for v, r in g[g["low"] > 0].iterrows():
-            flags.append(_flag("low_audience", None, v, f"{int(r.low)} plays x{config.AUDIENCE_FACTOR:g} "
+            effect = f"x{config.AUDIENCE_FACTOR:g}" if config.MODIFIERS_ADJUST_WEIGHTS else "for review"
+            flags.append(_flag("low_audience", None, v, f"{int(r.low)} plays {effect} "
                                                      f"(quiet room: {int(r.quiet)}, outside active hours: {int(r.off)})"))
     return low, flags
 
 
 # ---------------------------------------------------------------- concentration
 
-def concentration_cap(p: pd.DataFrame, w: np.ndarray):
+def concentration_cap(p: pd.DataFrame, w: np.ndarray, apply: bool = False):
     """Per song over the period: heard in < CONC_MIN_VENUES venues and top-2 venues > CONC_TOP2_SHARE of its weighted
-    plays -> each venue's weighted plays of that song capped at max(CONC_CAP_MIN, CONC_CAP_MULT x median weighted plays
-    per (song, venue) over all songs); flag `concentration`.
+    plays -> flag `concentration`; the cap is max(CONC_CAP_MIN, CONC_CAP_MULT x median weighted plays per (song, venue)
+    over all songs). Returns (weights, over, flags): `over` marks plays in venues above the cap. The weights are scaled
+    down to the cap only when apply=True (D-009: default is flag only, SONACAM decides).
     D-008 guard: only when the period has >= CONC_MIN_VENUES venues (else every song would be 'concentrated')."""
     w = w.copy()
     capped = np.zeros(len(w), dtype=bool)
@@ -134,10 +136,12 @@ def concentration_cap(p: pd.DataFrame, w: np.ndarray):
         for v, vw in per_venue.items():
             if vw > cap:
                 idx = np.flatnonzero((df["song_id"] == s).to_numpy() & (df["venue_id"] == v).to_numpy() & (w > 0))
-                w[idx] *= cap / vw
+                if apply:
+                    w[idx] *= cap / vw
                 capped[idx] = True
                 n_capped += 1
+        effect = "capped" if apply else "above it (for review)"
         flags.append(_flag("concentration", s, per_venue.index[0],
                            f"{len(per_venue)} venues, top 2 hold {top2:.0%} of {total:g} weighted plays; "
-                           f"cap {cap:g} per venue, {n_capped} venue(s) capped"))
+                           f"cap {cap:g} per venue, {n_capped} venue(s) {effect}"))
     return w, capped, flags

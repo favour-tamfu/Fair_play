@@ -94,3 +94,6 @@ CONC_MIN_VENUES = 5              # song heard in < 5 venues ...
 CONC_TOP2_SHARE = 0.60           # ... with top 2 venues > 60 % of its weighted plays -> cap + flag "concentration"
 CONC_CAP_MULT = 3                # cap per venue = max(CONC_CAP_MIN, 3 x median per-(song,venue) weighted plays)
 CONC_CAP_MIN = 5
+# D-009: audience + concentration only FLAG plays for SONACAM review (the machine flags, a human decides).
+# True = brief §7.2 original behaviour (x0.5 / cap applied to the weights automatically).
+MODIFIERS_ADJUST_WEIGHTS = False
