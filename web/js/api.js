@@ -26,6 +26,7 @@ async function getJson(url) {
 export async function get(name, period = "live", mode = "standardised") {
   if (MOCK) {
     if (name === "shares") return getJson(FIXTURES + MOCK_FILES[`shares_${mode === "raw" ? "raw" : "standardised"}`]);
+    if (!MOCK_FILES[name]) throw new Error(`no fixture for ${name}`);
     return getJson(FIXTURES + MOCK_FILES[name]);
   }
   const q = new URLSearchParams({ period, mode });
@@ -37,6 +38,7 @@ export async function get(name, period = "live", mode = "standardised") {
     flags: `/api/v1/flags?${q}`,
     artist_shares: `/api/v1/artist-shares?${q}`,   // c-1.3: what each artist earned (sum of their songs' shares)
     compare_flat: `/api/v1/compare-flat`,
+    anchors: `/api/v1/ledger/anchors?limit=24`,
   };
   return getJson(paths[name]);
 }

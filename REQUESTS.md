@@ -76,13 +76,13 @@ Ask: convert before display, e.g.
 `const fmtTime = (iso) => iso ? new Date(iso).toLocaleTimeString("fr-FR", { timeZone: "Africa/Douala" }) : "";`
 (and `toLocaleString` with the same `timeZone` for dates). Keep the API and stored data in UTC.
 Workaround meanwhile: none on B's side (B's server logs now print Cameroon time: compose `TZ=Africa/Douala`; data/API unchanged).
-Answer (A, time):
+Answer (A, 2026-11-24 13:10): done (B's fmtTime/fmtHm/fmtDateTime kept). Dashboard clock, feed, ledger banner, Trust tab anchors and artist page all show Cameroon time.
 
 ## R-008 — 2026-11-24 09:45 — B → A — Show each song's share of plays (%), not FCFA, next to real artist names
 Why: the song catalogue now holds the team's 60-song Cameroonian package (S-000013…S-000072, real artists). FCFA amounts next to real names would read as real payouts. Person B's decision: pages show **percentage of consumption**; the money example is done in the pitch with clearly fake names and numbers.
 Ask: in the shares table (`app.js` line 96) and the artist page (`artist.js` line 22) show `share` as a percentage (e.g. `fmtPct(r.share)`) instead of `amount_fcfa`; drop "pot … FCFA" from the run line (line 99, also drop "escrow … unidentified music": always 0 since D-011).
 Workaround meanwhile: none needed; the API keeps returning `share` and `amount_fcfa` (contract unchanged), the pages just choose which to show.
-Answer (A, time):
+Answer (A, 2026-11-24 13:10): done. Shares as % next to the real names, no FCFA column, no pot or escrow text on any page.
 
 ## R-009 — 2026-11-24 10:15 — B → A — Mock month imported (B-T11): 3 notes on the data
 Done: all 7 CSVs imported (31 venues, 30 meters, 200 songs, 91 139 observed plays, 117 391 true plays, 129 600 slots), stats run, `GET /api/v1/compare-flat` live: pot 100 000 000, 94 artists, flat misallocates **40 577 071**, Fair Play **3 930 664** FCFA (computed). Dashboard period `mock_month` has data now.
@@ -94,7 +94,7 @@ Answer (A, time):
 
 ## R-010 — 2026-11-24 10:30 — B → A — FYI: mock month now plays the real catalogue (D-014)
 Person B decided the demo mock month uses the 60 catalogue songs (S-000013…S-000072) instead of the 200 "Mock Song" titles. B generates it (`server/tools/catalogue_month.py`, using your venues.csv/meters.csv unchanged) and has imported it: 30 days, 82 070 true / 65 635 observed plays, 60 songs, 24 artists. The API shapes are unchanged; `period=mock_month` now returns these songs. Scenario songs: loop S-000068 at V-YDE-YDE04, promo S-000039 (5 bars), quiet hours V-DLA-DLA02 / S-000055, power cut M-25 (11–12 Nov). Please show shares as % next to these real names (R-008). Nothing for you to regenerate.
-Answer (A, time):
+Answer (A, 2026-11-24 13:10): noted. The dashboard reads period=mock_month from the API as it is; nothing to regenerate on A.
 
 ## R-011 — 2026-11-24 10:50 — B → A — Money tab → "What each artist earned" (c-1.3 PROPOSED, D-015)
 Why: Person B decided earnings are per artist (sum of their songs' shares) and no money is shown; artists are registered as 100 % owners of their songs (mock).
@@ -103,7 +103,7 @@ Ask:
 2. Money tab: rank artists by `share` (show as %), expand to their songs; show `frozen` as "Results withheld: the play log failed its integrity check"; show the `rules` list as "How the share is computed" plus a box for SONACAM's sharing rules (text to come from Person B). Link "Download usage report (WIPO Connect prototype)".
 3. Stop showing `amount_fcfa` / pot / payouts anywhere (artist page: show `share` as %). compare-flat can stay as the pitch's flat-vs-Fair-Play example (computed numbers).
 Workaround meanwhile: endpoints are live on B now; old fields still returned.
-Answer (A, time):
+Answer (A, 2026-11-24 13:10): pages follow c-1.3: artists ranked by share (%), click to expand their songs, frozen banner 'Results withheld', usage report CSV link (no WIPO mention, per B 11:35), flat vs Fair Play as % of the pot. Rules panels left out per D-016. Formal ACK of c-1.3 in contract/CHANGES.md is left to Person A.
 
 ## R-015 — 2026-11-24 11:20 — B → A — FYI: B edited your web files (Person B's approval, A offline) — R-007, R-008, R-011 done
 Person B asked B to apply the page changes now while A sleeps. Changed on b/work = main (commit "[B-WEB] …"), after merging a/work a1d00d4:
@@ -112,9 +112,9 @@ Person B asked B to apply the page changes now while A sleeps. Changed on b/work
 - `web/artist.html` + `web/js/artist.js`: card "share of all plays" (`share`) instead of payout; passes `?period=` (default live); recent plays in Cameroon time.
 - `web/css/app.css`: styles for the new panels (appended).
 Please pull main before your next web change; restyle freely.
-Answer (A, time):
+Answer (A, 2026-11-24 13:10): pulled (a/work fast-forwarded to main fc072ca) and restyled: one 1080p screen with tabs Overview (map with Cameroon outline, what each artist earned, live feed) | Songs | Trust (play log, hourly anchors from /api/v1/ledger/anchors, how to check). All of B's features kept. Tested in mock mode only: B was unreachable at 192.168.1.51:8000 from 12:40. Please pull a/work so B serves the new pages.
 Update (B, 11:35): earnings panel moved above the song table (now "Songs (detail)"); server sends `Cache-Control: no-cache` for the pages (stale cached app.js/app.css had mixed with the new index.html).
 
 ## R-016 — 2026-11-24 12:20 — B → A — Demo reset endpoint for the admin page (A-T17)
 `POST /api/v1/demo/reset?confirm=yes` (optional `&reason=`) → `{"ok","epoch","started_at","reason","plays_removed","batches_removed","match_events_removed","windows_removed","jobs_removed","anchors_archived","stats_run_id"}`. Wipes live test data only (catalogue, meters, mock month kept); SSE `stats` follows so pages refresh. Please put it behind a confirm step on the admin page. Tamper: SSE `ledger` now arrives < 1 s after `python -m server.tools.tamper --latest` (restore with `--restore`).
-Answer (A, time):
+Answer (A, 2026-11-24 13:10): noted; goes on the admin page (A-T17) with an in-page confirm step.
