@@ -32,3 +32,9 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Why: a live meter window never starts on the catalogue's frame grid. Windows half a hop off scored 18–74 instead of 330–500 and, on repetitive songs, landed on another copy of a repeated section (±52.7 s in a looped track) — the play logger would have split one play into several.
 - Measured on the live stack (A's own device code → B, 3 songs, 57 windows): exact position 50/57 → 57/57, weakest score 18–20 → 249–335. Worst case (window ¼ and ⅜ frame off + 10 dB noise, 60 windows, 2 songs): 60/60 right song and position, min score 65.
 - Affects A: A-T16 evaluation harness should index songs with the same two shifts (or call `server.workers.fingerprint.song_hashes`) so measured accuracy reflects the server.
+
+## D-007 — 2026-11-24 02:55 — B — Play logger: one off-track window never starts or splits a play
+- Brief §6 starts a new play when the song offset jumps back > 20 s. On repetitive songs a single window can match another copy of a repeated section (seen live: ±52.7 s in a looped track), which would split one play into several and over-count the song.
+- Rule implemented (server/plays/segment.py): an off-track window of the same song is held as "pending"; the NEXT accepted window decides — agrees with the open play → the pending window was a stray (ignored); agrees with the pending window → real: back > 20 s = restart (new play), otherwise a forward skip inside the same play. All other §6 rules unchanged.
+- Effect: a genuine restart is confirmed one window (10 s) later; a stray never splits a play. Live proof: the pre-D-006 All Falls Down run with 7 stray windows → 1 play (15 windows), not several.
+- Also: plays are hash-chained at confirmation (core fields fixed); what grows while the song keeps playing (end, windows, duration, loudness) is in `play_extents`, not in the chain. Affects A: GET /api/v1/plays duration_s will come from play_extents (B-T08).

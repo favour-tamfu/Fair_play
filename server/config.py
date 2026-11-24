@@ -49,3 +49,15 @@ DUP_MIN_HITS = 2                 # ≥ 2 slices matching the same existing song 
 # the frame index of that grid (≤ 16 ms early), which the ±1-frame vote tolerance absorbs. (DECISIONS D-006)
 FP_INDEX_SHIFTS = (0, 128)
 WORKER_IDLE_LOG_S = 300          # placeholder workers log "alive" this often
+
+# Play logger (B-T06, brief §6)
+SAME_PLAY_TOL_S = 5.0            # |Δoffset − Δtime| ≤ 5 s → same play
+RESTART_BACK_S = 20.0            # offset jumped back > 20 s → new play
+RESTART_GAP_EXTRA_S = 60.0       # gap > (song_length − last_offset) + 60 s → new play
+CONFIRM_MIN_WINDOWS = 2          # confirmed play: ≥ 2 accepted windows …
+CONFIRM_MIN_COVER_S = 30.0       # … and covered ≥ min(30 s, 0.3 × song length)
+CONFIRM_MIN_COVER_FRAC = 0.3
+DEFAULT_SONG_LENGTH_S = 240.0    # if a song's duration is unknown
+MUSIC_LOUDNESS_DB = -35.0        # unmatched window louder than this = "music, unidentified"
+LOCAL_UTC_OFFSET_H = 1           # Cameroon (Africa/Douala) = UTC+1, no DST
+VENUE_DAY_START_H = 6            # a venue-night runs 06:00 → 06:00 local (so 18:00–02:00 is one night)
