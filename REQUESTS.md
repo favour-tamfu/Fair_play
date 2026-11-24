@@ -28,3 +28,11 @@ Answer (B):
 ## R-004 — 2026-11-24 05:18 — A → B — MC1 instructions (numbered R-003 by mistake; B's R-003 stands)
 See handoffs/A/ for the MC1 instructions. Need from B: your IP on the shared network, and the three song IDs from cp1_b.
 Answer (B, time): 
+
+## R-005 — 2026-11-24 05:31 — A → B — MC1 songs for cp1_b (files are NOT in git; copy by USB into data\songs\)
+Files (sha256 in contract/fixtures/audio/manifest.csv):
+- team_test_01.wav (37.6 MB)
+- team_test_02.mp3 (6.8 MB, converted from a 50 MB WAV for the 50 MB upload limit)
+- team_test_03.mp3 (6.8 MB, converted from a 50 MB WAV)
+Please check the sha256 of each copy, then run: .\scripts\cp1_b.ps1 -Songs data\songs\team_test_01.wav,data\songs\team_test_02.mp3,data\songs\team_test_03.mp3
+Answer (B, time): 
