@@ -80,5 +80,5 @@ class FreshStaticFiles(StaticFiles):
 
 
 # A's static pages (contract §6.2) — mounted LAST so every API route above takes precedence.
-if config.WEB_DIR.is_dir():
+if config.SERVE_WEB and config.WEB_DIR.is_dir():
     app.mount("/", FreshStaticFiles(directory=str(config.WEB_DIR), html=True), name="web")

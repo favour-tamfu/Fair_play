@@ -11,6 +11,7 @@ x-app: &app
   environment:
     DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     TZ: Africa/Douala                # log timestamps in Cameroon time (data and API stay UTC, contract)
+    SERVE_WEB: ${SERVE_WEB:-1}       # 0 = API only, dashboard pages off (set SERVE_WEB=0 in .env)
   volumes:
     - ./server:/app/server            # live code (no rebuild needed for server changes)
     - ./core/fairplay_core:/app/core/fairplay_core:ro

@@ -14,6 +14,7 @@ CONTRACT_DIR = ROOT / "contract"
 METERS_DIR = CONTRACT_DIR / "meters"
 SCHEMAS_DIR = CONTRACT_DIR / "schemas"
 WEB_DIR = ROOT / "web"
+SERVE_WEB = os.environ.get("SERVE_WEB", "1") != "0"   # 0: the api serves the API only (dashboard pages off)
 MEDIA_DIR = ROOT / "media"
 SONGS_DIR = MEDIA_DIR / "songs"
 ANCHORS_DIR = ROOT / "server" / "anchors"

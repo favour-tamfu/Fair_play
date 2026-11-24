@@ -105,3 +105,9 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - `clock_skew` flag: |server − meter clock| > 5 s, from heartbeats (sent_at) or a batch whose window ends > 5 s in the future; at most one per meter per hour.
 - `meter_moved` flag: a batch reports a cell_id different from the meter's registered one (first seen); once per (meter, new cell). The registered cell is not changed.
 - Both are review flags only (no weight change), stats_run_id NULL, SSE `flag`; removed by the demo reset.
+
+## D-019 — 2026-11-24 12:55 — B — Robustness results; API-only switch (B-T16)
+- `SERVE_WEB` (compose env, from `.env`; default 1): 0 = the api serves the API only, dashboard pages off. Person B set `SERVE_WEB=0` at 12:40 (dashboard off, meters keep reporting). Set 1 + `docker compose up -d api` to show the pages again.
+- Restart test = `python -m server.tools.chaos run` (Python instead of the planned scripts/chaos_b.ps1: it needs signed batches and DB checks). Measured: baseline 30/30 batches, 3/3 plays; chaos (worker_match, api, worker_play, scheduler, db restarted during the send, 4 meter retries) 36/36 stored once, 3 plays in order, 0 job errors, ledger intact. Laptop A's live M-07 kept sending through all restarts: seq 5–2505, 0 missing, 0 duplicates.
+- Matcher latency (66 indexed songs, 1 385 989 hashes): median 13 ms, p95 49 ms per window; first window after a matcher restart waits for the index load (≈ 6.6 s).
+- `python -m server.tools.demo_seed [--reset-live] [--reimport]`: one-command readiness check before rehearsals (≈ 5 s).
