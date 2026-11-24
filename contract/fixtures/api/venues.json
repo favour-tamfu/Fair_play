@@ -1,0 +1,272 @@
+[
+  {
+    "venue_id": "V-BUEA-CIMFEST",
+    "name": "CIMFEST demo table",
+    "city": "Buea",
+    "lat": 4.1527,
+    "lon": 9.241,
+    "stratum": "BUEA-S",
+    "bars_in_stratum": 300,
+    "meters": [
+      {
+        "meter_id": "M-07",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:38.527Z",
+        "queued": 0,
+        "catch_rate": 0.84
+      }
+    ]
+  },
+  {
+    "venue_id": "V-DLA-AKWA01",
+    "name": "Mock Bar Akwa 1",
+    "city": "Douala",
+    "lat": 4.0491,
+    "lon": 9.7601,
+    "stratum": "DOUA-L",
+    "bars_in_stratum": 1275,
+    "meters": [
+      {
+        "meter_id": "M-11",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:17.409Z",
+        "queued": 0,
+        "catch_rate": 0.86
+      }
+    ]
+  },
+  {
+    "venue_id": "V-DLA-BONAP1",
+    "name": "Mock Bar Bonapriso 1",
+    "city": "Douala",
+    "lat": 4.0754,
+    "lon": 9.7485,
+    "stratum": "DOUA-M",
+    "bars_in_stratum": 2975,
+    "meters": [
+      {
+        "meter_id": "M-14",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:24.203Z",
+        "queued": 0,
+        "catch_rate": 0.89
+      }
+    ]
+  },
+  {
+    "venue_id": "V-DLA-DEIDO1",
+    "name": "Mock Bar Deido 1",
+    "city": "Douala",
+    "lat": 4.0763,
+    "lon": 9.7761,
+    "stratum": "DOUA-S",
+    "bars_in_stratum": 4250,
+    "meters": [
+      {
+        "meter_id": "M-15",
+        "online": true,
+        "last_seen": "2026-11-24T21:28:58.181Z",
+        "queued": 0,
+        "catch_rate": 0.87
+      }
+    ]
+  },
+  {
+    "venue_id": "V-DLA-NDKOT1",
+    "name": "Mock Bar Ndokoti 1",
+    "city": "Douala",
+    "lat": 4.048,
+    "lon": 9.7582,
+    "stratum": "DOUA-M",
+    "bars_in_stratum": 2975,
+    "meters": [
+      {
+        "meter_id": "M-16",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:32.840Z",
+        "queued": 0,
+        "catch_rate": 0.81
+      }
+    ]
+  },
+  {
+    "venue_id": "V-YDE-BASTO1",
+    "name": "Mock Bar Bastos 1",
+    "city": "Yaounde",
+    "lat": 3.8439,
+    "lon": 11.5119,
+    "stratum": "YAOU-L",
+    "bars_in_stratum": 975,
+    "meters": [
+      {
+        "meter_id": "M-12",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:58.459Z",
+        "queued": 0,
+        "catch_rate": 0.8
+      }
+    ]
+  },
+  {
+    "venue_id": "V-YDE-MVAN01",
+    "name": "Mock Bar Mvan 1",
+    "city": "Yaounde",
+    "lat": 3.8399,
+    "lon": 11.4838,
+    "stratum": "YAOU-S",
+    "bars_in_stratum": 3250,
+    "meters": [
+      {
+        "meter_id": "M-17",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:07.762Z",
+        "queued": 0,
+        "catch_rate": 0.77
+      }
+    ]
+  },
+  {
+    "venue_id": "V-YDE-ESSOS1",
+    "name": "Mock Bar Essos 1",
+    "city": "Yaounde",
+    "lat": 3.8306,
+    "lon": 11.5246,
+    "stratum": "YAOU-M",
+    "bars_in_stratum": 2275,
+    "meters": [
+      {
+        "meter_id": "M-18",
+        "online": true,
+        "last_seen": "2026-11-24T21:28:47.194Z",
+        "queued": 0,
+        "catch_rate": 0.78
+      }
+    ]
+  },
+  {
+    "venue_id": "V-YDE-NLONG1",
+    "name": "Mock Bar Nlongkak 1",
+    "city": "Yaounde",
+    "lat": 3.8748,
+    "lon": 11.5059,
+    "stratum": "YAOU-S",
+    "bars_in_stratum": 3250,
+    "meters": [
+      {
+        "meter_id": "M-19",
+        "online": true,
+        "last_seen": "2026-11-24T21:28:11.946Z",
+        "queued": 0,
+        "catch_rate": 0.78
+      }
+    ]
+  },
+  {
+    "venue_id": "V-BUEA-MOLYK1",
+    "name": "Mock Bar Molyko 1",
+    "city": "Buea",
+    "lat": 4.1645,
+    "lon": 9.2298,
+    "stratum": "BUEA-M",
+    "bars_in_stratum": 300,
+    "meters": [
+      {
+        "meter_id": "M-13",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:28.613Z",
+        "queued": 0,
+        "catch_rate": 0.85
+      }
+    ]
+  },
+  {
+    "venue_id": "V-LMB-DOWN01",
+    "name": "Mock Bar Down Beach 1",
+    "city": "Limbe",
+    "lat": 4.0023,
+    "lon": 9.2039,
+    "stratum": "LIMB-S",
+    "bars_in_stratum": 300,
+    "meters": [
+      {
+        "meter_id": "M-20",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:37.331Z",
+        "queued": 0,
+        "catch_rate": 0.85
+      }
+    ]
+  },
+  {
+    "venue_id": "V-BDA-CMMC01",
+    "name": "Mock Bar Commercial Ave 1",
+    "city": "Bamenda",
+    "lat": 5.966,
+    "lon": 10.1664,
+    "stratum": "BAME-M",
+    "bars_in_stratum": 300,
+    "meters": [
+      {
+        "meter_id": "M-21",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:09.576Z",
+        "queued": 0,
+        "catch_rate": 0.81
+      }
+    ]
+  },
+  {
+    "venue_id": "V-BFS-MARC01",
+    "name": "Mock Bar Marche A 1",
+    "city": "Bafoussam",
+    "lat": 5.476,
+    "lon": 10.4281,
+    "stratum": "BAFO-S",
+    "bars_in_stratum": 300,
+    "meters": [
+      {
+        "meter_id": "M-22",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:10.047Z",
+        "queued": 0,
+        "catch_rate": 0.72
+      }
+    ]
+  },
+  {
+    "venue_id": "V-GRA-CENT01",
+    "name": "Mock Bar Centre 1",
+    "city": "Garoua",
+    "lat": 9.319,
+    "lon": 13.3989,
+    "stratum": "GARO-S",
+    "bars_in_stratum": 300,
+    "meters": [
+      {
+        "meter_id": "M-23",
+        "online": true,
+        "last_seen": "2026-11-24T21:29:00.005Z",
+        "queued": 0,
+        "catch_rate": 0.74
+      }
+    ]
+  },
+  {
+    "venue_id": "V-KRI-PLAG01",
+    "name": "Mock Bar Plage 1",
+    "city": "Kribi",
+    "lat": 2.9638,
+    "lon": 9.9389,
+    "stratum": "KRIB-S",
+    "bars_in_stratum": 300,
+    "meters": [
+      {
+        "meter_id": "M-24",
+        "online": false,
+        "last_seen": "2026-11-24T16:30:00.000Z",
+        "queued": 13,
+        "catch_rate": 0.85
+      }
+    ]
+  }
+]

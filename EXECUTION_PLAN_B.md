@@ -63,17 +63,17 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [x] 2.5 JSON Schemas (draft 2020-12), all 13 files from contract §9
 - [x] 2.6 Test vectors `tv_keys.json`, `tv_batch_valid/badsig/badversion.json`
 - [x] 2.7 `scripts/cp0_b.ps1`; handoff; push `b/work`
-- [ ] 2.8 **MC0 merge** (`b/work` then `a/work` → `main`), joint test (same SHA from `extract_peaks` on both laptops, cross-verify a signature), tag `cp-0`
+- [x] 2.8 **MC0 merge** (`b/work` then `a/work` → `main`), joint test (same SHA from `extract_peaks` on both laptops, cross-verify a signature), tag `cp-0`
 - **Check:** `pytest core -q` green on both laptops.
 
 ## Phase 3 — Server foundation  → **MC1**
-- [~] 3.1 **B-T02** Docker Compose (db, api, worker_fp, worker_match, worker_play, scheduler), Dockerfile, migrations `001_init.sql`, `/health`, `firewall_b.ps1`
+- [x] 3.1 **B-T02** Docker Compose (db, api, worker_fp, worker_match, worker_play, scheduler), Dockerfile, migrations `001_init.sql`, `/health`, `firewall_b.ps1`
   - Check: `docker compose up -d` healthy; `curl localhost:8000/health`; A's netcheck green
-- [ ] 3.2 **B-T03** Ingest API (`/v1/batches`, `/bulk`, `/heartbeat`, `/meters/register`), meter key loading, SSE bus over Postgres NOTIFY, API fixtures for A, `send_fixtures.py`
+- [x] 3.2 **B-T03** Ingest API (`/v1/batches`, `/bulk`, `/heartbeat`, `/meters/register`), meter key loading, SSE bus over Postgres NOTIFY, API fixtures for A, `send_fixtures.py`
   - Check: test vectors give 200, 401, 422; duplicate and 409 cases; `curl -N /api/v1/feed` shows `batch` events
-- [ ] 3.3 **B-T04** Song upload + fingerprint worker + duplicate check + `DbIndex` + `reindex_all`
+- [x] 3.3 **B-T04** Song upload + fingerprint worker + duplicate check + `DbIndex` + `reindex_all`
   - Check: 3 songs → ready; re-upload → duplicate_suspected
-- [ ] 3.4 **B-T05** Matcher worker + `make_batches_from_wav.py`
+- [x] 3.4 **B-T05** Matcher worker + `make_batches_from_wav.py`
   - Check: ≥90% of windows accepted on clean audio
 - [ ] 3.5 **MC1 merge** + joint live test (speaker → accepted matches for ≥2 of 3 songs; 2-minute network cut → no seq gaps), tag `cp-1`
 
@@ -121,3 +121,11 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Mon 22:19 | 2.6–2.7 | Test vectors (M-90, deterministic) + check_batch + golden_sha + cp0_b.ps1 (GREEN, golden SHA waits for A); R-001 to A; handoff B-T01. test_b.ps1 → 147 passed. **B-T01 done; next = MC0 when A is ready** |
 | Mon 22:47 | 3.1a–c (written) | requirements, Dockerfile, compose (6 services), .env (local), config, 001_init.sql, migrate, job board, /health, worker stubs, firewall script, DB tests. Not yet run: **Docker Desktop stopped ("unable to start")**; DB tests skip (2 passed, 6 skipped) |
 | Mon 23:05 | MC0 check of A | a/work @ 4615239: only A-owned files; core 154 passed on A's branch; golden SHA a0544f53… MATCH on Laptop B; 20/20 A-built batches = identical signatures, schema+model valid; M-07.pub.json valid. Bug found → R-002 (silence → loudness −240 dB → 422). Log times corrected to real commit times (earlier rows were estimates) |
+| Mon 23:15 | 2.8 MC0 | main = b/work + a/work (clean), cp0_b.ps1 GREEN on main (core 154 passed, golden MATCH), tag **cp-0** pushed; b/work = main. D-004 MC0, D-005 Claude Code declared in README only (no commit trailers). **Phase 2 done** |
+| Mon 23:25 | MC0 real-key check | A's `batch_M07.json` (saved locally in gitignored data/cp0/): `check_batch` → signature verified with committed `M-07.pub.json`; peaks (194) and loudness (−9.0) identical to Laptop B's own extraction of tone_mix.wav. **All MC0 items verified** |
+| Mon 23:55 | test with A (prep) | `server/tools/match_offline.py` (no Docker needed): user WAV (68.9 s) self-test 12/12; simulated meter (start 3.7 s, noise −6 dB) 6/6 matched, but scores 11–78 vs threshold 8 → thin margin off the frame grid. Waiting for A's mic batches |
+| Tue 00:05 | song fingerprint check with A | `w1tde-ZgpvbxiTQAZjm-4A.wav`: file SHA 3fa304f4…, peaks SHA 2dd8c9d2… (472 peaks), hashes SHA b157cc49… (2198) — **identical on A and B** (user confirmed) |
+| Tue 00:20 | 3.1 B-T02 | Image built; `docker compose up -d` → 6 services up, api+db healthy; /health ok db:true; 001_init applied once (19 tables); restart keeps data; B tests 153 passed (DB tests now run). Pending network leg: `firewall_b.ps1` (admin) + A netcheck on hotspot |
+| Tue 00:45 | 3.2 B-T03 | Ingest API live (batches/bulk/heartbeat/register), meter keys loaded at start-up (M-07), live feed via NOTIFY→SSE; send_fixtures on the real stack: 200/401/422 as contract, feed shows batch+meter events, late flag by event time; 15 API fixtures + feed sample for A (schema-valid). test_b → 189 passed |
+| Tue 01:00 | 3.3 B-T04 | Upload API + fingerprint worker + duplicate check + DbIndex live. User WAV + 2 synthetic songs ready in ≤1.1 s each; re-upload → duplicate_suspected (3/3 slices). test_b → 205 passed |
+| Tue 01:35 | 3.4 B-T05 | Matcher worker live: user WAV at 3.7 s + 10 dB noise → 6/6 MATCH, offsets advance with the clock, 1–30 ms/window, SSE match events. make_batches_from_wav + cp1_b.ps1 (GREEN). test_b → 212 passed. **B side ready for MC1** |

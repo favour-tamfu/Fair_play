@@ -1,0 +1,12 @@
+{
+  "intact": true,
+  "broken_at_play_id": null,
+  "plays_checked": 1287,
+  "last_root": "2410b82d0c7d12162410b82d0c7d12162410b82d0c7d12162410b82d0c7d1216",
+  "last_anchor": {
+    "hour": "2026-11-24T21:00:00.000Z",
+    "root": "2410b82d0c7d12162410b82d0c7d12162410b82d0c7d12162410b82d0c7d1216",
+    "via": "file",
+    "tx_ref": null
+  }
+}
