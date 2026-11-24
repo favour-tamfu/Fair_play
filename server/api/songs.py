@@ -12,12 +12,13 @@ import shutil
 from pathlib import Path
 from typing import Any, Optional
 
-from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
 from fairplay_core.schema import format_utc
 from server import config
+from server.api.admin import require_admin
 from server.db import connect, jobs
 
 router = APIRouter(prefix="/api/v1")
@@ -200,7 +201,7 @@ def _approve(song_id: str) -> Optional[str]:
     return "approved"
 
 
-@router.post("/songs/{song_id}/approve")
+@router.post("/songs/{song_id}/approve", dependencies=[Depends(require_admin)])
 async def approve_song(song_id: str):
     """Admin: a suspected duplicate is genuine (e.g. a remaster) → index it anyway."""
     res = await run_in_threadpool(_approve, song_id)

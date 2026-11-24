@@ -13,4 +13,4 @@ def test_demo_seed_on_an_empty_catalogue(migrated_db, monkeypatch, capsys):
     assert rc == 1
     assert "FAIL  catalogue" in out and "0/0 songs ready" in out
     assert "FAIL  mock month" in out and "skipped: the catalogue is not ready" in out
-    assert "OK    ledger" in out and "FAIL  api" in out
+    assert "OK    ledger" in out and "FAIL  api" in out and "FAIL  admin token" in out

@@ -15,7 +15,9 @@ from datetime import datetime, timezone
 from fastapi import FastAPI
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
+import psycopg
 
 from fairplay_core.schema import format_utc
 from server import config
@@ -67,6 +69,15 @@ def health() -> dict:
     except Exception:  # db down must not break /health
         db_ok = False
     return {"ok": True, "server_time": format_utc(datetime.now(timezone.utc)), "db": db_ok, "version": config.VERSION}
+
+
+@app.exception_handler(psycopg.OperationalError)
+async def db_unavailable(request, exc):
+    """Database restarting / unreachable: a clean 503 the meter (and pages) retry, not a 500 traceback (audit #10)."""
+    logging.getLogger("api").warning("db unavailable for %s %s: %s", request.method, request.url.path,
+                                     str(exc).splitlines()[0][:120])
+    return JSONResponse({"error": "db_unavailable", "detail": "database restarting, please retry"}, status_code=503,
+                        headers={"Retry-After": "2"})
 
 
 class FreshStaticFiles(StaticFiles):

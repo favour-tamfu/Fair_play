@@ -39,8 +39,8 @@ def reset_live(conn: psycopg.Connection, reason: str = "demo reset") -> dict:
             conn.execute(f"DELETE FROM {t} WHERE play_id IN ({live})")
         conn.execute("DELETE FROM plays WHERE chain = 'live'")
         counts = {"plays_removed": n_plays,
+                  "match_events_removed": conn.execute("DELETE FROM match_events").rowcount,   # before raw_batches (FK)
                   "batches_removed": conn.execute("DELETE FROM raw_batches").rowcount,
-                  "match_events_removed": conn.execute("DELETE FROM match_events").rowcount,
                   "windows_removed": conn.execute("DELETE FROM windows WHERE source IS DISTINCT FROM 'mock'").rowcount,
                   "jobs_removed": conn.execute("DELETE FROM jobs WHERE kind IN ('match', 'play')").rowcount}
         conn.execute("DELETE FROM playlogger_state")

@@ -92,6 +92,10 @@ def main(argv=None) -> int:
         ok["ledger"] = (st["intact"], f"{'intact' if st['intact'] else 'BROKEN at ' + str(st['broken_at_play_id'])}, "
                                       f"{st['plays_checked']} plays checked")
 
+    from server import config
+    ok["admin token"] = (bool(config.ADMIN_TOKEN) and config.ADMIN_TOKEN != "change-me-too",
+                         "set in .env (admin actions protected)" if config.ADMIN_TOKEN and config.ADMIN_TOKEN != "change-me-too"
+                         else "NOT set: anyone on the network can reset or re-key meters (set ADMIN_TOKEN in .env)")
     import httpx
     try:
         h = httpx.get(a.url + "/health", timeout=5).json()

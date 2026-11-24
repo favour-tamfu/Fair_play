@@ -8,16 +8,17 @@ CIMFEST Hackathon 2026 · "Africa's creative economy" · Buea, Cameroon
 
 ## Contents
 1. [Fair Play in one minute](#1-fair-play-in-one-minute)
-2. [How it works](#2-how-it-works)
-3. [Quick start (Windows)](#3-quick-start-windows)
-4. [The SONACAM server (Laptop B)](#4-the-sonacam-server-laptop-b)
-5. [How the fair-play rules work](#5-how-the-fair-play-rules-work)
-6. [Trust: the tamper-proof play log](#6-trust-the-tamper-proof-play-log)
-7. [Measured on our laptops](#7-measured-on-our-laptops)
-8. [Device (Laptop A)](#8-device-laptop-a)
-9. [Web pages](#9-web-pages)
-10. [Limits (what this prototype does not do)](#10-limits-what-this-prototype-does-not-do)
-11. [Declarations](#11-declarations)
+2. [The real product](#2-the-real-product)
+3. [How it works](#3-how-it-works)
+4. [Quick start (Windows)](#4-quick-start-windows)
+5. [The SONACAM server](#5-the-sonacam-server)
+6. [How the fair-play rules work](#6-how-the-fair-play-rules-work)
+7. [Trust: the tamper-proof play log](#7-trust-the-tamper-proof-play-log)
+8. [Measured during the hackathon](#8-measured-during-the-hackathon)
+9. [Device (the meter software)](#9-device-the-meter-software)
+10. [Web pages](#10-web-pages)
+11. [Limits (what this prototype does not do)](#11-limits-what-this-prototype-does-not-do)
+12. [Declarations](#12-declarations)
 
 ---
 
@@ -27,17 +28,43 @@ CIMFEST Hackathon 2026 · "Africa's creative economy" · Buea, Cameroon
 |---|---|
 | SONACAM collects money from bars but cannot see what was played, so it pays every artist the same flat advance. | A meter in each bar recognises the songs it hears (like a music-recognition app) and reports them. |
 | Popular artists are underpaid, and nobody can check the split. | Each artist's share = how much their songs were really played, after fair-play rules against abuse. |
-| Records can be changed quietly. | Every play is written into a tamper-proof log; any change is detected within a second. |
+| Records can be changed quietly. | Every play is written into a tamper-proof log; any change is detected in about a second. |
 
 **Privacy:** the meter never records or sends sound. It sends only a "fingerprint" of the music (a list of the loudest notes over time), which cannot be turned back into audio or speech.
 
 ---
 
-## 2. How it works
+## 2. The real product
+
+Fair Play has four pieces. In real life they look like this:
+
+| Piece | In the real world | Who uses it |
+|---|---|---|
+| **The meter** | A small sealed box on the bar wall, about the size of a phone charger: a low-cost chip (RISC-V microcontroller), a small microphone and a 4G modem. Parts cost about $5–8. It plugs into the mains and needs no Wi-Fi from the bar. | Installed by SONACAM in every bar it licenses |
+| **The SONACAM server** | SONACAM's computer system (in a data centre or the cloud). It receives the meters' reports, recognises the songs, keeps the tamper-proof log and computes each artist's share. | SONACAM |
+| **The SONACAM dashboard** | A web page: meters on a map, songs heard live, each artist's share, items to review, the log's integrity. | SONACAM staff |
+| **The artist page and upload portal** | Web pages that work on a phone: artists or labels upload their songs and owners; each artist sees where and how often their songs were played and their share. | Artists, labels |
+
+**What the meter does, all day, by itself:**
+1. Listens for 10 seconds every minute.
+2. Turns those 10 seconds into a fingerprint (the loudest notes over time, never the sound itself).
+3. Seals the fingerprint with its own secret key, so nobody can fake or change it on the way.
+4. Sends it over 4G (a few kilobytes); if the network is down, it keeps everything and sends it later, in order.
+5. Reports which phone tower it is near, so a meter moved to another place is noticed.
+
+### During the hackathon
+We could not get the electronics in time, so two laptops play the roles:
+- **Laptop A plays the meter.** It runs exactly the computation the box would run (microphone → fingerprint → seal → send), plus "virtual meters" fed with recorded audio for testing.
+- **Laptop B plays the SONACAM server** (Docker containers on Windows) and serves the web pages.
+- A phone hotspot or Wi-Fi stands in for 4G. In the demo the meter listens continuously (10 s every 10 s) so changes show up quickly.
+
+---
+
+## 3. How it works
 
 ```
- IN THE BAR (Laptop A = the meter)            AT SONACAM (Laptop B = the server)                 ON SCREEN
- ┌──────────────────────────────┐   Wi-Fi   ┌─────────────────────────────────────────┐   ┌──────────────────────┐
+ IN THE BAR (the meter; Laptop A in the demo)  AT SONACAM (the server; Laptop B in the demo)     ON SCREEN
+ ┌──────────────────────────────┐ 4G / WiFi ┌─────────────────────────────────────────┐   ┌──────────────────────┐
  │ microphone                   │  signed   │ 1. check the meter's signature          │   │ SONACAM dashboard    │
  │  → every 10 s: fingerprint   │ ────────► │ 2. match the fingerprint to a song      │──►│  live feed, map,     │
  │  → sign it (meter's own key) │  batches  │ 3. join matches into plays              │   │  songs, artists'     │
@@ -52,15 +79,15 @@ CIMFEST Hackathon 2026 · "Africa's creative economy" · Buea, Cameroon
 
 ---
 
-## 3. Quick start (Windows)
+## 4. Quick start (Windows)
 
 **You need:** Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/) running, Python 3.11, Git.
 
-### Start the server (Laptop B)
+### Start the server (Laptop B in the demo)
 ```powershell
 git clone https://github.com/favour-tamfu/Fair_play.git
 cd Fair_play
-Copy-Item .env.example .env          # first time only; then choose your own POSTGRES_PASSWORD (same value in DATABASE_URL)
+Copy-Item .env.example .env          # first time only; then set your own POSTGRES_PASSWORD (same value in DATABASE_URL) and ADMIN_TOKEN
 docker compose up -d --build         # starts the database and the five server parts (first time: a few minutes)
 docker compose ps                    # "api" and "db" should say (healthy)
 ```
@@ -89,7 +116,7 @@ Run once in an **administrator** PowerShell: `powershell -ExecutionPolicy Bypass
 
 ---
 
-## 4. The SONACAM server (Laptop B)
+## 5. The SONACAM server
 
 ### What each part does
 The server is six small programs (Docker containers) that share one database.
@@ -109,6 +136,7 @@ The server is six small programs (Docker containers) that share one database.
 | check everything before a demo | `python -m server.tools.demo_seed` |
 | wipe the live test plays (keep songs, meters, mock month) | `python -m server.tools.demo_seed --reset-live` |
 | load a song package (CSV + audio folder) | `python -m server.tools.import_catalogue PATH\to\package` |
+| remove songs from the catalogue (e.g. test uploads) | `python -m server.tools.retire_songs S-000001..S-000012` (`--dry-run` to preview) |
 | rebuild the mock month on the catalogue | `python -m server.tools.catalogue_month` then `python -m server.tools.import_mock data\mock_month_catalogue` |
 | show the tamper alarm | `python -m server.tools.tamper --latest` · undo: `python -m server.tools.tamper --restore` |
 | prove restarts lose nothing | `python -m server.tools.chaos run` |
@@ -145,9 +173,11 @@ Full shapes and examples: `docs/01_CONTRACT.md` and `contract/schemas/`.
 
 Every list accepts `period=live|mock_month` and `mode=standardised|raw` (with or without the fair-play rules).
 
+**Admin actions are protected.** Demo reset, recompute, approving a suspected duplicate, and adding a meter or changing its key need the header `X-Admin-Token` with the `ADMIN_TOKEN` from `.env`. Nobody else on the network can re-key a meter.
+
 ---
 
-## 5. How the fair-play rules work
+## 6. How the fair-play rules work
 
 The goal: **a song counts for what people actually heard, and nobody can buy a bigger share by looping a song.**
 
@@ -184,7 +214,7 @@ In this prototype each artist is registered as the 100 % owner of their songs, a
 
 ---
 
-## 6. Trust: the tamper-proof play log
+## 7. Trust: the tamper-proof play log
 
 - Every play is chained to the one before it with a cryptographic hash (like numbered, sealed pages in a notebook). Changing any recorded play breaks the chain from that point.
 - The server re-checks the whole chain continuously. **Measured: an edited play shows as "log broken" on the dashboard in about 1 second**, and results are withheld until the log is restored.
@@ -193,7 +223,7 @@ In this prototype each artist is registered as the 100 % owner of their songs, a
 
 ---
 
-## 7. Measured on our laptops
+## 8. Measured during the hackathon
 
 | What | Result |
 |---|---|
@@ -204,21 +234,21 @@ In this prototype each artist is registered as the 100 % owner of their songs, a
 | Tamper alarm (edit a play → dashboard shows "log broken") | 0.9 s (restore → "intact" in 1.1 s) |
 | Mock month (30 days, 31 bars, 60 songs, 65,635 recorded plays): import + results | about 10 seconds |
 
-Accuracy through a real microphone in a noisy room: see [Device](#8-device-laptop-a) (measured by A).
+All numbers were measured on the two hackathon laptops. Accuracy through a real microphone in a noisy room: see [Device](#9-device-the-meter-software) (measured by A).
 
 ---
 
-## 8. Device (Laptop A)
-*(Section owned by A: meter setup, microphone check, virtual meters, calibration tool, measured accuracy.)*
+## 9. Device (the meter software)
+*(Section owned by A: running the meter software on Laptop A, microphone check, virtual meters, calibration tool, measured accuracy.)*
 
-## 9. Web pages
+## 10. Web pages
 *(Section owned by A: SONACAM dashboard, artist page, upload portal, admin page.)*
 
 ---
 
-## 10. Limits (what this prototype does not do)
+## 11. Limits (what this prototype does not do)
 
-- **Laptops stand in for meters.** A real meter would be a small box with a microphone and a 4G module.
+- **No meter box yet.** During the hackathon, laptops stand in for the meter and for SONACAM's server (see [The real product](#2-the-real-product)); a phone hotspot or Wi-Fi stands in for 4G.
 - **The mock month is simulated.** Bars, plays and listening patterns are generated (seeded, repeatable); only the songs are real. It exists to show what a month of data looks like and to compare the flat split with Fair Play against a known truth.
 - **No money moves.** Results end at each artist's share; owners are set to the artist (100 %) as a placeholder until real splits are registered.
 - **One credited artist per song.** Featured artists are not yet given their own share.
@@ -228,7 +258,7 @@ Accuracy through a real microphone in a noisy room: see [Device](#8-device-lapto
 
 ---
 
-## 11. Declarations
+## 12. Declarations
 
 All code in this repository was written during the hackathon (Mon 23 Nov – Wed 25 Nov 2026). **Built with Claude Code** (Anthropic), declared as an AI coding tool.
 

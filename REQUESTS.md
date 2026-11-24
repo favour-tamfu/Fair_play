@@ -126,3 +126,5 @@ Answer (A, time):
 ## R-018 — 2026-11-24 13:10 — B → A — README: please fill sections 8 (Device) and 9 (Web)
 B rewrote README.md in plain language (Person B asked for simple, lay-term wording and a clean structure). Sections **8. Device (Laptop A)** and **9. Web pages** are placeholders for you: same style please (short plain sentences first, commands in tables), plus measured mic accuracy (section 7 points to it). Check the A rows in the Declarations table (from device/requirements.txt). Avoid money amounts and external-format names on the pages and in the README (Person B, D-015).
 Answer (A, time):
+
+Update (B, 14:20): README renumbered after adding "2. The real product": your sections are now **9. Device (the meter software)** and **10. Web pages**. Describe the real meter box first and Laptop A as the hackathon stand-in (Person B). Admin page (A-T17): send header `X-Admin-Token` (ADMIN_TOKEN from B's .env, given to you in person, never in git) for demo reset, approve, stats run, anchor (D-020).

@@ -18,6 +18,7 @@ import httpx
 
 from fairplay_core.schema import format_utc
 from fairplay_core.signing import sign_batch
+from server import config
 from server.tools.make_test_vectors import OUT, SEED, synthetic_peaks, unsigned_batch
 
 T0 = datetime(2026, 11, 24, 20, 0, tzinfo=timezone.utc)
@@ -32,7 +33,8 @@ def main(argv: list[str]) -> int:
     keys = json.loads((OUT / "tv_keys.json").read_text(encoding="utf-8"))
     ok = True
     with httpx.Client(base_url=a.url, timeout=10) as c:
-        r = c.post("/v1/meters/register", json={k: keys[k] for k in ("meter_id", "venue_id", "public_key_b64", "created_at")})
+        r = c.post("/v1/meters/register", json={k: keys[k] for k in ("meter_id", "venue_id", "public_key_b64", "created_at")},
+                   headers={"X-Admin-Token": config.ADMIN_TOKEN})
         print(f"register M-90            -> {r.status_code} {r.json()}")
         for name, expect in [("tv_batch_valid.json", {200}), ("tv_batch_badsig.json", {401}),
                              ("tv_batch_badversion.json", {422})]:

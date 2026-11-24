@@ -33,6 +33,8 @@ def _from_dotenv(key: str) -> str | None:
 
 
 # Inside docker compose DATABASE_URL points at host "db"; on the host it comes from .env (published port 55432).
+# D-020: admin actions need the header X-Admin-Token: <ADMIN_TOKEN>; empty = open (dev laptops, tests)
+ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN") or _from_dotenv("ADMIN_TOKEN") or ""
 DATABASE_URL = (os.environ.get("DATABASE_URL") or _from_dotenv("DATABASE_URL")
                 or "postgresql://fairplay:fairplay@127.0.0.1:55432/fairplay")
 

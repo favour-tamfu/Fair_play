@@ -8,7 +8,8 @@ from fastapi import APIRouter, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
-from server import ingest
+from server import config, ingest
+from server.api.admin import HEADER, register_allowed_without_token, token_ok
 from server.db import connect
 from server.registry import upsert_meter
 
@@ -57,9 +58,12 @@ async def post_calibration(request: Request):
     return await _handle(ingest_calibration, request)
 
 
-def _register(conn, body) -> ingest.Result:
+def _register(conn, body, admin: bool = False) -> ingest.Result:
     if not isinstance(body, dict):
         return ingest.Result(422, {"error": "invalid", "detail": "body must be a .pub.json object"})
+    if not admin and not register_allowed_without_token(conn, body):
+        return ingest.Result(403, {"error": "admin_token_required",
+                                   "detail": f"adding a meter or changing its key needs the {HEADER} header"})
     try:
         with conn.transaction():
             r = upsert_meter(conn, body)
@@ -70,5 +74,11 @@ def _register(conn, body) -> ingest.Result:
 
 @router.post("/meters/register")
 async def register_meter(request: Request):
-    """Admin convenience (demo: no auth). Same as dropping a .pub.json into contract/meters and restarting."""
-    return await _handle(_register, request)
+    """Same as dropping a .pub.json into contract/meters and restarting. Adding a meter or changing a key needs the
+    admin token (D-020); re-sending a meter's current key, or a key that matches contract/meters, is always fine."""
+    admin = bool(config.ADMIN_TOKEN) and token_ok(request.headers.get(HEADER))
+    body = await _json_body(request)
+    if body is None:
+        return JSONResponse({"error": "invalid", "detail": "body is not valid JSON"}, status_code=422)
+    r = await run_in_threadpool(_with_conn, lambda conn, b: _register(conn, b, admin or not config.ADMIN_TOKEN), body)
+    return JSONResponse(r.body, status_code=r.code)

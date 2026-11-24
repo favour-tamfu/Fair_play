@@ -22,6 +22,9 @@ x-app: &app
     db:
       condition: service_healthy
   restart: unless-stopped
+  logging: &logging                  # cap container logs (disk is tight): 3 files × 10 MB per service
+    driver: json-file
+    options: {max-size: "10m", max-file: "3"}
 
 services:
   db:
@@ -39,6 +42,7 @@ services:
       timeout: 3s
       retries: 20
     restart: unless-stopped
+    logging: *logging
 
   api:
     <<: *app

@@ -111,3 +111,12 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Restart test = `python -m server.tools.chaos run` (Python instead of the planned scripts/chaos_b.ps1: it needs signed batches and DB checks). Measured: baseline 30/30 batches, 3/3 plays; chaos (worker_match, api, worker_play, scheduler, db restarted during the send, 4 meter retries) 36/36 stored once, 3 plays in order, 0 job errors, ledger intact. Laptop A's live M-07 kept sending through all restarts: seq 5–2505, 0 missing, 0 duplicates.
 - Matcher latency (66 indexed songs, 1 385 989 hashes): median 13 ms, p95 49 ms per window; first window after a matcher restart waits for the index load (≈ 6.6 s).
 - `python -m server.tools.demo_seed [--reset-live] [--reimport]`: one-command readiness check before rehearsals (≈ 5 s).
+
+## D-020 — 2026-11-24 14:20 — B (Person B approved fixes 1, 2, 3, 10) — Admin token, safe meter registration, test songs retired
+- `ADMIN_TOKEN` (in `.env`, never in git; empty = open, for developer laptops and tests): header `X-Admin-Token` required for POST demo/reset, stats/run, ledger/anchor, songs/{id}/approve. demo_seed reports FAIL if it is not set.
+- `POST /v1/meters/register` without the token only accepts a record that changes nothing that matters (same key as stored, or a new meter whose key equals contract/meters/<id>.pub.json); anything else → 403 `admin_token_required`. A meter can no longer be re-keyed by someone else on the network.
+- Database unreachable/restarting → HTTP 503 `{"error":"db_unavailable"}` with `Retry-After: 2` (was a 500 traceback).
+- Test and commercial uploads S-000001…S-000012 (11 songs) retired with `server/tools/retire_songs.py`: demo reset first (live epoch 1, 32 live test plays removed, 7 anchors archived, recorded in the anchors file), then songs, fingerprints, owners, flags, shares and audio files removed. Test meters M-90, M-97, M-98 removed from the demo database. Catalogue = the 60 package songs only.
+- Bug found and fixed while doing it: the demo reset deleted raw_batches before match_events (foreign key) — it only worked on test data without links; the test now links them like real data.
+- Container logs capped at 3 × 10 MB per service (disk).
+- README: new section "2. The real product" (meter box, server, dashboard, artist page); laptops described as the hackathon stand-ins.
