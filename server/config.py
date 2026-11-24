@@ -65,3 +65,14 @@ VENUE_DAY_START_H = 6            # a venue-night runs 06:00 â†’ 06:00 local
 # Ledger + scheduler (B-T07)
 LEDGER_CHECK_S = 1.0             # auditor runs this often; dashboard turns red well within 2 s of a tamper
 METER_OFFLINE_S = 150            # no batch/heartbeat for this long â†’ meter offline (field mode sends every 60 s)
+
+# Read API (B-T08)
+RULE_VERSION = "sr-1.0"
+POT_DEFAULT_FCFA = 100_000_000   # "bar levy pot (example)"
+# period=live: live/virtual plays since the build started (Mon 23 Nov 12:00 local = 11:00 UTC)
+LIVE_SINCE = os.environ.get("LIVE_SINCE", "2026-11-23T11:00:00.000Z")
+# Venue details known in advance (contract §7); fill only EMPTY fields at start-up, never overwrite imported data
+KNOWN_VENUES = {
+    "V-BUEA-CIMFEST": {"name": "CIMFEST demo table", "city": "Buea", "lat": 4.1527, "lon": 9.2410,
+                       "size_class": "S", "stratum": "BUEA-S"},
+}

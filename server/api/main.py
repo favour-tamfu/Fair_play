@@ -3,7 +3,7 @@
     uvicorn server.api.main:app --host 0.0.0.0 --port 8000
 
 Start-up: apply migrations → load contract/meters/*.pub.json → start the live-feed listener.
-Routes: /health, device ingest (/v1/*), live feed (/api/v1/feed). Read API + static web follow in B-T08.
+Routes: /health, device ingest (/v1/*), catalogue, ledger, read API (/api/v1/*), live feed; A's web/ at /.
 """
 from __future__ import annotations
 
@@ -15,14 +15,15 @@ from datetime import datetime, timezone
 from fastapi import FastAPI
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from fairplay_core.schema import format_utc
 from server import config
-from server.api import feed, ingest, ledger, songs
+from server.api import feed, ingest, ledger, read, songs
 from server.api.events import bus
 from server.db import connect, ping
 from server.db.migrate import migrate
-from server.registry import load_meter_keys
+from server.registry import fill_known_venues, load_meter_keys
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 log = logging.getLogger("fairplay.api")
@@ -33,7 +34,8 @@ def _startup() -> None:
     log.info("startup: migrations applied now: %s", applied or "none (up to date)")
     with connect(autocommit=True) as conn, conn.transaction():
         meters = load_meter_keys(conn)
-    log.info("startup: meter keys loaded: %s", ", ".join(meters) or "none")
+        venues = fill_known_venues(conn)
+    log.info("startup: meter keys loaded: %s; known venues filled: %s", ", ".join(meters) or "none", ", ".join(venues))
 
 
 @asynccontextmanager
@@ -52,6 +54,7 @@ app.include_router(ingest.router)
 app.include_router(feed.router)
 app.include_router(songs.router)
 app.include_router(ledger.router)
+app.include_router(read.router)
 
 
 @app.get("/health")
@@ -63,3 +66,8 @@ def health() -> dict:
     except Exception:  # db down must not break /health
         db_ok = False
     return {"ok": True, "server_time": format_utc(datetime.now(timezone.utc)), "db": db_ok, "version": config.VERSION}
+
+
+# A's static pages (contract §6.2) — mounted LAST so every API route above takes precedence.
+if config.WEB_DIR.is_dir():
+    app.mount("/", StaticFiles(directory=str(config.WEB_DIR), html=True), name="web")
