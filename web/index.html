@@ -34,54 +34,47 @@
 </nav>
 
 <main id="top">
-  <!-- Hero -->
+  <!-- Hero: black, full-bleed photo, MacBook resting on the edge of the next section -->
   <section class="hero">
-    <p class="hero-name">Fair Play</p>
-    <h1>Every play counts.</h1>
-    <p class="hero-sub">Bars already pay a levy on the drinks they buy.<br>Now it is shared by what they really play.</p>
-    <div class="hero-cta">
-      <a class="pill big" href="artist.html">Find your plays</a>
-      <a class="more dark" href="#how">See how it works</a>
-    </div>
-    <figure class="macbook">
-      <div class="mb-lid">
-        <div class="mb-cam"></div>
-        <div class="mb-screen"><img src="assets/img/shot-dashboard.webp" alt="The Fair Play dashboard showing who earned what, the map of metered bars and live activity" width="1600" height="1000"></div>
+    <div class="hero-photo" aria-hidden="true"></div>
+    <div class="hero-text">
+      <p class="hero-name">Fair Play</p>
+      <h1>Every play counts.</h1>
+      <p class="hero-sub">Bars already pay a levy on the drinks they buy.<br>Now it is shared by what they really play.</p>
+      <div class="hero-cta">
+        <a class="pill big" href="artist.html">Find your plays</a>
+        <a class="more on-dark" href="#how">See how it works</a>
       </div>
-      <div class="mb-deck"><span></span></div>
+    </div>
+    <figure class="macbook" aria-label="The Fair Play dashboard on a laptop">
+      <div class="mb-lid">
+        <div class="mb-bezel">
+          <div class="mb-notch"><i></i></div>
+          <div class="mb-screen"><img src="assets/img/shot-dashboard.webp" alt="The Fair Play dashboard showing who earned what, the map of metered bars and live activity" width="1600" height="1000"></div>
+        </div>
+      </div>
+      <div class="mb-hinge"></div>
+      <div class="mb-base"><span class="mb-thumb"></span></div>
+      <div class="mb-shadow"></div>
     </figure>
   </section>
 
-  <!-- Highlights: static grid, caption under each image -->
+  <!-- Highlights: a checkerboard of square photos and square statements -->
   <section class="highlights grey" id="highlights">
     <div class="wrap">
       <h2>Get the highlights.</h2>
-      <div class="hl-grid">
-        <figure class="hl big">
-          <div class="hl-img"><img src="assets/img/bottles.webp" alt="A bar with bottles on shelves and two speakers on the wall"></div>
-          <figcaption><b>A meter in every bar.</b> A small box next to the speaker recognises each song. Every bar is counted, none is guessed.</figcaption>
-        </figure>
-        <figure class="hl big">
-          <div class="hl-img"><img src="assets/img/dj.webp" alt="A DJ's hands on a mixing controller"></div>
-          <figcaption><b>No sound leaves the bar.</b> Only short fingerprints are sent. The music itself, and every conversation, stays in the room.</figcaption>
-        </figure>
-        <figure class="hl">
-          <div class="hl-img"><img src="assets/img/mic.webp" alt="A singer smiling on stage with a microphone" loading="lazy"></div>
-          <figcaption><b>Artists see it live.</b> Which bar played your song, and how your share moves.</figcaption>
-        </figure>
-        <figure class="hl">
-          <div class="hl-img"><img src="assets/img/outdoor-bar.webp" alt="A bartender at an outdoor bar at night" loading="lazy"></div>
-          <figcaption><b>Nothing changes at the counter.</b> Bars keep paying the levy they already pay.</figcaption>
-        </figure>
-        <figure class="hl">
-          <div class="hl-img"><img src="assets/img/yaounde.webp" alt="Aerial view of Yaoundé" loading="lazy"></div>
-          <figcaption><b>Shared by real use.</b> The bar money is split by counted plays, not flat advances.</figcaption>
-        </figure>
+      <div class="squares">
+        <div class="sq photo" style="--img:url('../assets/img/bottles.webp')" role="img" aria-label="A bar with bottles on shelves and two speakers on the wall"></div>
+        <div class="sq text"><span class="sq-n">01</span><h3>A meter in every bar.</h3><p>A small box next to the speaker recognises each song. Every bar is counted, none is guessed.</p></div>
+        <div class="sq photo" style="--img:url('../assets/img/dj.webp')" role="img" aria-label="A DJ's hands on a mixing controller"></div>
+        <div class="sq text black"><span class="sq-n">02</span><h3>No sound leaves the bar.</h3><p>Only short fingerprints are sent. The music itself, and every conversation, stays in the room.</p></div>
+        <div class="sq photo" style="--img:url('../assets/img/mic.webp')" role="img" aria-label="A singer smiling on stage with a microphone"></div>
+        <div class="sq text"><span class="sq-n">03</span><h3>Shared by real use.</h3><p>The bar money is split by counted plays, not flat advances. Bars keep paying the levy they already pay.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- Numbers (computed) -->
+  <!-- Numbers: four square tiles -->
   <section class="numbers" id="numbers">
     <div class="wrap">
       <h2 class="center">Counted, not estimated.</h2>
@@ -95,7 +88,7 @@
     </div>
   </section>
 
-  <!-- Bento -->
+  <!-- Bento of squares -->
   <section class="bento-wrap grey">
     <div class="wrap">
       <h2>Fairer by design.</h2>
@@ -114,6 +107,9 @@
           <p class="b-eye">Across Cameroon</p>
           <h3 id="map-title">Every metered bar.</h3>
           <svg id="mini-map" viewBox="0 0 400 560" role="img" aria-label="Map of Cameroon with the metered bars"></svg>
+        </article>
+        <article class="b b-photo" style="--img:url('../assets/img/outdoor-bar.webp')" aria-label="A bartender at an outdoor bar at night">
+          <h3>Nothing changes at the counter.</h3>
         </article>
         <article class="b b-black b-quiet">
           <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 24v16M26 18v28M34 22v20M42 28v8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M10 10l44 44" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>
@@ -135,7 +131,7 @@
     </div>
   </section>
 
-  <!-- For artists: iPhone with live data -->
+  <!-- For artists: square photo with the iPhone stepping out of it -->
   <section class="artists" id="artists">
     <div class="wrap split">
       <div class="split-text">
@@ -144,24 +140,27 @@
         <p>Your share of bar plays, your rank, each song and each bar, updated as the meters hear your music.</p>
         <a class="pill big" href="artist.html">Open the artist portal</a>
       </div>
-      <div class="split-visual">
+      <div class="stage">
+        <div class="stage-photo" style="--img:url('../assets/img/mic.webp')" aria-hidden="true"></div>
         <div class="iphone">
-          <span class="btn b1"></span><span class="btn b2"></span><span class="btn b3"></span><span class="btn b4"></span>
-          <div class="ip-screen">
-            <div class="ip-island"></div>
-            <div class="ps-status"><span id="ps-time">9:41</span><span class="ps-icons"><i></i><i></i><i></i></span></div>
-            <p class="ps-app">Fair Play</p>
-            <div class="ps-head"><div class="ps-avatar" id="ps-avatar">–</div><div><small>Artist</small><b id="ps-name">–</b></div></div>
-            <div class="ps-cards">
-              <div><small>Share of bar plays</small><b id="ps-share">–</b></div>
-              <div><small>Rank</small><b id="ps-rank">–</b></div>
-              <div><small>Plays counted</small><b id="ps-counted">–</b></div>
-              <div><small>Plays heard</small><b id="ps-heard">–</b></div>
+          <span class="ib ib-action"></span><span class="ib ib-up"></span><span class="ib ib-down"></span><span class="ib ib-power"></span>
+          <div class="ip-glass">
+            <div class="ip-screen">
+              <div class="ip-island"></div>
+              <div class="ps-status"><span id="ps-time">9:41</span><span class="ps-icons"><i></i><i></i><i></i></span></div>
+              <p class="ps-app">Fair Play</p>
+              <div class="ps-head"><div class="ps-avatar" id="ps-avatar">–</div><div><small>Artist</small><b id="ps-name">–</b></div></div>
+              <div class="ps-cards">
+                <div><small>Share of bar plays</small><b id="ps-share">–</b></div>
+                <div><small>Rank</small><b id="ps-rank">–</b></div>
+                <div><small>Plays counted</small><b id="ps-counted">–</b></div>
+                <div><small>Plays heard</small><b id="ps-heard">–</b></div>
+              </div>
+              <p class="ps-label">Your songs</p>
+              <div class="ps-list" id="ps-songs"></div>
+              <p class="ps-foot" id="ps-foot"></p>
+              <div class="ps-home"></div>
             </div>
-            <p class="ps-label">Your songs</p>
-            <div class="ps-list" id="ps-songs"></div>
-            <p class="ps-foot" id="ps-foot"></p>
-            <div class="ps-home"></div>
           </div>
         </div>
       </div>
@@ -177,7 +176,7 @@
     </div>
   </section>
 
-  <!-- How it works -->
+  <!-- How it works: four squares -->
   <section class="how" id="how">
     <div class="wrap">
       <h2 class="center">From a song in a bar<br>to a fair share.</h2>
