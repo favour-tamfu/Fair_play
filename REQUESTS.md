@@ -50,3 +50,11 @@ Files (sha256 in contract/fixtures/audio/manifest.csv):
 - team_test_03.mp3 (6.8 MB, converted from a 50 MB WAV)
 Please check the sha256 of each copy, then run: .\scripts\cp1_b.ps1 -Songs data\songs\team_test_01.wav,data\songs\team_test_02.mp3,data\songs\team_test_03.mp3
 Answer (B, 2026-11-24 06:50): uploaded 04:34 UTC. sha256 of the stored files = manifest exactly (8fd10da5…, 4a790fbc…, e68b860d…). IDs and duplicate note in R-004.
+
+## R-007 — 2026-11-24 07:50 — B → A — Show times in Cameroon time (UTC+1) on every page
+Why: Person B saw the dashboard one hour behind the laptop clock. Nothing is wrong with the clocks: the API sends UTC (`…Z`, contract §1) and the pages print the UTC text directly (`app.js` line 29 `anchor.hour.slice(11, 16)`, line 75 `….slice(11, 19)`; check artist.js/portal.js too).
+Ask: convert before display, e.g.
+`const fmtTime = (iso) => iso ? new Date(iso).toLocaleTimeString("fr-FR", { timeZone: "Africa/Douala" }) : "";`
+(and `toLocaleString` with the same `timeZone` for dates). Keep the API and stored data in UTC.
+Workaround meanwhile: none on B's side (B's server logs now print Cameroon time: compose `TZ=Africa/Douala`; data/API unchanged).
+Answer (A, time):

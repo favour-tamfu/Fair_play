@@ -52,10 +52,11 @@ def loop_flags(venue: np.ndarray, song: np.ndarray, t_ns: np.ndarray, length_s: 
         run = i - start
         if run >= config.LOOP_MIN_RUN:
             looped[start:i] = True
-            t0 = pd.Timestamp(t_ns[start], tz="UTC").strftime("%Y-%m-%d %H:%M")
-            t1 = pd.Timestamp(t_ns[i - 1], tz="UTC").strftime("%H:%M")
+            off = config.LOCAL_UTC_OFFSET_H * 3_600_000_000_000                # flag text for people: local time
+            t0 = pd.Timestamp(t_ns[start] + off).strftime("%Y-%m-%d %H:%M")
+            t1 = pd.Timestamp(t_ns[i - 1] + off).strftime("%H:%M")
             flags.append(_flag("loop", song[start], venue[start],
-                               f"{run} back-to-back plays {t0}-{t1} UTC, one song length apart"))
+                               f"{run} back-to-back plays {t0}-{t1} (Cameroon time), one song length apart"))
         start = i
     return looped, flags
 
