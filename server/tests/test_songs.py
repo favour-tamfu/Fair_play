@@ -218,3 +218,8 @@ def test_dbindex_sync_adds_and_removes(client, migrated_db, wavs):
         assert idx.sync(c) == ([], ["S-000002"])
         assert set(idx.songs) == {"S-000001"}
         assert all(s == "S-000001" for entries in idx._d.values() for s, _ in entries)
+
+
+def test_upload_limit_is_50_mb():
+    """contract c-1.1 (proposed): 30 → 50 MB."""
+    assert config.UPLOAD_MAX_BYTES == 50 * 1024 * 1024

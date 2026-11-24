@@ -19,3 +19,9 @@ Ask: in `device/agent/batcher.build_batch`, use `max(-100.0, min(0.0, round(loud
 Also (suggestion, not blocking): `batcher.sign_fields/canonical_bytes` duplicate `fairplay_core.signing.sign_dict/canonical_bytes`. They are identical today (B checked: 20/20 A-built batches give the same signature as `sign_dict`, and validate against schema + model). Switching to the core functions avoids future drift.
 Workaround meanwhile: none needed until A sends silence; B will not relax the contract range.
 Answer (A, time):
+
+## R-003 — 2026-11-24 02:00 — B → A — ACK contract change c-1.1: upload limit 50 MB (see contract/CHANGES.md)
+Why: full-length WAV exports (~38 MB) were refused at 30 MB.
+Ask: append `ACK c-1.1 — time — A` under the proposal in contract/CHANGES.md (or object), and use 50 MB in the portal check.
+Workaround meanwhile: none needed; the server already accepts up to 50 MB.
+Answer (A, time):
