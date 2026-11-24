@@ -2,7 +2,7 @@
 
 > This document is the **only** thing A and B must agree on to work in parallel. If something is not here, it is
 > internal to one side. **Changing anything here = contract change** (protocol in `02_WORKFLOW_HANDOFFS_MERGES.md §6`).
-> Contract version: **c-1.0** (Mon 12:00). Every change bumps the minor version and is logged in `contract/CHANGES.md`.
+> Contract version: **c-1.1** (Tue 06:50; c-1.0 Mon 12:00). Every change bumps the minor version and is logged in `contract/CHANGES.md`.
 
 Ownership of contract artefacts:
 | Artefact | Path | Written by | Read by |
@@ -140,7 +140,7 @@ B computes catch rate = matched expected plays / expected plays for that meter (
 ## 5. Catalogue (upload) endpoints
 
 ### `POST /api/v1/songs` (multipart/form-data)
-Fields: `file` (mp3/wav/m4a/flac, ≤ 30 MB), `title`, `artist_name`, `isrc` (optional), `iswc` (optional),
+Fields: `file` (mp3/wav/m4a/flac, ≤ 50 MB — c-1.1), `title`, `artist_name`, `isrc` (optional), `iswc` (optional),
 `duration_s` (optional; server measures anyway), `owners` (JSON string: `[{"name","role":"singer|composer|producer|publisher","share_pct":number,"momo":"+2376XXXXXXXX"}]`, shares must sum to 100), `consent` ("true" required).
 → `201 {"song_id": "S-000123", "status": "uploaded"}`; 400 on validation errors with `{"error","detail"}`.
 
@@ -210,5 +210,7 @@ B writes all schemas in B-T01/B-T03 (they mirror §3–§6). Both sides validate
 ## 10. Change log
 `contract/CHANGES.md` starts with:
 ```
+## c-1.1 — 2026-11-24 06:50 — upload limit 30 MB → 50 MB (proposed B, ACK A 05:18)
+
 ## c-1.0 — 2026-11-23 12:00 — initial contract (A+B)
 ```

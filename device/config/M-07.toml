@@ -3,6 +3,6 @@ venue_id = "V-BUEA-CIMFEST"
 cell_id = "624-01-0412-01733"
 fw = "agent-0.1.0"
 mode = "demo"
-sonacam_url = "http://192.168.137.1:8000"
+sonacam_url = "http://192.168.1.51:8000"
 input = "mic"
 heartbeat_s = 60

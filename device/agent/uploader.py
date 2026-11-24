@@ -47,7 +47,9 @@ class Uploader:
         heartbeat_s: float = 60.0,
         sleep: Callable[[float], None] = time.sleep,
         rand: Callable[[], float] = random.random,
+        log: Optional[Callable[..., None]] = None,
     ):
+        self.log = log or (lambda event, **fields: None)  # event log hook (see eventlog.py)
         self.outbox = outbox
         self.client = client
         self.cfg = meter_cfg
@@ -73,7 +75,15 @@ class Uploader:
         """A network-level failure: count it and wait longer each time."""
         base = RETRY_S[min(self.failures, len(RETRY_S) - 1)]
         self.failures += 1
+        self.log("network", state=self.network_state, error=self.last_error)
         self.sleep(base * (0.8 + 0.4 * self.rand()))
+
+    def _recovered(self) -> None:
+        """The server answered: clear the failure count and log the return to OK (once per outage)."""
+        if self.failures:
+            self.log("network", state="OK", error=None)
+        self.failures = 0
+        self.last_error = None
 
     def _pause(self) -> None:
         """A batch-level refusal: short wait, does not change the network state."""
@@ -124,18 +134,20 @@ class Uploader:
             self.outbox.ack(seq)
             self.acked += 1
             self.last_ack_seq = seq
-            self.failures = 0
-            self.last_error = None
+            self._recovered()
+            self.log("acked", seq=seq, status="stored", http=200)
             return True
         if code in KEEP_CODES:
             self.outbox.record_error(seq, f"http {code}")
             self.parked.add(seq)
             self.last_error = f"http {code} (batch {seq} parked)"
+            self.log("parked", seq=seq, http=code)
             self._pause()
             return False
         if code in DEAD_CODES:
             self.outbox.to_dead(seq, f"http {code}")
             self.last_error = f"http {code} batch {seq} moved to dead"
+            self.log("dead", seq=seq, http=code)
             return True
         self.outbox.record_error(seq, f"http {code}")
         self._backoff()
@@ -177,16 +189,18 @@ class Uploader:
                 self.acked += 1
                 self.last_ack_seq = seq
                 changed = True
+                self.log("acked", seq=seq, status=status, http=200, bulk=True)
             elif item.get("error") in DEAD_REASONS:
                 self.outbox.to_dead(seq, str(item.get("error")))
                 changed = True
+                self.log("dead", seq=seq, reason=str(item.get("error")), bulk=True)
             else:  # bad_signature, unknown_meter, anything else: park and retry later
                 self.outbox.record_error(seq, str(item.get("error")))
                 self.parked.add(seq)
                 self.last_error = f"{item.get('error')} (batch {seq} parked)"
+                self.log("parked", seq=seq, reason=str(item.get("error")), bulk=True)
         if changed:
-            self.failures = 0
-            self.last_error = None
+            self._recovered()
             return True
         self._pause()
         return False

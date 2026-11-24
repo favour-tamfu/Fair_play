@@ -1,0 +1,81 @@
+// Data access for the dashboard. Mock mode (?mock=1) reads the fixtures in contract/fixtures/api
+// (served by python -m http.server from the repo root); otherwise it calls B's /api/v1 endpoints.
+
+export const MOCK = new URLSearchParams(location.search).get("mock") === "1";
+const FIXTURES = "../contract/fixtures/api/";
+
+const MOCK_FILES = {
+  overview: "overview.json",
+  venues: "venues.json",
+  shares_raw: "shares_raw.json",
+  shares_standardised: "shares_standardised.json",
+  flags: "flags.json",
+  ledger_status: "ledger_status.json",
+  payouts: "payouts.json",
+  feed: "feed_sample.txt",
+};
+
+async function getJson(url) {
+  const r = await fetch(url, { cache: "no-store" });
+  if (!r.ok) throw new Error(`${url}: HTTP ${r.status}`);
+  return r.json();
+}
+
+export async function get(name, period = "live", mode = "standardised") {
+  if (MOCK) {
+    if (name === "shares") return getJson(FIXTURES + MOCK_FILES[`shares_${mode === "raw" ? "raw" : "standardised"}`]);
+    return getJson(FIXTURES + MOCK_FILES[name]);
+  }
+  const q = new URLSearchParams({ period, mode });
+  const paths = {
+    overview: `/api/v1/overview?${q}`,
+    venues: `/api/v1/venues`,
+    shares: `/api/v1/shares?${q}`,
+    ledger_status: `/api/v1/ledger/status`,
+    flags: `/api/v1/flags?${q}`,
+  };
+  return getJson(paths[name]);
+}
+
+// Parse SSE text (the fixture file and the live stream use the same format).
+export function parseSse(text) {
+  const out = [];
+  for (const block of text.split(/\n\n+/)) {
+    let event = "message";
+    const data = [];
+    for (const line of block.split("\n")) {
+      if (line.startsWith(":")) continue;
+      if (line.startsWith("event:")) event = line.slice(6).trim();
+      if (line.startsWith("data:")) data.push(line.slice(5).trim());
+    }
+    if (data.length) {
+      try { out.push({ event, data: JSON.parse(data.join("\n")) }); } catch (_) { /* skip bad line */ }
+    }
+  }
+  return out;
+}
+
+// Calls onEvent({event, data}) for each live message. Returns a stop function.
+export function feed(onEvent) {
+  if (MOCK) {
+    let timer = null;
+    let events = [];
+    let i = 0;
+    fetch(FIXTURES + MOCK_FILES.feed).then((r) => r.text()).then((t) => {
+      events = parseSse(t);
+      timer = setInterval(() => {
+        if (!events.length) return;
+        onEvent(events[i % events.length]);
+        i += 1;
+      }, 2000);
+    });
+    return () => clearInterval(timer);
+  }
+  const es = new EventSource("/api/v1/feed");
+  for (const name of ["batch", "match", "play", "flag", "ledger", "meter", "stats"]) {
+    es.addEventListener(name, (msg) => {
+      try { onEvent({ event: name, data: JSON.parse(msg.data) }); } catch (_) { /* skip */ }
+    });
+  }
+  return () => es.close();
+}
