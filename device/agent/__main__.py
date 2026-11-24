@@ -1,4 +1,4 @@
-"""Agent runner (A-T06, minimal): capture -> window -> batch -> outbox -> uploader.
+"""Agent runner (A-T06): capture -> window -> batch -> outbox -> uploader, with a live status screen.
 
   python -m device.agent run --config device\\config\\M-07.toml [--mode demo|field] [--input mic|file:<path>]
 
@@ -6,7 +6,6 @@ Stop with Ctrl+C. Everything unsent stays in the outbox (device/state/) and is s
 """
 import argparse
 import os
-import queue
 import sys
 import threading
 import tomllib
@@ -19,6 +18,7 @@ from device.agent.capture import FileSource, MicSource
 from device.agent.outbox import Outbox
 from device.agent.scheduler import Scheduler
 from device.agent.state import MeterState
+from device.agent.tui import StatusLoop, StatusScreen
 from device.agent.uploader import Uploader
 from device.tools.provision import load_seed
 
@@ -35,7 +35,7 @@ def _parse(argv):
     return p.parse_args(argv)
 
 
-def _blocks(input_spec: str, mode: str):
+def _blocks(input_spec: str):
     if input_spec == "mic":
         return MicSource().blocks()
     if input_spec.startswith("file:"):
@@ -58,26 +58,29 @@ def run(argv=None) -> int:
     outbox = Outbox(os.path.join(STATE_DIR, f"{meter}_outbox.db"))
     client = httpx.Client(base_url=cfg["sonacam_url"])
     uploader = Uploader(outbox, client, cfg, seed, heartbeat_s=float(cfg.get("heartbeat_s", 60)))
+    screen = StatusScreen(cfg, mode, input_spec, uploader, outbox)
 
     stop = threading.Event()
     worker = threading.Thread(target=uploader.run, args=(stop,), daemon=True)
     worker.start()
-    print(f"agent {meter} venue {cfg['venue_id']} mode {mode} input {input_spec} -> {cfg['sonacam_url']}")
+    view = StatusLoop(screen)
+    view.start()
 
     try:
-        for win in Scheduler(mode).windows(_blocks(input_spec, mode)):
+        for win in Scheduler(mode).windows(_blocks(input_spec)):
             seq = state.next_seq()
             batch = build_batch(cfg, seq, win.start_utc, win.peaks, win.loudness_db, seed)
             outbox.put(batch)
             stamp = datetime.fromtimestamp(win.start_utc, tz=timezone.utc).isoformat(timespec="seconds")
-            print(f"seq {seq}  {stamp}  peaks {win.peaks.size}  loudness {win.loudness_db}  "
-                  f"queued {outbox.count()}  net {uploader.network_state}")
+            screen.note_window(seq, stamp, int(win.peaks.size), win.loudness_db)
     except KeyboardInterrupt:
-        print("stopping (Ctrl+C); unsent batches stay in the outbox")
+        pass
     finally:
+        view.stop()
         stop.set()
         worker.join(timeout=10)
         client.close()
+        print("stopped; unsent batches stay in the outbox:", outbox.count())
     return 0
 
 

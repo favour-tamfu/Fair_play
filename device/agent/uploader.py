@@ -57,6 +57,7 @@ class Uploader:
         self.rand = rand
         self.failures = 0          # consecutive network failures, drives backoff and network state
         self.acked = 0
+        self.last_ack_seq: Optional[int] = None
         self.parked: set = set()   # seqs the server refused with 401/404 this session
         self.last_error: Optional[str] = None
         self.skew_s: Optional[float] = None
@@ -122,6 +123,7 @@ class Uploader:
         if code == 200:
             self.outbox.ack(seq)
             self.acked += 1
+            self.last_ack_seq = seq
             self.failures = 0
             self.last_error = None
             return True
@@ -173,6 +175,7 @@ class Uploader:
             if status in ("stored", "duplicate"):
                 self.outbox.ack(seq)
                 self.acked += 1
+                self.last_ack_seq = seq
                 changed = True
             elif item.get("error") in DEAD_REASONS:
                 self.outbox.to_dead(seq, str(item.get("error")))
