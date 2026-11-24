@@ -1,5 +1,5 @@
 file,sha256,format,sample_rate_hz,channels,bits,duration_s,rights,notes
 cc0_test_01.wav,3fa304f4030b3ab1ff5f512f26756cd2cf93acc9da86603832c7307e573d1248,wav,48000,1,16,68.9,CC0 (owner statement),title and artist not recorded; audio NOT in git, share by USB into data\songs\
-team_test_01.wav,ea809cc37a4c75e46fe07c4407785c4f80b758b6fc847394f126737bae878403,wav,44100,2,16,223.6,team-provided (rights to confirm),not in git - share by USB
+team_test_01.mp3,8fd10da5a82fe8978cdc6b95806798ec13dbadd878c338c6364454dcc4f2f254,mp3,44100,2,192k,223.6,team-provided (rights to confirm),not in git - share by USB
 team_test_02.mp3,4a790fbc3b9ceac40114826c415b4016bf5b7337427aa0dcbb1f1750f98effc6,mp3,44100,2,192k,298.1,team-provided (rights to confirm),not in git - share by USB
 team_test_03.mp3,e68b860d0c508d399c6f57cfbf645b225c28a590ceb5c4f2982451e88e7a900b,mp3,44100,2,192k,298.1,team-provided (rights to confirm),not in git - share by USB
