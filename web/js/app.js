@@ -18,7 +18,6 @@ function renderKpis(o) {
   document.getElementById("k-raw").textContent = fmtInt(o.plays_raw);
   document.getElementById("k-counted").textContent = fmtInt(o.plays_counted);
   document.getElementById("k-songs").textContent = fmtInt(o.songs_ready);
-  document.getElementById("k-unid").textContent = o.unidentified_music_min == null ? "–" : `${o.unidentified_music_min} min`;
   document.getElementById("rule").textContent = `rule ${o.rule_version}`;
 }
 
@@ -81,22 +80,24 @@ function addFeed(evt) {
   if (event === "ledger") loadLedgerBanner();
 }
 
+// D-011: every bar is metered and there is no sampling, so ci_low = ci_high = share: no range bar.
+// D-009: audience and concentration are review flags only; they never change the money.
 function renderShares(s) {
   const rows = s.rows.slice(0, 15);
-  const max = Math.max(...rows.map((r) => r.ci_high), 0.01);
+  const max = Math.max(...rows.map((r) => r.share), 0.01);
   const tb = document.getElementById("shares");
   tb.innerHTML = rows.map((r, i) => {
-    const lo = (100 * r.ci_low / max).toFixed(1), hi = (100 * r.ci_high / max).toFixed(1), at = (100 * r.share / max).toFixed(1);
+    const w = (100 * r.share / max).toFixed(1);
     const flags = (r.flags || []).map((f) => `<span class="chip">${f}</span>`).join("");
     return `<tr>
       <td>${i + 1}</td><td>${r.title}</td><td>${r.artist_name}</td>
       <td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.weighted_plays)}</td>
       <td>${fmtPct(r.share)}</td>
-      <td><div class="bar"><i style="left:${lo}%;width:${Math.max(0.5, hi - lo)}%"></i><b style="left:${at}%"></b></div></td>
+      <td><div class="bar"><i style="left:0;width:${w}%"></i></div></td>
       <td class="n">${fmtFcfa(r.amount_fcfa)}</td><td>${flags}</td></tr>`;
   }).join("");
   document.getElementById("shares-note").textContent =
-    `${s.rule_version} · run ${s.stats_run_id} · pot ${fmtFcfa(s.pot_fcfa)} · escrow ${fmtPct(s.escrow_share)} (unidentified music, held)`;
+    `${s.rule_version} · run ${s.stats_run_id} · pot ${fmtFcfa(s.pot_fcfa)} · flags are for SONACAM review and do not change the amounts`;
 }
 
 async function loadShares() {

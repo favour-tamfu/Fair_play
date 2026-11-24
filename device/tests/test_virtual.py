@@ -3,6 +3,7 @@ import json
 import os
 
 import numpy as np
+import pytest
 
 from device.tests.test_uploader_faults import Resp
 from device.virtual.__main__ import make_blocks, mix_noise, read_playlist, run_pipeline
@@ -41,6 +42,8 @@ def test_blocks_are_0_1_s_apart_and_realtime_sleeps_between_them():
     assert len(slept) == 10 and all(abs(s - 0.05) < 1e-9 for s in slept)  # speed 2 halves the wait
 
 
+@pytest.mark.skipif(not os.path.exists(os.path.join("device", "secrets", "M-11.seed")),
+                    reason="needs the M-11 seed, which lives only on Laptop A (secrets are not in git)")
 def test_simulated_run_stamps_windows_from_the_simulated_start(tmp_path):
     class OkClient:
         def post(self, path, json=None, timeout=None):

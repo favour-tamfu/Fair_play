@@ -30,7 +30,7 @@ button.on { background: var(--teal); color: #fff; border-color: var(--teal); }
 .ledger { margin-left: auto; font-size: 13px; padding: 4px 10px; border-radius: 6px; background: var(--chip); }
 .ledger.ok { color: var(--teal); }
 .ledger.bad { color: #fff; background: var(--red); }
-.kpis { display: grid; grid-template-columns: repeat(5, minmax(120px, 1fr)); gap: 12px; padding: 14px 20px; }
+.kpis { display: grid; grid-template-columns: repeat(4, minmax(120px, 1fr)); gap: 12px; padding: 14px 20px; }
 .kpi { background: var(--chip); border-radius: 8px; padding: 10px 12px; }
 .kpi span { display: block; color: var(--muted); font-size: 12px; }
 .kpi b { font-size: 22px; }
