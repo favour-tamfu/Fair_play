@@ -24,3 +24,7 @@ Answer (A, time):
 Why: joint MC1 test. Exact steps are in handoffs/A/2026-11-24_0219_A-MC1-instructions-for-B.md.
 Need from B: the IPv4 address of your laptop on the shared network (step 4), and the three cp1_b song IDs.
 Answer (B): 
+
+## R-004 — 2026-11-24 05:18 — A → B — MC1 instructions (numbered R-003 by mistake; B's R-003 stands)
+See handoffs/A/ for the MC1 instructions. Need from B: your IP on the shared network, and the three song IDs from cp1_b.
+Answer (B, time): 
