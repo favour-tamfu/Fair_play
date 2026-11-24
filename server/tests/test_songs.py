@@ -223,3 +223,23 @@ def test_dbindex_sync_adds_and_removes(client, migrated_db, wavs):
 def test_upload_limit_is_50_mb():
     """contract c-1.1 (proposed): 30 → 50 MB."""
     assert config.UPLOAD_MAX_BYTES == 50 * 1024 * 1024
+
+
+def test_half_hop_index_strengthens_off_grid_windows(monkeypatch):
+    """A window starting half a hop off the song's frame grid (the normal case for a live meter) scores much higher
+    and lands on the right position when the catalogue also indexes the half-hop-shifted grid (D-006)."""
+    from fairplay_core.landmarks import MemoryIndex
+    x8 = resample_to_8k(melody(1))
+    results = {}
+    for shifts in ((0,), (0, 128)):
+        monkeypatch.setattr(config, "FP_INDEX_SHIFTS", shifts)
+        idx = MemoryIndex()
+        idx.add("S-000001", fingerprint.song_hashes(x8))
+        scores = []
+        for k in (100, 300, 500, 700):                       # windows at frame k + 0.5 (128 samples off the grid)
+            w = x8[k * 256 + 128:][:WINDOW_SAMPLES]
+            r = match_window(make_hashes(extract_peaks(w)), idx)
+            assert r.accepted and r.song_id == "S-000001" and abs(r.offset_frames - (k + 0.5)) <= 1
+            scores.append(r.best_score)
+        results[shifts] = min(scores)
+    assert results[(0, 128)] >= 2 * results[(0,)], results

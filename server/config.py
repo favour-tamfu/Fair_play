@@ -43,4 +43,9 @@ UPLOAD_MAX_BYTES = 50 * 1024 * 1024   # c-1.1 (PROPOSED 2026-11-24): was 30 MB i
 UPLOAD_EXTENSIONS = {".mp3", ".wav", ".m4a", ".flac"}
 DUP_SLICES = (0.2, 0.5, 0.8)     # duplicate check: 10 s slices at 20 %, 50 %, 80 % of the new song (brief §5.4)
 DUP_MIN_HITS = 2                 # ≥ 2 slices matching the same existing song → duplicate_suspected
+# Catalogue-side only (device and fp-1.0 unchanged): index each song on several frame-grid phases (in samples at
+# 8 kHz). A meter window starts at a random point, up to half a hop (128 samples) off a single grid, which weakens
+# its votes; a second grid shifted by half a hop halves that worst case. Hashes of a shifted grid are stored with
+# the frame index of that grid (≤ 16 ms early), which the ±1-frame vote tolerance absorbs. (DECISIONS D-006)
+FP_INDEX_SHIFTS = (0, 128)
 WORKER_IDLE_LOG_S = 300          # placeholder workers log "alive" this often

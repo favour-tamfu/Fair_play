@@ -26,3 +26,9 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 
 ## D-005 — 2026-11-23 23:15 — A+B (humans) — Declare Claude Code in README only
 - Claude Code use is declared once, in README → Declarations (hackathon rule: AI tools must be declared). No "Co-Authored-By"/AI trailers in commit messages from now on. Earlier commits are not rewritten.
+
+## D-006 — 2026-11-24 02:35 — B — Catalogue indexes every song on two frame-grid phases (0 and half a hop)
+- What: the fingerprint worker stores hashes of `extract_peaks(x8)` AND `extract_peaks(x8[128:])` (128 samples = half a hop) under the same song (`server/config.py FP_INDEX_SHIFTS = (0, 128)`). fp-1.0, the device and the contract are unchanged; the index is ~2× bigger.
+- Why: a live meter window never starts on the catalogue's frame grid. Windows half a hop off scored 18–74 instead of 330–500 and, on repetitive songs, landed on another copy of a repeated section (±52.7 s in a looped track) — the play logger would have split one play into several.
+- Measured on the live stack (A's own device code → B, 3 songs, 57 windows): exact position 50/57 → 57/57, weakest score 18–20 → 249–335. Worst case (window ¼ and ⅜ frame off + 10 dB noise, 60 windows, 2 songs): 60/60 right song and position, min score 65.
+- Affects A: A-T16 evaluation harness should index songs with the same two shifts (or call `server.workers.fingerprint.song_hashes`) so measured accuracy reflects the server.
