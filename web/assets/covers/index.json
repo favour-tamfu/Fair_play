@@ -40,6 +40,14 @@
   "file": "df43b42f98ea.webp"
  },
  {
+  "song_id": "FP-007",
+  "artist": "Charlotte Dipanda",
+  "title": "Coucou (live au Grand Rex, Paris)",
+  "album": "Dube L'am",
+  "match": "song",
+  "file": "df6d154dd653.webp"
+ },
+ {
   "song_id": "FP-008",
   "artist": "Charlotte Dipanda",
   "title": "Un jour dans ma vie",
@@ -54,6 +62,30 @@
   "album": "Un jour dans ma vie",
   "match": "song",
   "file": "b9ca12799f5e.webp"
+ },
+ {
+  "song_id": "FP-010",
+  "artist": "Kocee",
+  "title": "Balance",
+  "album": "Balance (feat. Tenor) - Single",
+  "match": "song",
+  "file": "a0dec06f9003.webp"
+ },
+ {
+  "song_id": "FP-011",
+  "artist": "Kocee",
+  "title": "Bollo c'est bollo",
+  "album": "Bollo C'est Bollo - Single",
+  "match": "song",
+  "file": "ee93d17e80aa.webp"
+ },
+ {
+  "song_id": "FP-012",
+  "artist": "Kocee",
+  "title": "Sango",
+  "album": "Sango (feat. Fanicko) - Single",
+  "match": "song",
+  "file": "bc52f656a334.webp"
  },
  {
   "song_id": "FP-013",
@@ -130,10 +162,10 @@
  {
   "song_id": "FP-022",
   "artist": "Magasco",
-  "title": "Donner Donner (Power 2)",
-  "album": "Donner Donner (Power 2) - Single",
-  "match": "artist",
-  "file": "d0ec03f46034.webp"
+  "title": "Power (#DonnerDonner)",
+  "album": "Power - Single",
+  "match": "song",
+  "file": "6fd0d121a8e9.webp"
  },
  {
   "song_id": "FP-023",
@@ -344,6 +376,22 @@
   "file": "6378db429a85.webp"
  },
  {
+  "song_id": "FP-052",
+  "artist": "Kocee",
+  "title": "Deux Œufs Spaghetti",
+  "album": "Deux oeufs spaghetti - Single",
+  "match": "song",
+  "file": "5e027b6039e1.webp"
+ },
+ {
+  "song_id": "FP-053",
+  "artist": "Kocee",
+  "title": "PAOLO",
+  "album": "GENESIS",
+  "match": "song",
+  "file": "3321b359c13a.webp"
+ },
+ {
   "song_id": "FP-054",
   "artist": "Kocee",
   "title": "Credit Alert",
@@ -464,19 +512,27 @@
   "file": "98a678a8d2c4.webp"
  },
  {
+  "song_id": "FP-070",
+  "artist": "Cysoul",
+  "title": "Koulos",
+  "album": "ENTRACTE",
+  "match": "song",
+  "file": "93d15f0b1ebe.webp"
+ },
+ {
   "song_id": "FP-071",
   "artist": "Cysoul",
-  "title": "Ma route",
-  "album": "Illusions",
-  "match": "artist",
-  "file": "a7ed058dd356.webp"
+  "title": "Zambe",
+  "album": "ENTRACTE",
+  "match": "song",
+  "file": "93d15f0b1ebe.webp"
  },
  {
   "song_id": "FP-072",
   "artist": "Daphne",
-  "title": "Money (feat. Cysoul) [Remix]",
+  "title": "Money (Remix)",
   "album": "Money (Remix) [feat. Cysoul] - Single",
-  "match": "artist",
+  "match": "song",
   "file": "c42ffac29c19.webp"
  },
  {
@@ -486,6 +542,14 @@
   "album": "Stand by me - Single",
   "match": "song",
   "file": "281def0be06a.webp"
+ },
+ {
+  "song_id": "FP-074",
+  "artist": "Darina Victry",
+  "title": "Ma raison",
+  "album": "Vie-Three",
+  "match": "song",
+  "file": "b78f272bcf02.webp"
  },
  {
   "song_id": "FP-075",
@@ -640,11 +704,19 @@
   "file": "7dc16c906e3b.webp"
  },
  {
+  "song_id": "FP-096",
+  "artist": "Magasco",
+  "title": "I Want 4",
+  "album": "I want 4 - Single",
+  "match": "song",
+  "file": "db9bb71adcab.webp"
+ },
+ {
   "song_id": "FP-097",
   "artist": "Magasco",
-  "title": "Culture and Money (feat. Louis Alga, Eziko, T-son, Vinhora, Witty Minstral, Master Roboster, Mr Leo, AKEMS, DONSHELL, Ezbiyeh & Kitchen Boy)",
+  "title": "Culture & Money",
   "album": "Red Carpet",
-  "match": "artist",
+  "match": "song",
   "file": "47a4033e08e0.webp"
  },
  {
@@ -656,12 +728,36 @@
   "file": "ce0b36561cd9.webp"
  },
  {
+  "song_id": "FP-100",
+  "artist": "Magasco",
+  "title": "Dirty Whine",
+  "album": "Vida",
+  "match": "song",
+  "file": "dc428853982f.webp"
+ },
+ {
+  "song_id": "FP-101",
+  "artist": "Magasco",
+  "title": "Friday",
+  "album": "Friday (feat. Kameni) - Single",
+  "match": "song",
+  "file": "f5b367a1f05d.webp"
+ },
+ {
   "song_id": "FP-102",
   "artist": "Mink's",
   "title": "Ne Me Fuis Pas",
   "album": "Le trefle",
   "match": "song",
   "file": "710b984be90b.webp"
+ },
+ {
+  "song_id": "FP-103",
+  "artist": "Mic Monsta",
+  "title": "Drowning / Last Tribute",
+  "album": "Drowning (Last Tribute) - Single",
+  "match": "song",
+  "file": "fed903a26e6c.webp"
  },
  {
   "song_id": "FP-104",
@@ -702,6 +798,14 @@
   "album": "L'élue de mon cœur - EP",
   "match": "song",
   "file": "9e571a58b2a3.webp"
+ },
+ {
+  "song_id": "FP-109",
+  "artist": "PhillBill",
+  "title": "Condiment",
+  "album": "Condiment - Single",
+  "match": "song",
+  "file": "0046cad1edf5.webp"
  },
  {
   "song_id": "FP-110",
@@ -798,6 +902,22 @@
   "album": "S’Aimer Bien (feat. Cysoul & Blacky star) - Single",
   "match": "song",
   "file": "c57f09be5b87.webp"
+ },
+ {
+  "song_id": "FP-124",
+  "artist": "Trois Officiel",
+  "title": "Zoh",
+  "album": "3,14",
+  "match": "song",
+  "file": "9800a3beec8c.webp"
+ },
+ {
+  "song_id": "FP-125",
+  "artist": "Trois Officiel",
+  "title": "Goat",
+  "album": "3,14",
+  "match": "song",
+  "file": "9800a3beec8c.webp"
  },
  {
   "song_id": "FP-127",
@@ -934,6 +1054,30 @@
   "album": "Laisse moi t'aimer - Single",
   "match": "song",
   "file": "2c6e353d180d.webp"
+ },
+ {
+  "song_id": "FP-144",
+  "artist": "Fhish",
+  "title": "Kak Kak",
+  "album": "I'm Cameroon",
+  "match": "song",
+  "file": "336384e193b2.webp"
+ },
+ {
+  "song_id": "FP-145",
+  "artist": "Fhish",
+  "title": "Patience",
+  "album": "I'm Cameroon",
+  "match": "song",
+  "file": "336384e193b2.webp"
+ },
+ {
+  "song_id": "FP-146",
+  "artist": "Happy d'Efoulan",
+  "title": "Tchapeu Tchapeu",
+  "album": "Tchapeu Tchapeu (Les pleurs du mbolé) - Single",
+  "match": "song",
+  "file": "6aabdd5b2eea.webp"
  },
  {
   "song_id": "FP-147",
@@ -1192,6 +1336,14 @@
   "file": "ddde925e347a.webp"
  },
  {
+  "song_id": "FP-181",
+  "artist": "Kocee",
+  "title": "Caléçon",
+  "album": "Caléçon - Single",
+  "match": "song",
+  "file": "85abbff8bcca.webp"
+ },
+ {
   "song_id": "FP-182",
   "artist": "Kocee",
   "title": "JIGI",
@@ -1202,9 +1354,9 @@
  {
   "song_id": "FP-183",
   "artist": "Tim Kayzer",
-  "title": "Comment ne pas te louer (feat. Tenor) [Remix]",
+  "title": "Comment ne pas te louer (Remix)",
   "album": "Comment ne pas te louer (feat. Tenor) [Remix] - Single",
-  "match": "artist",
+  "match": "song",
   "file": "47a66c621605.webp"
  }
 ]
