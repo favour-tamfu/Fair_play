@@ -7,16 +7,16 @@ event: meter
 data: {"meter_id": "M-07", "online": true, "queued": 0, "last_seen": "2026-11-24T21:29:06.000Z"}
 
 event: match
-data: {"meter_id": "M-07", "venue_id": "V-BUEA-CIMFEST", "song_id": "S-M0015", "title": "Mock Song 015", "offset_s": 42.3, "confidence": 0.31, "accepted": true, "window_start": "2026-11-24T21:29:00.000Z"}
+data: {"meter_id": "M-07", "venue_id": "V-BUEA-CIMFEST", "song_id": "S-M0015", "title": "Loop test track", "offset_s": 42.3, "confidence": 0.31, "accepted": true, "window_start": "2026-11-24T21:29:00.000Z"}
 
 event: batch
 data: {"meter_id": "M-07", "venue_id": "V-BUEA-CIMFEST", "seq": 1843, "window_start": "2026-11-24T21:29:10.200Z", "late": false}
 
 event: match
-data: {"meter_id": "M-07", "venue_id": "V-BUEA-CIMFEST", "song_id": "S-M0015", "title": "Mock Song 015", "offset_s": 52.3, "confidence": 0.28, "accepted": true, "window_start": "2026-11-24T21:29:10.200Z"}
+data: {"meter_id": "M-07", "venue_id": "V-BUEA-CIMFEST", "song_id": "S-M0015", "title": "Loop test track", "offset_s": 52.3, "confidence": 0.28, "accepted": true, "window_start": "2026-11-24T21:29:10.200Z"}
 
 event: play
-data: {"play_id": "P-4c36afdb099c", "venue_id": "V-BUEA-CIMFEST", "song_id": "S-M0015", "title": "Mock Song 015", "artist_name": "Mock Artist 03", "started_at": "2026-11-24T21:28:18.000Z", "source": "live"}
+data: {"play_id": "P-4c36afdb099c", "venue_id": "V-BUEA-CIMFEST", "song_id": "S-M0015", "title": "Loop test track", "artist_name": "Fair Play test artist", "started_at": "2026-11-24T21:28:18.000Z", "source": "live"}
 
 event: batch
 data: {"meter_id": "M-11", "venue_id": "V-DLA-AKWA01", "seq": 77, "window_start": "2026-11-24T21:00:00.000Z", "late": true}

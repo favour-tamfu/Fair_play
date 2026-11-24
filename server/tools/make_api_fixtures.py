@@ -3,7 +3,8 @@
 
     python -m server.tools.make_api_fixtures
 
-All names are clearly fake ("Mock Song 001", "Mock Artist 01"); numbers are illustrative, never for the pitch.
+Song titles and artists are real catalogue entries (tools/mockgen/real_songs.csv); the looping song is a fictional
+test track. Bars, plays and every number are illustrative, never for the pitch.
 Deterministic (seeded): re-running gives identical files.
 """
 from __future__ import annotations
@@ -38,6 +39,20 @@ BARS = {("Douala", "S"): 4250, ("Douala", "M"): 2975, ("Douala", "L"): 1275, ("Y
         ("Yaounde", "M"): 2275, ("Yaounde", "L"): 975}
 METERS = {"V-BUEA-CIMFEST": "M-07", "V-DLA-AKWA01": "M-11", "V-YDE-BASTO1": "M-12", "V-BUEA-MOLYK1": "M-13"}
 LOOP_SONG, LOOP_VENUE = "S-M0015", "V-DLA-AKWA01"
+LOOP_TEST_TRACK = ("Loop test track", "Fair Play test artist")
+REAL_SONGS = Path(__file__).resolve().parents[2] / "tools" / "mockgen" / "real_songs.csv"
+REAL_ARTISTS = ("Locko", "Mr. Leo", "Magasco", "Kocee", "Blanche Bailly", "Charlotte Dipanda", "Mink's", "Lady Ponce",
+                "Salatiel", "Tenor", "Stanley Enow", "X-Maleya")
+
+
+def _real_titles() -> dict[str, list[str]]:
+    """Titles of each real artist, in catalogue order."""
+    import csv
+    out: dict[str, list[str]] = {}
+    with open(REAL_SONGS, encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            out.setdefault(r["artist_name"], []).append(r["title"])
+    return out
 
 
 def largest_remainder(total: int, weights: list[float]) -> list[int]:
@@ -72,9 +87,23 @@ def build() -> dict[str, object]:
     meter_of = {v["venue_id"]: v["meters"][0]["meter_id"] for v in venues}
 
     # ---------------------------------------------------------------- songs (mock catalogue) + uploads
-    artists = [f"Mock Artist {i:02d}" for i in range(1, 13)]
-    songs = [{"song_id": f"S-M{i:04d}", "title": f"Mock Song {i:03d}", "artist_name": artists[(i - 1) % 12],
-              "isrc": f"CM-SPF-26-{i:05d}", "duration_s": int(rng.integers(160, 330))} for i in range(1, 21)]
+    # Real titles and artists from the verified catalogue (A, tools/mockgen/real_songs.csv); plays and numbers stay
+    # illustrative. The looping song is a fictional test track so no real artist is shown looping plays.
+    artists = list(REAL_ARTISTS)
+    titles_of = _real_titles()
+    used = {a: 0 for a in artists}
+    songs = []
+    for i in range(1, 21):
+        dur = int(rng.integers(160, 330))
+        if f"S-M{i:04d}" == LOOP_SONG:
+            title, artist = LOOP_TEST_TRACK
+        else:
+            artist = artists[(i - 1) % 12]
+            title = titles_of[artist][used[artist]]
+            used[artist] += 1
+        songs.append({"song_id": f"S-M{i:04d}", "title": title, "artist_name": artist,
+                      "isrc": f"CM-SPF-26-{i:05d}", "duration_s": dur})
+    artists.append(LOOP_TEST_TRACK[1])
     by_id = {s["song_id"]: s for s in songs}
 
     # ---------------------------------------------------------------- plays (newest first)
@@ -126,8 +155,8 @@ def build() -> dict[str, object]:
         s = by_id[r["song_id"]]
         num = int(s["song_id"][-4:])
         owners = [{"name": s["artist_name"], "role": "singer", "share_pct": 50, "momo": f"+2376990{num:02d}001"},
-                  {"name": f"Mock Composer {num:02d}", "role": "composer", "share_pct": 30, "momo": f"+2376990{num:02d}002"},
-                  {"name": f"Mock Producer {num:02d}", "role": "producer", "share_pct": 20, "momo": f"+2376990{num:02d}003"}]
+                  {"name": "Composer not yet declared", "role": "composer", "share_pct": 30, "momo": f"+2376990{num:02d}002"},
+                  {"name": "Producer not yet declared", "role": "producer", "share_pct": 20, "momo": f"+2376990{num:02d}003"}]
         owners_of[s["song_id"]] = owners
         for o, amt in zip(owners, largest_remainder(r["amount_fcfa"], [o["share_pct"] for o in owners])):
             payout_rows.append({"owner_name": o["name"], "role": o["role"], "song_id": s["song_id"], "title": s["title"],
@@ -135,16 +164,17 @@ def build() -> dict[str, object]:
     payouts = {"pot_fcfa": POT, "frozen": False, "rows": payout_rows, "total_fcfa": sum(p["amount_fcfa"] for p in payout_rows)}
 
     # ---------------------------------------------------------------- catalogue (uploads) for the portal
-    uploads = [("Demo Upload One", "Mock Artist 01", "ready", None, 4211), ("Demo Upload Two", "Mock Artist 02", "ready", None, 3890),
-               ("Demo Upload One (copy)", "Mock Artist 01", "duplicate_suspected", "S-000001", 0),
-               ("Demo Upload Three", "Mock Artist 03", "processing", None, 0), ("Broken File", "Mock Artist 04", "failed", None, 0)]
+    up = {a: titles_of[a][used[a]] for a in REAL_ARTISTS[:4]}        # each artist's next song, not used above
+    uploads = [(up["Locko"], "Locko", "ready", None, 4211), (up["Mr. Leo"], "Mr. Leo", "ready", None, 3890),
+               (f'{up["Locko"]} (copy)', "Locko", "duplicate_suspected", "S-000001", 0),
+               (up["Magasco"], "Magasco", "processing", None, 0), (up["Kocee"], "Kocee", "failed", None, 0)]
     songs_list = [{"song_id": f"S-{i:06d}", "title": t, "artist_name": a, "isrc": None, "iswc": None,
                    "duration_s": 212.0 if st != "failed" else None, "status": st, "n_hashes": nh,
                    "uploaded_at": ts(90 - 10 * i), "duplicate_of": dup} for i, (t, a, st, dup, nh) in enumerate(uploads, 1)]
     song_detail = {**songs_list[0], "owners": [
-        {"name": "Mock Artist 01", "role": "singer", "share_pct": 50, "momo": "+237699000001"},
-        {"name": "Mock Composer 01", "role": "composer", "share_pct": 30, "momo": "+237699000002"},
-        {"name": "Mock Producer 01", "role": "producer", "share_pct": 20, "momo": "+237699000003"}]}
+        {"name": "Locko", "role": "singer", "share_pct": 50, "momo": "+237699000001"},
+        {"name": "Composer not yet declared", "role": "composer", "share_pct": 30, "momo": "+237699000002"},
+        {"name": "Producer not yet declared", "role": "producer", "share_pct": 20, "momo": "+237699000003"}]}
 
     # ---------------------------------------------------------------- flags, ledger, overview, compare
     flags = [

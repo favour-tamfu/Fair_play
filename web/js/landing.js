@@ -52,26 +52,12 @@ async function compareTile() {
 }
 
 async function sharesTiles() {
-  $("ps-time").textContent = new Date().toLocaleTimeString("fr-FR", { timeZone: "Africa/Douala", hour: "2-digit", minute: "2-digit" });
   try {
     const s = await get("artist_shares", "mock_month", "standardised");
     if (s.frozen) throw new Error("frozen");
     $("n-artists").textContent = fmtInt(s.rows.filter((r) => r.counted_plays > 0).length);
-    const max = Math.max(...s.rows.map((r) => r.share), 0.0001);
-    $("toplist").innerHTML = s.rows.slice(0, 4).map((r) => `<li><span>${esc(r.artist_name)}</span><b>${fmtPct(r.share)}</b><i style="width:${(100 * r.share / max).toFixed(0)}%"></i></li>`).join("");
-    const a = s.rows[0];
-    if (!a) return;
-    $("ps-name").textContent = a.artist_name;
-    $("ps-avatar").textContent = a.artist_name.split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
-    $("ps-share").textContent = fmtPct(a.share);
-    $("ps-rank").textContent = `#${a.rank} of ${s.rows.length}`;
-    $("ps-counted").textContent = fmtInt(a.counted_plays);
-    $("ps-heard").textContent = fmtInt(a.raw_plays);
-    const m = Math.max(...a.songs.map((x) => x.share), 0.0001);
-    $("ps-songs").innerHTML = a.songs.slice(0, 4).map((x) => `<div class="ps-row"><div><span>${esc(x.title)}</span><b>${fmtPct(x.share)}</b></div><i style="width:${(100 * x.share / m).toFixed(0)}%"></i></div>`).join("");
-    $("ps-foot").textContent = `Example from the mock month, rule ${s.rule_version}.`;
-    musicTiles(s);
-  } catch (_) { $("ps-foot").textContent = "Shares appear once a period has been computed."; }
+    if (s.rows[0]) musicTiles(s);
+  } catch (_) { /* tiles keep their placeholders */ }
 }
 
 // Music block: real album covers, matched only to the artist (or song) they belong to.
@@ -164,10 +150,6 @@ async function trustTiles() {
   let l = null;
   try { l = await get("ledger_status", "live"); } catch (_) { /* below */ }
   const root = (l && l.last_root) || "";
-  $("hash-status").textContent = !l ? "Not reachable." : l.intact ? "Intact." : "Changed. Results withheld.";
-  $("hash-status").classList.toggle("bad", !!l && !l.intact);
-  $("hash-root").textContent = root ? root.slice(0, 32) + "…" : "No plays yet.";
-  $("hash-note").textContent = l && l.plays_checked != null ? `${fmtInt(l.plays_checked)} plays checked against the chain.` : "";
   // Only the latest block shows a real value (the current chain hash); the others show the structure.
   const blocks = [["Play n−3", "sealed to the next"], ["Play n−2", "sealed to the next"], ["Play n−1", "sealed to the next"],
     ["Latest play", root ? `${root.slice(0, 16)}…` : "no plays yet"]];

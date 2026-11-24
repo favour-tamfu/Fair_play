@@ -27,7 +27,7 @@
     <div class="ln-links">
       <a href="#highlights">Music</a>
       <a href="#numbers">Numbers</a>
-      <a href="#artists">For artists</a>
+      <a href="artist.html">For artists</a>
       <a href="#trust">Trust</a>
       <a class="pill" href="artist.html">Find your plays</a>
     </div>
@@ -35,7 +35,7 @@
 </nav>
 
 <main id="top">
-  <!-- Hero: black, a ring of light (sound) behind a heavy headline, MacBook resting on the edge of the next section -->
+  <!-- Hero: black photo, laptop resting on the edge of the next section -->
   <section class="hero">
     <div class="hero-photo" aria-hidden="true"></div>
     <div class="hero-text">
@@ -107,17 +107,6 @@
         </div>
       </article>
 
-      <!-- Tile: photo -->
-      <article class="mt-tile am-photo" style="--img:url('../assets/img/mic.webp')">
-        <p class="am-who">For artists</p>
-        <a class="tile-btn" href="portal.html" aria-label="Open the artist portal"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
-        <div class="mt-tile-text">
-          <p class="am-eye-l">Public data</p>
-          <h2 class="heavy">Get closer to every<br>bar that plays you.</h2>
-          <a class="pill white" href="artist.html">Explore artists</a>
-        </div>
-      </article>
-
       <!-- Split tile: the live feed set like lyrics -->
       <article class="mt-tile am-split light" id="live">
         <div class="am-split-text">
@@ -183,61 +172,6 @@
           <h3 id="map-title">Every metered bar.</h3>
           <svg id="mini-map" viewBox="0 0 400 560" role="img" aria-label="Map of Cameroon with the metered bars"></svg>
         </article>
-        <article class="b b-photo" style="--img:url('../assets/img/outdoor-bar.webp')" aria-label="A bartender at an outdoor bar at night">
-          <h3>Nothing changes at the counter.</h3>
-        </article>
-        <article class="b b-black b-quiet">
-          <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 24v16M26 18v28M34 22v20M42 28v8" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><path d="M10 10l44 44" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/></svg>
-          <h3>Fingerprints in.<br>Sound out.</h3>
-          <p>The meter keeps no recording.</p>
-        </article>
-        <article class="b b-top">
-          <p class="b-eye">Mock month</p>
-          <h3>Top artists.</h3>
-          <ol class="toplist" id="toplist"></ol>
-        </article>
-        <article class="b b-black b-hash">
-          <p class="b-eye">Play log</p>
-          <h3 id="hash-status">Checking.</h3>
-          <code id="hash-root"></code>
-          <p id="hash-note"></p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- For artists: square photo with the iPhone stepping out of it -->
-  <section class="artists" id="artists">
-    <div class="wrap split">
-      <div class="split-text">
-        <p class="b-eye">For artists</p>
-        <h2>See every bar<br>that played you.</h2>
-        <p>Your share of bar plays, your rank, each song and each bar, updated as the meters hear your music.</p>
-        <a class="pill big" href="portal.html">Open your artist portal</a>
-      </div>
-      <div class="stage">
-        <div class="stage-photo" style="--img:url('../assets/img/mic.webp')" aria-hidden="true"></div>
-        <div class="iphone">
-          <span class="ib ib-action"></span><span class="ib ib-up"></span><span class="ib ib-down"></span><span class="ib ib-power"></span>
-          <div class="ip-glass">
-            <div class="ip-screen">
-              <div class="ip-island"></div>
-              <div class="ps-status"><span id="ps-time">9:41</span><span class="ps-icons"><i></i><i></i><i></i></span></div>
-              <p class="ps-app">Fair Play</p>
-              <div class="ps-head"><div class="ps-avatar" id="ps-avatar">–</div><div><small>Artist</small><b id="ps-name">–</b></div></div>
-              <div class="ps-cards">
-                <div><small>Share of bar plays</small><b id="ps-share">–</b></div>
-                <div><small>Rank</small><b id="ps-rank">–</b></div>
-                <div><small>Plays counted</small><b id="ps-counted">–</b></div>
-                <div><small>Plays heard</small><b id="ps-heard">–</b></div>
-              </div>
-              <p class="ps-label">Your songs</p>
-              <div class="ps-list" id="ps-songs"></div>
-              <p class="ps-foot" id="ps-foot"></p>
-              <div class="ps-home"></div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </section>
@@ -278,26 +212,6 @@
     </div>
   </section>
 
-  <!-- Keep exploring -->
-  <section class="explore grey">
-    <div class="wrap">
-      <h2 class="center">Keep exploring Fair Play.</h2>
-      <div class="ex-cols">
-        <a class="ex-card" href="artist.html">
-          <div class="ex-img"><img src="assets/img/mic.webp" alt="" loading="lazy"></div>
-          <p class="new">Public data</p><h4>Artists</h4><p>Search any artist and see their plays, bars and share.</p><span class="more">Explore artists</span>
-        </a>
-        <a class="ex-card" href="portal.html">
-          <div class="ex-img"><img src="assets/img/dj.webp" alt="" loading="lazy"></div>
-          <p class="new">For artists</p><h4>Artist portal</h4><p>Sign in, declare your songs and follow every bar that plays them.</p><span class="more">Open your portal</span>
-        </a>
-        <a class="ex-card" href="#how">
-          <div class="ex-img"><img src="assets/img/party.webp" alt="" loading="lazy"></div>
-          <p class="new">Bars</p><h4>How the meter works</h4><p>Small, silent, and it keeps no sound.</p><span class="more">Learn more</span>
-        </a>
-      </div>
-    </div>
-  </section>
 </main>
 
 <footer class="foot">

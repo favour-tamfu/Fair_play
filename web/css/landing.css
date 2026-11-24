@@ -497,3 +497,4 @@ body.dark .faq-list { max-width: 980px; }
 .am-frames.paused .sway-btn .i-pause { display: none; }
 #tile-frames > a.tile-btn { right: 66px; }
 .frames i.fl { inset: auto; left: 50%; top: var(--top); border: 0; border-radius: 0; }
+@media (min-width: 861px) { .b-map { grid-row: span 2; aspect-ratio: auto; } }

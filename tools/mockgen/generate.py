@@ -1,4 +1,5 @@
-"""Mock month generator (A-T10). Synthetic data only, labelled "illustrative".
+"""Mock month generator (A-T10). Real song titles and artists (tools/mockgen/real_songs.csv); the venues, plays,
+popularity and payout numbers are simulated and labelled "illustrative".
 
 Writes the CSVs of contract/01 section 7 into an output folder (default contract/fixtures/mock_month).
 Deterministic for a given --seed. Period: 2026-10-24 to 2026-11-22 (30 days), UTC times.
@@ -17,8 +18,19 @@ from tools.mockgen.cities import CITIES, LIVE_VENUE, NAMED
 
 START = datetime(2026, 10, 24, tzinfo=timezone.utc)
 DAYS = 30
-N_SONGS = 200
-N_ARTISTS = 120
+# Real catalogue (titles, artists, durations of the verified Cameroonian songs; no audio). The plays stay simulated.
+REAL_SONGS = os.path.join(os.path.dirname(__file__), "real_songs.csv")
+
+
+def _real_catalogue():
+    with open(REAL_SONGS, encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+# The loop and promo scenarios simulate cheating; they use clearly fictional test tracks so that no real artist
+# is shown as looping or buying plays. Every other song is a real catalogue song.
+TEST_TRACKS = {"S-M0077": ("Promo test track", "Fair Play test artist"), "S-M0150": ("Loop test track", "Fair Play test artist")}
+N_SONGS = len(_real_catalogue()) + len(TEST_TRACKS)
 SLOT_MIN = 10          # windows_observed aggregated per 10 minutes
 WINDOWS_EXPECTED = 10  # field mode: one 10 s window per minute
 UTC_OFFSET_H = 1       # Cameroon is UTC+1; venue hours are local
@@ -79,20 +91,28 @@ def _build_songs(rng):
     pop = 1.0 / ranks ** 1.05
     pop = pop / pop.sum()
     songs, owners = [], []
-    artist_of = rng.integers(1, N_ARTISTS + 1, size=N_SONGS)
+    # Real songs in a seeded order: the popularity ranks (and so the plays) are simulated, not real chart positions.
+    real = _real_catalogue()
+    order = iter(rng.permutation(len(real)).tolist())
     for i in range(N_SONGS):
         sid = f"S-M{i + 1:04d}"
-        dur = int(rng.integers(160, 331))
+        if sid in TEST_TRACKS:
+            r = {"title": TEST_TRACKS[sid][0], "artist_name": TEST_TRACKS[sid][1], "duration_s": ""}
+        else:
+            r = real[next(order)]
+        dur = int(round(float(r["duration_s"]))) if r.get("duration_s") else int(rng.integers(160, 331))
         songs.append({
-            "song_id": sid, "title": f"Mock Song {i + 1:03d}", "artist_name": f"Mock Artist {artist_of[i]:02d}",
+            "song_id": sid, "title": r["title"], "artist_name": r["artist_name"],
             "isrc": f"CM-SPF-26-{i + 1:05d}", "duration_s": dur, "popularity_rank": i + 1,
         })
+        # Owners: the singer is the artist; composer and producer are not declared yet (no real names invented).
+        # MoMo numbers are synthetic placeholders.
         singer, composer, producer = 50.0, 30.0, 20.0
-        owners.append({"song_id": sid, "owner_name": f"Mock Singer {artist_of[i]:02d}", "role": "singer",
+        owners.append({"song_id": sid, "owner_name": r["artist_name"], "role": "singer",
                        "share_pct": singer, "momo": f"+2376990{int(rng.integers(0, 100000)):05d}"})
-        owners.append({"song_id": sid, "owner_name": f"Mock Composer {artist_of[i]:02d}", "role": "composer",
+        owners.append({"song_id": sid, "owner_name": "Composer not yet declared", "role": "composer",
                        "share_pct": composer, "momo": f"+2376990{int(rng.integers(0, 100000)):05d}"})
-        owners.append({"song_id": sid, "owner_name": f"Mock Producer {artist_of[i]:02d}", "role": "producer",
+        owners.append({"song_id": sid, "owner_name": "Producer not yet declared", "role": "producer",
                        "share_pct": producer, "momo": f"+2376990{int(rng.integers(0, 100000)):05d}"})
     return songs, owners, pop, {s["song_id"]: s["duration_s"] for s in songs}
 

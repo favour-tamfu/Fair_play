@@ -1,7 +1,7 @@
 {
   "song_id": "S-000001",
-  "title": "Demo Upload One",
-  "artist_name": "Mock Artist 01",
+  "title": "Je serai la",
+  "artist_name": "Locko",
   "isrc": null,
   "iswc": null,
   "duration_s": 212.0,
@@ -11,19 +11,19 @@
   "duplicate_of": null,
   "owners": [
     {
-      "name": "Mock Artist 01",
+      "name": "Locko",
       "role": "singer",
       "share_pct": 50,
       "momo": "+237699000001"
     },
     {
-      "name": "Mock Composer 01",
+      "name": "Composer not yet declared",
       "role": "composer",
       "share_pct": 30,
       "momo": "+237699000002"
     },
     {
-      "name": "Mock Producer 01",
+      "name": "Producer not yet declared",
       "role": "producer",
       "share_pct": 20,
       "momo": "+237699000003"
