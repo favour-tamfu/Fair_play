@@ -99,3 +99,9 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - The live chain restarts from genesis in a new epoch (`ledger_epochs`, migration 007). Anchors of the previous epoch move to `anchors_archive` (their plays are gone, so they can no longer be re-checked) and an `{"event":"epoch",…}` line is appended to the public anchors file, so a reset is always on record, never silent.
 - Auditor caches per chain: a chain is re-walked only when its SQL fingerprint changes. Measured on the demo DB (65 659 plays): tamper → SSE `ledger` broken in 0.88 s, restore → intact in 1.08 s; API status correct within 0.5 s.
 - Fix: `anchor_closed_hours` counted plays of all chains per hour while anchors cover the live chain only (re-anchored the same hour every minute after the mock import, no new line published); now live only.
+
+## D-018 — 2026-11-24 12:35 — B — Meter health: calibration catch rate, clock_skew and meter_moved flags (B-T14)
+- Calibration (`POST /v1/calibration`, contract §4): an expected play is caught if the meter has an accepted match of that song whose back-computed song start (window_start − offset_s), or a live play whose started_at, is within **±60 s** (contract; the plan's ±90 s is superseded) of `played_at`. catch_rate = caught / expected → `meters.catch_rate` (used by the share estimate) only if ≥ 1 play was caught; a run with 0 caught is stored but not applied. Matching lags, so runs received in the last 10 min are re-evaluated every 15 s by the scheduler; re-posting a run_id re-evaluates it.
+- `clock_skew` flag: |server − meter clock| > 5 s, from heartbeats (sent_at) or a batch whose window ends > 5 s in the future; at most one per meter per hour.
+- `meter_moved` flag: a batch reports a cell_id different from the meter's registered one (first seen); once per (meter, new cell). The registered cell is not changed.
+- Both are review flags only (no weight change), stats_run_id NULL, SSE `flag`; removed by the demo reset.

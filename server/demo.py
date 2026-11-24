@@ -44,6 +44,8 @@ def reset_live(conn: psycopg.Connection, reason: str = "demo reset") -> dict:
                   "windows_removed": conn.execute("DELETE FROM windows WHERE source IS DISTINCT FROM 'mock'").rowcount,
                   "jobs_removed": conn.execute("DELETE FROM jobs WHERE kind IN ('match', 'play')").rowcount}
         conn.execute("DELETE FROM playlogger_state")
+        counts["meter_flags_removed"] = conn.execute(
+            "DELETE FROM flags WHERE stats_run_id IS NULL AND type IN ('clock_skew', 'meter_moved')").rowcount
         conn.execute("UPDATE meters SET queued = 0 WHERE source <> 'mock'")
         epoch = conn.execute("""INSERT INTO ledger_epochs (reason, plays_removed, last_root)
                                 VALUES (%s, %s, %s) RETURNING epoch, started_at""",

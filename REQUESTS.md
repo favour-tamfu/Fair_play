@@ -118,3 +118,7 @@ Update (B, 11:35): earnings panel moved above the song table (now "Songs (detail
 ## R-016 — 2026-11-24 12:20 — B → A — Demo reset endpoint for the admin page (A-T17)
 `POST /api/v1/demo/reset?confirm=yes` (optional `&reason=`) → `{"ok","epoch","started_at","reason","plays_removed","batches_removed","match_events_removed","windows_removed","jobs_removed","anchors_archived","stats_run_id"}`. Wipes live test data only (catalogue, meters, mock month kept); SSE `stats` follows so pages refresh. Please put it behind a confirm step on the admin page. Tamper: SSE `ledger` now arrives < 1 s after `python -m server.tools.tamper --latest` (restore with `--restore`).
 Answer (A, time):
+
+## R-017 — 2026-11-24 12:35 — B → A — Calibration endpoint live for A-T15; meter flags
+`POST /v1/calibration` (contract §4, signed like a heartbeat) answers `{"ok":true,"run_id","matched","total","catch_rate","applied","pending_windows"}`. A play counts as caught if the meter matched that song within ±60 s of `played_at`. If `pending_windows` > 0 or matching is still running, the server re-checks the run for 10 min (or re-post the same run_id). The meter's catch rate is used by the shares right away. Flags `clock_skew` (> 5 s, once per hour per meter) and `meter_moved` (new cell_id) now appear in `/api/v1/flags` and the SSE feed (`flag`). Note: Person B stopped the api container at 12:22 (dashboard off); B starts it again when asked.
+Answer (A, time):

@@ -89,7 +89,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 
 ## Phase 5 — Polish features  → **MC3 / MC4**
 - [x] 5.1 **B-T13** `mode` everywhere, flags complete, demo reset, tamper SSE within 2 s → **MC3**, tag `cp-3`
-- [ ] 5.2 **B-T14** Calibration intake, catch rates, clock_skew and meter_moved flags
+- [x] 5.2 **B-T14** Calibration intake, catch rates, clock_skew and meter_moved flags
 - [-] 5.3 **B-T15** Sepolia anchor (*stretch; first to cut*)
 - [ ] 5.4 **B-T16** Chaos and restart test, matcher latency, `demo_seed.py`
 - [ ] 5.5 **B-T17** README (server), Declarations → **MC4**, full demo ×2, tag `cp-4`
@@ -152,3 +152,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 11:35 | page fixes (user) | stale cached JS/CSS caused empty artist panel + visible 'withheld' banner → pages now served with Cache-Control no-cache; WIPO mention removed (page, CSV header, file name); artist earnings panel moved above the song detail |
 | Tue 11:47 | disk full (user cleared space) | C: had 38 MB free → 22 test errors 'No space left'; docker builder prune (user OK) freed 10.1 GB inside Docker's disk; C: now 3.0 GB free; test_b 297 passed; all services healthy. Later: compact docker_data.vhdx (24.8 GB) with Docker stopped |
 | Tue 12:20 | B-T13 | mode already honoured (plays, artists, shares), flags incl. duplicate_suspected; NEW demo reset (D-017, epoch + anchors archive, migration 007); per-chain audit cache → tamper SSE 0.88 s / restore 1.08 s on 65 659 plays; anchor_closed_hours live-only fix; rules panels removed + no promo flag (D-016). R-016. test_b 300 passed. MC3 needs A |
+| Tue 12:35 | B-T14 | POST /v1/calibration (±60 s, caught/expected → meters.catch_rate, scheduler re-check 10 min), clock_skew (>5 s, 1/h/meter, heartbeat + future batch) and meter_moved (new cell) flags, reset clears them; migration 008; D-018. test_b 306 passed. api left stopped (user) |

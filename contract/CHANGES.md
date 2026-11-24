@@ -36,3 +36,4 @@
 - Additive: `GET /api/v1/export/usage_report.csv?period=&mode=` — usage report (prototype), shares only (columns `song_id,isrc,iswc,title,artist_name,period_start,period_end,raw_plays,counted_plays,share,artist_share,rule_version,stats_run_id`).
 - Deprecated (kept so no page breaks; pages should stop showing them): `amount_fcfa` in `shares.rows`, `artist`, and the `payouts` endpoint. This version ends at what each artist truly earned (the share); paying it out is not modelled.
 - Status: waiting for A's ACK (R-011). Web pages updated by B with Person B's approval while A was offline (R-015).
+- 2026-11-24 12:35 — B — Additive (with c-1.3): `POST /v1/calibration` answers `{"ok":true,"run_id","matched","total","catch_rate","applied","pending_windows"}` (window ±60 s as in §4). Flags `clock_skew` and `meter_moved` are now produced (types already in §6): `detail` is plain text for people, `venue_id` set, `song_id` null.

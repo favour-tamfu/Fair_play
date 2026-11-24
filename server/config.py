@@ -103,3 +103,10 @@ DEFAULT_CATCH_RATE = 0.8         # until the meter is calibrated (B-T14)
 STATS_EVERY_S = 300              # scheduler: live period, both modes, every 5 min (only if plays changed)
 STATS_AUTO_PERIODS = ("live",)   # mock_month / all: run after the mock import (B-T11) or POST /api/v1/stats/run
 STATS_KEEP_RUNS = 3              # older runs (and their play_weights/shares) are pruned per (period, mode)
+
+# Meter health (B-T14): calibration, clock skew, moved meter
+CALIB_TOL_S = 60                 # contract §4: an expected play is caught if matched within ±60 s of played_at
+CALIB_RECHECK_S = 600            # runs received in the last 10 min are re-evaluated (matching lags a little)
+CALIB_EVERY_S = 15               # scheduler re-check interval
+CLOCK_SKEW_MAX_S = 5.0           # brief §12: |meter clock − server clock| > 5 s → clock_skew flag
+CLOCK_SKEW_EVERY_S = 3600        # at most one clock_skew flag per meter per hour

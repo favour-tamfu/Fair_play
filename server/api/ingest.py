@@ -1,4 +1,4 @@
-"""Device endpoints (contract §4): POST /v1/batches, /v1/batches/bulk, /v1/heartbeat, /v1/meters/register."""
+"""Device endpoints (contract §4): POST /v1/batches, /v1/batches/bulk, /v1/heartbeat, /v1/calibration, /v1/meters/register."""
 from __future__ import annotations
 
 import json
@@ -48,6 +48,13 @@ async def post_bulk(request: Request):
 @router.post("/heartbeat")
 async def post_heartbeat(request: Request):
     return await _handle(ingest.ingest_heartbeat, request)
+
+
+@router.post("/calibration")
+async def post_calibration(request: Request):
+    """Contract §4: {"ok":true} (+ run_id, matched, total, catch_rate, applied, pending_windows — B-T14)."""
+    from server.calibration import ingest_calibration
+    return await _handle(ingest_calibration, request)
 
 
 def _register(conn, body) -> ingest.Result:

@@ -27,7 +27,7 @@ class Scheduler:
     def __init__(self) -> None:
         self.ledger_state = None              # (intact, broken_at) last announced
         self.online: dict[str, bool] = {}
-        self.due = {"ledger": 0.0, "meters": 0.0, "anchors": 0.0, "stats": 0.0}
+        self.due = {"ledger": 0.0, "meters": 0.0, "anchors": 0.0, "stats": 0.0, "calibration": 0.0}
         self.stats_seen: dict[str, tuple] = {}   # period -> plays fingerprint of the last run
 
     def check_ledger(self, conn: psycopg.Connection) -> dict:
@@ -84,6 +84,10 @@ class Scheduler:
         if t >= self.due["stats"]:
             self.check_stats(conn)
             self.due["stats"] = t + config.STATS_EVERY_S
+        if t >= self.due["calibration"]:
+            from server.calibration import recheck_recent
+            recheck_recent(conn)
+            self.due["calibration"] = t + config.CALIB_EVERY_S
 
 
 def main() -> None:
