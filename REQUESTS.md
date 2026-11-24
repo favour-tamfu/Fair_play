@@ -114,3 +114,7 @@ Person B asked B to apply the page changes now while A sleeps. Changed on b/work
 Please pull main before your next web change; restyle freely.
 Answer (A, time):
 Update (B, 11:35): earnings panel moved above the song table (now "Songs (detail)"); server sends `Cache-Control: no-cache` for the pages (stale cached app.js/app.css had mixed with the new index.html).
+
+## R-016 — 2026-11-24 12:20 — B → A — Demo reset endpoint for the admin page (A-T17)
+`POST /api/v1/demo/reset?confirm=yes` (optional `&reason=`) → `{"ok","epoch","started_at","reason","plays_removed","batches_removed","match_events_removed","windows_removed","jobs_removed","anchors_archived","stats_run_id"}`. Wipes live test data only (catalogue, meters, mock month kept); SSE `stats` follows so pages refresh. Please put it behind a confirm step on the admin page. Tamper: SSE `ledger` now arrives < 1 s after `python -m server.tools.tamper --latest` (restore with `--restore`).
+Answer (A, time):

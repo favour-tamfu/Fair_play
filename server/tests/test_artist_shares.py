@@ -23,7 +23,7 @@ def month(db, tmp_path):                                                      # 
     with connect(db, autocommit=True) as c:
         import_mock(c, write_month(tmp_path / "mm"))
         run_both(c, "mock_month")
-        audit._cache["key"] = None
+        audit._cache.clear()
     return db
 
 

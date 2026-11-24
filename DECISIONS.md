@@ -93,3 +93,9 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 ## D-016 — 2026-11-24 11:55 — B (Person B, human) — No promotion flag; no rules panels on the page
 - No new "sudden spike" / paid-promotion rule: sr-1.0 stays as it is (streak/cooldown weights; loop, low_audience, concentration review flags).
 - The dashboard does not show the "How the share is computed" and "SONACAM sharing rules" panels. The API keeps `artist-shares.rules` (unused by the page).
+
+## D-017 — 2026-11-24 12:20 — B — Demo reset = new live-chain epoch; per-chain ledger audit
+- `POST /api/v1/demo/reset?confirm=yes[&reason=]` (server/demo.py) wipes the LIVE test data: live/virtual batches, match events, windows, chain-'live' plays (+ extents, corrections, weights), period-'live' stats, match/play jobs, playlogger state; meters' `queued` → 0. Kept: songs + hashes, owners, venues, meters (keys, last_seq), the mock month, catalogue flags.
+- The live chain restarts from genesis in a new epoch (`ledger_epochs`, migration 007). Anchors of the previous epoch move to `anchors_archive` (their plays are gone, so they can no longer be re-checked) and an `{"event":"epoch",…}` line is appended to the public anchors file, so a reset is always on record, never silent.
+- Auditor caches per chain: a chain is re-walked only when its SQL fingerprint changes. Measured on the demo DB (65 659 plays): tamper → SSE `ledger` broken in 0.88 s, restore → intact in 1.08 s; API status correct within 0.5 s.
+- Fix: `anchor_closed_hours` counted plays of all chains per hour while anchors cover the live chain only (re-anchored the same hour every minute after the mock import, no new line published); now live only.

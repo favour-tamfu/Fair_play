@@ -21,3 +21,18 @@ async def stats_run(period: str = Query("live", pattern="^(live|mock_month|all)$
     """Answer: {"stats_run_id","status":"done","duration_ms"} (+ period, mode, n_plays, n_songs, n_flags;
     with mode=both: the standardised run's id, raw_stats_run_id, total duration)."""
     return await run_in_threadpool(_run, period, mode)
+
+
+def _reset(reason: str) -> dict:
+    from server.demo import reset_live
+    with connect(autocommit=True) as c:
+        out = reset_live(c, reason)
+        out["stats_run_id"] = run_both(c, "live")["stats_run_id"]     # empty live run -> SSE "stats": pages refresh
+    return out
+
+
+@router.post("/demo/reset")
+async def demo_reset(confirm: str = Query(..., pattern="^yes$"), reason: str = Query("demo reset", max_length=200)):
+    """Wipe the LIVE test data (plays, batches, matches, windows, live stats) and start a new live-chain epoch.
+    Keeps the catalogue, meters and the mock month (D-017). Requires ?confirm=yes."""
+    return await run_in_threadpool(_reset, reason)

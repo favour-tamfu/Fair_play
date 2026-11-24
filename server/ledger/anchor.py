@@ -80,7 +80,7 @@ def anchor_closed_hours(conn: psycopg.Connection, now: Optional[datetime] = None
     current = now.replace(minute=0, second=0, microsecond=0)
     hours = conn.execute(
         """SELECT date_trunc('hour', inserted_at) AS hour, count(*) AS n FROM plays
-           WHERE inserted_at < %s AND chain_hash IS NOT NULL GROUP BY 1 ORDER BY 1""", (current,)).fetchall()
+           WHERE chain = 'live' AND inserted_at < %s AND chain_hash IS NOT NULL GROUP BY 1 ORDER BY 1""", (current,)).fetchall()
     done = {r["hour"]: r["n_plays"] for r in conn.execute("SELECT hour, n_plays FROM anchors")}
     out = []
     for h in hours:
