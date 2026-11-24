@@ -225,3 +225,35 @@ a { color: var(--teal); }
 .status { background: rgba(7, 110, 22, .08); color: #076e16; }
 .pill.ok, .pill.st-ready { background: rgba(7, 110, 22, .1); color: #076e16; }
 .foot { color: var(--muted); }
+/* ---------- design pass (frontend-design + dataviz skills) ----------
+   Hero = "Who earned what" (the question SONACAM asks first); map and feed recede.
+   Sentence case, no all-caps labels. Bars: one hue (SONACAM blue) for magnitude, thin, rounded data end.
+   Map: live #d46306 / online #0f53f0 passed the dataviz palette validator; offline is a hollow ring (shape, not a grey). */
+.head h2 { text-transform: none; letter-spacing: 0; font-size: 15px; font-weight: 600; color: var(--navy); }
+.earn-panel { border-color: #c9d6f7; box-shadow: 0 1px 3px rgba(15, 23, 42, .08); }
+.earn-panel .head h2 { font-size: 22px; font-weight: 700; color: var(--ink); }
+.hero-line { margin: -2px 0 12px; font-size: 15px; color: var(--ink); max-width: 70ch; }
+.map-panel, .feed-panel { background: transparent; border-color: transparent; box-shadow: none; }
+.feed-panel { border-left: 1px solid var(--line); border-radius: 0; }
+.kpi { box-shadow: none; }
+.kpi span { font-size: 13px; }
+thead th { font-size: 12px; font-weight: 600; }
+.bar { height: 6px; border-radius: 3px; background: #eef2fb; }
+.bar i { border-radius: 3px; opacity: 1; background: var(--teal); }
+.venue.on { fill: #0f53f0; fill-opacity: 1; }
+.venue.off { fill: #fff; fill-opacity: 1; stroke: var(--muted); stroke-width: 1.5; }
+.venue.live { fill: #d46306; stroke: #fff; stroke-width: 2; }
+.dot.on { background: #0f53f0; opacity: 1; }
+.dot.off { background: #fff; opacity: 1; box-shadow: inset 0 0 0 1.5px var(--muted); }
+.dot.live { background: #d46306; opacity: 1; }
+.ring { stroke: #d46306; }
+/* feed: label text stays ink; a small dot carries the type */
+.feed .tag { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: none; }
+.feed .tag::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; background: #c4cbe0; vertical-align: 1px; }
+.feed .tag.play::before { background: #d46306; } .feed .tag.heard::before { background: #0f53f0; }
+.feed .tag.flag::before { background: var(--amber); } .feed .tag.bad::before { background: var(--red); }
+.tag.play, .tag.heard, .tag.flag { color: var(--muted); }
+.status { font-size: 18px; }
+/* quality floor */
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

@@ -34,10 +34,10 @@ function renderLedger(l) {
   const el = $("ledger");
   if (l.intact) {
     el.className = "ledger ok";
-    el.textContent = `Log intact${l.last_anchor ? ` · anchored ${fmtHm(l.last_anchor.hour)}` : ""}`;
+    el.textContent = `Log intact${l.last_anchor ? `, anchored ${fmtHm(l.last_anchor.hour)}` : ""}`;
   } else {
     el.className = "ledger bad";
-    el.textContent = "Log changed · results withheld";
+    el.textContent = "Log changed: results withheld";
   }
   renderTrustStatus();
 }
@@ -89,12 +89,12 @@ function renderMap(venues) {
     const live = v.venue_id === LIVE_VENUE;
     const meters = (v.meters || []).map((m) => `${m.meter_id} ${m.online ? "online" : "offline"}`).join(", ");
     parts.push(`<circle class="ring" data-ring="${esc(v.venue_id)}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6"/>`);
-    parts.push(`<circle class="venue${on ? " on" : ""}${live ? " live" : ""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${live ? 8 : 5.5}">
-      <title>${esc(v.name)} · ${esc(v.city)}${meters ? ` · ${esc(meters)}` : ""}</title></circle>`);
+    parts.push(`<circle class="venue${on ? " on" : " off"}${live ? " live" : ""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${live ? 8 : 5.5}">
+      <title>${esc(v.name)}, ${esc(v.city)}${meters ? ` (${esc(meters)})` : ""}</title></circle>`);
   }
   svg.setAttribute("viewBox", `0 0 ${VIEW.w} ${VIEW.h}`);
   svg.innerHTML = parts.join("");
-  $("map-note").textContent = `${venues.length} bars · ${online} with a meter online`;
+  $("map-note").textContent = `${venues.length} bars, ${online} with a meter online`;
 }
 
 let toastTimer = null;
@@ -103,7 +103,7 @@ function showPlayOnMap(venueId, text) {
   if (ring) { ring.classList.remove("go"); void ring.getBoundingClientRect(); ring.classList.add("go"); }
   const v = venuesById.get(venueId);
   const t = $("map-toast");
-  t.textContent = `${text}${v ? ` · ${v.name}, ${v.city}` : ""}`;
+  t.textContent = `${text}${v ? ` at ${v.name}, ${v.city}` : ""}`;
   t.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove("show"), 5000);
@@ -123,16 +123,19 @@ function renderEarnings(e) {
     const open = openArtists.has(r.artist_name);
     const songs = open ? r.songs.map((s) => `<tr class="sub"><td></td><td class="name">${esc(s.title)}</td><td></td>
       <td class="n">${fmtInt(s.raw_plays)}</td><td class="n">${fmtInt(s.counted_plays)}</td><td class="n">${fmtPct(s.share)}</td>
-      <td><div class="bar"><i style="width:${(100 * s.share / max).toFixed(1)}%"></i></div></td></tr>`).join("") : "";
+      <td><div class="bar" title="${esc(s.title)}: ${fmtPct(s.share)} of counted plays"><i style="width:${(100 * s.share / max).toFixed(1)}%"></i></div></td></tr>`).join("") : "";
     return `<tr class="artist${r.rank <= 3 ? " top3" : ""}" data-artist="${esc(r.artist_name)}">
       <td>${r.rank}</td><td class="name"><span class="caret">${open ? "▾" : "▸"}</span>${esc(r.artist_name)}<a href="${link}">page</a></td>
       <td class="n">${r.n_songs}</td><td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.counted_plays)}</td>
-      <td class="n share">${fmtPct(r.share)}</td><td><div class="bar"><i style="width:${w}%"></i></div></td></tr>${songs}`;
-  }).join("") || `<tr><td colspan="7" class="note">${e.frozen ? "Withheld until the log is restored." : "No plays counted in this period yet."}</td></tr>`;
+      <td class="n share">${fmtPct(r.share)}</td><td><div class="bar" title="${esc(r.artist_name)}: ${fmtPct(r.share)} of counted plays"><i style="width:${w}%"></i></div></td></tr>${songs}`;
+  }).join("") || `<tr><td colspan="7" class="note">${e.frozen ? "Withheld until the log is restored." : "No plays counted in this period yet. Shares appear after the first counted play."}</td></tr>`;
   $("usage-dl").href = `/api/v1/export/usage_report.csv?period=${state.period}&mode=${state.mode}`;
-  $("earn-note").textContent = e.stats_run_id
-    ? `${e.rule_version} · run ${e.stats_run_id} · an artist earns for all their songs together (their songs' shares added up) · click an artist to see the songs`
-    : "An artist earns for all their songs together: their songs' shares are added up.";
+  // Hero sentence: the answer to "who earned what", computed from the rows shown.
+  const top = e.frozen ? null : e.rows[0];
+  $("earn-hero").textContent = e.frozen ? "Results are withheld until the play log is restored."
+    : top ? `${top.artist_name} leads with ${fmtPct(top.share)} of counted plays. ${fmtInt(e.rows.filter((r) => r.counted_plays > 0).length)} artists have plays in this period.`
+    : "No artist has counted plays in this period yet.";
+  $("earn-note").textContent = `An artist earns for all their songs together, so their songs' shares are added up. Click an artist to see the songs.${e.stats_run_id ? ` Rule ${e.rule_version}, run ${e.stats_run_id}.` : ""}`;
 }
 $("earn").addEventListener("click", (ev) => {
   if (ev.target.closest("a")) return;
@@ -166,7 +169,7 @@ function renderShares(s) {
       <td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.weighted_plays)}</td><td class="n share">${fmtPct(r.share)}</td>
       <td><div class="bar"><i style="width:${(100 * r.share / max).toFixed(1)}%"></i></div></td><td>${flags}</td></tr>`;
   }).join("") || `<tr><td colspan="8" class="note">No plays counted in this period yet.</td></tr>`;
-  $("shares-note").textContent = `${s.rule_version}${s.stats_run_id ? ` · run ${s.stats_run_id}` : ""} · share = the song's counted plays ÷ all counted plays`;
+  $("shares-note").textContent = `A song's share is its counted plays divided by all counted plays. Rule ${s.rule_version}${s.stats_run_id ? `, run ${s.stats_run_id}` : ""}.`;
 }
 
 // ---------- trust ----------
@@ -175,10 +178,10 @@ function renderTrustStatus() {
   if (!l) return;
   const st = $("trust-status");
   st.className = "status" + (l.intact ? "" : " bad");
-  st.textContent = l.intact ? "Play log intact" : `Play log changed${l.broken_at_play_id ? ` at play ${l.broken_at_play_id}` : ""} · results withheld`;
+  st.textContent = l.intact ? "✓ Play log intact" : `⚠ Play log changed${l.broken_at_play_id ? ` at play ${l.broken_at_play_id}` : ""}. Results are withheld.`;
   if (l.plays_checked != null) $("t-checked").textContent = fmtInt(l.plays_checked);
   if (l.last_root) $("t-root").textContent = l.last_root;
-  $("t-anchor").textContent = l.last_anchor ? `${fmtDateTime(l.last_anchor.hour)} · ${l.last_anchor.via}${l.last_anchor.tx_ref ? ` · ${l.last_anchor.tx_ref}` : ""}` : "none yet";
+  $("t-anchor").textContent = l.last_anchor ? `${fmtDateTime(l.last_anchor.hour)}, published in the ${l.last_anchor.via}${l.last_anchor.tx_ref ? ` (${l.last_anchor.tx_ref})` : ""}` : "None yet";
 }
 
 function renderAnchors(list) {
@@ -196,8 +199,8 @@ function feedLine(event, data) {
   const v = venuesById.get(data.venue_id);
   const where = v ? `${v.name}, ${v.city}` : (data.venue_id || "");
   switch (event) {
-    case "play": return { tag: "play", text: `${esc(data.title)} · ${esc(data.artist_name || "")}`, sub: esc(where) };
-    case "match": return data.accepted ? { tag: "heard", text: `${esc(data.title)}`, sub: `${esc(data.meter_id)} · ${Math.round(data.offset_s)} s into the song` } : null;
+    case "play": return { tag: "play", text: `${esc(data.title)}${data.artist_name ? `, ${esc(data.artist_name)}` : ""}`, sub: esc(where) };
+    case "match": return data.accepted ? { tag: "heard", text: `${esc(data.title)}`, sub: `Meter ${esc(data.meter_id)}, ${Math.round(data.offset_s)} s into the song` } : null;
     case "batch": return data.late ? { tag: "late", text: `${esc(data.meter_id)} sent a delayed sample`, sub: `seq ${data.seq}` } : null;
     case "flag": return { tag: "flag", text: esc(data.type), sub: esc(data.detail) };
     case "ledger": return { tag: data.intact ? "ledger" : "ledger bad", text: data.intact ? "play log intact" : "play log changed · results withheld", sub: data.broken_at_play_id ? `at ${esc(data.broken_at_play_id)}` : "" };
@@ -220,7 +223,8 @@ function addFeed({ event, data }) {
   if (line) {
     feedItems.unshift({ ...line, time: fmtTime(data.window_start || data.started_at || data.last_seen || data.created_at) || fmtTime(new Date().toISOString()) });
     feedItems.length = Math.min(feedItems.length, 40);
-    $("feed").innerHTML = feedItems.map((i, k) => `<li${k === 0 ? ' class="new"' : ""}><span class="tag ${i.tag}">${i.tag.split(" ")[0]}</span>
+    const label = { play: "Play", heard: "Heard", late: "Late", flag: "Flag", ledger: "Log", meter: "Meter", stats: "Shares", reset: "Reset" };
+    $("feed").innerHTML = feedItems.map((i, k) => `<li${k === 0 ? ' class="new"' : ""}><span class="tag ${i.tag}">${label[i.tag.split(" ")[0]] || i.tag}</span>
       <span>${i.text}${i.sub ? `<span class="sub">${i.sub}</span>` : ""}</span><span class="t">${i.time}</span></li>`).join("");
   }
   if (event === "play") showPlayOnMap(data.venue_id, `▶ ${data.title}`);
