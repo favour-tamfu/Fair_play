@@ -12,6 +12,8 @@ const MOCK_FILES = {
   flags: "flags.json",
   ledger_status: "ledger_status.json",
   payouts: "payouts.json",
+  artist_shares: "artist_shares.json",
+  compare_flat: "compare_flat.json",
   feed: "feed_sample.txt",
 };
 
@@ -33,9 +35,17 @@ export async function get(name, period = "live", mode = "standardised") {
     shares: `/api/v1/shares?${q}`,
     ledger_status: `/api/v1/ledger/status`,
     flags: `/api/v1/flags?${q}`,
+    artist_shares: `/api/v1/artist-shares?${q}`,   // c-1.3: what each artist earned (sum of their songs' shares)
+    compare_flat: `/api/v1/compare-flat`,
   };
   return getJson(paths[name]);
 }
+
+// Times: the API sends UTC; people read Cameroon time (D-012, Africa/Douala = UTC+1).
+const TZ = { timeZone: "Africa/Douala" };
+export const fmtTime = (iso) => (iso ? new Date(iso).toLocaleTimeString("fr-FR", TZ) : "");
+export const fmtHm = (iso) => (iso ? new Date(iso).toLocaleTimeString("fr-FR", { ...TZ, hour: "2-digit", minute: "2-digit" }) : "");
+export const fmtDateTime = (iso) => (iso ? new Date(iso).toLocaleString("fr-FR", { ...TZ, dateStyle: "short", timeStyle: "short" }) : "");
 
 // Parse SSE text (the fixture file and the live stream use the same format).
 export function parseSse(text) {

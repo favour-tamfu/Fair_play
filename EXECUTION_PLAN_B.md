@@ -75,7 +75,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
   - Check: 3 songs → ready; re-upload → duplicate_suspected
 - [x] 3.4 **B-T05** Matcher worker + `make_batches_from_wav.py`
   - Check: ≥90% of windows accepted on clean audio
-- [ ] 3.5 **MC1 merge** + joint live test (speaker → accepted matches for ≥2 of 3 songs; 2-minute network cut → no seq gaps), tag `cp-1`
+- [x] 3.5 **MC1 merge** + joint live test (speaker → accepted matches for ≥2 of 3 songs; 2-minute network cut → no seq gaps), tag `cp-1`
 
 ## Phase 4 — Plays, ledger, read API, rules  → **MC2**
 - [x] 4.1 **B-T06** Play logger (event time, chorus-safe, late batches, restart-safe, unidentified music) + its 6 tests
@@ -148,3 +148,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 10:15 | B-T11 mock month + compare-flat | migration 006 (chain namespace, mock_meters, window_slots, mock_truth); import 91 139 plays in 11 s incl. stats; compare-flat flat 40.58 M vs Fair Play 3.93 M FCFA misallocated (pot 100 M, 94 artists); loop song S-M0150 101 plays at AKWA01 → 31.75 counted (cooldown flag); quiet hours flagged 25/25; promo not flagged (R-009). D-013. test_b 290 passed |
 | Tue 10:30 | D-014 mock month on the real catalogue (user) | catalogue_month.py (seeded) on A's bars/meters + 60 catalogue songs; imported 65 635 plays; loop S-000068 66 plays → 28 counted, loop flag ×9; quiet hours 210 plays flagged; compare-flat 24 artists: flat 40.29 M vs Fair Play 2.91 M FCFA misallocated; promo still unflagged (decision open). R-010. test_b 292 passed |
 | Tue 10:50 | B-T12 per D-015 (user) | artists earn the sum of their songs' shares: GET /api/v1/artist-shares (24 artists, sum 1.0; Locko 17.47 %, 7 songs), artist page `share`, usage report CSV (WIPO Connect prototype, shares only), frozen on broken ledger; artist_owners tool (60 songs, artist 100 %); no money; c-1.3 PROPOSED, R-011. test_b 297 passed |
+| Tue 11:20 | merge a/work + web for D-015 (user) | merged a1d00d4 (A's R-007..009 → R-012..014 answered; A's c-1.2 not adopted; B's → c-1.3); MC1 PASS both sides → cp-1; web edited with user approval: no FCFA, artist earnings panel, rules panels, Cameroon time (R-015) |

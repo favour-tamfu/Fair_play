@@ -63,3 +63,15 @@ th.n, td.n { text-align: right; }
   .shares-panel { grid-column: auto; }
   .ledger { margin-left: 0; }
 }
+
+/* What each artist earned (c-1.3, D-015) */
+.earn-panel, .rules-panel { grid-column: 1 / span 2; }
+#earn tr.artist { cursor: pointer; }
+#earn tr.sub td { color: var(--muted); font-size: 12px; border-bottom: 1px dashed var(--line); }
+.frozen { display: none; background: var(--red); color: #fff; border-radius: 6px; padding: 8px 12px; margin: 6px 0; font-size: 13px; }
+.frozen.show { display: block; }
+.dl { color: var(--teal); font-size: 13px; }
+.compare { margin-top: 8px; padding: 10px 12px; background: var(--chip); border-radius: 6px; font-size: 13px; }
+.compare:empty { display: none; }
+.rules { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.5; }
+.rules-text { font-size: 13px; line-height: 1.5; color: var(--muted); }

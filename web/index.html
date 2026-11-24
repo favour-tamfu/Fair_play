@@ -44,10 +44,35 @@
       </div>
     </div>
     <table>
-      <thead><tr><th>#</th><th>title</th><th>artist</th><th class="n">raw</th><th class="n">counted</th><th>share</th><th>share bar</th><th class="n" id="th-amount">FCFA</th><th>flags</th></tr></thead>
+      <thead><tr><th>#</th><th>title</th><th>artist</th><th class="n">raw</th><th class="n">counted</th><th>share</th><th>share bar</th><th>flags</th></tr></thead>
       <tbody id="shares"></tbody>
     </table>
     <p class="note" id="shares-note"></p>
+  </section>
+
+  <section class="panel earn-panel">
+    <div class="shares-head">
+      <h2>What each artist earned</h2>
+      <a class="dl" id="usage-dl" href="#" download>Download usage report (WIPO Connect prototype)</a>
+    </div>
+    <div class="frozen" id="earn-frozen">Results withheld: the play log failed its integrity check. Nothing is published until it is fixed.</div>
+    <table>
+      <thead><tr><th>#</th><th>artist</th><th class="n">songs</th><th class="n">raw</th><th class="n">counted</th><th>share of all plays</th><th>share bar</th></tr></thead>
+      <tbody id="earn"></tbody>
+    </table>
+    <p class="note" id="earn-note">An artist earns for all of their songs together: the shares of their songs are added up. Click an artist to see the songs.</p>
+    <div class="compare" id="compare"></div>
+  </section>
+
+  <section class="panel rules-panel">
+    <h2>How the share is computed</h2>
+    <ol id="rules" class="rules"></ol>
+  </section>
+
+  <section class="panel rules-panel">
+    <h2>SONACAM sharing rules</h2>
+    <div id="sonacam-rules" class="rules-text">SONACAM's sharing rules for authors, composers, performers and producers will be shown here (text to be supplied by SONACAM).
+      In this prototype each artist is registered as the 100 % owner of their own songs.</div>
   </section>
 </main>
 

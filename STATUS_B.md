@@ -1,5 +1,5 @@
 # STATUS B — updated 2026-11-24 06:50
-Current task: B-T12 done per D-015 (artist cumulative shares, no money; handoff B-T12); c-1.3 waits for A's ACK (R-011); cp-1 after A confirms MC1; next MC2 prep
+Current task: pages updated for D-015 (handoff B-WEB); cp-1 tagged; waiting: A ACK c-1.3 + review R-015, SONACAM rules text from Person B; next MC2
 Done: B-T00, B-T01, MC0 (cp-0), B-T02, B-T03, B-T04 (+D-006), B-T05, MC1 merges (main 176122d, c-1.1 accepted; cp-1 tag pending joint test), B-T06, B-T07, B-T08, B-T09 (+D-008, D-009), B-T10 (+D-010, D-011)
 Next up: B-T11; MC1 joint test over hotspot (later)
 Next merge checkpoint: MC1 (when both ready, D-003) — my items: Docker stack ✅ ingest ✅ catalogue ✅ matcher ✅ cp1_b.ps1 ✅
