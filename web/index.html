@@ -81,73 +81,22 @@
         <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 14V6l5-4 5 4v8z" fill="currentColor"/></svg>Bars</p><h3>Nothing changes</h3><p>A small meter beside the speaker. No extra fee and no sound kept.</p><a class="pill white sm" href="#how">See the meter</a></article>
         <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1l6 3v4c0 3.5-2.6 6.2-6 7-3.4-.8-6-3.5-6-7V4z" fill="currentColor"/></svg>Rights society</p><h3>Shares you can check</h3><p>Every play is chained to the last and published each hour.</p><a class="pill white sm" href="#trust">See the play log</a></article>
       </div>
+      <div class="wrap paddlenav" aria-label="Scroll the cards">
+        <button type="button" class="paddle" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M20.5 11.5L14 18l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button type="button" class="paddle" data-dir="1" aria-label="Next"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M15.5 11.5L22 18l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
     </section>
 
-    <!-- Tile: the song most played, framed by its own cover -->
-    <section class="wrap mt-tiles">
-      <article class="mt-tile am-frames" id="tile-frames">
-        <div class="frames" id="frames" aria-hidden="true"><div class="frame-cover" id="frame-cover"></div></div>
-        <button class="tile-btn sway-btn" id="sway-btn" type="button" aria-label="Pause the animation"><svg viewBox="0 0 18 18" aria-hidden="true"><path class="i-pause" d="M6 4v10M12 4v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path class="i-play" d="M6 3.8l8.2 5.2L6 14.2z" fill="currentColor"/></svg></button>
-        <p class="am-who" id="frame-who"></p>
-        <a class="tile-btn" href="#how" aria-label="How the meter recognises a song"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
-        <div class="mt-tile-text">
-          <p class="am-eye-l">Bar metering</p>
-          <h2 class="heavy">Music counted<br>where it plays.</h2>
-        </div>
-      </article>
-
-      <!-- Tile: a wall of album covers around the headline -->
-      <article class="mt-tile am-wall light" id="tile-wall">
-        <div class="wall" id="wall" aria-hidden="true"></div>
-        <a class="tile-btn" href="artist.html" aria-label="Explore artists"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
-        <div class="mt-tile-text mid">
-          <p class="am-eye-l">The catalogue</p>
-          <h2 class="heavy">Where every song<br>finds its share.</h2>
-          <p class="wall-note" id="wall-note"></p>
-        </div>
-      </article>
-
-      <!-- Split tile: the live feed set like lyrics -->
-      <article class="mt-tile am-split light" id="live">
-        <div class="am-split-text">
-          <p class="am-eye-l">Live from the bars</p>
-          <h2 class="heavy">It's not a guess.<br>It's what played.</h2>
-          <p>Every play a meter confirms appears within seconds, with the bar and the time. This is the system's own feed.</p>
-          <span class="live-state" id="live-state">Connecting</span>
-        <a class="tile-btn" href="#trust" aria-label="How plays are logged"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
-        </div>
-        <div class="lyric">
-          <div class="lyric-art" id="lyric-art"></div>
-          <ol class="lyric-lines" id="live-list"><li class="live-empty">Waiting for the first play…</li></ol>
-        </div>
-      </article>
-
-      <!-- Split tile: top artists in the mix -->
-      <article class="mt-tile am-split light rev" id="mix">
-        <div class="mix" aria-hidden="true">
-          <div class="mix-card"><b>Top this<br>month</b><span id="mix-sub"></span></div>
-          <div class="mix-face f1" id="mix-1"></div><div class="mix-face f2" id="mix-2"></div><div class="mix-face f3" id="mix-3"></div>
-        </div>
-        <div class="am-split-text">
-          <p class="am-eye-l">Shared by plays</p>
-          <h2 class="heavy">Every artist<br>in the mix.</h2>
-          <ol class="mix-list" id="mix-list"></ol>
-        <a class="tile-btn" href="#numbers" aria-label="See the numbers"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
-        </div>
-      </article>
-    </section>
-  </div>
-
-  <!-- Numbers: four square tiles -->
+  <!-- Numbers: one row, right under the starter cards -->
   <section class="numbers" id="numbers">
     <div class="wrap">
       <h2 class="center">Counted, not estimated.</h2>
       <p class="intro center">Every number on this page is computed by Fair Play from the meters' plays.</p>
       <div class="stats">
-        <div class="stat"><b id="n-counted">–</b><span>plays counted in the live demo</span></div>
-        <div class="stat"><b id="n-meters">–</b><span>meters online right now</span></div>
-        <div class="stat"><b id="n-bars">–</b><span>bars on the map</span></div>
-        <div class="stat"><b id="n-artists">–</b><span>artists earning in the mock month</span></div>
+        <div class="stat"><em>Plays counted</em><b id="n-counted">–</b><span>in the live demo</span></div>
+        <div class="stat"><em>Meters online</em><b id="n-meters">–</b><span>right now</span></div>
+        <div class="stat"><em>Bars metered</em><b id="n-bars">–</b><span>on the map</span></div>
+        <div class="stat"><em>Artists earning</em><b id="n-artists">–</b><span>in the mock month</span></div>
       </div>
     </div>
   </section>
@@ -175,6 +124,66 @@
       </div>
     </div>
   </section>
+
+    <!-- Tile: the song most played, framed by its own cover -->
+    <section class="wrap mt-tiles">
+      <article class="mt-tile am-frames" id="tile-frames">
+        <div class="frames" id="frames" aria-hidden="true"><div class="frame-cover" id="frame-cover"></div></div>
+        <button class="tile-btn sway-btn" id="sway-btn" type="button" aria-label="Pause the animation"><svg viewBox="0 0 18 18" aria-hidden="true"><path class="i-pause" d="M6 4v10M12 4v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path class="i-play" d="M6 3.8l8.2 5.2L6 14.2z" fill="currentColor"/></svg></button>
+        <p class="am-who" id="frame-who"></p>
+        <a class="tile-btn" href="#how" aria-label="How the meter recognises a song"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <div class="mt-tile-text">
+          <p class="am-eye-l">Bar metering</p>
+          <h2 class="heavy">Music counted<br>where it plays.</h2>
+          <p class="tile-copy">A meter beside the speaker recognises each song from short fingerprints. No sound leaves the bar, and bars pay nothing extra.</p>
+        </div>
+      </article>
+
+      <!-- Tile: a wall of album covers around the headline -->
+      <article class="mt-tile am-wall light" id="tile-wall">
+        <div class="wall" id="wall" aria-hidden="true"></div>
+        <a class="tile-btn" href="artist.html" aria-label="Explore artists"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <div class="mt-tile-text mid">
+          <p class="am-eye-l">The catalogue</p>
+          <h2 class="heavy">Where every song<br>finds its share.</h2>
+          <p class="wall-note" id="wall-note"></p>
+        </div>
+      </article>
+
+      <!-- Split tile: the live feed set like lyrics -->
+      <article class="mt-tile am-split light" id="live">
+        <div class="am-split-text">
+          <p class="am-eye-l">Live from the bars</p>
+          <h2 class="heavy">It's not<br>a guess.<br>It's what<br>played.</h2>
+        </div>
+        <a class="tile-btn" href="#trust" aria-label="How plays are logged"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <div class="lyric">
+          <div class="lyric-head">
+            <div class="lyric-art" id="lyric-art"></div>
+            <div class="lyric-now"><b id="lyric-title"></b><span id="lyric-artist"></span></div>
+          </div>
+          <ol class="lyric-lines" id="live-list"><li class="live-empty">Waiting for the first play…</li></ol>
+        </div>
+      </article>
+
+      <!-- Split tile: top artists in the mix -->
+      <article class="mt-tile am-split light rev" id="mix">
+        <div class="mix" aria-hidden="true">
+          <div class="mix-card"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b>Top this<br>month</b><span id="mix-sub"></span></div>
+          <div class="mix-face f1" id="mix-1"></div><div class="mix-face f2" id="mix-2"></div><div class="mix-face f3" id="mix-3"></div>
+        </div>
+        <div class="am-split-text">
+          <p class="am-eye-l">Shared by plays</p>
+          <h2 class="heavy">Every artist<br>in the mix.</h2>
+          <p>An artist's share is the sum of their songs' shares: counted plays divided by all counted plays.</p>
+          <ol class="mix-list" id="mix-list"></ol>
+        <a class="tile-btn" href="#numbers" aria-label="See the numbers"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        </div>
+      </article>
+    </section>
+  </div>
+
+
 
   <!-- Trust (black) -->
   <section class="trust" id="trust">

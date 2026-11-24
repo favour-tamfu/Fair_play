@@ -15,6 +15,8 @@ const MOCK_FILES = {
   artist_shares: "artist_shares.json",
   compare_flat: "compare_flat.json",
   feed: "feed_sample.txt",
+  plays: "plays.json",
+  songs: "songs.json",
 };
 
 async function getJson(url) {
@@ -39,6 +41,8 @@ export async function get(name, period = "live", mode = "standardised") {
     artist_shares: `/api/v1/artist-shares?${q}`,   // c-1.3: what each artist earned (sum of their songs' shares)
     compare_flat: `/api/v1/compare-flat`,
     anchors: `/api/v1/ledger/anchors?limit=24`,
+    plays: `/api/v1/plays?period=${encodeURIComponent(period)}&limit=20`,
+    songs: `/api/v1/songs`,
   };
   return getJson(paths[name]);
 }

@@ -90,17 +90,20 @@ async function musicTiles(s) {
 
 // Stepped frames: panels behind the cover, each wider and taller, tinted from the cover; they sway together,
 // inner ones further and a little later, so the stack reads as depth.
-const LAYERS = 12;
+const LAYERS = 13;
 function buildFrames() {
   const tile = $("tile-frames"), box = $("frames");
   if (!tile || !box) return;
   const W = tile.clientWidth, H = tile.clientHeight;
-  const cover = Math.round(Math.min(W * 0.27, H * 0.36)), top = Math.round(H * 0.08);
-  const stepX = Math.round(Math.max(14, W * 0.024)), stepY = Math.round(stepX * 1.05);
+  // As in the reference clip: cover about a quarter of the tile wide, near the top; the panels step out evenly
+  // until the outermost ones pass the tile's left, right and bottom edges, so no flat background shows.
+  const cover = Math.round(Math.min(W * 0.26, H * 0.4)), top = Math.round(H * 0.07);
+  const stepX = Math.ceil(((W - cover) / 2) / LAYERS * 1.06), stepY = Math.ceil((H - top - cover) / LAYERS * 1.06);
   const panels = [];
   for (let k = LAYERS; k >= 1; k--) {
-    const w = cover + 2 * stepX * k, h = cover + stepY * k * 1.5 + top;
-    panels.push(`<i class="fl" style="--w:${w}px;--h:${h}px;--top:${-top - stepY * k * 0.1}px;--lift:${(LAYERS - k) * 1.6}%;--amp:${(LAYERS - k + 2) * 0.55}px;--delay:${(-k * 0.09).toFixed(2)}s"></i>`);
+    const ptop = top - Math.round(stepY * k * 0.45);              // tops climb above the tile, so only side and bottom steps show
+    const w = cover + 2 * stepX * k, h = top + cover + stepY * k - ptop;
+    panels.push(`<i class="fl" style="--w:${w}px;--h:${h}px;--top:${ptop}px;--lift:${((LAYERS - k) * 1.4).toFixed(1)}%;--amp:${((LAYERS - k + 2) * 0.5).toFixed(1)}px;--delay:${(-k * 0.08).toFixed(2)}s"></i>`);
   }
   box.querySelectorAll(".fl").forEach((n) => n.remove());
   box.insertAdjacentHTML("afterbegin", panels.join(""));
@@ -162,21 +165,48 @@ const venueName = new Map();
 get("venues", "live").then((vs) => vs.forEach((v) => venueName.set(v.venue_id, `${v.name}, ${v.city}`))).catch(() => {});
 const songArtist = new Map();
 get("songs", "live").then((ss) => ss.forEach((s) => songArtist.set(s.song_id, s.artist_name))).catch(() => {});
-feed(({ event, data }) => {
-  $("live-state").textContent = MOCK ? "Replaying sample events" : "Connected";
-  $("live-state").classList.add("on");
+const TEST_ARTIST = "Fair Play test artist";        // fictional scenario tracks are never shown on the public page
+// Start with the latest confirmed plays (oldest first, so the newest ends on top), then follow the live feed.
+Promise.all([get("plays", "live"), get("venues", "live").catch(() => [])]).then(([ps, vs]) => {
+  vs.forEach((v) => venueName.set(v.venue_id, `${v.name}, ${v.city}`));
+  ps.forEach((p) => songArtist.set(p.song_id, p.artist_name));
+  ps.filter((p) => p.artist_name !== TEST_ARTIST).slice(0, 5).reverse()
+    .forEach((p) => onFeed({ event: "play", data: p }));
+}).catch(() => {});
+feed((e) => onFeed(e));
+function onFeed({ event, data }) {
   if (event !== "play" && !(event === "match" && data.accepted)) return;
-  const item = { kind: event === "play" ? "Play" : "Heard", title: data.title || data.song_id, artist: data.artist_name || songArtist.get(data.song_id) || "",
+  const item = { kind: event === "play" ? "Played" : "Heard", title: data.title || data.song_id, artist: data.artist_name || songArtist.get(data.song_id) || "",
     where: venueName.get(data.venue_id) || data.venue_id || "", time: fmtTime(data.started_at || data.window_start) };
-  liveItems.unshift(item);
+  if (item.artist === TEST_ARTIST) return;
+  // One line per song: a song heard and then confirmed as a play stays on one line.
+  if (liveItems[0] && liveItems[0].title === item.title && liveItems[0].where === item.where) liveItems[0] = item;
+  else liveItems.unshift(item);
   liveItems.length = Math.min(liveItems.length, 5);
-  $("live-list").innerHTML = liveItems.map((i) => `<li>${esc(i.title)}<span>${i.kind} · ${esc(i.where)} · ${i.time}</span></li>`).join("");
+  $("live-list").innerHTML = liveItems.map((i) => `<li>${esc(i.title)}<span>${i.kind} at ${esc(i.where.split(",")[0])} · ${i.time}</span></li>`).join("");
+  $("lyric-title").textContent = item.title;
+  $("lyric-artist").textContent = item.artist;
   loadCovers().then((cv) => setCover($("lyric-art"), cv.song(item.artist, item.title) || cv.artist(item.artist), item.artist || item.title));
-});
+}
 
 numbers(); mapTile(); compareTile(); sharesTiles(); trustTiles(); wallTile();
 
 if (MOCK) {
   document.title += " (mock data)";
   document.querySelectorAll('a[href$=".html"]').forEach((a) => { a.href += (a.href.includes("?") ? "&" : "?") + "mock=1"; });
+}
+
+// Starter cards: previous/next arrows scroll one card; each arrow is disabled at its end.
+{
+  const row = document.querySelector(".am-cards");
+  const paddles = document.querySelectorAll(".paddlenav .paddle");
+  const step = () => { const c = row && row.querySelector("article"); return c ? c.getBoundingClientRect().width + 20 : 300; };
+  const update = () => {
+    if (!row) return;
+    const max = row.scrollWidth - row.clientWidth - 2;
+    paddles.forEach((p) => { p.disabled = p.dataset.dir === "-1" ? row.scrollLeft <= 2 : row.scrollLeft >= max; });
+    document.querySelector(".paddlenav").hidden = max <= 0;
+  };
+  paddles.forEach((p) => p.addEventListener("click", () => row.scrollBy({ left: Number(p.dataset.dir) * step(), behavior: "smooth" })));
+  if (row) { row.addEventListener("scroll", update, { passive: true }); addEventListener("resize", update); update(); }
 }

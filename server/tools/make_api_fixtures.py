@@ -219,7 +219,7 @@ def build() -> dict[str, object]:
               "amount_fcfa": sum(r["amount_fcfa"] for r in a1_rows), "recent": a1_plays[:10]}
 
     # ---------------------------------------------------------------- live feed sample (raw SSE text)
-    p0 = plays[0]
+    p0 = next(p for p in plays if p["song_id"] != LOOP_SONG)      # newest real song (the loop track is a test track)
     events = [
         ("batch", {"meter_id": "M-07", "venue_id": "V-BUEA-CIMFEST", "seq": 1842, "window_start": ts(1.0), "late": False}),
         ("meter", {"meter_id": "M-07", "online": True, "queued": 0, "last_seen": ts(0.9)}),
