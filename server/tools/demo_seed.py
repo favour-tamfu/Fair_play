@@ -7,7 +7,7 @@
 Steps:
   1. database migrations applied
   2. meters registered from contract/meters/*.pub.json, their venues known
-  3. catalogue: the 60 package songs S-000013…S-000072 ready and fingerprinted
+  3. catalogue: the package songs (config.CATALOGUE_RANGE, S-000013…S-000195) ready and fingerprinted
   4. mock ownership: each catalogue song's artist as 100 % owner where no owner is set (D-015)
   5. mock month on the catalogue (D-014): generated + imported if missing (or --reimport)
   6. stats runs: live and mock_month, raw + standardised
@@ -20,10 +20,11 @@ from __future__ import annotations
 import argparse
 import sys
 
+from server import config
 from server.db import connect
 from server.db.migrate import migrate
 
-CATALOGUE = ("S-000013", "S-000072")
+CATALOGUE = config.CATALOGUE_RANGE
 
 
 def main(argv=None) -> int:
@@ -58,8 +59,8 @@ def main(argv=None) -> int:
 
         s = c.execute("""SELECT count(*) AS n, count(*) FILTER (WHERE status = 'ready' AND n_hashes > 0) AS ready
                          FROM songs WHERE song_id BETWEEN %s AND %s""", CATALOGUE).fetchone()
-        ok["catalogue"] = (s["n"] == 60 and s["ready"] == 60, f"{s['ready']}/{s['n']} songs ready and fingerprinted "
-                                                               f"(expected 60)")
+        ok["catalogue"] = (s["n"] == config.CATALOGUE_SIZE and s["ready"] == config.CATALOGUE_SIZE,
+                           f"{s['ready']}/{s['n']} songs ready and fingerprinted (expected {config.CATALOGUE_SIZE})")
 
         owners = set_artist_owners(c, *CATALOGUE)
         no_owner = c.execute("""SELECT count(*) AS n FROM songs s WHERE s.song_id BETWEEN %s AND %s
@@ -69,7 +70,7 @@ def main(argv=None) -> int:
         mock = c.execute("""SELECT count(*) AS n, count(*) FILTER (WHERE song_id BETWEEN %s AND %s) AS cat
                             FROM plays WHERE chain = 'mock'""", CATALOGUE).fetchone()
         if not ok["catalogue"][0]:
-            note = "skipped: the catalogue is not ready (upload/import the 60 songs first)"
+            note = "skipped: the catalogue is not ready (import the song package first)"
             mock = {"n": 0, "cat": 0}
         elif a.reimport or mock["n"] == 0 or mock["cat"] != mock["n"]:
             folder = catalogue_month.DEFAULT_OUT
@@ -92,7 +93,6 @@ def main(argv=None) -> int:
         ok["ledger"] = (st["intact"], f"{'intact' if st['intact'] else 'BROKEN at ' + str(st['broken_at_play_id'])}, "
                                       f"{st['plays_checked']} plays checked")
 
-    from server import config
     ok["admin token"] = (bool(config.ADMIN_TOKEN) and config.ADMIN_TOKEN != "change-me-too",
                          "set in .env (admin actions protected)" if config.ADMIN_TOKEN and config.ADMIN_TOKEN != "change-me-too"
                          else "NOT set: anyone on the network can reset or re-key meters (set ADMIN_TOKEN in .env)")

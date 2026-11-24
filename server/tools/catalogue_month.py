@@ -1,7 +1,7 @@
 """Generate a mock month that uses the REAL song catalogue (Person B's decision, 2026-11-24) — same CSV format as
 contract §7, so `server.tools.import_mock` loads it unchanged.
 
-    python -m server.tools.catalogue_month [--songs S-000013..S-000072] [--seed 20261124] [--out data/mock_month_catalogue]
+    python -m server.tools.catalogue_month [--songs S-000013..S-000195] [--seed 20261124] [--out data/mock_month_catalogue]
     python -m server.tools.import_mock data/mock_month_catalogue
 
 Bars and meters: A's venues.csv / meters.csv (hours, size, catch rates) are reused as they are (read only).
@@ -199,7 +199,7 @@ def write(out: Path, g: dict, venues_csv: Path, meters_csv: Path) -> None:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--songs", default="S-000013..S-000072", help="song_id range lo..hi of the catalogue to use")
+    ap.add_argument("--songs", default="..".join(config.CATALOGUE_RANGE), help="song_id range lo..hi of the catalogue to use")
     ap.add_argument("--seed", type=int, default=20261124)
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT)
     a = ap.parse_args(argv)

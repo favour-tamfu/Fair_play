@@ -120,3 +120,11 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Bug found and fixed while doing it: the demo reset deleted raw_batches before match_events (foreign key) — it only worked on test data without links; the test now links them like real data.
 - Container logs capped at 3 × 10 MB per service (disk).
 - README: new section "2. The real product" (meter box, server, dashboard, artist page); laptops described as the hackathon stand-ins.
+
+## D-021 — 2026-11-24 16:40 — B (Person B: "process them and add") — Song package v3: catalogue 183 songs
+- The team's package v3 (`partner_package_v3`, FP-001…FP-183) imported: FP-001…FP-060 already in (unchanged), FP-061…FP-183 → **S-000073…S-000195** (song_map.csv in the package). Catalogue = **183 songs, 61 artists**, all `ready`, 3 740 365 hashes; no duplicate suspected, 0 job errors.
+- Package fixed before import: "Krys M" (FP-057 featured; second artist row in the SQLite) merged into **KRYS M** (same person, as in v1); MANIFEST updated. Songs in not_included.csv (incl. Tayc ×3, Ines D ×1 marked "needs team decision") are NOT imported.
+- Recognition check: 3 clips (25/50/75 %) of each of the 183 songs → **549/549 right song**; weakest best/2nd ratio 2.4.
+- Mock month regenerated on all 183 songs (same seed 20261124; D-014): 90 063 true / **71 957 observed plays**, 61 artists, shares sum 1.0; flags cooldown 73, loop 51, low_audience 28. New scenario songs: loop S-000083 (Zambe, Cysoul) at V-DLA-AKWA01; quiet hours V-DLA-DLA02 / S-000052; power cut M-20 (19–21 Nov).
+- Mock ownership (D-015): the 123 new songs registered with their artist as 100 % owner.
+- The catalogue range lives in `config.CATALOGUE_RANGE` / `CATALOGUE_SIZE` (demo_seed, artist_owners, catalogue_month defaults).

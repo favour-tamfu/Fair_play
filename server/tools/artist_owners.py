@@ -1,6 +1,6 @@
 """Mock ownership (D-015): register each song's artist as its 100 % owner, for songs that have no owners yet.
 
-    python -m server.tools.artist_owners [--songs S-000013..S-000072]
+    python -m server.tools.artist_owners [--songs S-000013..S-000195]
 
 Prototype only: the real singer / composer / producer splits are not known yet. Songs that already have owners
 (e.g. uploaded through the portal with their splits) are never changed. No MoMo number is invented (left empty).
@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 
+from server import config
 from server.db import connect
 
 
@@ -26,7 +27,7 @@ def set_artist_owners(conn, lo: str, hi: str) -> list[str]:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--songs", default="S-000013..S-000072", help="song_id range lo..hi")
+    ap.add_argument("--songs", default="..".join(config.CATALOGUE_RANGE), help="song_id range lo..hi")
     a = ap.parse_args(argv)
     lo, hi = a.songs.split("..")
     with connect(autocommit=True) as conn:

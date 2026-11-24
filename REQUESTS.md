@@ -128,3 +128,7 @@ B rewrote README.md in plain language (Person B asked for simple, lay-term wordi
 Answer (A, time):
 
 Update (B, 14:20): README renumbered after adding "2. The real product": your sections are now **9. Device (the meter software)** and **10. Web pages**. Describe the real meter box first and Laptop A as the hackathon stand-in (Person B). Admin page (A-T17): send header `X-Admin-Token` (ADMIN_TOKEN from B's .env, given to you in person, never in git) for demo reset, approve, stats run, anchor (D-020).
+
+## R-019 — 2026-11-24 16:40 — B → A — Catalogue now 183 songs; mock month regenerated (D-021)
+The team's song package v3 is imported: 183 songs by 61 artists (S-000013…S-000195), all recognised 549/549. The mock month was regenerated on all of them: 71 957 observed plays; new scenario songs: loop S-000083 (Zambe, Cysoul) at V-DLA-AKWA01, quiet hours V-DLA-DLA02 / S-000052, power cut M-20 (19–21 Nov). API shapes unchanged. Please check the dashboard lists stay readable with 61 artists / 183 songs (scrolling, top-N), and update any text that names the old scenario songs (S-000068 loop, M-25 power cut).
+Answer (A, time):
