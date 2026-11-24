@@ -187,10 +187,10 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
 @media (max-width: 1100px) { .adm { grid-template-columns: 1fr; } .adm .span2 { grid-column: auto; } .adm .panel { max-height: none; } }
 
 /* ---------- SONACAM layer: cream header band, blue/navy headings, orange highlight ---------- */
-.top { background: var(--cream); border-bottom: 3px solid var(--orange); padding: 12px 24px; }
+.top { background: #fff; border-bottom: 1px solid var(--line); padding: 12px 24px; }
 .brand, h1, h2, h3, .kpi b { font-family: "Schibsted Grotesk", "DM Sans", "Segoe UI", system-ui, Arial, sans-serif; }
-.brand { color: var(--teal); font-size: 21px; font-weight: 700; letter-spacing: -.01em; }
-.brand span { color: var(--orange); font-weight: 600; }
+.brand { color: var(--navy); font-size: 19px; font-weight: 700; }
+.brand span { color: var(--muted); font-weight: 500; font-size: 14px; }
 .tabs button { color: var(--muted); }
 .tabs button.on { color: var(--navy); border-bottom-color: var(--teal); }
 .seg button.on, button.on { background: var(--teal); border-color: var(--teal); color: #fff; }
@@ -198,8 +198,7 @@ code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
 .ledger.ok { color: #076e16; border-color: rgba(7, 110, 22, .25); background: #fff; }
 .ledger.bad { background: var(--red); border-color: var(--red); }
 .kpis { padding: 14px 24px; }
-.kpi { background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--teal); border-radius: 8px; }
-.kpi:nth-child(3) { border-top-color: var(--orange); }
+.kpi { background: #fff; border: 1px solid var(--line); border-radius: 8px; }
 .kpi span { color: var(--muted); }
 .kpi b { color: var(--navy); font-weight: 700; }
 body.dash main { padding: 0 24px; }
@@ -208,7 +207,7 @@ body.dash main { padding: 0 24px; }
 thead th { color: var(--muted); }
 .bar { background: #eef2fb; }
 .bar i { background: var(--teal); opacity: .8; }
-#earn tr.top3 td:first-child { color: var(--orange); }
+#earn tr.top3 td:first-child { color: var(--navy); }
 #earn tr.artist td.name { color: var(--ink); }
 .share { color: var(--navy); }
 .compare { background: var(--cream); }

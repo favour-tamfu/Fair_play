@@ -2,93 +2,91 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#1e3a8a">
 <title>Fair Play · artist</title>
+<link rel="stylesheet" href="css/app.css">
 <link rel="stylesheet" href="css/artist.css">
 </head>
-<body>
-<div class="stage">
-  <!-- Wide screens (projector): the pitch line next to the phone -->
-  <aside class="pitch">
-    <div class="meta"><span>Fair Play</span><span>for SONACAM members</span></div>
-    <h1 class="headline">Every play<br>in every bar,<br><em>counted.</em></h1>
-    <p class="lede">Bars pay a levy on the drinks they buy. Fair Play listens in each bar and shares that money by what was really played, not by a flat advance.</p>
-    <ol class="steps">
-      <li>A meter in the bar recognises the song. No sound leaves the bar.</li>
-      <li>Every play is signed and chained, so nobody can change it later.</li>
-      <li>Your share follows your plays. SONACAM pays you.</li>
-    </ol>
-  </aside>
+<body class="corp">
+<header class="site">
+  <div class="wrap site-row">
+    <a class="logo" href="index.html">Fair Play <span>SONACAM</span></a>
+    <nav class="site-nav">
+      <a href="index.html">Dashboard</a>
+      <a href="artist.html" class="on">Artists</a>
+      <a href="portal.html">Upload</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </div>
+</header>
 
-  <main class="phone" id="phone">
-    <div class="watermark" id="watermark" aria-hidden="true"></div>
-
-    <header class="bar">
-      <a class="icon" href="index.html" aria-label="Back to the dashboard">‹</a>
-      <div class="period" role="group" aria-label="period">
+<main class="wrap">
+  <div class="page-head">
+    <div class="who">
+      <div class="avatar" id="avatar" aria-hidden="true"></div>
+      <div>
+        <div class="eyebrow">Artist · SONACAM member</div>
+        <h1 id="name">–</h1>
+        <div class="muted" id="songs-line"></div>
+      </div>
+    </div>
+    <div class="actions">
+      <div class="seg" role="group" aria-label="period">
         <button data-period="live" class="on">Live</button>
         <button data-period="mock_month">Month</button>
       </div>
-      <button class="icon" id="share-link" aria-label="Copy the link to this page">⤴</button>
-    </header>
+      <button id="share-link">Copy link</button>
+    </div>
+  </div>
+  <span id="watermark" hidden></span>
 
-    <section class="hero">
-      <div class="avatar" id="avatar" aria-hidden="true"></div>
-      <div class="who">
-        <div class="eyebrow">Artist · SONACAM member</div>
-        <h2 id="name">–</h2>
-        <div class="songs-line" id="songs-line"></div>
-      </div>
-    </section>
-
-    <!-- Now playing: the last play of one of this artist's songs; lights up live on SSE -->
-    <section class="now" id="now">
-      <div class="now-head"><span class="pulse" id="now-dot"></span><span id="now-label">Last heard</span></div>
-      <div class="now-title" id="now-title">–</div>
-      <div class="now-where" id="now-where"></div>
+  <section class="stats">
+    <div class="stat"><span>Share of bar plays</span><b id="share">–</b></div>
+    <div class="stat"><span id="rank-label">Rank</span><b id="rank">–</b></div>
+    <div class="stat"><span>Plays counted</span><b id="counted">–</b></div>
+    <div class="stat now" id="now">
+      <span><i class="pulse" id="now-dot"></i><em id="now-label">Last heard</em></span>
+      <b id="now-title">–</b>
+      <small id="now-where"></small>
       <div class="track"><i id="now-progress"></i></div>
-      <div class="track-times"><span id="now-start"></span><span id="now-ago"></span></div>
-    </section>
+      <small class="times"><span id="now-start"></span><span id="now-ago"></span></small>
+    </div>
+  </section>
 
-    <section class="controls">
-      <div class="ctl"><b id="share">–</b><span>your share of bar plays</span></div>
-      <div class="ctl big"><b id="rank">–</b><span>rank</span></div>
-      <div class="ctl"><b id="counted">–</b><span>plays counted</span></div>
-    </section>
-
-    <section class="card">
-      <h3>Your songs</h3>
+  <div class="cols">
+    <section class="box">
+      <h2>Your songs</h2>
       <div id="songs"></div>
     </section>
-
-    <section class="card">
-      <h3>Bars that played you</h3>
+    <section class="box">
+      <h2>Bars that played your songs</h2>
       <div id="venues"></div>
     </section>
-
-    <section class="card">
-      <h3>Plays by day <span class="soft" id="chart-range"></span></h3>
+    <section class="box">
+      <h2>Plays by day <span class="muted" id="chart-range"></span></h2>
       <div class="chart" id="chart"></div>
     </section>
-
-    <section class="card">
-      <h3>Recent plays</h3>
+    <section class="box">
+      <h2>Recent plays</h2>
       <div id="recent"></div>
     </section>
+  </div>
 
-    <section class="card how">
-      <h3>How you get paid</h3>
-      <p>Bars pay a copyright levy on the drinks they buy. It is collected for SONACAM and the other rights societies.</p>
-      <p>Until now that money had no playlist, so it was shared with flat advances. Fair Play meters record which songs the bars actually play.</p>
-      <p>Your share is your songs' counted plays divided by all counted plays. SONACAM applies its rules and pays you.</p>
-      <p class="fine">Shares here are indicative until SONACAM closes the period. Repeats of the same song in a short time count less, so looping a song in one bar does not inflate it.</p>
-    </section>
+  <section class="box how">
+    <h2>How you get paid</h2>
+    <ol>
+      <li>Bars pay a copyright levy on the drinks they buy. It is collected for SONACAM and the other rights societies.</li>
+      <li>A Fair Play meter in each bar recognises the songs played. No sound leaves the bar.</li>
+      <li>Your share is your songs' counted plays divided by all counted plays. Repeats of the same song in a short time count less.</li>
+      <li>SONACAM applies its distribution rules and pays you.</li>
+    </ol>
+    <p class="muted">Shares are indicative until SONACAM closes the period.</p>
+  </section>
+</main>
 
-    <div class="toast" id="toast" role="status"></div>
-    <footer class="foot" id="foot"></footer>
-  </main>
-</div>
+<footer class="site-foot"><div class="wrap" id="foot"></div></footer>
+<div class="toast" id="toast" role="status"></div>
 <script type="module" src="js/artist.js"></script>
 </body>
 </html>

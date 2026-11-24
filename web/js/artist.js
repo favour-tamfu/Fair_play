@@ -72,7 +72,7 @@ async function load() {
   const share = a.share ?? (row ? row.share : null);
   $("share").textContent = shares && shares.frozen ? "held" : fmtPct(share);
   $("rank").textContent = row ? `#${row.rank}` : "–";
-  $("rank").nextElementSibling.textContent = row && shares ? `of ${shares.rows.length} artists` : "rank";
+  $("rank-label").textContent = row && shares ? `Rank (of ${shares.rows.length} artists)` : "Rank";
   const counted = (a.plays_by_venue || []).reduce((t, v) => t + (v.plays_counted || 0), 0);
   $("counted").textContent = fmtInt(counted);
 
