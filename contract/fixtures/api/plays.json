@@ -1,0 +1,458 @@
+[
+  {
+    "play_id": "P-4c36afdb099c",
+    "venue_id": "V-DLA-AKWA01",
+    "meter_id": "M-11",
+    "song_id": "S-M0015",
+    "title": "Mock Song 015",
+    "artist_name": "Mock Artist 03",
+    "started_at": "2026-11-24T21:26:00.000Z",
+    "duration_s": 265.0,
+    "source": "virtual",
+    "weight": 0.0,
+    "reasons": [
+      "cooldown",
+      "loop"
+    ]
+  },
+  {
+    "play_id": "P-7cc3d36e0f4a",
+    "venue_id": "V-BUEA-CIMFEST",
+    "meter_id": "M-07",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T21:22:00.000Z",
+    "duration_s": 220.0,
+    "source": "live",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-7dd1da06eef1",
+    "venue_id": "V-BFS-MARC01",
+    "meter_id": "M-22",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T21:18:00.000Z",
+    "duration_s": 220.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-e3f520cc928b",
+    "venue_id": "V-BUEA-MOLYK1",
+    "meter_id": "M-13",
+    "song_id": "S-M0004",
+    "title": "Mock Song 004",
+    "artist_name": "Mock Artist 04",
+    "started_at": "2026-11-24T21:14:00.000Z",
+    "duration_s": 224.0,
+    "source": "virtual",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-c9a873c23ea9",
+    "venue_id": "V-DLA-DEIDO1",
+    "meter_id": "M-15",
+    "song_id": "S-M0020",
+    "title": "Mock Song 020",
+    "artist_name": "Mock Artist 08",
+    "started_at": "2026-11-24T21:10:00.000Z",
+    "duration_s": 205.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-a39739769545",
+    "venue_id": "V-DLA-AKWA01",
+    "meter_id": "M-11",
+    "song_id": "S-M0015",
+    "title": "Mock Song 015",
+    "artist_name": "Mock Artist 03",
+    "started_at": "2026-11-24T21:06:00.000Z",
+    "duration_s": 265.0,
+    "source": "virtual",
+    "weight": 0.0,
+    "reasons": [
+      "cooldown",
+      "loop"
+    ]
+  },
+  {
+    "play_id": "P-ead1c481c97c",
+    "venue_id": "V-KRI-PLAG01",
+    "meter_id": "M-24",
+    "song_id": "S-M0006",
+    "title": "Mock Song 006",
+    "artist_name": "Mock Artist 06",
+    "started_at": "2026-11-24T21:02:00.000Z",
+    "duration_s": 263.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-227fb9fb7967",
+    "venue_id": "V-BDA-CMMC01",
+    "meter_id": "M-21",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T20:58:00.000Z",
+    "duration_s": 220.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-c41af52a252a",
+    "venue_id": "V-BFS-MARC01",
+    "meter_id": "M-22",
+    "song_id": "S-M0004",
+    "title": "Mock Song 004",
+    "artist_name": "Mock Artist 04",
+    "started_at": "2026-11-24T20:54:00.000Z",
+    "duration_s": 224.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-a0db67cf5c69",
+    "venue_id": "V-YDE-NLONG1",
+    "meter_id": "M-19",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T20:50:00.000Z",
+    "duration_s": 220.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-52432fecf1e3",
+    "venue_id": "V-DLA-AKWA01",
+    "meter_id": "M-11",
+    "song_id": "S-M0015",
+    "title": "Mock Song 015",
+    "artist_name": "Mock Artist 03",
+    "started_at": "2026-11-24T20:46:00.000Z",
+    "duration_s": 265.0,
+    "source": "virtual",
+    "weight": 0.25,
+    "reasons": [
+      "streak_4",
+      "loop"
+    ]
+  },
+  {
+    "play_id": "P-ab28e5a09012",
+    "venue_id": "V-BFS-MARC01",
+    "meter_id": "M-22",
+    "song_id": "S-M0005",
+    "title": "Mock Song 005",
+    "artist_name": "Mock Artist 05",
+    "started_at": "2026-11-24T20:42:00.000Z",
+    "duration_s": 256.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-157b15f16c0e",
+    "venue_id": "V-YDE-BASTO1",
+    "meter_id": "M-12",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T20:38:00.000Z",
+    "duration_s": 220.0,
+    "source": "virtual",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-841dfd0bf069",
+    "venue_id": "V-BUEA-CIMFEST",
+    "meter_id": "M-07",
+    "song_id": "S-M0003",
+    "title": "Mock Song 003",
+    "artist_name": "Mock Artist 03",
+    "started_at": "2026-11-24T20:34:00.000Z",
+    "duration_s": 213.0,
+    "source": "live",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-1e2b64f113d7",
+    "venue_id": "V-BFS-MARC01",
+    "meter_id": "M-22",
+    "song_id": "S-M0002",
+    "title": "Mock Song 002",
+    "artist_name": "Mock Artist 02",
+    "started_at": "2026-11-24T20:30:00.000Z",
+    "duration_s": 285.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-a9c6628e7446",
+    "venue_id": "V-DLA-AKWA01",
+    "meter_id": "M-11",
+    "song_id": "S-M0015",
+    "title": "Mock Song 015",
+    "artist_name": "Mock Artist 03",
+    "started_at": "2026-11-24T20:26:00.000Z",
+    "duration_s": 265.0,
+    "source": "virtual",
+    "weight": 0.5,
+    "reasons": [
+      "streak_3",
+      "loop"
+    ]
+  },
+  {
+    "play_id": "P-8eec94055600",
+    "venue_id": "V-DLA-NDKOT1",
+    "meter_id": "M-16",
+    "song_id": "S-M0017",
+    "title": "Mock Song 017",
+    "artist_name": "Mock Artist 05",
+    "started_at": "2026-11-24T20:22:00.000Z",
+    "duration_s": 187.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-d79c3fe5f0b9",
+    "venue_id": "V-LMB-DOWN01",
+    "meter_id": "M-20",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T20:18:00.000Z",
+    "duration_s": 220.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-9ab9ff839ad2",
+    "venue_id": "V-LMB-DOWN01",
+    "meter_id": "M-20",
+    "song_id": "S-M0002",
+    "title": "Mock Song 002",
+    "artist_name": "Mock Artist 02",
+    "started_at": "2026-11-24T20:14:00.000Z",
+    "duration_s": 285.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-f6a6efbb5f4c",
+    "venue_id": "V-BUEA-CIMFEST",
+    "meter_id": "M-07",
+    "song_id": "S-M0002",
+    "title": "Mock Song 002",
+    "artist_name": "Mock Artist 02",
+    "started_at": "2026-11-24T20:10:00.000Z",
+    "duration_s": 285.0,
+    "source": "live",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-376e158e3e0c",
+    "venue_id": "V-DLA-AKWA01",
+    "meter_id": "M-11",
+    "song_id": "S-M0015",
+    "title": "Mock Song 015",
+    "artist_name": "Mock Artist 03",
+    "started_at": "2026-11-24T20:06:00.000Z",
+    "duration_s": 265.0,
+    "source": "virtual",
+    "weight": 1.0,
+    "reasons": [
+      "streak_2",
+      "loop"
+    ]
+  },
+  {
+    "play_id": "P-19d9e08f9e8e",
+    "venue_id": "V-YDE-BASTO1",
+    "meter_id": "M-12",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T20:02:00.000Z",
+    "duration_s": 220.0,
+    "source": "virtual",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-95fcdaf00c45",
+    "venue_id": "V-YDE-BASTO1",
+    "meter_id": "M-12",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T19:58:00.000Z",
+    "duration_s": 220.0,
+    "source": "virtual",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-20ae16ca256b",
+    "venue_id": "V-DLA-NDKOT1",
+    "meter_id": "M-16",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T19:54:00.000Z",
+    "duration_s": 220.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-c21ca4beaa9e",
+    "venue_id": "V-DLA-AKWA01",
+    "meter_id": "M-11",
+    "song_id": "S-M0013",
+    "title": "Mock Song 013",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T19:50:00.000Z",
+    "duration_s": 311.0,
+    "source": "virtual",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-8de575e1dda5",
+    "venue_id": "V-DLA-AKWA01",
+    "meter_id": "M-11",
+    "song_id": "S-M0015",
+    "title": "Mock Song 015",
+    "artist_name": "Mock Artist 03",
+    "started_at": "2026-11-24T19:46:00.000Z",
+    "duration_s": 265.0,
+    "source": "virtual",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1",
+      "loop"
+    ]
+  },
+  {
+    "play_id": "P-c807985d7b2c",
+    "venue_id": "V-DLA-BONAP1",
+    "meter_id": "M-14",
+    "song_id": "S-M0002",
+    "title": "Mock Song 002",
+    "artist_name": "Mock Artist 02",
+    "started_at": "2026-11-24T19:42:00.000Z",
+    "duration_s": 285.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-07cc8aaa9349",
+    "venue_id": "V-YDE-NLONG1",
+    "meter_id": "M-19",
+    "song_id": "S-M0002",
+    "title": "Mock Song 002",
+    "artist_name": "Mock Artist 02",
+    "started_at": "2026-11-24T19:38:00.000Z",
+    "duration_s": 285.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-3535fb405d0a",
+    "venue_id": "V-KRI-PLAG01",
+    "meter_id": "M-24",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T19:34:00.000Z",
+    "duration_s": 220.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  },
+  {
+    "play_id": "P-efb2286e084f",
+    "venue_id": "V-LMB-DOWN01",
+    "meter_id": "M-20",
+    "song_id": "S-M0001",
+    "title": "Mock Song 001",
+    "artist_name": "Mock Artist 01",
+    "started_at": "2026-11-24T19:30:00.000Z",
+    "duration_s": 220.0,
+    "source": "mock",
+    "weight": 1.0,
+    "reasons": [
+      "streak_1"
+    ]
+  }
+]

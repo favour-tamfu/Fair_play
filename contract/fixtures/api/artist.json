@@ -1,0 +1,268 @@
+{
+  "artist_name": "Mock Artist 01",
+  "songs": [
+    {
+      "song_id": "S-M0001",
+      "title": "Mock Song 001"
+    },
+    {
+      "song_id": "S-M0013",
+      "title": "Mock Song 013"
+    }
+  ],
+  "plays_by_venue": [
+    {
+      "venue_id": "V-BUEA-CIMFEST",
+      "name": "CIMFEST demo table",
+      "city": "Buea",
+      "plays_raw": 1,
+      "plays_counted": 1.0
+    },
+    {
+      "venue_id": "V-BFS-MARC01",
+      "name": "Mock Bar Marche A 1",
+      "city": "Bafoussam",
+      "plays_raw": 1,
+      "plays_counted": 1.0
+    },
+    {
+      "venue_id": "V-BDA-CMMC01",
+      "name": "Mock Bar Commercial Ave 1",
+      "city": "Bamenda",
+      "plays_raw": 1,
+      "plays_counted": 1.0
+    },
+    {
+      "venue_id": "V-YDE-NLONG1",
+      "name": "Mock Bar Nlongkak 1",
+      "city": "Yaounde",
+      "plays_raw": 1,
+      "plays_counted": 1.0
+    },
+    {
+      "venue_id": "V-YDE-BASTO1",
+      "name": "Mock Bar Bastos 1",
+      "city": "Yaounde",
+      "plays_raw": 3,
+      "plays_counted": 3.0
+    },
+    {
+      "venue_id": "V-LMB-DOWN01",
+      "name": "Mock Bar Down Beach 1",
+      "city": "Limbe",
+      "plays_raw": 2,
+      "plays_counted": 2.0
+    },
+    {
+      "venue_id": "V-DLA-NDKOT1",
+      "name": "Mock Bar Ndokoti 1",
+      "city": "Douala",
+      "plays_raw": 1,
+      "plays_counted": 1.0
+    },
+    {
+      "venue_id": "V-DLA-AKWA01",
+      "name": "Mock Bar Akwa 1",
+      "city": "Douala",
+      "plays_raw": 1,
+      "plays_counted": 1.0
+    },
+    {
+      "venue_id": "V-KRI-PLAG01",
+      "name": "Mock Bar Plage 1",
+      "city": "Kribi",
+      "plays_raw": 1,
+      "plays_counted": 1.0
+    }
+  ],
+  "plays_by_day": [
+    {
+      "date": "2026-11-18",
+      "plays_raw": 14,
+      "plays_counted": 12.6
+    },
+    {
+      "date": "2026-11-19",
+      "plays_raw": 7,
+      "plays_counted": 6.3
+    },
+    {
+      "date": "2026-11-20",
+      "plays_raw": 6,
+      "plays_counted": 5.4
+    },
+    {
+      "date": "2026-11-21",
+      "plays_raw": 7,
+      "plays_counted": 6.3
+    },
+    {
+      "date": "2026-11-22",
+      "plays_raw": 14,
+      "plays_counted": 12.6
+    },
+    {
+      "date": "2026-11-23",
+      "plays_raw": 8,
+      "plays_counted": 7.2
+    },
+    {
+      "date": "2026-11-24",
+      "plays_raw": 10,
+      "plays_counted": 9.0
+    }
+  ],
+  "amount_fcfa": 23107342,
+  "recent": [
+    {
+      "play_id": "P-7cc3d36e0f4a",
+      "venue_id": "V-BUEA-CIMFEST",
+      "meter_id": "M-07",
+      "song_id": "S-M0001",
+      "title": "Mock Song 001",
+      "artist_name": "Mock Artist 01",
+      "started_at": "2026-11-24T21:22:00.000Z",
+      "duration_s": 220.0,
+      "source": "live",
+      "weight": 1.0,
+      "reasons": [
+        "streak_1"
+      ]
+    },
+    {
+      "play_id": "P-7dd1da06eef1",
+      "venue_id": "V-BFS-MARC01",
+      "meter_id": "M-22",
+      "song_id": "S-M0001",
+      "title": "Mock Song 001",
+      "artist_name": "Mock Artist 01",
+      "started_at": "2026-11-24T21:18:00.000Z",
+      "duration_s": 220.0,
+      "source": "mock",
+      "weight": 1.0,
+      "reasons": [
+        "streak_1"
+      ]
+    },
+    {
+      "play_id": "P-227fb9fb7967",
+      "venue_id": "V-BDA-CMMC01",
+      "meter_id": "M-21",
+      "song_id": "S-M0001",
+      "title": "Mock Song 001",
+      "artist_name": "Mock Artist 01",
+      "started_at": "2026-11-24T20:58:00.000Z",
+      "duration_s": 220.0,
+      "source": "mock",
+      "weight": 1.0,
+      "reasons": [
+        "streak_1"
+      ]
+    },
+    {
+      "play_id": "P-a0db67cf5c69",
+      "venue_id": "V-YDE-NLONG1",
+      "meter_id": "M-19",
+      "song_id": "S-M0001",
+      "title": "Mock Song 001",
+      "artist_name": "Mock Artist 01",
+      "started_at": "2026-11-24T20:50:00.000Z",
+      "duration_s": 220.0,
+      "source": "mock",
+      "weight": 1.0,
+      "reasons": [
+        "streak_1"
+      ]
+    },
+    {
+      "play_id": "P-157b15f16c0e",
+      "venue_id": "V-YDE-BASTO1",
+      "meter_id": "M-12",
+      "song_id": "S-M0001",
+      "title": "Mock Song 001",
+      "artist_name": "Mock Artist 01",
+      "started_at": "2026-11-24T20:38:00.000Z",
+      "duration_s": 220.0,
+      "source": "virtual",
+      "weight": 1.0,
+      "reasons": [
+        "streak_1"
+      ]
+    },
+    {
+      "play_id": "P-d79c3fe5f0b9",
+      "venue_id": "V-LMB-DOWN01",
+      "meter_id": "M-20",
+      "song_id": "S-M0001",
+      "title": "Mock Song 001",
+      "artist_name": "Mock Artist 01",
+      "started_at": "2026-11-24T20:18:00.000Z",
+      "duration_s": 220.0,
+      "source": "mock",
+      "weight": 1.0,
+      "reasons": [
+        "streak_1"
+      ]
+    },
+    {
+      "play_id": "P-19d9e08f9e8e",
+      "venue_id": "V-YDE-BASTO1",
+      "meter_id": "M-12",
+      "song_id": "S-M0001",
+      "title": "Mock Song 001",
+      "artist_name": "Mock Artist 01",
+      "started_at": "2026-11-24T20:02:00.000Z",
+      "duration_s": 220.0,
+      "source": "virtual",
+      "weight": 1.0,
+      "reasons": [
+        "streak_1"
+      ]
+    },
+    {
+      "play_id": "P-95fcdaf00c45",
+      "venue_id": "V-YDE-BASTO1",
+      "meter_id": "M-12",
+      "song_id": "S-M0001",
+      "title": "Mock Song 001",
+      "artist_name": "Mock Artist 01",
+      "started_at": "2026-11-24T19:58:00.000Z",
+      "duration_s": 220.0,
+      "source": "virtual",
+      "weight": 1.0,
+      "reasons": [
+        "streak_1"
+      ]
+    },
+    {
+      "play_id": "P-20ae16ca256b",
+      "venue_id": "V-DLA-NDKOT1",
+      "meter_id": "M-16",
+      "song_id": "S-M0001",
+      "title": "Mock Song 001",
+      "artist_name": "Mock Artist 01",
+      "started_at": "2026-11-24T19:54:00.000Z",
+      "duration_s": 220.0,
+      "source": "mock",
+      "weight": 1.0,
+      "reasons": [
+        "streak_1"
+      ]
+    },
+    {
+      "play_id": "P-c21ca4beaa9e",
+      "venue_id": "V-DLA-AKWA01",
+      "meter_id": "M-11",
+      "song_id": "S-M0013",
+      "title": "Mock Song 013",
+      "artist_name": "Mock Artist 01",
+      "started_at": "2026-11-24T19:50:00.000Z",
+      "duration_s": 311.0,
+      "source": "virtual",
+      "weight": 1.0,
+      "reasons": [
+        "streak_1"
+      ]
+    }
+  ]
+}

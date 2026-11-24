@@ -1,0 +1,62 @@
+[
+  {
+    "song_id": "S-000001",
+    "title": "Demo Upload One",
+    "artist_name": "Mock Artist 01",
+    "isrc": null,
+    "iswc": null,
+    "duration_s": 212.0,
+    "status": "ready",
+    "n_hashes": 4211,
+    "uploaded_at": "2026-11-24T20:10:00.000Z",
+    "duplicate_of": null
+  },
+  {
+    "song_id": "S-000002",
+    "title": "Demo Upload Two",
+    "artist_name": "Mock Artist 02",
+    "isrc": null,
+    "iswc": null,
+    "duration_s": 212.0,
+    "status": "ready",
+    "n_hashes": 3890,
+    "uploaded_at": "2026-11-24T20:20:00.000Z",
+    "duplicate_of": null
+  },
+  {
+    "song_id": "S-000003",
+    "title": "Demo Upload One (copy)",
+    "artist_name": "Mock Artist 01",
+    "isrc": null,
+    "iswc": null,
+    "duration_s": 212.0,
+    "status": "duplicate_suspected",
+    "n_hashes": 0,
+    "uploaded_at": "2026-11-24T20:30:00.000Z",
+    "duplicate_of": "S-000001"
+  },
+  {
+    "song_id": "S-000004",
+    "title": "Demo Upload Three",
+    "artist_name": "Mock Artist 03",
+    "isrc": null,
+    "iswc": null,
+    "duration_s": 212.0,
+    "status": "processing",
+    "n_hashes": 0,
+    "uploaded_at": "2026-11-24T20:40:00.000Z",
+    "duplicate_of": null
+  },
+  {
+    "song_id": "S-000005",
+    "title": "Broken File",
+    "artist_name": "Mock Artist 04",
+    "isrc": null,
+    "iswc": null,
+    "duration_s": null,
+    "status": "failed",
+    "n_hashes": 0,
+    "uploaded_at": "2026-11-24T20:50:00.000Z",
+    "duplicate_of": null
+  }
+]

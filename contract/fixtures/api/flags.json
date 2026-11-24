@@ -1,0 +1,42 @@
+[
+  {
+    "flag_id": 1,
+    "type": "loop",
+    "song_id": "S-M0015",
+    "venue_id": "V-DLA-AKWA01",
+    "detail": "12 consecutive plays, gaps = song length ±20 s (Fri 22:00–01:00)",
+    "created_at": "2026-11-24T20:30:00.000Z"
+  },
+  {
+    "flag_id": 2,
+    "type": "cooldown",
+    "song_id": "S-M0015",
+    "venue_id": "V-DLA-AKWA01",
+    "detail": "8 plays counted 0 (cooldown after 4th play)",
+    "created_at": "2026-11-24T20:30:00.000Z"
+  },
+  {
+    "flag_id": 3,
+    "type": "concentration",
+    "song_id": "S-M0007",
+    "venue_id": null,
+    "detail": "heard in 3 venues; top 2 hold 72% of weighted plays — capped",
+    "created_at": "2026-11-24T20:32:00.000Z"
+  },
+  {
+    "flag_id": 4,
+    "type": "duplicate_suspected",
+    "song_id": "S-000003",
+    "venue_id": null,
+    "detail": "upload matches S-000001 in 3/3 slices",
+    "created_at": "2026-11-24T20:40:00.000Z"
+  },
+  {
+    "flag_id": 5,
+    "type": "clock_skew",
+    "song_id": null,
+    "venue_id": "V-YDE-MVAN01",
+    "detail": "meter clock 7.2 s behind server",
+    "created_at": "2026-11-24T21:10:00.000Z"
+  }
+]

@@ -1,0 +1,82 @@
+[
+  {
+    "artist_name": "Mock Artist 01",
+    "songs": [
+      "S-M0001",
+      "S-M0013"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 02",
+    "songs": [
+      "S-M0002",
+      "S-M0014"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 03",
+    "songs": [
+      "S-M0003",
+      "S-M0015"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 04",
+    "songs": [
+      "S-M0004",
+      "S-M0016"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 05",
+    "songs": [
+      "S-M0005",
+      "S-M0017"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 06",
+    "songs": [
+      "S-M0006",
+      "S-M0018"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 07",
+    "songs": [
+      "S-M0007",
+      "S-M0019"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 08",
+    "songs": [
+      "S-M0008",
+      "S-M0020"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 09",
+    "songs": [
+      "S-M0009"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 10",
+    "songs": [
+      "S-M0010"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 11",
+    "songs": [
+      "S-M0011"
+    ]
+  },
+  {
+    "artist_name": "Mock Artist 12",
+    "songs": [
+      "S-M0012"
+    ]
+  }
+]

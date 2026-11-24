@@ -1,0 +1,17 @@
+{
+  "meters_online": 14,
+  "meters_total": 15,
+  "venues": 15,
+  "plays_raw": 329,
+  "plays_counted": 223.69,
+  "songs_ready": 2,
+  "unidentified_music_min": 42.5,
+  "rule_version": "sr-1.0",
+  "ledger_intact": true,
+  "last_anchor": {
+    "hour": "2026-11-24T21:00:00.000Z",
+    "root": "2410b82d0c7d12162410b82d0c7d12162410b82d0c7d12162410b82d0c7d1216",
+    "via": "file",
+    "tx_ref": null
+  }
+}
