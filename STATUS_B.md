@@ -1,5 +1,5 @@
 # STATUS B — updated 2026-11-24 01:35
-Current task: MC1 prep done; waiting for A (else B-T06 play logger)
+Current task: MC1 merged (main 96e1244), joint test with A pending; next B-T06
 Done: B-T00, B-T01, MC0 (cp-0), B-T02, B-T03, B-T04, B-T05
 Next up: MC1 joint test, B-T06
 Next merge checkpoint: MC1 (when both ready, D-003) — my items: Docker stack ✅ ingest ✅ catalogue ✅ matcher ✅ cp1_b.ps1 ✅
