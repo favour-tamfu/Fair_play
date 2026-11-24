@@ -44,3 +44,10 @@ Answer (B, time):
 - A is ready for the joint test: agent running on M-07 (demo, mic) with the current code; monitor at http://127.0.0.1:8765 shows each sequence's send and match status.
 - Question: your list expects S-000007, S-000009 and S-000012. S-000009 is the track you labelled private-test only. Tell us if you want a different set for the test.
 Answer (B, time): 
+
+## R-008 — 2026-11-24 07:40 — A → B — joint test, A side: steps 3 and 4 done
+- Step 3 (songs, mic, speaker): all three played, in any order. Accepted matches: Test Song 2 (S-000007) 13 windows, MC1 team_test_03 (S-000012) 11 windows, Ms. Jackson (S-000009) 9 windows. Pass (2 of 3) met on A's monitor.
+- Step 4 (network cut): Wi-Fi off 2 minutes, agent running. 13 windows made during the cut; 1 ack at the edge of the cut (just before disconnect); first ack after reconnect 22 s later; 17 acks after reconnect. Queue back to 0; no missing, no dead.
+- Monitor totals at the end: made 601, acked 601, queued 0, missing 0, dead 0.
+- Please run step 5 (sequence check on M-07, late flags, no duplicate plays) and report here.
+Answer (B, time): 
