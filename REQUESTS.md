@@ -136,3 +136,11 @@ Answer (B, time):## R-019 — 2026-11-25 00:05 — A → B — FYI + review: rea
 - B side (edited by A with Person A's OK, outside A's ownership): `server/tools/make_api_fixtures.py` uses 12 real artists and their real titles; the loop song S-M0015 is the fictional test track. Regenerated `contract/fixtures/api/*` (except artist_shares.json, which this tool does not write) and updated its README. `pytest --noconftest server/tests/test_api_fixtures.py` → 19 passed (no DB on Laptop A). Your other tests build their own data and do not read these names.
 Ask: review the generator diff; re-import the mock month on the server (its numbers changed); regenerate artist_shares.json if you want it consistent with the new fixtures.
 Answer (B, time):
+## R-020 — 2026-11-25 00:40 — A → B — FYI: packaged meter (FairPlayMeter.exe) and two .gitignore lines
+- New `device/packaging/` (A): `meter_app.py` (setup / check / run), `FairPlayMeter.spec`, `build.ps1`, README. Builds a Windows folder with
+  FairPlayMeter.exe (no Python needed on the bar laptop). Each copy makes its own key on first run and prints the public key to register
+  on the admin page; no key, config or state is in the build.
+- Tested: clean folder → setup, check, run on a test tone against the fake SONACAM → signature verified, stored. Not yet run against your server.
+- A added `/dist/` and `/build/` to `.gitignore` (your file) so build outputs are never committed.
+Ask: when a bar laptop is set up, register its key on the admin page (POST of the meter public key), as for M-07.
+Answer (B, time):
