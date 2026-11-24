@@ -89,3 +89,7 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - **Mock ownership:** each catalogue song's artist is registered as its 100 % owner (`server/tools/artist_owners.py`, only where a song has no owners; no MoMo invented). The page shows the sharing rules (API `rules` text; SONACAM's own rules text to be supplied by Person B).
 - **Frozen** stays: if the ledger is not intact, artist shares and the usage report are withheld (rows empty / "FROZEN").
 - The usage report (prototype CSV) lists shares, not amounts. Not presented as any external format for now (Person B, 11:35).
+
+## D-016 — 2026-11-24 11:55 — B (Person B, human) — No promotion flag; no rules panels on the page
+- No new "sudden spike" / paid-promotion rule: sr-1.0 stays as it is (streak/cooldown weights; loop, low_audience, concentration review flags).
+- The dashboard does not show the "How the share is computed" and "SONACAM sharing rules" panels. The API keeps `artist-shares.rules` (unused by the page).

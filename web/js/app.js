@@ -104,7 +104,6 @@ function renderShares(s) {
 const openArtists = new Set();
 function renderEarnings(e) {
   document.getElementById("earn-frozen").classList.toggle("show", !!e.frozen);
-  document.getElementById("rules").innerHTML = (e.rules || []).map((r) => `<li>${r}</li>`).join("");
   const max = Math.max(...e.rows.map((r) => r.share), 0.01);
   document.getElementById("earn").innerHTML = e.rows.map((r) => {
     const w = (100 * r.share / max).toFixed(1);
