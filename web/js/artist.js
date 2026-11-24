@@ -3,6 +3,7 @@
 // Now-playing card lights up live when a meter confirms a play of one of their songs (SSE "play").
 import { MOCK, get, feed, fmtHm, fmtDateTime } from "./api.js";
 import { VIEW, project, outlinePath } from "./cameroon.js";
+import { loadCovers } from "./covers.js";
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -62,6 +63,10 @@ async function load() {
   }
   try { shares = await get("artist_shares", period, "standardised"); } catch (_) { /* rank and song shares stay empty */ }
   const artistName = a.artist_name || name;
+  const cv = await loadCovers();
+  // Real album cover for this artist's song when there is one, otherwise a site photo.
+  const coverFor = (title) => { const c = cv.song(artistName, title) || cv.artist(artistName); return c ? c.src : artFor(title); };
+  const ownCover = cv.artist(artistName);
   const row = shares && !shares.frozen ? shares.rows.find((r) => r.artist_name === artistName) : null;
 
   document.title = `${artistName} · Fair Play`;
@@ -97,7 +102,7 @@ async function load() {
     const st = songShare.get(s.song_id);
     const line = st ? `${fmtPct(st.share)} · ${fmtInt(st.counted_plays)} counted`
       : recentCount.get(s.song_id) ? `${recentCount.get(s.song_id)} of the last ${(a.recent || []).length} plays` : "No counted plays yet";
-    return `<div class="am-row"><img src="${artFor(s.title)}" alt=""><span class="am-n">${i + 1}</span><div><b>${esc(s.title)}</b><span>${line}</span></div></div>`;
+    return `<div class="am-row"><img src="${coverFor(s.title)}" alt=""><span class="am-n">${i + 1}</span><div><b>${esc(s.title)}</b><span>${line}</span></div></div>`;
   }).join("") || `<div class="empty">No songs yet.</div>`;
 
   // Bars: a shelf of square tiles, most counted first.
@@ -105,7 +110,8 @@ async function load() {
   $("venues").innerHTML = venues.map((v) => `<figure class="am-tile"><div class="am-art" style="background-image:url('${artFor(v.venue_id)}')"><span>${fmtInt(v.plays_counted)}</span></div>
     <figcaption><b>${esc(v.name)}</b><span>${esc(v.city)} · ${fmtInt(v.plays_counted)} counted</span></figcaption></figure>`).join("")
     || `<div class="empty wrap">No bar has played this artist in this period yet.</div>`;
-  $("am-hero").style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.72) 100%), url('${artFor(artistName)}')`;
+  $("am-hero").style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.72) 100%), url('${ownCover ? ownCover.src : artFor(artistName)}')`;
+  $("am-hero").classList.toggle("has-cover", !!ownCover);
 
   const days = a.plays_by_day || [];
   const maxD = Math.max(1, ...days.map((d) => d.plays_counted || 0));
@@ -114,7 +120,7 @@ async function load() {
   $("chart-x").innerHTML = days.map((d) => `<span>${new Date(d.date + "T12:00:00Z").toLocaleDateString("en-GB", { weekday: "short" })}</span>`).join("");
 
   const recent = (a.recent || []).slice(0, 12);
-  $("recent").innerHTML = recent.map((p) => `<div class="am-row"><img src="${artFor(p.title || p.song_id)}" alt=""><div><b>${esc(p.title || p.song_id)}</b>
+  $("recent").innerHTML = recent.map((p) => `<div class="am-row"><img src="${coverFor(p.title || p.song_id)}" alt=""><div><b>${esc(p.title || p.song_id)}</b>
     <span>${esc((venueNames.get(p.venue_id) || p.venue_id || "").split(",")[0])}</span><span>${fmtDateTime(p.started_at)}</span></div></div>`).join("")
     || `<div class="empty">No recent plays.</div>`;
   lastPlay = recent[0] || null;
@@ -172,6 +178,8 @@ async function finder() {
   } catch (e) { $("artist-list").innerHTML = `<div class="empty">Could not load the artists. Try again in a moment.</div>`; return; }
   try { shares = await get("artist_shares", "live", "standardised"); } catch (_) { /* list without shares */ }
   const byName = new Map(((shares && !shares.frozen && shares.rows) || []).map((r) => [r.artist_name, r]));
+  const cv = await loadCovers();
+  const av = (n) => { const c = cv.artist(n); return c ? `<span class="l-av img" style="background-image:url('${c.src}')"></span>` : `<span class="l-av">${esc(initials(n))}</span>`; };
   const link = (n) => `artist.html?name=${encodeURIComponent(n)}${MOCK ? "&mock=1" : ""}`;
   // Leaders of the month (computed shares of the closed mock month).
   try {
@@ -179,7 +187,7 @@ async function finder() {
     $("leaders").style.setProperty("--n", Math.max(1, Math.min(4, m.rows.length)));
     $("leaders").innerHTML = m.frozen ? `<div class="empty">Results are withheld until the play log is restored.</div>`
       : m.rows.slice(0, 4).map((r) => `<a class="leader" href="${link(r.artist_name)}"><span class="l-rank">${r.rank}</span>
-        <span class="l-av">${esc(initials(r.artist_name))}</span><b>${esc(r.artist_name)}</b>
+        ${av(r.artist_name)}<b>${esc(r.artist_name)}</b>
         <span class="l-share">${fmtPct(r.share)}</span><span class="l-sub">${fmtInt(r.counted_plays)} plays counted, ${r.n_songs} song${r.n_songs === 1 ? "" : "s"}</span></a>`).join("");
   } catch (_) { $("leaders").closest("section").hidden = true; }
   const render = () => {
@@ -188,7 +196,7 @@ async function finder() {
       .sort((a, b) => a.artist_name.localeCompare(b.artist_name, "fr"));
     $("artist-list").innerHTML = list.map((a) => {
       const s = byName.get(a.artist_name);
-      return `<a class="artist-link" href="${link(a.artist_name)}"><span class="l-av">${esc(initials(a.artist_name))}</span>
+      return `<a class="artist-link" href="${link(a.artist_name)}">${av(a.artist_name)}
         <div><span class="a-name">${esc(a.artist_name)}</span>
         <span class="sub">${a.songs.length} song${a.songs.length === 1 ? "" : "s"}${s ? `, ${fmtPct(s.share)} live, rank #${s.rank}` : ""}</span></div></a>`;
     }).join("") || `<div class="empty">No artist matches "${esc(q)}". Check the spelling, or declare your songs with SONACAM first.</div>`;

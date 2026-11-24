@@ -2,6 +2,7 @@
 // Sign-in is a prototype: the artist picks their name, no password, until real accounts exist (REQUESTS R-018).
 // The declare form itself is handled by portal.js; this file sets the artist name on it.
 import { MOCK, get, feed, fmtTime, fmtDateTime } from "./api.js";
+import { loadCovers } from "./covers.js";
 
 const $ = (id) => document.getElementById(id);
 const KEY = "fp-artist";
@@ -9,6 +10,7 @@ const fmtInt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("fr-FR")
 const fmtPct = (x) => (x == null ? "–" : (100 * x).toFixed(x < 0.1 ? 2 : 1) + " %");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const initials = (n) => n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+let coverFor = (title) => artFor(title);   // replaced by real album covers once they are loaded
 const ART = ["bottles", "dj", "mic", "outdoor-bar", "yaounde", "party"];
 const artFor = (s) => `assets/img/${ART[[...String(s)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % ART.length]}.webp`;
 const store = { get: () => { try { return localStorage.getItem(KEY); } catch (_) { return null; } },
@@ -57,6 +59,15 @@ async function start(name) {
   $("me-name").textContent = name;
   $("me-avatar").textContent = initials(name);
   $("me-mini").textContent = initials(name);
+  // Real album covers for this artist's songs when there are some.
+  const cv = await loadCovers();
+  const own = cv.artist(name);
+  coverFor = (title) => { const c = cv.song(name, title) || own; return c ? c.src : artFor(title); };
+  if (own) {
+    for (const id of ["me-avatar", "me-mini"]) { const el = $(id); el.textContent = ""; el.style.backgroundImage = `url('${own.src}')`; el.classList.add("img"); }
+    const cover = document.querySelector("#me .cover");
+    if (cover) { cover.style.setProperty("--cover", `url('${own.src}')`); cover.classList.add("has-cover"); }
+  }
   $("me-public").href = `artist.html?name=${encodeURIComponent(name)}${MOCK ? "&mock=1" : ""}`;
   $("artist").value = name;                    // the declare form always declares for the signed-in artist
   $("signout").onclick = () => { store.set(null); location.reload(); };
@@ -87,7 +98,7 @@ async function start(name) {
   const songShare = new Map(((row && row.songs) || []).map((s) => [s.song_id, s]));
   $("top-songs").innerHTML = songs.map((s) => {
     const st = songShare.get(s.song_id);
-    return `<div class="ts"><img src="${artFor(s.title)}" alt=""><div><b>${esc(s.title)}</b><span>${st ? `${fmtPct(st.share)} · ${fmtInt(st.counted_plays)} counted` : "No counted plays yet"}</span></div></div>`;
+    return `<div class="ts"><img src="${coverFor(s.title)}" alt=""><div><b>${esc(s.title)}</b><span>${st ? `${fmtPct(st.share)} · ${fmtInt(st.counted_plays)} counted` : "No counted plays yet"}</span></div></div>`;
   }).join("") || `<div class="empty">Declare your first song to start counting.</div>`;
 
   // Activity feed: a weekly summary post, then one post per recent play
@@ -112,7 +123,7 @@ async function start(name) {
 }
 
 function playPost(title, where, at, live) {
-  return `<article class="post${live ? " live" : ""}"><div class="post-head"><img class="post-art" src="${artFor(title)}" alt="">
+  return `<article class="post${live ? " live" : ""}"><div class="post-head"><img class="post-art" src="${coverFor(title)}" alt="">
     <div><b>${esc(title)}</b><span>${live ? '<em class="live-tag">Live</em> ' : ""}${timeAgo(at)} · ${fmtTime(at)}</span></div></div>
     <p>Played at <b>${esc(where || "a bar")}</b>${live ? ", right now" : ""}.</p></article>`;
 }

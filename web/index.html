@@ -7,8 +7,9 @@
 <meta name="theme-color" content="#000000">
 <title>Fair Play</title>
 <link rel="stylesheet" href="css/landing.css">
+<link rel="stylesheet" href="css/mbp.css">
 </head>
-<body>
+<body class="dark">
 
 <nav class="globalnav" aria-label="Site">
   <div class="gn-row">
@@ -24,7 +25,7 @@
   <div class="ln-row">
     <a class="ln-title" href="#top">Fair Play</a>
     <div class="ln-links">
-      <a href="#highlights">Highlights</a>
+      <a href="#highlights">Music</a>
       <a href="#numbers">Numbers</a>
       <a href="#artists">For artists</a>
       <a href="#trust">Trust</a>
@@ -34,7 +35,7 @@
 </nav>
 
 <main id="top">
-  <!-- Hero: black, full-bleed photo, MacBook resting on the edge of the next section -->
+  <!-- Hero: black, a ring of light (sound) behind a heavy headline, MacBook resting on the edge of the next section -->
   <section class="hero">
     <div class="hero-photo" aria-hidden="true"></div>
     <div class="hero-text">
@@ -46,41 +47,107 @@
         <a class="more on-dark" href="#how">See how it works</a>
       </div>
     </div>
-    <figure class="macbook" aria-label="The Fair Play dashboard on a laptop">
-      <div class="mb-lid">
-        <div class="mb-bezel">
-          <div class="mb-notch"><i></i></div>
-          <div class="mb-screen"><img src="assets/img/shot-dashboard.webp" alt="The Fair Play dashboard showing who earned what, the map of metered bars and live activity" width="1600" height="1000"></div>
+    <figure class="mbp-mockup-wrapper" aria-label="The Fair Play dashboard on a laptop">
+      <div class="mbp-container">
+        <div class="mbp-display with-glare">
+          <div class="display-edge">
+            <div class="bezel">
+              <div class="display-camera"></div>
+              <div class="display-frame"><img src="assets/img/shot-dashboard.webp" alt="The Fair Play dashboard: plays by artist, key figures and the sidebar menu" width="1600" height="1000"></div>
+              <div class="below-display"></div>
+            </div>
+          </div>
+        </div>
+        <div class="mbp-keyboard">
+          <div class="front"><div class="opener-left"></div><div class="opener-right"></div></div>
+          <div class="bottom-left"></div>
+          <div class="bottom-right"></div>
+          <div class="mbp-shadow"><div class="shadow-left"></div><div class="shadow-right"></div></div>
         </div>
       </div>
-      <div class="mb-hinge"></div>
-      <div class="mb-base"><span class="mb-thumb"></span></div>
-      <div class="mb-shadow"></div>
     </figure>
   </section>
 
-  <!-- Highlights: a checkerboard of square photos and square statements -->
-  <section class="highlights grey" id="highlights">
-    <div class="wrap">
-      <h2>Get the highlights.</h2>
-      <div class="squares">
-        <div class="sq photo" style="--img:url('../assets/img/bottles.webp')" role="img" aria-label="A bar with bottles on shelves and two speakers on the wall"></div>
-        <div class="sq text"><span class="sq-n">01</span><h3>A meter in every bar.</h3><p>A small box next to the speaker recognises each song. Every bar is counted, none is guessed.</p></div>
-        <div class="sq photo" style="--img:url('../assets/img/dj.webp')" role="img" aria-label="A DJ's hands on a mixing controller"></div>
-        <div class="sq text black"><span class="sq-n">02</span><h3>No sound leaves the bar.</h3><p>Only short fingerprints are sent. The music itself, and every conversation, stays in the room.</p></div>
-        <div class="sq photo" style="--img:url('../assets/img/mic.webp')" role="img" aria-label="A singer smiling on stage with a microphone"></div>
-        <div class="sq text"><span class="sq-n">03</span><h3>Shared by real use.</h3><p>The bar money is split by counted plays, not flat advances. Bars keep paying the levy they already pay.</p></div>
+  <!-- The music block: dark, in the style of a music product page -->
+  <div class="am" id="highlights">
+    <!-- Start: four dark cards -->
+    <section class="am-start">
+      <div class="wrap">
+        <div class="am-start-head"><h2>Start with Fair Play.</h2><a class="more on-dark" href="#how">How it works</a></div>
       </div>
-    </div>
-  </section>
+      <div class="am-cards" tabindex="0" aria-label="Who Fair Play is for">
+        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="3" fill="currentColor"/><path d="M2 15c0-3.3 2.7-5 6-5s6 1.7 6 5" fill="currentColor"/></svg>Artists</p><h3>See your plays</h3><p>Search your name and see every bar that played you.</p><a class="pill white sm" href="artist.html">Find your plays</a></article>
+        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="2.5" fill="currentColor"/></svg>Artist portal</p><h3>Declare a song</h3><p>Sign in to your own space and add a song so the meters can recognise it.</p><a class="pill white sm" href="portal.html">Open your portal</a></article>
+        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 14V6l5-4 5 4v8z" fill="currentColor"/></svg>Bars</p><h3>Nothing changes</h3><p>A small meter beside the speaker. No extra fee and no sound kept.</p><a class="pill white sm" href="#how">See the meter</a></article>
+        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1l6 3v4c0 3.5-2.6 6.2-6 7-3.4-.8-6-3.5-6-7V4z" fill="currentColor"/></svg>Rights society</p><h3>Shares you can check</h3><p>Every play is chained to the last and published each hour.</p><a class="pill white sm" href="#trust">See the play log</a></article>
+      </div>
+    </section>
 
-  <!-- Full-bleed photo band -->
-  <section class="band" style="--img:url('../assets/img/party.webp')">
-    <div class="band-text">
-      <h2>Made for the maquis,<br>the snack-bar and the club.</h2>
-      <p>Wherever music plays, the meter listens for songs, never for people.</p>
-    </div>
-  </section>
+    <!-- Tile: the song most played, framed by its own cover -->
+    <section class="wrap mt-tiles">
+      <article class="mt-tile am-frames" id="tile-frames">
+        <div class="frames" id="frames" aria-hidden="true"><div class="frame-cover" id="frame-cover"></div></div>
+        <button class="tile-btn sway-btn" id="sway-btn" type="button" aria-label="Pause the animation"><svg viewBox="0 0 18 18" aria-hidden="true"><path class="i-pause" d="M6 4v10M12 4v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path class="i-play" d="M6 3.8l8.2 5.2L6 14.2z" fill="currentColor"/></svg></button>
+        <p class="am-who" id="frame-who"></p>
+        <a class="tile-btn" href="#how" aria-label="How the meter recognises a song"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <div class="mt-tile-text">
+          <p class="am-eye-l">Bar metering</p>
+          <h2 class="heavy">Music counted<br>where it plays.</h2>
+        </div>
+      </article>
+
+      <!-- Tile: a wall of album covers around the headline -->
+      <article class="mt-tile am-wall light" id="tile-wall">
+        <div class="wall" id="wall" aria-hidden="true"></div>
+        <a class="tile-btn" href="artist.html" aria-label="Explore artists"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <div class="mt-tile-text mid">
+          <p class="am-eye-l">The catalogue</p>
+          <h2 class="heavy">Where every song<br>finds its share.</h2>
+          <p class="wall-note" id="wall-note"></p>
+        </div>
+      </article>
+
+      <!-- Tile: photo -->
+      <article class="mt-tile am-photo" style="--img:url('../assets/img/mic.webp')">
+        <p class="am-who">For artists</p>
+        <a class="tile-btn" href="portal.html" aria-label="Open the artist portal"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <div class="mt-tile-text">
+          <p class="am-eye-l">Public data</p>
+          <h2 class="heavy">Get closer to every<br>bar that plays you.</h2>
+          <a class="pill white" href="artist.html">Explore artists</a>
+        </div>
+      </article>
+
+      <!-- Split tile: the live feed set like lyrics -->
+      <article class="mt-tile am-split light" id="live">
+        <div class="am-split-text">
+          <p class="am-eye-l">Live from the bars</p>
+          <h2 class="heavy">It's not a guess.<br>It's what played.</h2>
+          <p>Every play a meter confirms appears within seconds, with the bar and the time. This is the system's own feed.</p>
+          <span class="live-state" id="live-state">Connecting</span>
+        <a class="tile-btn" href="#trust" aria-label="How plays are logged"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        </div>
+        <div class="lyric">
+          <div class="lyric-art" id="lyric-art"></div>
+          <ol class="lyric-lines" id="live-list"><li class="live-empty">Waiting for the first play…</li></ol>
+        </div>
+      </article>
+
+      <!-- Split tile: top artists in the mix -->
+      <article class="mt-tile am-split light rev" id="mix">
+        <div class="mix" aria-hidden="true">
+          <div class="mix-card"><b>Top this<br>month</b><span id="mix-sub"></span></div>
+          <div class="mix-face f1" id="mix-1"></div><div class="mix-face f2" id="mix-2"></div><div class="mix-face f3" id="mix-3"></div>
+        </div>
+        <div class="am-split-text">
+          <p class="am-eye-l">Shared by plays</p>
+          <h2 class="heavy">Every artist<br>in the mix.</h2>
+          <ol class="mix-list" id="mix-list"></ol>
+        <a class="tile-btn" href="#numbers" aria-label="See the numbers"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        </div>
+      </article>
+    </section>
+  </div>
 
   <!-- Numbers: four square tiles -->
   <section class="numbers" id="numbers">
@@ -136,19 +203,6 @@
           <p id="hash-note"></p>
         </article>
       </div>
-    </div>
-  </section>
-
-  <!-- Live from the bars: the real event stream -->
-  <section class="live">
-    <div class="wrap split">
-      <div class="split-text">
-        <p class="b-eye">Live</p>
-        <h2>Live from<br>the bars.</h2>
-        <p>Every play a meter confirms appears here within seconds, with the bar and the time. This list is the system's own feed.</p>
-        <span class="live-state" id="live-state">Connecting</span>
-      </div>
-      <div class="live-card"><ol class="live-list" id="live-list"><li class="live-empty">Waiting for the first play…</li></ol></div>
     </div>
   </section>
 
@@ -213,7 +267,7 @@
   <!-- Questions -->
   <section class="faq">
     <div class="wrap">
-      <h2 class="center">Questions.</h2>
+      <h2 class="center">Questions? Answers.</h2>
       <div class="faq-list">
         <details><summary>Does the meter record what people say?</summary><p>No. The meter turns short slices of sound into fingerprints of the music's strongest peaks and throws the sound away. Speech is not kept, and no audio is sent.</p></details>
         <details><summary>Do bars pay more?</summary><p>No. The levy is already in the price of the drinks a bar buys. Fair Play only changes how that money is shared between artists.</p></details>
@@ -249,7 +303,7 @@
 <footer class="foot">
   <div class="wrap">
     <p>Fair Play is a prototype built at the CIMFEST Hackathon 2026. Figures on this page come from the system's test data and are computed by it.</p>
-    <p>Photos: basungavisual (Pexels), kelly (Pexels), Kingsley Hemans, Bongani Ngcobo, Ato Aikins and Daniel (Unsplash), under the Pexels and Unsplash licences.</p>
+    <p>Photos: basungavisual (Pexels), kelly (Pexels), Kingsley Hemans, Bongani Ngcobo, Ato Aikins and Daniel (Unsplash), under the Pexels and Unsplash licences. Album covers belong to their artists and labels and are shown only next to those artists' own songs.</p>
   </div>
 </footer>
 

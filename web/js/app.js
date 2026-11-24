@@ -26,7 +26,105 @@ function renderKpis(o) {
   setKpi("k-counted", fmtInt(o.plays_counted));
   setKpi("k-songs", fmtInt(o.songs_ready));
   $("rule").textContent = `rule ${o.rule_version}`;
+  const foot = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
+  foot("kf-counted", o.plays_raw ? `<b>${fmtPct(o.plays_counted / o.plays_raw).replace(".00", "")}</b> of plays heard` : "no plays yet");
+  foot("kf-raw", `in <b>${fmtInt(o.venues)}</b> metered bars`);
+  foot("kf-meters", `<b>${fmtInt(o.meters_total - o.meters_online)}</b> offline or simulated`);
 }
+
+// Greeting and breadcrumb (dashboard layout).
+function greet() {
+  const h = +new Date().toLocaleString("en-GB", { timeZone: "Africa/Douala", hour: "2-digit", hour12: false });
+  if ($("greet")) $("greet").textContent = `${h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening"}, SONACAM`;
+}
+
+// Dot-matrix chart: one group of square columns per artist; light squares = plays heard, dark = plays counted.
+// Square size is a fixed number of plays (shown in the y labels). A table view sits under the chart.
+function compact(n) { return n >= 1e6 ? (n / 1e6).toFixed(1).replace(".0", "") + "M" : n >= 1e3 ? (n / 1e3).toFixed(1).replace(".0", "") + "k" : String(Math.round(n)); }
+function renderDots(e) {
+  const box = $("dots");
+  if (!box) return;
+  $("t-total").textContent = e.frozen ? "–" : fmtInt(e.rows.reduce((t, r) => t + (r.counted_plays || 0), 0));
+  const rows = e.frozen ? [] : [...e.rows].filter((r) => r.raw_plays > 0).sort((a, b) => b.raw_plays - a.raw_plays).slice(0, 24);
+  $("dots-tbody").innerHTML = rows.map((r) => `<tr><td>${esc(r.artist_name)}</td><td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.counted_plays)}</td></tr>`).join("");
+  if (!rows.length) { box.innerHTML = `<p class="dots-empty">${e.frozen ? "Withheld until the log is restored." : "No plays in this period yet."}</p>`; $("dots-x").innerHTML = ""; return; }
+  // One column per song (up to 64 columns), grouped by artist; each square is a fixed number of plays.
+  const H = 22, groupsData = [];
+  let ncols = 0;
+  for (const r of rows) {
+    const songs = (r.songs && r.songs.length ? [...r.songs] : [{ title: r.artist_name, raw_plays: r.raw_plays, counted_plays: r.counted_plays }])
+      .sort((a, b) => (b.raw_plays || 0) - (a.raw_plays || 0));
+    if (ncols && ncols + songs.length > 64) break;
+    groupsData.push({ r, songs }); ncols += songs.length;
+  }
+  const max = Math.max(...groupsData.flatMap((g) => g.songs.map((s) => s.raw_plays || 0)), 1);
+  const unit = max / H;
+  const ticks = [0, 1, 2, 3, 4, 5, 6].map((k) => compact((max * (6 - k)) / 6));
+  const groups = groupsData.map(({ r, songs }, gi) => {
+    const cols = songs.map((s) => {
+      const nh = s.raw_plays > 0 ? Math.max(1, Math.round(s.raw_plays / unit)) : 0, nc = Math.min(nh, Math.round((s.counted_plays || 0) / unit));
+      return `<div class="dcol" title="${esc(s.title)}: heard ${fmtInt(s.raw_plays)}, counted ${fmtInt(s.counted_plays)}">${Array.from({ length: H }, (_, k) => { const fb = H - k; return `<i class="${fb <= nc ? "c" : fb <= nh ? "h" : ""}"></i>`; }).join("")}</div>`;
+    }).join("");
+    const label = groupsData.length > 10 && songs.length < 3 ? initialsOf(r.artist_name) : r.artist_name;
+    return `<div class="dgroup" data-g="${gi}"><div class="dcols">${cols}</div><span class="dlabel" title="${esc(r.artist_name)}">${esc(label)}</span></div>`;
+  });
+  // Fill the whole width with a lattice of empty squares, spreading the artist groups evenly across it.
+  const avail = Math.max(200, box.clientWidth - 54);
+  const sq = Math.max(7, Math.min(14, Math.floor(avail / (ncols + groupsData.length + 1) - 3)));
+  const capacity = Math.floor((avail + 3) / (sq + 3));
+  const spare = Math.max(0, capacity - ncols), slots = groupsData.length + 1;
+  const emptyCol = `<div class="dcol">${"<i></i>".repeat(H)}</div>`;
+  const filler = (k) => `<div class="dfill"><div class="dcols">${emptyCol.repeat(k)}</div></div>`;
+  const parts = [];
+  groups.forEach((g, i) => { const k = Math.floor(spare / slots) + (i < spare % slots ? 1 : 0); if (k) parts.push(filler(k)); parts.push(g); });
+  const last = Math.floor(spare / slots);
+  if (last) parts.push(filler(last));
+  box.innerHTML = `<div class="dots-y">${ticks.map((t) => `<span>${t}</span>`).join("")}</div><div class="dots-grid">${parts.join("")}</div>`;
+  box.style.setProperty("--sq", `${sq}px`);
+  $("dots-x").innerHTML = "";
+  const tip = $("dot-tip"), card = box.closest(".card-i");
+  box.querySelectorAll(".dgroup").forEach((g) => {
+    const r = groupsData[+g.dataset.g].r;
+    const show = () => {
+      box.querySelectorAll(".dgroup.hover").forEach((x) => x.classList.remove("hover"));
+      g.classList.add("hover");
+      tip.innerHTML = `<p>${esc(r.artist_name)}</p><p><i style="background:var(--heard)"></i>Heard<b>${fmtInt(r.raw_plays)}</b></p><p><i style="background:var(--counted)"></i>Counted<b>${fmtInt(r.counted_plays)}</b></p><p>Share<b>${fmtPct(r.share)}</b></p>`;
+      const gb = g.getBoundingClientRect(), cb = card.getBoundingClientRect();
+      const left = gb.right - cb.left + 12 + 200 > cb.width ? gb.left - cb.left - 212 : gb.right - cb.left + 12;
+      tip.style.left = `${Math.max(8, left)}px`;
+      tip.style.top = `${Math.max(8, gb.top - cb.top + 20)}px`;
+      tip.classList.add("show");
+    };
+    g.addEventListener("mouseenter", show);
+    g.addEventListener("focus", show);
+    g.tabIndex = 0;
+  });
+  box.onmouseleave = () => { tip.classList.remove("show"); box.querySelectorAll(".dgroup.hover").forEach((x) => x.classList.remove("hover")); };
+}
+const initialsOf = (n) => String(n).split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
+
+// Small bars in the counted and heard cards: the top artists' plays, the leader dark.
+function renderSparks(e) {
+  const rows = e.frozen ? [] : e.rows.slice(0, 9);
+  for (const [id, key] of [["sp-counted", "counted_plays"], ["sp-raw", "raw_plays"]]) {
+    const el = $(id);
+    if (!el) continue;
+    const m = Math.max(...rows.map((r) => r[key] || 0), 1);
+    el.innerHTML = rows.map((r, i) => `<i class="${i === 0 ? "hi" : ""}" style="height:${Math.max(8, (100 * (r[key] || 0)) / m)}%"></i>`).join("");
+    el.title = "Top artists' plays";
+  }
+  const k = $("kf-artists");
+  if (k) k.innerHTML = rows[0] ? `led by <b>${esc(rows[0].artist_name)}</b>` : "no plays yet";
+}
+
+// Filter box: hides artist and song rows that do not match.
+function applyFilter() {
+  const q = ($("q") ? $("q").value : "").trim().toLowerCase();
+  document.querySelectorAll("#earn tr.artist, #shares tr").forEach((tr) => {
+    tr.classList.toggle("hide", !!q && !tr.textContent.toLowerCase().includes(q));
+  });
+}
+if ($("q")) $("q").addEventListener("input", applyFilter);
 
 let lastLedger = null;
 function renderLedger(l) {
@@ -136,6 +234,9 @@ function renderEarnings(e) {
     : top ? `${top.artist_name} leads with ${fmtPct(top.share)} of counted plays. ${fmtInt(e.rows.filter((r) => r.counted_plays > 0).length)} artists have plays in this period.`
     : "No artist has counted plays in this period yet.";
   $("earn-note").textContent = `An artist earns for all their songs together, so their songs' shares are added up. Click an artist to see the songs.${e.stats_run_id ? ` Rule ${e.rule_version}, run ${e.stats_run_id}.` : ""}`;
+  renderDots(e);
+  renderSparks(e);
+  applyFilter();
 }
 $("earn").addEventListener("click", (ev) => {
   if (ev.target.closest("a")) return;
@@ -170,6 +271,7 @@ function renderShares(s) {
       <td><div class="bar"><i style="width:${(100 * r.share / max).toFixed(1)}%"></i></div></td><td>${flags}</td></tr>`;
   }).join("") || `<tr><td colspan="8" class="note">No plays counted in this period yet.</td></tr>`;
   $("shares-note").textContent = `A song's share is its counted plays divided by all counted plays. Rule ${s.rule_version}${s.stats_run_id ? `, run ${s.stats_run_id}` : ""}.`;
+  applyFilter();
 }
 
 // ---------- trust ----------
@@ -269,6 +371,7 @@ function showTab(tab) {
   state.tab = tab;
   setOn("tab", tab);
   document.querySelectorAll(".view").forEach((v) => v.classList.toggle("on", v.id === `view-${tab}`));
+  if ($("crumb")) $("crumb").textContent = tab[0].toUpperCase() + tab.slice(1);
   history.replaceState(null, "", `${location.search}#${tab}`);
 }
 document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
@@ -299,6 +402,7 @@ const startTab = location.hash.slice(1);
 if (["overview", "songs", "trust"].includes(startTab)) showTab(startTab);
 $("mode-note").textContent = MOCK ? " · mock data (?mock=1)" : "";
 tickClock();
+greet();
 setInterval(tickClock, 1000);
 loadAll();
 setInterval(() => { if (state.period === "live") { loadOverview(); loadVenues(); } }, 30000);

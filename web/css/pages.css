@@ -274,3 +274,7 @@ input[readonly] { background: var(--grey); color: var(--ink-2); }
 }
 .am-hero { background-size: cover; background-position: center 30%; }
 .am-shelf { scroll-padding-inline: max(22px, calc((100vw - 1024px) / 2 + 22px)); }
+
+/* real album covers */
+.l-av.img { background-size: cover; background-position: center; color: transparent; }
+.am-hero.has-cover { background-size: cover; background-position: center 30%; }
