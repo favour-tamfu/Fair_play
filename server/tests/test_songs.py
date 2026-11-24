@@ -243,3 +243,19 @@ def test_half_hop_index_strengthens_off_grid_windows(monkeypatch):
             scores.append(r.best_score)
         results[shifts] = min(scores)
     assert results[(0, 128)] >= 2 * results[(0,)], results
+
+
+def test_duplicate_needs_slices_in_line(monkeypatch):
+    """Chance matches at unrelated places in the old song (same artist/producer) are not a duplicate."""
+    from types import SimpleNamespace as R
+    x8 = np.zeros(200 * 8000, dtype=np.float32)             # slices start at 40 s, 100 s, 160 s
+    def fake(offsets):
+        it = iter(offsets)
+        monkeypatch.setattr(fingerprint, "match_window",
+                            lambda h, idx: R(accepted=True, song_id="S-000025", offset_s=next(it)))
+    fake([152.1, 49.5, 147.3])                               # the Supporter -> Booboo case: out of line
+    assert fingerprint.find_duplicate(x8, None) is None
+    fake([45.0, 105.5, 300.0])                               # real copy with a 5 s longer intro: 2 slices in line
+    assert fingerprint.find_duplicate(x8, None) == ("S-000025", 2)
+    fake([40.0, 100.0, 160.0])
+    assert fingerprint.find_duplicate(x8, None) == ("S-000025", 3)

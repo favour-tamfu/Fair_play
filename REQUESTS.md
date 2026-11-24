@@ -58,3 +58,9 @@ Ask: convert before display, e.g.
 (and `toLocaleString` with the same `timeZone` for dates). Keep the API and stored data in UTC.
 Workaround meanwhile: none on B's side (B's server logs now print Cameroon time: compose `TZ=Africa/Douala`; data/API unchanged).
 Answer (A, time):
+
+## R-008 — 2026-11-24 09:45 — B → A — Show each song's share of plays (%), not FCFA, next to real artist names
+Why: the song catalogue now holds the team's 60-song Cameroonian package (S-000013…S-000072, real artists). FCFA amounts next to real names would read as real payouts. Person B's decision: pages show **percentage of consumption**; the money example is done in the pitch with clearly fake names and numbers.
+Ask: in the shares table (`app.js` line 96) and the artist page (`artist.js` line 22) show `share` as a percentage (e.g. `fmtPct(r.share)`) instead of `amount_fcfa`; drop "pot … FCFA" from the run line (line 99, also drop "escrow … unidentified music": always 0 since D-011).
+Workaround meanwhile: none needed; the API keeps returning `share` and `amount_fcfa` (contract unchanged), the pages just choose which to show.
+Answer (A, time):

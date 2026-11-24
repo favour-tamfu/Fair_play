@@ -5,7 +5,7 @@ Job "fingerprint", ref = song_id (or "song_id:approved" / "song_id:reindex" to s
   2. decode to 8 kHz mono (ffmpeg) → extract_peaks over the whole track → make_hashes, on every grid phase in
      config.FP_INDEX_SHIFTS (0 and half a hop: meter windows never line up with one grid — D-006)
   3. duplicate check (brief §5.4): 10 s slices at 20/50/80 % matched against the CURRENT index; ≥2 slices on the
-     same existing song → status duplicate_suspected, duplicate_of, flag row; not indexed until an admin approves
+     same existing song, in line (same time shift ± DUP_ALIGN_TOL_S) → status duplicate_suspected, duplicate_of, flag row; not indexed until an admin approves
   4. replace the song's rows in fp_hashes (COPY), n_hashes, measured duration_s, status → ready
 On any error: status → failed (the job is marked error by the job loop).
 """
@@ -42,20 +42,26 @@ def song_hashes(x8: np.ndarray, peaks0: Optional[np.ndarray] = None) -> np.ndarr
 
 
 def find_duplicate(x8, index: DbIndex) -> Optional[tuple[str, int]]:
-    """Return (song_id, n_slices_matched) if ≥ DUP_MIN_HITS slices of x8 match the same indexed song."""
+    """Return (song_id, n_slices_matched) if ≥ DUP_MIN_HITS slices of x8 match the same indexed song IN LINE.
+
+    A real copy keeps its timeline: every slice lands at (its own start + one shift) in the old song. Weak chance
+    matches between songs of the same artist/producer land at unrelated places (seen with the 60-song package:
+    Locko "Supporter" slices at 42 s and 169 s both landed near 150 s of "Booboo"), so they do not count.
+    """
     if len(x8) < WINDOW_SAMPLES:
         return None
-    hits: Counter = Counter()
+    shifts: dict[str, list[float]] = {}
     for frac in config.DUP_SLICES:
         start = min(int(frac * len(x8)), len(x8) - WINDOW_SAMPLES)
         r = match_window(make_hashes(extract_peaks(x8[start:start + WINDOW_SAMPLES])), index)
         if r.accepted:
-            hits[r.song_id] += 1
-    if hits:
-        song, n = hits.most_common(1)[0]
-        if n >= config.DUP_MIN_HITS:
-            return song, n
-    return None
+            shifts.setdefault(r.song_id, []).append(r.offset_s - start / SAMPLE_RATE)
+    best = None
+    for song, s in shifts.items():
+        n = max(sum(abs(b - a) <= config.DUP_ALIGN_TOL_S for b in s) for a in s)   # largest group in line
+        if n >= config.DUP_MIN_HITS and (best is None or n > best[1]):
+            best = (song, n)
+    return best
 
 
 def process(conn: psycopg.Connection, ref: str, index: DbIndex = INDEX) -> str:
