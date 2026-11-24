@@ -73,7 +73,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
   - Check: test vectors give 200, 401, 422; duplicate and 409 cases; `curl -N /api/v1/feed` shows `batch` events
 - [x] 3.3 **B-T04** Song upload + fingerprint worker + duplicate check + `DbIndex` + `reindex_all`
   - Check: 3 songs → ready; re-upload → duplicate_suspected
-- [ ] 3.4 **B-T05** Matcher worker + `make_batches_from_wav.py`
+- [x] 3.4 **B-T05** Matcher worker + `make_batches_from_wav.py`
   - Check: ≥90% of windows accepted on clean audio
 - [ ] 3.5 **MC1 merge** + joint live test (speaker → accepted matches for ≥2 of 3 songs; 2-minute network cut → no seq gaps), tag `cp-1`
 
@@ -128,3 +128,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 00:20 | 3.1 B-T02 | Image built; `docker compose up -d` → 6 services up, api+db healthy; /health ok db:true; 001_init applied once (19 tables); restart keeps data; B tests 153 passed (DB tests now run). Pending network leg: `firewall_b.ps1` (admin) + A netcheck on hotspot |
 | Tue 00:45 | 3.2 B-T03 | Ingest API live (batches/bulk/heartbeat/register), meter keys loaded at start-up (M-07), live feed via NOTIFY→SSE; send_fixtures on the real stack: 200/401/422 as contract, feed shows batch+meter events, late flag by event time; 15 API fixtures + feed sample for A (schema-valid). test_b → 189 passed |
 | Tue 01:00 | 3.3 B-T04 | Upload API + fingerprint worker + duplicate check + DbIndex live. User WAV + 2 synthetic songs ready in ≤1.1 s each; re-upload → duplicate_suspected (3/3 slices). test_b → 205 passed |
+| Tue 01:35 | 3.4 B-T05 | Matcher worker live: user WAV at 3.7 s + 10 dB noise → 6/6 MATCH, offsets advance with the clock, 1–30 ms/window, SSE match events. make_batches_from_wav + cp1_b.ps1 (GREEN). test_b → 212 passed. **B side ready for MC1** |

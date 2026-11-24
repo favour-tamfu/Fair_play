@@ -1,4 +1,4 @@
-# MC0 checkpoint — Laptop B (docs/02 §7). Run from repo root on main after merging b/work + a/work:
+# MC0 checkpoint - Laptop B (docs/02 sec.7). Run from repo root on main after merging b/work + a/work:
 #   .\scripts\cp0_b.ps1                                   # core install + tests + golden SHA + test vectors
 #   .\scripts\cp0_b.ps1 -BatchFromA <batch.json> -PubFromA contract\meters\M-07.pub.json   # + verify A's batch
 param(
