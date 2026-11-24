@@ -82,7 +82,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [x] 4.2 **B-T07** Ledger chain, Merkle root, FileAnchor, auditor, `tamper.py`
 - [x] 4.3 **B-T08** Read API v1 + SSE feed + static `web/`, responses checked against schemas
 - [x] 4.4 **B-T09** Fair-play weights `sr-1.0` + modifiers; T-SR-1/2/3 exact
-- [ ] 4.5 **B-T10** Estimation + bootstrap ranges + `run_stats` + shares API (<20 s per mode on the mock month)
+- [x] 4.5 **B-T10** Estimation + bootstrap ranges + `run_stats` + shares API (<20 s per mode on the mock month)
 - [ ] 4.6 **B-T11** Mock month importer (read from `origin/a/work` with `git show`) + compare-flat + migration 002 (chain namespace)
 - [ ] 4.7 **B-T12** Payouts (largest remainder, total == pot) + WIPO CSV + frozen
 - [ ] 4.8 **MC2 merge** + joint test, tag `cp-2`. Keep the stack stable for the industry clinic
@@ -138,3 +138,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 04:10 | live feed check | /api/v1/feed captured live: batch, meter, match, play, ledger (tamper red → restore green) events all shown live (synth_1 on M-90) |
 | Tue 04:30 | 4.4 B-T09 | sr-1.0 weights + loop/audience/concentration (D-008). T-SR-1/2/3 exact; = reference algorithm on 9,000 random plays. test_b → 276 passed |
 | Tue 04:50 | D-009 (user decision) | audience factor + concentration check = review flags only, no weight change (switch MODIFIERS_ADJUST_WEIGHTS, tested both ways). test_b → 278 passed |
+| Tue 05:00 | 4.5 B-T10 | estimation (L, catch rate, strata, bootstrap 200), run_stats raw+standardised, POST /api/v1/stats/run, scheduler every 5 min (D-010). Live: 12 plays → 9.0 counted, shares with ranges. 300k-play compute ≈ 2 s. test_b → 289 passed |

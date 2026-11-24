@@ -20,22 +20,14 @@ from server import config
 from server.db import connect
 from server.ledger import audit
 from server.money import largest_remainder
+from server.stats.periods import ACTIVE, period_sql
 
 router = APIRouter(prefix="/api/v1")
 PERIOD = Query("all", pattern="^(live|mock_month|all)$")
 MODE = Query("standardised", pattern="^(standardised|raw)$")
-ACTIVE = "NOT EXISTS (SELECT 1 FROM play_corrections c WHERE c.play_id = p.play_id AND c.reason = 'not_confirmed_on_recompute')"
 
 
 # --------------------------------------------------------------------------- helpers
-
-def period_sql(period: str) -> tuple[str, list]:
-    if period == "live":
-        return "p.source IN ('live','virtual') AND p.started_at >= %s", [parse_utc(config.LIVE_SINCE)]
-    if period == "mock_month":
-        return "p.source = 'mock'", []
-    return "true", []
-
 
 def latest_run(conn, period: str, mode: str) -> Optional[dict]:
     return conn.execute("""SELECT * FROM stats_runs WHERE period = %s AND mode = %s AND finished_at IS NOT NULL
@@ -170,10 +162,12 @@ async def shares(period: str = PERIOD, mode: str = MODE):
 
 
 def _flags(period: str) -> list[dict]:
-    sql, args = "SELECT flag_id, type, song_id, venue_id, detail, created_at FROM flags", []
-    if period == "live":
-        sql += " WHERE created_at >= %s"
-        args.append(parse_utc(config.LIVE_SINCE))
+    # stats flags of this period's runs + flags not from a stats run (e.g. duplicate_suspected from the catalogue)
+    sql = """SELECT flag_id, type, song_id, venue_id, detail, created_at FROM flags
+             WHERE stats_run_id IN (SELECT stats_run_id FROM stats_runs WHERE period = %s)
+                OR (stats_run_id IS NULL AND created_at >= %s)"""
+    since = parse_utc(config.LIVE_SINCE) if period == "live" else datetime(1970, 1, 1, tzinfo=timezone.utc)
+    args = [period, since]
     with connect() as c:
         rows = c.execute(sql + " ORDER BY created_at DESC, flag_id DESC LIMIT 500", args).fetchall()
     return [{**r, "detail": r["detail"] or "", "created_at": format_utc(r["created_at"])} for r in rows]

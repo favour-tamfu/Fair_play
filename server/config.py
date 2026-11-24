@@ -97,3 +97,12 @@ CONC_CAP_MIN = 5
 # D-009: audience + concentration only FLAG plays for SONACAM review (the machine flags, a human decides).
 # True = brief §7.2 original behaviour (x0.5 / cap applied to the weights automatically).
 MODIFIERS_ADJUST_WEIGHTS = False
+
+# Estimation + stats runs (brief §7.3, PLAN_B B-T10)
+DEFAULT_CATCH_RATE = 0.8         # until the meter is calibrated (B-T14)
+BOOTSTRAP_N = 200                # resamples of meters within strata
+BOOTSTRAP_SEED = 20261124        # fixed -> the same data always gives the same range
+CI_PCTL_LOW, CI_PCTL_HIGH = 5, 95
+STATS_EVERY_S = 300              # scheduler: live period, both modes, every 5 min (only if plays changed)
+STATS_AUTO_PERIODS = ("live",)   # mock_month / all: run after the mock import (B-T11) or POST /api/v1/stats/run
+STATS_KEEP_RUNS = 3              # older runs (and their play_weights/shares) are pruned per (period, mode)

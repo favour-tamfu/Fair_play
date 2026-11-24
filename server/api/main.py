@@ -19,7 +19,7 @@ from fastapi.staticfiles import StaticFiles
 
 from fairplay_core.schema import format_utc
 from server import config
-from server.api import feed, ingest, ledger, read, songs
+from server.api import feed, ingest, ledger, read, songs, stats
 from server.api.events import bus
 from server.db import connect, ping
 from server.db.migrate import migrate
@@ -55,6 +55,7 @@ app.include_router(feed.router)
 app.include_router(songs.router)
 app.include_router(ledger.router)
 app.include_router(read.router)
+app.include_router(stats.router)
 
 
 @app.get("/health")

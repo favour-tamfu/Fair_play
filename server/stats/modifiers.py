@@ -62,7 +62,8 @@ def loop_flags(venue: np.ndarray, song: np.ndarray, t_ns: np.ndarray, length_s: 
 
 # ---------------------------------------------------------------- audience factor
 
-def low_audience(p: pd.DataFrame, t_ns: np.ndarray, windows: Optional[pd.DataFrame]):
+def low_audience(p: pd.DataFrame, t_ns: np.ndarray, windows: Optional[pd.DataFrame],
+                 thresholds: Optional[pd.DataFrame] = None):
     """x0.5 if the play is quieter than its venue's AUDIENCE_PCTL-th percentile of window loudness over the period,
     or starts in a local hour holding < ACTIVE_HOUR_MIN_SHARE of the venue's plays.
     D-008 guards: loudness test only with >= AUDIENCE_MIN_WINDOWS venue windows and a known play loudness;
@@ -73,7 +74,12 @@ def low_audience(p: pd.DataFrame, t_ns: np.ndarray, windows: Optional[pd.DataFra
     off = np.zeros(n, dtype=bool)
 
     # loudness: venue threshold from that venue's meters' received windows
-    if windows is not None and not windows.empty and "loudness_db" in p:
+    # (or precomputed in SQL: thresholds = DataFrame[venue_id, n_windows, threshold_db])
+    thr = None
+    if thresholds is not None and not thresholds.empty:
+        t = thresholds[thresholds["n_windows"] >= config.AUDIENCE_MIN_WINDOWS]
+        thr = pd.Series(t["threshold_db"].to_numpy(dtype=float), index=t["venue_id"])
+    elif windows is not None and not windows.empty and "loudness_db" in p:
         wv = windows
         if "received" in wv:
             wv = wv[wv["received"].fillna(True).astype(bool)]
@@ -85,6 +91,7 @@ def low_audience(p: pd.DataFrame, t_ns: np.ndarray, windows: Optional[pd.DataFra
         counts = wv.groupby("venue_id")["loudness_db"].size()
         thr = wv.groupby("venue_id")["loudness_db"].quantile(config.AUDIENCE_PCTL / 100)
         thr = thr[counts >= config.AUDIENCE_MIN_WINDOWS]
+    if thr is not None and "loudness_db" in p:
         play_thr = pd.Series(venue).map(thr).to_numpy(dtype=float)
         loud = pd.to_numeric(p["loudness_db"], errors="coerce").to_numpy(dtype=float)
         with np.errstate(invalid="ignore"):

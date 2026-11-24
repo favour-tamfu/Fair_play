@@ -3,7 +3,7 @@
   every 2 s   ledger audit; when intact / broken_at changes → NOTIFY "ledger" {"intact","broken_at_play_id"}
   every 10 s  meters online/offline (last_seen older than METER_OFFLINE_S) → NOTIFY "meter" when it flips
   every 60 s  anchor every finished hour that has plays (FileAnchor)
-(stats every 5 min are added in B-T10)
+  every 5 min stats for config.STATS_AUTO_PERIODS (raw + standardised), only if the plays changed → NOTIFY "stats"
 """
 from __future__ import annotations
 
@@ -18,6 +18,7 @@ from server import config
 from server.db import connect, notify
 from server.ledger import audit
 from server.ledger.anchor import anchor_closed_hours
+from server.stats.run import plays_fingerprint, run_both
 
 log = logging.getLogger("scheduler")
 
@@ -26,7 +27,8 @@ class Scheduler:
     def __init__(self) -> None:
         self.ledger_state = None              # (intact, broken_at) last announced
         self.online: dict[str, bool] = {}
-        self.due = {"ledger": 0.0, "meters": 0.0, "anchors": 0.0}
+        self.due = {"ledger": 0.0, "meters": 0.0, "anchors": 0.0, "stats": 0.0}
+        self.stats_seen: dict[str, tuple] = {}   # period -> plays fingerprint of the last run
 
     def check_ledger(self, conn: psycopg.Connection) -> dict:
         s = audit.status(conn)
@@ -51,6 +53,21 @@ class Scheduler:
             self.online[m["meter_id"]] = online
         return flipped
 
+    def check_stats(self, conn: psycopg.Connection) -> list[str]:
+        """Run raw + standardised for each auto period whose plays changed since the last run."""
+        ran = []
+        for period in config.STATS_AUTO_PERIODS:
+            key = plays_fingerprint(conn, period)
+            if self.stats_seen.get(period) == key or key[0] == 0:
+                continue
+            try:
+                run_both(conn, period)
+                ran.append(period)
+                self.stats_seen[period] = key
+            except Exception:
+                log.exception("stats run %s failed (will retry next round)", period)
+        return ran
+
     def tick(self, conn: psycopg.Connection) -> None:
         t = time.monotonic()
         now = datetime.now(timezone.utc)
@@ -64,6 +81,9 @@ class Scheduler:
             with conn.transaction():
                 anchor_closed_hours(conn, now)
             self.due["anchors"] = t + 60
+        if t >= self.due["stats"]:
+            self.check_stats(conn)
+            self.due["stats"] = t + config.STATS_EVERY_S
 
 
 def main() -> None:

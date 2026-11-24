@@ -8,6 +8,7 @@ Inputs (extra columns are ignored):
     plays    play_id, venue_id, song_id, started_at (UTC); optional meter_id, loudness_db
     songs    song_id, duration_s                      (optional; unknown length -> config.DEFAULT_SONG_LENGTH_S)
     windows  meter_id, loudness_db; optional received (optional; used only for the audience loudness test)
+    loudness_thresholds  venue_id, n_windows, threshold_db (optional; precomputed in SQL instead of `windows`)
 
 Order of rules (brief §7.2 "applied after 7.1, multiplicatively"):
     1. repeat streak + cooldown (§7.1 reference algorithm, exactly)  -> streak_1..4 | cooldown
@@ -92,7 +93,8 @@ def streak_weights(venue: np.ndarray, song: np.ndarray, t_ns: np.ndarray,
 
 
 def compute_weights(plays: pd.DataFrame, songs: Optional[pd.DataFrame] = None,
-                    windows: Optional[pd.DataFrame] = None, rule_version: str = config.RULE_VERSION) -> FairPlayResult:
+                    windows: Optional[pd.DataFrame] = None, rule_version: str = config.RULE_VERSION,
+                    loudness_thresholds: Optional[pd.DataFrame] = None) -> FairPlayResult:
     if rule_version not in SUPPORTED_RULES:
         raise ValueError(f"unknown rule_version {rule_version!r} (supported: {SUPPORTED_RULES})")
     if plays.empty:
@@ -113,7 +115,7 @@ def compute_weights(plays: pd.DataFrame, songs: Optional[pd.DataFrame] = None,
         reasons[i].append("loop")
     flags += loop_flags
 
-    low, aud_flags = modifiers.low_audience(p, t_ns, windows)
+    low, aud_flags = modifiers.low_audience(p, t_ns, windows, loudness_thresholds)
     for i in np.flatnonzero(low):
         reasons[i].append("low_audience")
     if config.MODIFIERS_ADJUST_WEIGHTS:
