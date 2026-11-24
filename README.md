@@ -1,66 +1,266 @@
 # Fair Play
 
-**Music meters that tell SONACAM whose songs were actually played, so artists are paid by real plays, not a flat 27,000 FCFA.**
+**A small "listening box" in every bar tells SONACAM which Cameroonian songs were really played, so each artist's share of the royalties follows real plays, not a flat 27,000 FCFA for everyone.**
 
-CIMFEST Hackathon 2026 — "Africa's creative economy" — Buea, Cameroon.
+CIMFEST Hackathon 2026 · "Africa's creative economy" · Buea, Cameroon
 
-> Status: under construction during the hackathon. Sections marked *(TODO)* get filled as the build progresses.
+---
 
-## What it is
-- **Laptop A — the meter:** listens to a bar's music, extracts an audio signature (spectral peaks, never audio), signs it and sends it.
-- **Laptop B — SONACAM server:** fingerprints the catalogue, matches what meters heard, logs plays in a tamper-evident ledger, applies fair-play rules, estimates national shares and splits the royalty pot.
+## Contents
+1. [Fair Play in one minute](#1-fair-play-in-one-minute)
+2. [How it works](#2-how-it-works)
+3. [Quick start (Windows)](#3-quick-start-windows)
+4. [The SONACAM server (Laptop B)](#4-the-sonacam-server-laptop-b)
+5. [How the fair-play rules work](#5-how-the-fair-play-rules-work)
+6. [Trust: the tamper-proof play log](#6-trust-the-tamper-proof-play-log)
+7. [Measured on our laptops](#7-measured-on-our-laptops)
+8. [Device (Laptop A)](#8-device-laptop-a)
+9. [Web pages](#9-web-pages)
+10. [Limits (what this prototype does not do)](#10-limits-what-this-prototype-does-not-do)
+11. [Declarations](#11-declarations)
 
-## Quick start (Windows) *(TODO — B-T17)*
+---
+
+## 1. Fair Play in one minute
+
+| Today | With Fair Play |
+|---|---|
+| SONACAM collects money from bars but cannot see what was played, so it pays every artist the same flat advance. | A meter in each bar recognises the songs it hears (like a music-recognition app) and reports them. |
+| Popular artists are underpaid, and nobody can check the split. | Each artist's share = how much their songs were really played, after fair-play rules against abuse. |
+| Records can be changed quietly. | Every play is written into a tamper-proof log; any change is detected within a second. |
+
+**Privacy:** the meter never records or sends sound. It sends only a "fingerprint" of the music (a list of the loudest notes over time), which cannot be turned back into audio or speech.
+
+---
+
+## 2. How it works
+
+```
+ IN THE BAR (Laptop A = the meter)            AT SONACAM (Laptop B = the server)                 ON SCREEN
+ ┌──────────────────────────────┐   Wi-Fi   ┌─────────────────────────────────────────┐   ┌──────────────────────┐
+ │ microphone                   │  signed   │ 1. check the meter's signature          │   │ SONACAM dashboard    │
+ │  → every 10 s: fingerprint   │ ────────► │ 2. match the fingerprint to a song      │──►│  live feed, map,     │
+ │  → sign it (meter's own key) │  batches  │ 3. join matches into plays              │   │  songs, artists'     │
+ │  → keep it until SONACAM     │           │ 4. write plays to the tamper-proof log  │   │  shares, flags       │
+ │    confirms it was stored    │           │ 5. apply fair-play rules → shares       │   │ Artist page (phone)  │
+ └──────────────────────────────┘           └─────────────────────────────────────────┘   └──────────────────────┘
+```
+
+- **No internet? No problem.** The meter keeps every batch until the server confirms it, then sends the backlog in order.
+- **Songs are added** by artists or labels through the upload portal; the server fingerprints each song once.
+- Detailed design: `docs/00_PROJECT_BRIEF.md`. Exact message formats: `docs/01_CONTRACT.md`.
+
+---
+
+## 3. Quick start (Windows)
+
+**You need:** Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/) running, Python 3.11, Git.
+
+### Start the server (Laptop B)
+```powershell
+git clone https://github.com/favour-tamfu/Fair_play.git
+cd Fair_play
+Copy-Item .env.example .env          # first time only; then choose your own POSTGRES_PASSWORD (same value in DATABASE_URL)
+docker compose up -d --build         # starts the database and the five server parts (first time: a few minutes)
+docker compose ps                    # "api" and "db" should say (healthy)
+```
+
+### Load the songs and prepare the demo
 ```powershell
 py -3.11 -m venv .venv
 .\.venv\Scripts\Activate.ps1
-pip install -U pip
-pip install -e core -r requirements-dev.txt
+pip install -e core -r server\requirements.txt
+python -m server.tools.import_catalogue C:\path\to\Fair_Play_song_package   # the team's song package (not in git)
+python -m server.tools.demo_seed     # checks and prepares the rest; every line should say OK
 ```
+The song package is a folder with `catalogue.csv` and `audio/`. The server fingerprints the songs in about 2 minutes; `demo_seed` then builds the mock month on them.
 
-### Server stack (Laptop B, Docker Desktop running)
-```powershell
-Copy-Item .env.example .env        # first time only; then set a real POSTGRES_PASSWORD (same value in DATABASE_URL)
-docker compose up -d --build       # db, api, worker_fp, worker_match, worker_play, scheduler
-docker compose ps                  # api + db should say (healthy)
-curl http://localhost:8000/health  # {"ok":true,"db":true,...}
-.\scripts\test_b.ps1               # B's tests (DB tests use a separate <db>_test database)
-```
-Let the meter (Laptop A) reach port 8000 on the hotspot: run `scripts\firewall_b.ps1` once in an **admin** PowerShell.
+### Open it
+- Dashboard: **http://localhost:8000**
+- Artist page: **http://localhost:8000/artist.html?name=Locko&period=mock_month**
+- Server health: http://localhost:8000/health
 
-## Architecture *(TODO)*
-See `docs/00_PROJECT_BRIEF.md §4`.
+### Let a meter connect (Laptop A on the same Wi-Fi or hotspot)
+Run once in an **administrator** PowerShell: `powershell -ExecutionPolicy Bypass -File .\scripts\firewall_b.ps1`
+(opens port 8000 on private networks only). Laptop A then sends to `http://<Laptop B's IP>:8000`.
 
-## Server (Laptop B) *(TODO — owner B)*
+### Stop
+`docker compose stop` (data is kept) · start again with `docker compose start`.
 
-## Device (Laptop A) *(TODO — owner A)*
+---
 
-## Web *(TODO — owner A)*
+## 4. The SONACAM server (Laptop B)
 
-## How the fair-play rules work *(TODO — owner B)*
+### What each part does
+The server is six small programs (Docker containers) that share one database.
 
-## Accuracy (measured) *(TODO — owner A)*
+| Part | Its job, in plain words |
+|---|---|
+| `db` | The database (PostgreSQL): songs, fingerprints, plays, the log, results. |
+| `api` | The front door: receives meter batches and song uploads, answers the web pages, streams the live feed. |
+| `worker_fp` | Learns each uploaded song: makes its fingerprint and checks it is not a copy of a song already in the catalogue. |
+| `worker_match` | Recognises songs: compares each 10-second fingerprint from a meter with the catalogue. |
+| `worker_play` | Turns recognised moments into plays ("song X played at bar Y from 21:03 to 21:07") and writes them to the log. |
+| `scheduler` | Housekeeping: re-checks the log every 2 s, publishes an hourly checkpoint, refreshes the results every 5 min, watches which meters are online. |
 
-## Limits *(TODO)*
+### Everyday commands
+| I want to… | Command |
+|---|---|
+| check everything before a demo | `python -m server.tools.demo_seed` |
+| wipe the live test plays (keep songs, meters, mock month) | `python -m server.tools.demo_seed --reset-live` |
+| load a song package (CSV + audio folder) | `python -m server.tools.import_catalogue PATH\to\package` |
+| rebuild the mock month on the catalogue | `python -m server.tools.catalogue_month` then `python -m server.tools.import_mock data\mock_month_catalogue` |
+| show the tamper alarm | `python -m server.tools.tamper --latest` · undo: `python -m server.tools.tamper --restore` |
+| prove restarts lose nothing | `python -m server.tools.chaos run` |
+| run the server tests | `.\scripts\test_b.ps1` |
+| see a part's log | `docker compose logs -f worker_match` |
+| hide the dashboard pages, keep the API | set `SERVE_WEB=0` in `.env`, then `docker compose up -d api` |
 
-## Declarations
+Times shown to people are Cameroon time (UTC+1); stored data and the API use UTC.
+
+### API at a glance
+Full shapes and examples: `docs/01_CONTRACT.md` and `contract/schemas/`.
+
+**For meters** (every message is signed by the meter's own key)
+| Endpoint | What it does |
+|---|---|
+| `POST /v1/batches` · `/v1/batches/bulk` | send fingerprint batches (one, or up to 50 when catching up) |
+| `POST /v1/heartbeat` | "I'm alive", queue size; the answer carries the server's clock |
+| `POST /v1/calibration` | known songs played near the meter → the meter's real catch rate |
+| `POST /v1/meters/register` | register a meter's public key |
+
+**For the pages**
+| Endpoint | What it gives |
+|---|---|
+| `GET /api/v1/overview` | headline numbers (meters online, plays, songs, log status) |
+| `GET /api/v1/artist-shares` | what each artist earned: their share of all counted plays |
+| `GET /api/v1/shares` · `/api/v1/plays` · `/api/v1/flags` | per-song shares, recent plays, items flagged for review |
+| `GET /api/v1/venues` · `/api/v1/artists/{name}` | bars and meters on the map · one artist's page |
+| `GET /api/v1/compare-flat` | flat split vs Fair Play on the mock month (against what really played) |
+| `GET /api/v1/ledger/status` · `/api/v1/ledger/anchors` | is the log intact? hourly checkpoints |
+| `GET /api/v1/feed` | live feed (Server-Sent Events) |
+| `POST/GET /api/v1/songs` | upload a song (with owners and consent) · list the catalogue |
+| `GET /api/v1/export/usage_report.csv` | usage report: per song, plays and shares |
+| `POST /api/v1/stats/run` · `POST /api/v1/demo/reset?confirm=yes` | recompute results now · wipe live test data |
+
+Every list accepts `period=live|mock_month` and `mode=standardised|raw` (with or without the fair-play rules).
+
+---
+
+## 5. How the fair-play rules work
+
+The goal: **a song counts for what people actually heard, and nobody can buy a bigger share by looping a song.**
+
+### Step 1: count each play (rule version `sr-1.0`)
+When the same song is repeated in the same bar, each repeat counts a little less:
+
+| Play of the same song in a row | 1st | 2nd | 3rd | 4th | after that |
+|---|---|---|---|---|---|
+| Counts as | 1 | 1 | ½ | ¼ | 0, for a 2-hour cooldown |
+
+The count starts again at 1 when the song comes back **after at least 30 minutes and 3 other songs**.
+After the cooldown (2 hours and 3 other songs) the song counts normally again.
+
+**Example (one bar, one night, from the project brief, test T-SR-1):** song A is played 7 times between 20:00 and 22:15, mixed with other songs → it counts as **3.75 plays**, not 7.
+
+### Step 2: flag, don't punish
+Some patterns are suspicious but can be innocent, so they are **shown to SONACAM for review** and never change the count by themselves:
+
+| Flag | Meaning |
+|---|---|
+| loop | the same song back to back 4 or more times |
+| low audience | played outside the bar's usual busy hours (e.g. 4 am to an empty room) |
+| concentration | a song heard in very few bars with most plays in two of them |
+| clock skew | a meter's clock is more than 5 s off |
+| meter moved | a meter reports a different phone-network cell than where it was installed |
+| duplicate suspected | an uploaded song looks like a copy of one already in the catalogue |
+
+### Step 3: from plays to shares
+- Each meter's plays are corrected for how many songs it misses (its **catch rate**, measured by calibration, 0.8 until then).
+- A **song's share** = its counted plays ÷ all counted plays in the period.
+- An **artist's share** = the sum of the shares of all their songs. This is what each artist truly earned. The dashboard can show the same results **Raw** (every play = 1) or **Standardised** (with the rules) side by side.
+
+In this prototype each artist is registered as the 100 % owner of their songs, and no money is calculated: the result stops at each artist's share.
+
+---
+
+## 6. Trust: the tamper-proof play log
+
+- Every play is chained to the one before it with a cryptographic hash (like numbered, sealed pages in a notebook). Changing any recorded play breaks the chain from that point.
+- The server re-checks the whole chain continuously. **Measured: an edited play shows as "log broken" on the dashboard in about 1 second**, and results are withheld until the log is restored.
+- Every hour a checkpoint of the log (a Merkle root: one short code that summarises all plays of that hour) is written to an append-only anchors file. In a real deployment it would go somewhere SONACAM does not control (for example a public blockchain), so even SONACAM could not quietly rewrite the past.
+- A demo reset does not erase history silently: it starts a new "epoch" and writes the reset itself into the anchors file.
+
+---
+
+## 7. Measured on our laptops
+
+| What | Result |
+|---|---|
+| Restart test: every server part restarted while a meter was sending | 36 of 36 batches stored exactly once, 3 of 3 plays correct, log intact |
+| Live meter during that test and a 20-minute server outage | 2,501 batches in a row, none missing, none duplicated |
+| Song recognition time per 10-second window (66 songs in the catalogue) | median 13 ms, 95 % under 49 ms |
+| Recognition of the 60-song catalogue (3 clips per song, clean audio) | 180 of 180 correct |
+| Tamper alarm (edit a play → dashboard shows "log broken") | 0.9 s (restore → "intact" in 1.1 s) |
+| Mock month (30 days, 31 bars, 60 songs, 65,635 recorded plays): import + results | about 10 seconds |
+
+Accuracy through a real microphone in a noisy room: see [Device](#8-device-laptop-a) (measured by A).
+
+---
+
+## 8. Device (Laptop A)
+*(Section owned by A: meter setup, microphone check, virtual meters, calibration tool, measured accuracy.)*
+
+## 9. Web pages
+*(Section owned by A: SONACAM dashboard, artist page, upload portal, admin page.)*
+
+---
+
+## 10. Limits (what this prototype does not do)
+
+- **Laptops stand in for meters.** A real meter would be a small box with a microphone and a 4G module.
+- **The mock month is simulated.** Bars, plays and listening patterns are generated (seeded, repeatable); only the songs are real. It exists to show what a month of data looks like and to compare the flat split with Fair Play against a known truth.
+- **No money moves.** Results end at each artist's share; owners are set to the artist (100 %) as a placeholder until real splits are registered.
+- **One credited artist per song.** Featured artists are not yet given their own share.
+- **Recognition needs the song in the catalogue.** Music that was never uploaded is not counted and not recorded.
+- **Catch rates are 0.8 until a meter is calibrated** on site with known songs.
+- **Test keys only.** The meters' signing keys are prototype keys; a real deployment would provision them securely.
+
+---
+
+## 11. Declarations
+
 All code in this repository was written during the hackathon (Mon 23 Nov – Wed 25 Nov 2026). **Built with Claude Code** (Anthropic), declared as an AI coding tool.
 
-| Library / asset | Version | Licence | Purpose | Added by |
+### Libraries and tools
+| Library / tool | Version | Licence | Used for | Side |
 |---|---|---|---|---|
-| numpy | 2.1.3 | BSD-3-Clause | arrays, signal maths | B (core) |
-| scipy | 1.14.1 | BSD-3-Clause | STFT window, filters, resampling | B (core) |
-| PyNaCl | 1.5.0 | Apache-2.0 | Ed25519 signatures | B (core) |
-| pydantic | 2.9.2 | MIT | batch schema validation | B (core) |
-| pytest | 8.3.3 | MIT | tests | B |
-| jsonschema | 4.23.0 | MIT | contract schema validation | B |
-| FastAPI | 0.115.5 | MIT | server API | B |
-| Uvicorn | 0.32.1 | BSD-3-Clause | ASGI web server | B |
+| Python | 3.11 | PSF | everything | A, B |
+| numpy | 2.1.3 | BSD-3-Clause | arrays, signal maths | A, B |
+| scipy | 1.14.1 | BSD-3-Clause | spectrogram, filters, resampling | A, B |
+| PyNaCl | 1.5.0 | Apache-2.0 | Ed25519 signatures (meter seals) | A, B |
+| pydantic | 2.9.2 | MIT | checking message formats | A, B |
+| httpx | 0.27.2 | BSD-3-Clause | sending batches, test client | A, B |
+| FastAPI | 0.115.5 | MIT | server API | A, B |
+| Uvicorn | 0.32.1 | BSD-3-Clause | web server | A, B |
+| jsonschema | 4.23.0 | MIT | contract checks in tests | A, B |
+| pytest | 8.3.3 | MIT | tests | A, B |
 | psycopg | 3.2.3 | LGPL-3.0 | PostgreSQL driver | B |
 | python-multipart | 0.0.17 | Apache-2.0 | song upload forms | B |
-| pandas | 2.2.3 | BSD-3-Clause | stats tables | B |
-| sse-starlette | 2.1.3 | BSD-3-Clause | live feed (Server-Sent Events) | B |
-| httpx | 0.27.2 | BSD-3-Clause | test client | B |
+| pandas | 2.2.3 | BSD-3-Clause | results tables | B |
+| sse-starlette | 2.1.3 | BSD-3-Clause | live feed | B |
+| sounddevice | 0.5.1 | MIT | microphone capture | A |
+| soundfile | 0.12.1 | BSD-3-Clause | reading WAV files | A |
+| rich | 13.9.4 | MIT | meter status screen | A |
+| tomli-w | 1.1.0 | MIT | meter config files | A |
 | PostgreSQL | 16 (Docker image) | PostgreSQL Licence | database, fingerprint index, job queue | B |
-| Python | 3.11-slim (Docker image) | PSF | server runtime | B |
-| FFmpeg | Debian package in image | LGPL/GPL | decode uploaded songs | B |
+| FFmpeg | Debian package in the server image | LGPL/GPL | decoding uploaded songs | B |
+| Docker Desktop | — | Docker subscription terms | running the server | B |
+
+### Data and assets
+| What | Source |
+|---|---|
+| Song catalogue | 60 songs by Cameroonian artists, compiled by the team for testing the prototype. Audio files are not in this repository. |
+| Mock month | Generated by our code (`server/tools/catalogue_month.py`, seeded); bars, venue sizes and coordinates are illustrative. |
+| Fonts and icons | None added: the pages use the system font. |
+| Test signals | Synthetic tones made by our code (`core/tests/data`). |

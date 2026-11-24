@@ -92,7 +92,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [x] 5.2 **B-T14** Calibration intake, catch rates, clock_skew and meter_moved flags
 - [-] 5.3 **B-T15** Sepolia anchor (*stretch; first to cut*) — SKIPPED by Person B 12:40
 - [x] 5.4 **B-T16** Chaos and restart test, matcher latency, `demo_seed.py`
-- [ ] 5.5 **B-T17** README (server), Declarations → **MC4**, full demo ×2, tag `cp-4`
+- [~] 5.5 **B-T17** README (server), Declarations (README + declarations done 13:10; MC4 + full demo ×2 need A) → **MC4**, full demo ×2, tag `cp-4`
 
 ## Phase 6 — Wednesday
 - [ ] 6.1 **B-T18** Fixes only, fresh-clone test on Laptop A, tag `v1.0` (MC5), submit by 10:00
@@ -154,3 +154,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 12:20 | B-T13 | mode already honoured (plays, artists, shares), flags incl. duplicate_suspected; NEW demo reset (D-017, epoch + anchors archive, migration 007); per-chain audit cache → tamper SSE 0.88 s / restore 1.08 s on 65 659 plays; anchor_closed_hours live-only fix; rules panels removed + no promo flag (D-016). R-016. test_b 300 passed. MC3 needs A |
 | Tue 12:35 | B-T14 | POST /v1/calibration (±60 s, caught/expected → meters.catch_rate, scheduler re-check 10 min), clock_skew (>5 s, 1/h/meter, heartbeat + future batch) and meter_moved (new cell) flags, reset clears them; migration 008; D-018. test_b 306 passed. api left stopped (user) |
 | Tue 12:55 | B-T16 (B-T15 skipped, user) | SERVE_WEB=0 (API on, pages off); chaos tool: all 5 containers restarted mid-send → 36/36 batches once, 3/3 plays, ledger intact; live M-07 seq 5–2505 0 gaps; matcher median 13 ms / p95 49 ms (index load 6.6 s after restart); demo_seed all OK in 5 s; D-019. test_b 307 passed |
+| Tue 13:10 | B-T17 README (user: simple, lay terms) | README rewritten: contents, one-minute summary, diagram, quick start (incl. loading the song package + demo_seed), server parts + commands + API tables, fair-play rules in plain words with T-SR-1, tamper-proof log, measured numbers, limits, declarations (A + B libraries, data/assets). A's Device/Web sections left as placeholders. No WIPO/money wording. .env.example + SERVE_WEB |

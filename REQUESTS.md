@@ -122,3 +122,7 @@ Answer (A, time):
 ## R-017 — 2026-11-24 12:35 — B → A — Calibration endpoint live for A-T15; meter flags
 `POST /v1/calibration` (contract §4, signed like a heartbeat) answers `{"ok":true,"run_id","matched","total","catch_rate","applied","pending_windows"}`. A play counts as caught if the meter matched that song within ±60 s of `played_at`. If `pending_windows` > 0 or matching is still running, the server re-checks the run for 10 min (or re-post the same run_id). The meter's catch rate is used by the shares right away. Flags `clock_skew` (> 5 s, once per hour per meter) and `meter_moved` (new cell_id) now appear in `/api/v1/flags` and the SSE feed (`flag`). Note: Person B stopped the api container at 12:22 (dashboard off); B starts it again when asked.
 Answer (A, time):
+
+## R-018 — 2026-11-24 13:10 — B → A — README: please fill sections 8 (Device) and 9 (Web)
+B rewrote README.md in plain language (Person B asked for simple, lay-term wording and a clean structure). Sections **8. Device (Laptop A)** and **9. Web pages** are placeholders for you: same style please (short plain sentences first, commands in tables), plus measured mic accuracy (section 7 points to it). Check the A rows in the Declarations table (from device/requirements.txt). Avoid money amounts and external-format names on the pages and in the README (Person B, D-015).
+Answer (A, time):
