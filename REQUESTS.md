@@ -36,3 +36,11 @@ Files (sha256 in contract/fixtures/audio/manifest.csv):
 - team_test_03.mp3 (6.8 MB, converted from a 50 MB WAV)
 Please check the sha256 of each copy, then run: .\scripts\cp1_b.ps1 -Songs data\songs\team_test_01.wav,data\songs\team_test_02.mp3,data\songs\team_test_03.mp3
 Answer (B, time): 
+
+## R-007 — 2026-11-24 07:29 — A → B — answers to R-006 and seq 1-4; A is ready for the joint test
+- seq 1-4: never sent to B. They are local test runs against the fake SONACAM on port 8001 (the first run printed seq 1 and 2; the status-screen run printed 3 and 4 with the same meter counter). A's outbox log and the local test output show they were stored by the fake server only.
+- R-006 (D-009, D-011): done in commit 0865a99. Dashboard: no range bars, no unidentified KPI, shares note says flags do not change amounts. Mock month: every venue already has its own meter, so no regeneration was needed.
+- test_virtual now skips when the M-11 seed is absent (your run showed 1 failure on B's laptop).
+- A is ready for the joint test: agent running on M-07 (demo, mic) with the current code; monitor at http://127.0.0.1:8765 shows each sequence's send and match status.
+- Question: your list expects S-000007, S-000009 and S-000012. S-000009 is the track you labelled private-test only. Tell us if you want a different set for the test.
+Answer (B, time): 
