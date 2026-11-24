@@ -1,17 +1,17 @@
-/* Artist page: warm red-to-orange gradient, big white type, dark rounded controls.
+/* Artist page in SONACAM's colours (sonacam.org): navy-to-blue gradient, big white type, orange accent, dark rounded controls.
    Self-contained (no CDN, works offline). System fonts only. */
 :root {
-  --ember: #7a1606;
-  --flame: #e0480f;
-  --orange: #f26a1b;
-  --sand: #f3c999;
+  --ember: #0f172a;
+  --flame: #1e3a8a;
+  --orange: #0f53f0;
+  --sand: #f5f0ed;
   --ink: #ffffff;
   --ink-2: rgba(255, 255, 255, .72);
   --ink-3: rgba(255, 255, 255, .5);
-  --glass: rgba(20, 8, 4, .38);
-  --glass-2: rgba(20, 8, 4, .55);
+  --glass: rgba(8, 14, 40, .38);
+  --glass-2: rgba(8, 14, 40, .55);
   --line: rgba(255, 255, 255, .14);
-  --accent: #ff6a1f;
+  --accent: #f5822a;
   font-family: "Inter", "Helvetica Neue", "Segoe UI", system-ui, Arial, sans-serif;
   font-variant-numeric: tabular-nums;
   color-scheme: dark;
@@ -21,8 +21,8 @@ html, body { margin: 0; min-height: 100%; }
 body {
   color: var(--ink);
   background:
-    radial-gradient(120% 70% at 85% 0%, #c62d08 0%, transparent 60%),
-    radial-gradient(90% 60% at 0% 10%, #5a0d03 0%, transparent 65%),
+    radial-gradient(120% 70% at 85% 0%, #0f53f0 0%, transparent 60%),
+    radial-gradient(90% 60% at 0% 10%, #0b1230 0%, transparent 65%),
     linear-gradient(180deg, var(--ember) 0%, var(--flame) 38%, var(--orange) 62%, var(--sand) 100%);
   background-attachment: fixed;
   min-height: 100vh;
@@ -41,8 +41,8 @@ a { color: inherit; }
   .phone {
     flex: none; width: 400px; height: min(840px, calc(100vh - 96px)); overflow-y: auto; scrollbar-width: none;
     border-radius: 46px; padding: 18px 16px 30px;
-    background: linear-gradient(180deg, #b8300a 0%, #8f1f06 45%, #2a0b04 100%);
-    box-shadow: 0 0 0 10px #141010, 0 0 0 11px #3a2a26, 0 40px 90px rgba(40, 6, 0, .55);
+    background: linear-gradient(180deg, #0f53f0 0%, #1e3a8a 45%, #0b1230 100%);
+    box-shadow: 0 0 0 10px #141010, 0 0 0 11px #3a2a26, 0 40px 90px rgba(5, 10, 35, .55);
   }
   .phone::-webkit-scrollbar { display: none; }
 }
@@ -51,7 +51,7 @@ a { color: inherit; }
 .meta { display: flex; gap: 40px; font-size: 13px; color: var(--ink-2); margin-bottom: 48px; }
 .meta span:first-child { color: var(--ink); font-weight: 700; }
 .headline { font-size: clamp(48px, 5.6vw, 88px); line-height: .98; letter-spacing: -.045em; font-weight: 800; margin: 0 0 28px;
-  background: linear-gradient(180deg, #fff 0%, #ffe3d3 60%, #ffc9ad 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  background: linear-gradient(180deg, #fff 0%, #e3ebff 60%, #c9d8ff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .headline em { font-style: normal; color: transparent; -webkit-text-stroke: 0; opacity: .82; }
 .lede { font-size: clamp(18px, 1.6vw, 24px); line-height: 1.35; letter-spacing: -.01em; max-width: 520px; color: var(--ink); margin: 0 0 32px; }
 .steps { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; font-size: 15px; color: var(--ink-2); max-width: 480px; counter-reset: s; }
@@ -68,12 +68,12 @@ a { color: inherit; }
   text-decoration: none; font-size: 22px; line-height: 1; backdrop-filter: blur(8px); }
 .period { display: flex; background: var(--glass); border: 1px solid var(--line); border-radius: 999px; padding: 3px; backdrop-filter: blur(8px); }
 .period button { border: 0; background: none; padding: 6px 14px; border-radius: 999px; font-size: 13px; color: var(--ink-2); }
-.period button.on { background: #fff; color: #8f1f06; font-weight: 700; }
+.period button.on { background: #fff; color: #1e3a8a; font-weight: 700; }
 
 /* Hero */
 .hero { position: relative; display: grid; grid-template-columns: 76px 1fr; gap: 14px; align-items: center; margin-bottom: 18px; }
 .avatar { width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; font-size: 28px; font-weight: 800; letter-spacing: -.03em;
-  background: radial-gradient(circle at 30% 25%, #ff9a5a, #c2340a 70%); box-shadow: 0 10px 30px rgba(60, 10, 0, .45), inset 0 0 0 2px rgba(255,255,255,.25); }
+  background: radial-gradient(circle at 30% 25%, #ffb27a, #d46306 70%); box-shadow: 0 10px 30px rgba(5, 10, 35, .45), inset 0 0 0 2px rgba(255,255,255,.25); }
 .eyebrow { font-size: 12px; color: var(--ink-2); letter-spacing: .02em; }
 .who h2 { font-size: 34px; line-height: 1; letter-spacing: -.04em; font-weight: 800; margin: 4px 0 6px; }
 .songs-line { font-size: 13px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -94,8 +94,8 @@ a { color: inherit; }
 
 /* The three round "transport" controls carry the key numbers */
 .controls { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr); gap: 10px; margin-bottom: 14px; align-items: center; }
-.ctl { aspect-ratio: 1; min-width: 0; overflow: hidden; border-radius: 50%; background: #1d0d08; border: 1px solid rgba(255,255,255,.08); display: grid; place-content: center; text-align: center; gap: 4px; padding: 10px;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 24px rgba(40, 6, 0, .35); }
+.ctl { aspect-ratio: 1; min-width: 0; overflow: hidden; border-radius: 50%; background: #0b1230; border: 1px solid rgba(255,255,255,.08); display: grid; place-content: center; text-align: center; gap: 4px; padding: 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06), 0 10px 24px rgba(5, 10, 35, .35); }
 .ctl b { font-size: 20px; font-weight: 800; letter-spacing: -.03em; color: var(--accent); }
 .ctl span { font-size: 10px; color: var(--ink-3); line-height: 1.2; }
 .ctl.big { background: var(--accent); }
@@ -114,11 +114,11 @@ a { color: inherit; }
 .row .meter i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
 .empty { font-size: 13px; color: var(--ink-3); padding: 6px 0; }
 .chart { display: flex; align-items: flex-end; gap: 4px; height: 96px; }
-.chart i { flex: 1; background: linear-gradient(180deg, #ffb07a, var(--accent)); border-radius: 6px 6px 2px 2px; min-height: 3px; opacity: .9; }
+.chart i { flex: 1; background: linear-gradient(180deg, #ffb27a, var(--accent)); border-radius: 6px 6px 2px 2px; min-height: 3px; opacity: .9; }
 .how p { font-size: 14px; line-height: 1.5; margin: 0 0 8px; color: var(--ink); }
 .how .fine { font-size: 12px; color: var(--ink-3); margin: 4px 0 0; }
 
-.toast { position: sticky; bottom: 14px; margin: 0 auto; width: fit-content; max-width: 100%; background: #fff; color: #8f1f06; font-weight: 700; font-size: 14px;
-  padding: 10px 16px; border-radius: 999px; box-shadow: 0 12px 30px rgba(40, 6, 0, .4); opacity: 0; transform: translateY(10px); transition: .35s; pointer-events: none; }
+.toast { position: sticky; bottom: 14px; margin: 0 auto; width: fit-content; max-width: 100%; background: #fff; color: #1e3a8a; font-weight: 700; font-size: 14px;
+  padding: 10px 16px; border-radius: 999px; box-shadow: 0 12px 30px rgba(5, 10, 35, .4); opacity: 0; transform: translateY(10px); transition: .35s; pointer-events: none; }
 .toast.show { opacity: 1; transform: none; }
 .foot { font-size: 11px; color: var(--ink-3); text-align: center; margin-top: 8px; }
