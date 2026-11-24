@@ -67,18 +67,24 @@ def build_state(meter: str, state_dir: str = STATE_DIR) -> dict:
     events = EventLog(os.path.join(state_dir, f"{meter}_events.jsonl")).read()
     made, acked, parked, dead = {}, set(), set(), set()
     network = "OK"
+    net_t, ack_t = "", ""
     for e in events:
         ev = e.get("event")
         if ev == "window":
             made[e["seq"]] = e
         elif ev == "acked":
             acked.add(e["seq"])
+            ack_t = e.get("t", ack_t)
         elif ev == "parked":
             parked.add(e["seq"])
         elif ev == "dead":
             dead.add(e["seq"])
         elif ev == "network":
             network = e.get("state", network)
+            net_t = e.get("t", net_t)
+    # a server answer after the last network failure means the link is back, even if no OK event was written
+    if network != "OK" and ack_t > net_t:
+        network = "OK"
     queued = set()
     outbox_path = os.path.join(state_dir, f"{meter}_outbox.db")
     if os.path.exists(outbox_path):
