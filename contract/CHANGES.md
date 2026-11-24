@@ -33,6 +33,6 @@
 ## c-1.3 — 2026-11-24 10:50 — PROPOSED (B) — artists earn a cumulative share; no money (D-015)
 - Additive: `GET /api/v1/artist-shares?period=&mode=` → `{"period","mode","stats_run_id","rule_version","frozen","rules":[str],"rows":[{"rank","artist_name","share","n_songs","raw_plays","counted_plays","songs":[{"song_id","title","share","raw_plays","counted_plays"}]}]}` (`artist_shares.schema.json`, fixture `artist_shares.json`). An artist's share = sum of their songs' shares; rows sum to 1; `frozen=true` (ledger not intact) → `rows` empty. `rules` = plain-language rule text for the page.
 - Additive: `GET /api/v1/artists/{name}` gets `share` (the artist's cumulative share).
-- Additive: `GET /api/v1/export/usage_report.csv?period=&mode=` — usage report, prototype format for WIPO Connect import, shares only (columns `song_id,isrc,iswc,title,artist_name,period_start,period_end,raw_plays,counted_plays,share,artist_share,rule_version,stats_run_id`).
+- Additive: `GET /api/v1/export/usage_report.csv?period=&mode=` — usage report (prototype), shares only (columns `song_id,isrc,iswc,title,artist_name,period_start,period_end,raw_plays,counted_plays,share,artist_share,rule_version,stats_run_id`).
 - Deprecated (kept so no page breaks; pages should stop showing them): `amount_fcfa` in `shares.rows`, `artist`, and the `payouts` endpoint. This version ends at what each artist truly earned (the share); paying it out is not modelled.
 - Status: waiting for A's ACK (R-011). Web pages updated by B with Person B's approval while A was offline (R-015).

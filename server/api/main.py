@@ -69,6 +69,16 @@ def health() -> dict:
     return {"ok": True, "server_time": format_utc(datetime.now(timezone.utc)), "db": db_ok, "version": config.VERSION}
 
 
+class FreshStaticFiles(StaticFiles):
+    """Static pages with `Cache-Control: no-cache`: the browser re-checks every file (cheap 304 when unchanged),
+    so a page never mixes a new index.html with an old cached app.js / app.css."""
+
+    def file_response(self, *args, **kwargs):
+        resp = super().file_response(*args, **kwargs)
+        resp.headers["Cache-Control"] = "no-cache"
+        return resp
+
+
 # A's static pages (contract §6.2) — mounted LAST so every API route above takes precedence.
 if config.WEB_DIR.is_dir():
-    app.mount("/", StaticFiles(directory=str(config.WEB_DIR), html=True), name="web")
+    app.mount("/", FreshStaticFiles(directory=str(config.WEB_DIR), html=True), name="web")

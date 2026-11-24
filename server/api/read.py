@@ -211,8 +211,7 @@ def _usage_report(period: str, mode: str) -> str:
             run = c.execute("SELECT params FROM stats_runs WHERE stats_run_id = %s", (body["stats_run_id"],)).fetchone()
         meta = {r["song_id"]: r for r in c.execute("SELECT song_id, isrc, iswc FROM songs")}
     f = io.StringIO()
-    f.write("# Fair Play usage report: prototype format for WIPO Connect import (not an official WIPO format). "
-            "Shares only, no money (D-015).\n")
+    f.write("# Fair Play usage report (prototype). Shares only, no money (D-015).\n")
     if body["frozen"]:
         f.write("# FROZEN: the play ledger is not intact; no report until it is fixed.\n")
     w = csv.writer(f, lineterminator="\n")
@@ -232,7 +231,7 @@ def _usage_report(period: str, mode: str) -> str:
 async def usage_report(period: str = PERIOD, mode: str = MODE):
     text = await run_in_threadpool(_usage_report, period, mode)
     return PlainTextResponse(text, media_type="text/csv",
-                             headers={"Content-Disposition": f'attachment; filename="usage_report_wipo_connect_prototype_{period}.csv"'})
+                             headers={"Content-Disposition": f'attachment; filename="fair_play_usage_report_{period}.csv"'})
 
 
 def _compare_flat(pot: int) -> dict:

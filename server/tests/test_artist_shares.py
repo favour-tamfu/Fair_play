@@ -1,5 +1,5 @@
 """B-T12 as decided (D-015): artists earn the sum of their songs' shares; frozen when the ledger is broken; mock
-ownership; usage report (WIPO Connect prototype format, shares only)."""
+ownership; usage report (shares only)."""
 import csv
 import io
 import json
@@ -54,7 +54,7 @@ def test_api_schema_artist_page_and_usage_report(month):
         r = cl.get("/api/v1/export/usage_report.csv", params={"period": "mock_month"})
     assert r.status_code == 200 and r.headers["content-type"].startswith("text/csv")
     lines = r.text.splitlines()
-    assert lines[0].startswith("# Fair Play usage report: prototype format for WIPO Connect")
+    assert lines[0].startswith("# Fair Play usage report (prototype)") and "WIPO" not in r.text
     rows = list(csv.DictReader(io.StringIO("\n".join(lines[1:]))))
     assert len(rows) == 3 and "amount_fcfa" not in rows[0]
     assert {x["song_id"] for x in rows} == {"S-M0001", "S-M0002", "S-M0003"}

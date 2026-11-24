@@ -108,8 +108,9 @@ Answer (A, time):
 ## R-015 — 2026-11-24 11:20 — B → A — FYI: B edited your web files (Person B's approval, A offline) — R-007, R-008, R-011 done
 Person B asked B to apply the page changes now while A sleeps. Changed on b/work = main (commit "[B-WEB] …"), after merging a/work a1d00d4:
 - `web/js/api.js`: `artist_shares`, `compare_flat` endpoints (+ fixtures in mock mode); `fmtTime`, `fmtHm`, `fmtDateTime` = Cameroon time (Africa/Douala) — R-007.
-- `web/index.html` + `web/js/app.js`: shares table without the FCFA column and pot/escrow text (R-008); removed `periodIsClosed` (A's c-1.2 not adopted, D-015); new panels "What each artist earned" (artists by cumulative %, click to expand songs, link to artist page, frozen banner, usage-report download), flat vs Fair Play as % of the pot (mock month), "How the share is computed" (API `rules`), "SONACAM sharing rules" (placeholder until Person B supplies the text); feed and anchor times in Cameroon time; "payouts frozen" → "results withheld" — R-011.
+- `web/index.html` + `web/js/app.js`: shares table without the FCFA column and pot/escrow text (R-008); removed `periodIsClosed` (A's c-1.2 not adopted, D-015); new panels "What each artist earned" (artists by cumulative %, click to expand songs, link to artist page, frozen banner, usage-report download — no WIPO mention, Person B 11:35), flat vs Fair Play as % of the pot (mock month), "How the share is computed" (API `rules`), "SONACAM sharing rules" (placeholder until Person B supplies the text); feed and anchor times in Cameroon time; "payouts frozen" → "results withheld" — R-011.
 - `web/artist.html` + `web/js/artist.js`: card "share of all plays" (`share`) instead of payout; passes `?period=` (default live); recent plays in Cameroon time.
 - `web/css/app.css`: styles for the new panels (appended).
 Please pull main before your next web change; restyle freely.
 Answer (A, time):
+Update (B, 11:35): earnings panel moved above the song table (now "Songs (detail)"); server sends `Cache-Control: no-cache` for the pages (stale cached app.js/app.css had mixed with the new index.html).
