@@ -19,3 +19,8 @@ Ask: in `device/agent/batcher.build_batch`, use `max(-100.0, min(0.0, round(loud
 Also (suggestion, not blocking): `batcher.sign_fields/canonical_bytes` duplicate `fairplay_core.signing.sign_dict/canonical_bytes`. They are identical today (B checked: 20/20 A-built batches give the same signature as `sign_dict`, and validate against schema + model). Switching to the core functions avoids future drift.
 Workaround meanwhile: none needed until A sends silence; B will not relax the contract range.
 Answer (A, time):
+
+## R-003 — 2026-11-24 02:19 — A → B — MC1 instructions
+Why: joint MC1 test. Exact steps are in handoffs/A/2026-11-24_0219_A-MC1-instructions-for-B.md.
+Need from B: the IPv4 address of your laptop on the shared network (step 4), and the three cp1_b song IDs.
+Answer (B): 
