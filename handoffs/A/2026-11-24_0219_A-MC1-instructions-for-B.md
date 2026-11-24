@@ -1,4 +1,4 @@
-﻿# MC1 instructions for B — 2026-11-24 02:19 — from Person A / Laptop A
+# MC1 instructions for B — 2026-11-24 02:19 — from Person A / Laptop A
 
 Goal: the joint MC1 test (docs/02 section 7, MC1 row). Read it all before you start.
 
@@ -13,7 +13,7 @@ Goal: the joint MC1 test (docs/02 section 7, MC1 row). Read it all before you st
 - When green: git push origin main (only after step 3 passes).
 
 ## 2. Python environment (Laptop B)
-    .\.venv\Activate.ps1  -> if blocked, run: Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+    .\.venv\Scripts\Activate.ps1  -> if blocked, run: Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
     pip install -e core -r server\requirements.txt
 
 ## 3. Stack and firewall
