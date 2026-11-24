@@ -78,11 +78,11 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[-]` cut / skipped (gi
 - [ ] 3.5 **MC1 merge** + joint live test (speaker → accepted matches for ≥2 of 3 songs; 2-minute network cut → no seq gaps), tag `cp-1`
 
 ## Phase 4 — Plays, ledger, read API, rules  → **MC2**
-- [ ] 4.1 **B-T06** Play logger (event time, chorus-safe, late batches, restart-safe, unidentified music) + its 6 tests
-- [ ] 4.2 **B-T07** Ledger chain, Merkle root, FileAnchor, auditor, `tamper.py`
-- [ ] 4.3 **B-T08** Read API v1 + SSE feed + static `web/`, responses checked against schemas
-- [ ] 4.4 **B-T09** Fair-play weights `sr-1.0` + modifiers; T-SR-1/2/3 exact
-- [ ] 4.5 **B-T10** Estimation + bootstrap ranges + `run_stats` + shares API (<20 s per mode on the mock month)
+- [x] 4.1 **B-T06** Play logger (event time, chorus-safe, late batches, restart-safe, unidentified music) + its 6 tests
+- [x] 4.2 **B-T07** Ledger chain, Merkle root, FileAnchor, auditor, `tamper.py`
+- [x] 4.3 **B-T08** Read API v1 + SSE feed + static `web/`, responses checked against schemas
+- [x] 4.4 **B-T09** Fair-play weights `sr-1.0` + modifiers; T-SR-1/2/3 exact
+- [x] 4.5 **B-T10** Estimation + bootstrap ranges + `run_stats` + shares API (<20 s per mode on the mock month)
 - [ ] 4.6 **B-T11** Mock month importer (read from `origin/a/work` with `git show`) + compare-flat + migration 002 (chain namespace)
 - [ ] 4.7 **B-T12** Payouts (largest remainder, total == pot) + WIPO CSV + frozen
 - [ ] 4.8 **MC2 merge** + joint test, tag `cp-2`. Keep the stack stable for the industry clinic
@@ -130,3 +130,14 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Tue 01:00 | 3.3 B-T04 | Upload API + fingerprint worker + duplicate check + DbIndex live. User WAV + 2 synthetic songs ready in ≤1.1 s each; re-upload → duplicate_suspected (3/3 slices). test_b → 205 passed |
 | Tue 01:35 | 3.4 B-T05 | Matcher worker live: user WAV at 3.7 s + 10 dB noise → 6/6 MATCH, offsets advance with the clock, 1–30 ms/window, SSE match events. make_batches_from_wav + cp1_b.ps1 (GREEN). test_b → 212 passed. **B side ready for MC1** |
 | Tue 01:50 | MC1 merge + 2-song test | main = 96e1244 (b/work; a/work had no new commits). test.wav 37.6 MB → 400 too big; test.mp3 → ready 1.3 s. Meter sim from original WAVs: song 12/12, position 11/12 (chorus repeat 117.5→170.2 s, for B-T06). **cp-1 tag waits for joint test with A** |
+| Tue 02:15 | MC1 merge (A) + A-mimic | main 5984759 (A: 13 commits, runner/TUI/R-002 fix). core 154, golden MATCH, B 212, A 52. Upload cap 50 MB = c-1.1 PROPOSED (R-003). Ms. Jackson S-000009 ready; All Falls Down = dup of S-000007 (correct). A's device code → B: 57/57 batches byte-identical to B, 57/57 right song, 50/57 exact position (misses = ±52.7 s repeats on off-grid windows) |
+| Tue 02:35 | half-hop index (D-006) | Catalogue indexes grid phases 0 and +128 samples; re-indexed live. A-mimic re-run: exact position 50/57 → **57/57**, weakest score 18–20 → **249–335**. Worst case (¼–⅜ frame off + 10 dB noise): 60/60 song + position, min 65. test_b → 214 passed |
+| Tue 02:55 | 4.1 B-T06 | Play logger live: brief §6 + D-007 (strays never split plays), recompute-and-reconcile per venue-night, chained at confirmation, extents for growth, corrections never edits. Live evening with network cut: 3 plays, 0 corrections, 9 late batches slotted in. test_b → 237 passed |
+| Tue 03:20 | 4.2 B-T07 | Auditor + Merkle + FileAnchor + scheduler + tamper tool live. Hour 01:00 UTC anchored (11 plays). Tamper rehearsal ×3: RED ~1.0 s, GREEN ~1.0 s, right play named. test_b → 248 passed |
+| Tue 03:45 | 4.3 B-T08 | Read API v1 live (overview, venues, plays, shares, flags, payouts, compare-flat, artists, artist) + static web at /. 11 live responses schema-valid; live venue has coords. test_b → 257 passed |
+| Tue 04:10 | live feed check | /api/v1/feed captured live: batch, meter, match, play, ledger (tamper red → restore green) events all shown live (synth_1 on M-90) |
+| Tue 04:30 | 4.4 B-T09 | sr-1.0 weights + loop/audience/concentration (D-008). T-SR-1/2/3 exact; = reference algorithm on 9,000 random plays. test_b → 276 passed |
+| Tue 04:50 | D-009 (user decision) | audience factor + concentration check = review flags only, no weight change (switch MODIFIERS_ADJUST_WEIGHTS, tested both ways). test_b → 278 passed |
+| Tue 05:00 | 4.5 B-T10 | estimation (L, catch rate, strata, bootstrap 200), run_stats raw+standardised, POST /api/v1/stats/run, scheduler every 5 min (D-010). Live: 12 plays → 9.0 counted, shares with ranges. 300k-play compute ≈ 2 s. test_b → 289 passed |
+| Tue 05:15 | M-07 seq check (user) | M-07 batches 5–93 stored with no gaps/duplicates/late; 1–4 never reached the server (first contact 04:37:57 heartbeat, meter reports 0 queued) → asked A to check outbox |
+| Tue 05:40 | D-011 (user decision) | meter in every bar (no scaling, no ranges), no opening hours, unidentified music not recorded (migration 005 drops table). R-006 to A. Live: 17 plays → 10.25 counted. test_b → 283 passed |

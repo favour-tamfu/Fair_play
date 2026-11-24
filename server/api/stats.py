@@ -1,0 +1,23 @@
+"""POST /api/v1/stats/run?period=live&mode=both — recompute shares now (contract §6)."""
+from __future__ import annotations
+
+from fastapi import APIRouter, Query
+from fastapi.concurrency import run_in_threadpool
+
+from server.db import connect
+from server.stats.run import run_both, run_stats
+
+router = APIRouter(prefix="/api/v1")
+
+
+def _run(period: str, mode: str) -> dict:
+    with connect(autocommit=True) as c:
+        return run_both(c, period) if mode == "both" else run_stats(c, period, mode)
+
+
+@router.post("/stats/run")
+async def stats_run(period: str = Query("live", pattern="^(live|mock_month|all)$"),
+                    mode: str = Query("both", pattern="^(both|standardised|raw)$")):
+    """Answer: {"stats_run_id","status":"done","duration_ms"} (+ period, mode, n_plays, n_songs, n_flags;
+    with mode=both: the standardised run's id, raw_stats_run_id, total duration)."""
+    return await run_in_threadpool(_run, period, mode)

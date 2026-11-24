@@ -5,7 +5,7 @@
   "plays_raw": 329,
   "plays_counted": 223.69,
   "songs_ready": 2,
-  "unidentified_music_min": 42.5,
+  "unidentified_music_min": 0.0,
   "rule_version": "sr-1.0",
   "ledger_intact": true,
   "last_anchor": {

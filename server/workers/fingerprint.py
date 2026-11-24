@@ -2,7 +2,8 @@
 
 Job "fingerprint", ref = song_id (or "song_id:approved" / "song_id:reindex" to skip the duplicate check).
   1. status → processing (the portal shows it)
-  2. decode to 8 kHz mono (ffmpeg) → extract_peaks over the whole track → make_hashes
+  2. decode to 8 kHz mono (ffmpeg) → extract_peaks over the whole track → make_hashes, on every grid phase in
+     config.FP_INDEX_SHIFTS (0 and half a hop: meter windows never line up with one grid — D-006)
   3. duplicate check (brief §5.4): 10 s slices at 20/50/80 % matched against the CURRENT index; ≥2 slices on the
      same existing song → status duplicate_suspected, duplicate_of, flag row; not indexed until an admin approves
   4. replace the song's rows in fp_hashes (COPY), n_hashes, measured duration_s, status → ready
@@ -14,6 +15,7 @@ import logging
 from collections import Counter
 from typing import Optional
 
+import numpy as np
 import psycopg
 
 from fairplay_core.constants import SAMPLE_RATE, WINDOW_SAMPLES
@@ -28,6 +30,15 @@ from server.fp.index import DbIndex
 
 log = logging.getLogger("fingerprint")
 INDEX = DbIndex()   # this worker's copy of the index (used for the duplicate check)
+
+
+def song_hashes(x8: np.ndarray, peaks0: Optional[np.ndarray] = None) -> np.ndarray:
+    """Hashes of the whole song on every grid phase in config.FP_INDEX_SHIFTS (catalogue side only, D-006)."""
+    parts = []
+    for shift in config.FP_INDEX_SHIFTS:
+        p = peaks0 if (shift == 0 and peaks0 is not None) else extract_peaks(x8[shift:])
+        parts.append(make_hashes(p))
+    return np.concatenate(parts) if len(parts) > 1 else parts[0]
 
 
 def find_duplicate(x8, index: DbIndex) -> Optional[tuple[str, int]]:
@@ -59,7 +70,7 @@ def process(conn: psycopg.Connection, ref: str, index: DbIndex = INDEX) -> str:
         x8 = decode_8k(resolve_path(song["file_path"]))
         duration = len(x8) / SAMPLE_RATE
         peaks = extract_peaks(x8)
-        hashes = make_hashes(peaks)
+        hashes = song_hashes(x8, peaks)
 
         if mode not in ("approved", "reindex"):
             index.sync(conn)

@@ -2,7 +2,7 @@
   "stats_run_id": "R-20261124213000",
   "rule_version": "raw",
   "pot_fcfa": 100000000,
-  "escrow_share": 0.031,
+  "escrow_share": 0.0,
   "rows": [
     {
       "song_id": "S-M0015",
@@ -11,8 +11,8 @@
       "raw_plays": 96,
       "weighted_plays": 96.0,
       "share": 0.29179,
-      "ci_low": 0.21684,
-      "ci_high": 0.36674,
+      "ci_low": 0.29179,
+      "ci_high": 0.29179,
       "amount_fcfa": 29179331,
       "flags": [
         "loop"
@@ -25,8 +25,8 @@
       "raw_plays": 52,
       "weighted_plays": 52.0,
       "share": 0.15805,
-      "ci_low": 0.11654,
-      "ci_high": 0.19957,
+      "ci_low": 0.15805,
+      "ci_high": 0.15805,
       "amount_fcfa": 15805471,
       "flags": []
     },
@@ -37,8 +37,8 @@
       "raw_plays": 35,
       "weighted_plays": 35.0,
       "share": 0.10638,
-      "ci_low": 0.07779,
-      "ci_high": 0.13498,
+      "ci_low": 0.10638,
+      "ci_high": 0.10638,
       "amount_fcfa": 10638298,
       "flags": []
     },
@@ -49,8 +49,8 @@
       "raw_plays": 18,
       "weighted_plays": 18.0,
       "share": 0.05471,
-      "ci_low": 0.03903,
-      "ci_high": 0.07039,
+      "ci_low": 0.05471,
+      "ci_high": 0.05471,
       "amount_fcfa": 5471125,
       "flags": []
     },
@@ -61,8 +61,8 @@
       "raw_plays": 18,
       "weighted_plays": 18.0,
       "share": 0.05471,
-      "ci_low": 0.03903,
-      "ci_high": 0.07039,
+      "ci_low": 0.05471,
+      "ci_high": 0.05471,
       "amount_fcfa": 5471125,
       "flags": []
     },
@@ -73,8 +73,8 @@
       "raw_plays": 12,
       "weighted_plays": 12.0,
       "share": 0.03647,
-      "ci_low": 0.02536,
-      "ci_high": 0.04759,
+      "ci_low": 0.03647,
+      "ci_high": 0.03647,
       "amount_fcfa": 3647416,
       "flags": []
     },
@@ -85,8 +85,8 @@
       "raw_plays": 12,
       "weighted_plays": 12.0,
       "share": 0.03647,
-      "ci_low": 0.02536,
-      "ci_high": 0.04759,
+      "ci_low": 0.03647,
+      "ci_high": 0.03647,
       "amount_fcfa": 3647416,
       "flags": []
     },
@@ -97,8 +97,8 @@
       "raw_plays": 10,
       "weighted_plays": 10.0,
       "share": 0.0304,
-      "ci_low": 0.0208,
-      "ci_high": 0.03999,
+      "ci_low": 0.0304,
+      "ci_high": 0.0304,
       "amount_fcfa": 3039514,
       "flags": []
     },
@@ -109,8 +109,8 @@
       "raw_plays": 10,
       "weighted_plays": 10.0,
       "share": 0.0304,
-      "ci_low": 0.0208,
-      "ci_high": 0.03999,
+      "ci_low": 0.0304,
+      "ci_high": 0.0304,
       "amount_fcfa": 3039514,
       "flags": []
     },
@@ -121,8 +121,8 @@
       "raw_plays": 9,
       "weighted_plays": 9.0,
       "share": 0.02736,
-      "ci_low": 0.01852,
-      "ci_high": 0.03619,
+      "ci_low": 0.02736,
+      "ci_high": 0.02736,
       "amount_fcfa": 2735562,
       "flags": []
     },
@@ -133,8 +133,8 @@
       "raw_plays": 7,
       "weighted_plays": 7.0,
       "share": 0.02128,
-      "ci_low": 0.01396,
-      "ci_high": 0.0286,
+      "ci_low": 0.02128,
+      "ci_high": 0.02128,
       "amount_fcfa": 2127660,
       "flags": []
     },
@@ -145,8 +145,8 @@
       "raw_plays": 7,
       "weighted_plays": 7.0,
       "share": 0.02128,
-      "ci_low": 0.01396,
-      "ci_high": 0.0286,
+      "ci_low": 0.02128,
+      "ci_high": 0.02128,
       "amount_fcfa": 2127659,
       "flags": []
     },
@@ -157,8 +157,8 @@
       "raw_plays": 7,
       "weighted_plays": 7.0,
       "share": 0.02128,
-      "ci_low": 0.01396,
-      "ci_high": 0.0286,
+      "ci_low": 0.02128,
+      "ci_high": 0.02128,
       "amount_fcfa": 2127659,
       "flags": []
     },
@@ -169,8 +169,8 @@
       "raw_plays": 6,
       "weighted_plays": 6.0,
       "share": 0.01824,
-      "ci_low": 0.01168,
-      "ci_high": 0.0248,
+      "ci_low": 0.01824,
+      "ci_high": 0.01824,
       "amount_fcfa": 1823708,
       "flags": []
     },
@@ -181,8 +181,8 @@
       "raw_plays": 5,
       "weighted_plays": 5.0,
       "share": 0.0152,
-      "ci_low": 0.0094,
-      "ci_high": 0.021,
+      "ci_low": 0.0152,
+      "ci_high": 0.0152,
       "amount_fcfa": 1519757,
       "flags": []
     },
@@ -193,8 +193,8 @@
       "raw_plays": 5,
       "weighted_plays": 5.0,
       "share": 0.0152,
-      "ci_low": 0.0094,
-      "ci_high": 0.021,
+      "ci_low": 0.0152,
+      "ci_high": 0.0152,
       "amount_fcfa": 1519757,
       "flags": []
     },
@@ -205,8 +205,8 @@
       "raw_plays": 5,
       "weighted_plays": 5.0,
       "share": 0.0152,
-      "ci_low": 0.0094,
-      "ci_high": 0.021,
+      "ci_low": 0.0152,
+      "ci_high": 0.0152,
       "amount_fcfa": 1519757,
       "flags": []
     },
@@ -217,8 +217,8 @@
       "raw_plays": 5,
       "weighted_plays": 5.0,
       "share": 0.0152,
-      "ci_low": 0.0094,
-      "ci_high": 0.021,
+      "ci_low": 0.0152,
+      "ci_high": 0.0152,
       "amount_fcfa": 1519757,
       "flags": []
     },
@@ -229,8 +229,8 @@
       "raw_plays": 5,
       "weighted_plays": 5.0,
       "share": 0.0152,
-      "ci_low": 0.0094,
-      "ci_high": 0.021,
+      "ci_low": 0.0152,
+      "ci_high": 0.0152,
       "amount_fcfa": 1519757,
       "flags": []
     },
@@ -241,8 +241,8 @@
       "raw_plays": 5,
       "weighted_plays": 5.0,
       "share": 0.0152,
-      "ci_low": 0.0094,
-      "ci_high": 0.021,
+      "ci_low": 0.0152,
+      "ci_high": 0.0152,
       "amount_fcfa": 1519757,
       "flags": []
     }

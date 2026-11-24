@@ -46,7 +46,7 @@ def process(conn: psycopg.Connection, raw_batch_id: int, index: DbIndex = INDEX)
                                          best_score, second_score, confidence, accepted, loudness_db)
                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                ON CONFLICT (raw_batch_id) DO NOTHING RETURNING *""",
-            (rb["id"], rb["meter_id"], rb["venue_id"], rb["window_start"], r.song_id, round(r.offset_s, 3),
+            (rb["id"], rb["meter_id"], rb["venue_id"], rb["window_start"], r.song_id, round(r.offset_s, 3) + 0.0,
              r.best_score, r.second_score, round(r.confidence, 4), r.accepted, batch.loudness_db)).fetchone()
         if row is None:                                # another worker got there first
             return conn.execute("SELECT * FROM match_events WHERE raw_batch_id = %s", (raw_batch_id,)).fetchone()
@@ -60,7 +60,7 @@ def process(conn: psycopg.Connection, raw_batch_id: int, index: DbIndex = INDEX)
             title = t["title"] if t else None
         notify(conn, "match", {"meter_id": rb["meter_id"], "venue_id": rb["venue_id"],
                                "song_id": r.song_id if r.accepted else None, "title": title,
-                               "offset_s": round(r.offset_s, 1), "confidence": round(r.confidence, 3),
+                               "offset_s": round(r.offset_s, 1) + 0.0, "confidence": round(r.confidence, 3),
                                "accepted": r.accepted, "window_start": format_utc(rb["window_start"])})
     log.info("batch %s %s seq %s: %s score %d/%d (%d hashes) in %.0f ms", rb["id"], rb["meter_id"], batch.seq,
              f"MATCH {r.song_id} @ {r.offset_s:.1f}s" if r.accepted else "no match",

@@ -54,5 +54,19 @@ def load_meter_keys(conn: psycopg.Connection, meters_dir: Path = config.METERS_D
     return loaded
 
 
+def fill_known_venues(conn: psycopg.Connection) -> list[str]:
+    """Fill EMPTY fields of venues we know in advance (config.KNOWN_VENUES, contract §7). Never overwrites."""
+    done = []
+    for vid, v in config.KNOWN_VENUES.items():
+        conn.execute("INSERT INTO venues (venue_id, name, source) VALUES (%s, %s, 'live') ON CONFLICT DO NOTHING",
+                     (vid, v["name"]))
+        conn.execute("""UPDATE venues SET name = CASE WHEN name IS NULL OR name = venue_id THEN %s ELSE name END,
+                        city = COALESCE(city, %s), lat = COALESCE(lat, %s), lon = COALESCE(lon, %s),
+                        size_class = COALESCE(size_class, %s), stratum = COALESCE(stratum, %s) WHERE venue_id = %s""",
+                     (v["name"], v["city"], v["lat"], v["lon"], v["size_class"], v["stratum"], vid))
+        done.append(vid)
+    return done
+
+
 def get_meter(conn: psycopg.Connection, meter_id: str) -> Optional[dict[str, Any]]:
     return conn.execute("SELECT * FROM meters WHERE meter_id = %s", (meter_id,)).fetchone()
