@@ -25,6 +25,7 @@ h1{font-size:18px;margin:0 0 8px} .row{display:flex;gap:12px;flex-wrap:wrap;marg
 .sq{width:22px;height:22px;border-radius:3px;font-size:9px;display:flex;align-items:center;justify-content:center;color:#fff}
 .acked{background:#2e7d32}.queued{background:#e0a100}.parked{background:#6a1b9a}.dead{background:#c62828}
 .missing{background:#000}.made{background:#9e9e9e}
+.matched{outline:3px solid #00acc1;outline-offset:1px}
 table{border-collapse:collapse;font-size:12px;background:#fff} td,th{border-bottom:1px solid #eee;padding:3px 8px;text-align:left}
 .bar{height:10px;background:#4caf50;display:inline-block}
 .net-OK{color:#2e7d32}.net-RETRYING{color:#e0a100}.net-DOWN{color:#c62828}
@@ -38,6 +39,7 @@ table{border-collapse:collapse;font-size:12px;background:#fff} td,th{border-bott
  <div class="card">dead<b id="dead">-</b></div>
  <div class="card">missing<b id="missing">-</b></div>
  <div class="card">network<b id="net">-</b></div>
+ <div class="card">matched by B<b id="matchedCount">-</b></div>
 </div>
 <h3 style="font-size:14px">every window, by sequence number</h3>
 <div class="grid" id="grid"></div>
@@ -58,7 +60,8 @@ async function refresh(){
   for (const k of ['made','acked','queued','parked','dead','missing']) document.getElementById(k).textContent = s[k];
   const n = document.getElementById('net'); n.textContent = s.network; n.className = 'net-' + s.network;
   const g = document.getElementById('grid'); g.innerHTML = '';
-  for (const q of s.seqs){ const d = document.createElement('div'); d.className = 'sq ' + q.status; d.textContent = q.seq; d.title = 'seq '+q.seq+': '+q.status; g.appendChild(d); }
+  for (const q of s.seqs){ const d = document.createElement('div'); d.className = 'sq ' + q.status + (q.match==='accepted' ? ' matched' : ''); d.textContent = q.seq; d.title = 'seq '+q.seq+': sent '+q.status+' · match '+q.match+(q.song ? ' ('+q.song+')' : ''); g.appendChild(d); }
+  document.getElementById('matchedCount').textContent = s.seqs.filter(q => q.match==='accepted').length;
   const tb = document.getElementById('events'); tb.innerHTML = '';
   for (const e of s.events.slice(-40).reverse()){
     const tr = document.createElement('tr');
@@ -99,10 +102,14 @@ def read_matches(meter: str, state_dir: str = STATE_DIR, limit: int = 300) -> di
                 continue
     matches = [r for r in recs if r.get("kind") == "match" and r.get("meter_id") == meter]
     accepted = [r for r in matches if r.get("accepted")]
+    by_window = {}
+    for r in matches:  # the same window_start links a match back to the batch (seq) sent by the agent
+        by_window[r.get("window_start")] = r
     return {
         "accepted": len(accepted),
         "rejected": len(matches) - len(accepted),
         "recent": matches[-limit:][::-1],
+        "by_window": by_window,
     }
 
 
@@ -151,6 +158,17 @@ def build_state(meter: str, state_dir: str = STATE_DIR) -> dict:
             status = "made"
         seqs.append({"seq": s, "status": status})
     count = lambda k: sum(1 for q in seqs if q["status"] == k)  # noqa: E731
+    matches = read_matches(meter, state_dir)
+    by_window = matches.pop("by_window", {})
+    window_of = {s: e.get("window_start") for s, e in made.items()}
+    for q in seqs:
+        m = by_window.get(window_of.get(q["seq"]))
+        if m is None:
+            q["match"], q["song"] = "none", None
+        elif m.get("accepted"):
+            q["match"], q["song"] = "accepted", m.get("title") or m.get("song_id")
+        else:
+            q["match"], q["song"] = "rejected", None
     return {
         "meter": meter,
         "made": len(made),
@@ -162,7 +180,7 @@ def build_state(meter: str, state_dir: str = STATE_DIR) -> dict:
         "network": network,
         "seqs": seqs[-400:],
         "events": events[-200:],
-        "matches": read_matches(meter, state_dir),
+        "matches": matches,
         "feed": FEED_STATUS,
     }
 

@@ -48,3 +48,19 @@ def test_read_matches_counts_accepted_and_rejected(tmp_path):
 
 def test_read_matches_with_no_file(tmp_path):
     assert read_matches("M-07", str(tmp_path)) == {"accepted": 0, "rejected": 0, "recent": []}
+
+def test_seq_is_linked_to_its_match_by_window_start(tmp_path):
+    from device.agent.eventlog import EventLog
+    from device.tools.monitor import build_state
+    ws1, ws2 = "2026-11-24T10:00:00.000Z", "2026-11-24T10:00:10.000Z"
+    ev = EventLog(str(tmp_path / "M-07_events.jsonl"))
+    ev.append("window", seq=1, window_start=ws1)
+    ev.append("window", seq=2, window_start=ws2)
+    ev.append("acked", seq=1)
+    ev.append("acked", seq=2)
+    feed = tmp_path / "M-07_feed.jsonl"
+    feed.write_text(json.dumps({"t": "x", "kind": "match", "meter_id": "M-07", "window_start": ws1,
+                                "accepted": True, "title": "Song A"}) + "\n", encoding="utf-8")
+    seqs = {q["seq"]: q for q in build_state("M-07", str(tmp_path))["seqs"]}
+    assert seqs[1]["match"] == "accepted" and seqs[1]["song"] == "Song A"
+    assert seqs[2]["match"] == "none"
