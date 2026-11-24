@@ -35,7 +35,7 @@ def client(migrated_db):
 def wipe(db):
     with connect(db, autocommit=True) as c:
         c.execute("TRUNCATE plays, play_extents, play_corrections, play_weights, stats_runs, shares, flags, anchors, "
-                  "unidentified, songs, owners, fp_hashes, match_events, raw_batches, windows, jobs, meters, venues CASCADE")
+                  "songs, owners, fp_hashes, match_events, raw_batches, windows, jobs, meters, venues CASCADE")
 
 
 def insert_play(c, pid, song, meter, venue, started, source, dur=200.0):
@@ -70,7 +70,6 @@ def world(migrated_db, client):
         insert_play(c, "P-mock00000001", "S-M0001", "M-11", "V-DLA-AKWA01", NOW - timedelta(days=5), "mock")
         insert_play(c, "P-gone00000001", "S-000002", "M-07", "V-BUEA-CIMFEST", NOW - timedelta(minutes=1), "live")
         c.execute("INSERT INTO play_corrections (play_id, reason, detail) VALUES ('P-gone00000001','not_confirmed_on_recompute','{}')")
-        c.execute("INSERT INTO unidentified (meter_id, day, seconds) VALUES ('M-07', %s, 90)", (NOW.date(),))
         c.execute("INSERT INTO flags (type, song_id, venue_id, detail) VALUES ('loop','S-000001','V-BUEA-CIMFEST','3 loops')")
     return migrated_db
 
@@ -108,7 +107,7 @@ def test_overview(world, client):
     o = valid("overview", client.get("/api/v1/overview", params={"period": "live"}).json())
     assert o["plays_raw"] == 4 and o["plays_counted"] == 4.0                # superseded play excluded; no stats yet
     assert o["meters_online"] == 1 and o["meters_total"] == 2 and o["venues"] == 2
-    assert o["unidentified_music_min"] == 1.5 and o["ledger_intact"] is True
+    assert o["unidentified_music_min"] == 0.0 and o["ledger_intact"] is True
     add_stats_run(world)
     assert client.get("/api/v1/overview", params={"period": "live"}).json()["plays_counted"] == 3.5
 
@@ -140,7 +139,7 @@ def test_plays_filters_order_and_weights(world, client):
 def test_shares_amounts_sum_to_pot(world, client):
     add_stats_run(world)
     s = valid("shares", client.get("/api/v1/shares", params={"period": "live"}).json())
-    assert s["stats_run_id"] == "R-20261124213000" and s["escrow_share"] == 0.05
+    assert s["stats_run_id"] == "R-20261124213000" and s["escrow_share"] == 0.0      # D-011
     assert [r["song_id"] for r in s["rows"]] == ["S-000001", "S-000002"]
     assert sum(r["amount_fcfa"] for r in s["rows"]) == 100_000_000
 

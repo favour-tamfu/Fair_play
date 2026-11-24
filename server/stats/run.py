@@ -20,7 +20,6 @@ from typing import Any
 import pandas as pd
 import psycopg
 
-from fairplay_core.constants import WINDOW_S
 from server import config
 from server.db import notify
 from server.stats import estimate
@@ -43,27 +42,10 @@ def load_plays(conn, period: str) -> pd.DataFrame:
     return pd.DataFrame(rows, columns=cols)
 
 
-def load_meters(conn, meter_ids: list[str], start: datetime, end: datetime) -> pd.DataFrame:
-    """Meters with their stratum, catch rate, received seconds and open seconds in [start, end)."""
-    if not meter_ids:
-        return pd.DataFrame(columns=["meter_id", "venue_id", "stratum", "bars_in_stratum", "catch_rate",
-                                     "received_s", "open_s"])
-    ms = conn.execute("""SELECT m.meter_id, m.venue_id, m.catch_rate, v.stratum, v.bars_in_stratum,
-                                COALESCE(v.open_hour, 18) AS open_hour, COALESCE(v.close_hour, 2) AS close_hour
-                         FROM meters m LEFT JOIN venues v USING (venue_id) WHERE m.meter_id = ANY(%s)""",
-                      (meter_ids,)).fetchall()
-    win = {r["meter_id"]: r for r in conn.execute(
-        """SELECT meter_id, count(*) AS n,
-                  array_agg(DISTINCT extract(hour FROM window_start + make_interval(hours => %s))::int) AS hours
-           FROM windows WHERE received AND meter_id = ANY(%s) AND window_start >= %s AND window_start < %s
-           GROUP BY meter_id""", (config.LOCAL_UTC_OFFSET_H, meter_ids, start, end))}
-    out = []
-    for m in ms:
-        w = win.get(m["meter_id"])
-        out.append({**m, "received_s": float(w["n"] * WINDOW_S) if w else 0.0,
-                    "open_s": estimate.open_seconds(start, end, m["open_hour"], m["close_hour"],
-                                                    w["hours"] if w else ())})
-    return pd.DataFrame(out)
+def load_meters(conn, meter_ids: list[str]) -> pd.DataFrame:
+    """Catch rate per meter (D-011: no opening hours, no listening fraction)."""
+    rows = conn.execute("SELECT meter_id, catch_rate FROM meters WHERE meter_id = ANY(%s)", (meter_ids,)).fetchall()
+    return pd.DataFrame(rows, columns=["meter_id", "catch_rate"])
 
 
 def load_loudness_thresholds(conn, venue_ids: list[str], start: datetime, end: datetime) -> pd.DataFrame:
@@ -74,14 +56,6 @@ def load_loudness_thresholds(conn, venue_ids: list[str], start: datetime, end: d
                              AND w.window_start >= %s AND w.window_start < %s
                            GROUP BY m.venue_id""", (config.AUDIENCE_PCTL / 100, venue_ids, start, end)).fetchall()
     return pd.DataFrame(rows, columns=["venue_id", "n_windows", "threshold_db"])
-
-
-def unidentified_seconds(conn, period: str, meter_ids: list[str], start: datetime) -> float:
-    if period == "mock_month" or not meter_ids:
-        return 0.0                                             # B-T11 adds the mock month's own figure
-    r = conn.execute("SELECT COALESCE(sum(seconds), 0) AS s FROM unidentified WHERE meter_id = ANY(%s) AND day >= %s",
-                     (meter_ids, start.date() if period == "live" else datetime(1970, 1, 1).date())).fetchone()
-    return float(r["s"])
 
 
 def new_run_id(conn, now: datetime) -> str:
@@ -127,18 +101,13 @@ def run_stats(conn: psycopg.Connection, period: str = "live", mode: str = "stand
 
         pw = plays[["play_id", "meter_id", "song_id"]].merge(weights, on="play_id") if not plays.empty else \
             pd.DataFrame(columns=["play_id", "meter_id", "song_id", "weight"])
-        meters = load_meters(conn, meter_ids, start, end)
-        est = estimate.estimate_shares(pw, meters)
-        unid = unidentified_seconds(conn, period, meter_ids, start)
-        ident = float(pd.to_numeric(plays["duration_s"], errors="coerce").fillna(0).sum()) if not plays.empty else 0.0
-        escrow = estimate.escrow_share(unid, ident)
+        est = estimate.estimate_shares(pw, load_meters(conn, meter_ids))
 
         rid = new_run_id(conn, now)
-        params = {"pot_fcfa": pot_fcfa, "escrow_share": round(escrow, 6), "n_plays": int(len(plays)),
+        params = {"pot_fcfa": pot_fcfa, "escrow_share": 0.0, "n_plays": int(len(plays)),       # D-011: no escrow
                   "n_meters": len(meter_ids), "n_venues": len(venue_ids), "period_start": start.isoformat(),
-                  "period_end": end.isoformat(), "bootstrap_n": config.BOOTSTRAP_N, "bootstrap_seed": config.BOOTSTRAP_SEED,
-                  "modifiers_adjust_weights": config.MODIFIERS_ADJUST_WEIGHTS if mode == "standardised" else None,
-                  "unidentified_s": unid, "identified_s": round(ident, 1)}
+                  "period_end": end.isoformat(),
+                  "modifiers_adjust_weights": config.MODIFIERS_ADJUST_WEIGHTS if mode == "standardised" else None}
         conn.execute("""INSERT INTO stats_runs (stats_run_id, period, mode, rule_version, started_at, params)
                         VALUES (%s, %s, %s, %s, %s, %s)""", (rid, period, mode, rule, now, json.dumps(params)))
         with conn.cursor().copy("COPY play_weights (play_id, rule_version, stats_run_id, weight, reasons) FROM STDIN") as cp:
@@ -174,8 +143,8 @@ def run_stats(conn: psycopg.Connection, period: str = "live", mode: str = "stand
         conn.execute("UPDATE stats_runs SET finished_at = now(), params = %s WHERE stats_run_id = %s",
                      (json.dumps(params), rid))
         notify(conn, "stats", {"stats_run_id": rid, "period": period, "mode": mode})
-    log.info("stats %s %s/%s: %d plays, %d songs, %d flags, escrow %.3f, %d ms", rid, period, mode, len(plays),
-             len(est.shares), len(flags), escrow, ms)
+    log.info("stats %s %s/%s: %d plays, %d songs, %d flags, %d ms", rid, period, mode, len(plays),
+             len(est.shares), len(flags), ms)
     return {"stats_run_id": rid, "status": "done", "duration_ms": ms, "period": period, "mode": mode,
             "n_plays": int(len(plays)), "n_songs": int(len(est.shares)), "n_flags": len(flags)}
 

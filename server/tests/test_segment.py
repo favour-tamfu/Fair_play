@@ -1,7 +1,7 @@
 """B-T06: the play segmenter (brief §6) as a pure function — every rule, including the repeated-section strays."""
 from datetime import datetime, timedelta, timezone
 
-from server.plays.segment import Event, segment, unidentified_seconds
+from server.plays.segment import Event, segment
 
 T0 = datetime(2026, 11, 24, 20, 0, tzinfo=timezone.utc)   # 21:00 in Buea
 
@@ -87,11 +87,3 @@ def test_events_out_of_arrival_order_give_the_same_plays_once_sorted():
     e = ev([(0, 20), (10, 30), (20, 40), (30, 50)])
     shuffled = [e[2], e[0], e[3], e[1]]
     assert [(c.first_offset_s, c.n_windows) for c in plays(sorted(shuffled, key=lambda x: x.window_start))] == [(20, 4)]
-
-
-def test_unidentified_seconds():
-    e = ev([(0, 0), (10, 10), (20, 20), (30, None)])                          # rejected inside the play's span? no:
-    e += ev([(100, None), (110, None)], start_id=20)                         # 2 loud unknown windows after it
-    e += ev([(200, None)], start_id=30, loud=-50.0)                          # quiet room: not music
-    confirmed = plays(e)
-    assert unidentified_seconds(e, confirmed) == 30.0                        # 30 s + 100 s + 110 s windows

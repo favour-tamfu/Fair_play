@@ -58,7 +58,6 @@ CONFIRM_MIN_WINDOWS = 2          # confirmed play: ≥ 2 accepted windows …
 CONFIRM_MIN_COVER_S = 30.0       # … and covered ≥ min(30 s, 0.3 × song length)
 CONFIRM_MIN_COVER_FRAC = 0.3
 DEFAULT_SONG_LENGTH_S = 240.0    # if a song's duration is unknown
-MUSIC_LOUDNESS_DB = -35.0        # unmatched window louder than this = "music, unidentified"
 LOCAL_UTC_OFFSET_H = 1           # Cameroon (Africa/Douala) = UTC+1, no DST
 VENUE_DAY_START_H = 6            # a venue-night runs 06:00 → 06:00 local (so 18:00–02:00 is one night)
 
@@ -98,11 +97,8 @@ CONC_CAP_MIN = 5
 # True = brief §7.2 original behaviour (x0.5 / cap applied to the weights automatically).
 MODIFIERS_ADJUST_WEIGHTS = False
 
-# Estimation + stats runs (brief §7.3, PLAN_B B-T10)
+# Estimation + stats runs (brief §7.3 as amended by D-011: a meter in every bar, no scaling, no unidentified)
 DEFAULT_CATCH_RATE = 0.8         # until the meter is calibrated (B-T14)
-BOOTSTRAP_N = 200                # resamples of meters within strata
-BOOTSTRAP_SEED = 20261124        # fixed -> the same data always gives the same range
-CI_PCTL_LOW, CI_PCTL_HIGH = 5, 95
 STATS_EVERY_S = 300              # scheduler: live period, both modes, every 5 min (only if plays changed)
 STATS_AUTO_PERIODS = ("live",)   # mock_month / all: run after the mock import (B-T11) or POST /api/v1/stats/run
 STATS_KEEP_RUNS = 3              # older runs (and their play_weights/shares) are pruned per (period, mode)

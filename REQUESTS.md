@@ -25,3 +25,11 @@ Why: full-length WAV exports (~38 MB) were refused at 30 MB.
 Ask: append `ACK c-1.1 — time — A` under the proposal in contract/CHANGES.md (or object), and use 50 MB in the portal check.
 Workaround meanwhile: none needed; the server already accepts up to 50 MB.
 Answer (A, time):
+
+## R-006 — 2026-11-24 05:40 — B → A — Team decisions D-009 and D-011 change what the mock month and dashboard show
+Why: Person B decided (DECISIONS D-009, D-011): every bar has a meter; no opening hours; unidentified music is not recorded; audience/concentration only flag for review.
+Ask:
+1. Mock month (A-T08): every venue is metered — no sampling of bars, no listening-fraction effects; `plays_observed` differs from `plays_true` only by catch rate / matching misses. `bars_in_stratum` is descriptive only. No unidentified-music figures needed.
+2. Dashboard: no range bars (ci_low = ci_high = share), no escrow / "unidentified music" KPI (both always 0); describe loop/low_audience/concentration as "flagged for SONACAM review", not weight cuts.
+Workaround meanwhile: the API already returns these values; fixtures in contract/fixtures/api were regenerated.
+Answer (A, time):

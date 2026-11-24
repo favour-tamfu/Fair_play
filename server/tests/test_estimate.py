@@ -1,8 +1,7 @@
-"""B-T10: estimation (brief §7.3), stats runs in the DB, POST /api/v1/stats/run, scheduler stats duty."""
+"""B-T10: estimation (brief §7.3 + D-011), stats runs in the DB, POST /api/v1/stats/run, scheduler stats duty."""
 import json
 from datetime import datetime, timedelta, timezone
 
-import numpy as np
 import pandas as pd
 import psycopg
 import pytest
@@ -21,65 +20,31 @@ UTC = timezone.utc
 
 # ---------------------------------------------------------------- pure estimation
 
-def test_open_seconds_venue_hours_and_activity():
-    d = datetime(2026, 11, 24, 0, 0, tzinfo=UTC)                       # = 01:00 local
-    assert estimate.open_seconds(d, d + timedelta(days=1), 18, 2) == 8 * 3600
-    assert estimate.open_seconds(d, d + timedelta(days=1), 18, 2, extra_hours=[14, 15]) == 10 * 3600
-    assert estimate.open_seconds(d, d + timedelta(minutes=30), 18, 2) == 1800          # 01:00-01:30 local is open
-    assert estimate.open_seconds(d, d, 18, 2) == 0
-
-
-def test_listening_fraction():
-    assert list(estimate.listening_fraction([3600, 0, 7200, 10], [7200, 3600, 3600, 0])) == [0.5, 1.0, 1.0, 1.0]
-
-
-def meters_df(rows):
-    return pd.DataFrame(rows, columns=["meter_id", "venue_id", "stratum", "bars_in_stratum", "catch_rate",
-                                       "received_s", "open_s"])
-
-
 def pw(rows):
     return pd.DataFrame([{"meter_id": m, "song_id": s, "weight": w} for m, s, w, k in rows for _ in range(k)])
 
 
-def test_two_strata_known_answer():
-    # stratum BIG: 100 bars, meters a1, a2 -> each represents 50 bars; stratum SMALL: 10 bars, meter b1 -> 10 bars
-    meters = meters_df([("a1", "V-a1", "BIG", 100, 1.0, 1, 1), ("a2", "V-a2", "BIG", 100, 1.0, 1, 1),
-                        ("b1", "V-b1", "SMALL", 10, 1.0, 1, 1)])
-    plays = pw([("a1", "X", 1, 2), ("a2", "Y", 1, 2), ("b1", "X", 1, 4), ("b1", "Y", 1.0, 1)])
-    est = estimate.estimate_shares(plays, meters)
-    s = est.shares.set_index("song_id")
-    # T_X = 2*50 + 4*10 = 140 ; T_Y = 2*50 + 1*10 = 110 ; S_X = 140/250
-    assert s.loc["X", "expanded"] == 140 and s.loc["Y", "expanded"] == 110
-    assert s.loc["X", "share"] == pytest.approx(0.56) and s.loc["Y", "share"] == pytest.approx(0.44)
-    assert list(s.index) == ["X", "Y"] and s["raw_plays"].to_dict() == {"X": 6, "Y": 3}
-    assert (s["ci_low"] <= s["share"]).all() and (s["share"] <= s["ci_high"]).all()
-    assert s.loc["X", "ci_low"] < s.loc["X", "share"] < s.loc["X", "ci_high"]      # BIG stratum varies -> real range
-    assert est.shares["share"].sum() == pytest.approx(1.0)
+def test_every_bar_metered_sum_of_counted_plays():
+    """D-011: a meter in every bar -> national total = plain sum over meters (no scaling, no opening hours)."""
+    meters = pd.DataFrame({"meter_id": ["a", "b", "c"], "catch_rate": [1.0, 1.0, 1.0]})
+    plays = pw([("a", "X", 1, 2), ("b", "Y", 1, 2), ("c", "X", 1, 4), ("c", "Y", 0.5, 2)])
+    s = estimate.estimate_shares(plays, meters).shares.set_index("song_id")
+    assert s.loc["X", "expanded"] == 6 and s.loc["Y", "expanded"] == 3
+    assert s.loc["X", "share"] == pytest.approx(2 / 3) and list(s.index) == ["X", "Y"]
+    assert s["raw_plays"].to_dict() == {"X": 6, "Y": 4} and s["weighted_plays"].to_dict() == {"X": 6, "Y": 3}
+    assert (s["ci_low"] == s["share"]).all() and (s["ci_high"] == s["share"]).all()     # no sampling range
+    assert s["share"].sum() == pytest.approx(1.0)
 
 
-def test_catch_rate_and_listening_fraction_expand():
-    meters = meters_df([("a", "V-a", "S1", 2, 0.5, 1800, 3600), ("b", "V-b", "S1", 2, 1.0, 3600, 3600)])
-    est = estimate.estimate_shares(pw([("a", "X", 1, 1), ("b", "Y", 1, 1)]), meters)
-    s = est.shares.set_index("song_id")
-    # meter a: c=0.5, L=0.5 -> one play counts as 4; meter b -> 1
-    assert s.loc["X", "share"] == pytest.approx(0.8) and s.loc["Y", "share"] == pytest.approx(0.2)
-
-
-def test_defaults_unknown_stratum_and_catch_rate_and_determinism():
-    meters = meters_df([("m", "V-1", None, None, None, 0, 0)])
+def test_catch_rate_correction_and_defaults():
+    meters = pd.DataFrame({"meter_id": ["a", "b"], "catch_rate": [0.5, 1.0]})
+    s = estimate.estimate_shares(pw([("a", "X", 1, 1), ("b", "Y", 1, 1)]), meters).shares.set_index("song_id")
+    assert s.loc["X", "share"] == pytest.approx(2 / 3)                     # meter a misses half -> 1 heard ≈ 2 played
+    assert list(estimate.catch_rates(["a", "z"], meters)) == [0.5, config.DEFAULT_CATCH_RATE]
     plays = pw([("m", "X", 1, 3), ("m", "Y", 0.5, 2)])
-    e1, e2 = estimate.estimate_shares(plays, meters), estimate.estimate_shares(plays, meters)
-    assert e1.shares.equals(e2.shares)
-    s = e1.shares.set_index("song_id")
-    assert s.loc["X", "share"] == pytest.approx(0.75)
-    assert (s["ci_low"] == s["share"]).all()                    # one meter: nothing to resample
-    assert e1.meters.iloc[0]["c"] == config.DEFAULT_CATCH_RATE and e1.meters.iloc[0]["bars_represented"] == 1
-    assert estimate.estimate_shares(plays.iloc[:0], meters).shares.empty
-
-
-def test_escrow_share():
-    assert estimate.escrow_share(60, 240) == 0.2 and estimate.escrow_share(0, 0) == 0.0
+    e1, e2 = estimate.estimate_shares(plays), estimate.estimate_shares(plays)
+    assert e1.shares.equals(e2.shares) and e1.shares.set_index("song_id").loc["X", "share"] == pytest.approx(0.75)
+    assert estimate.estimate_shares(plays.iloc[:0]).shares.empty
 
 
 # ---------------------------------------------------------------- stats runs in the DB
@@ -90,7 +55,7 @@ T0 = datetime(2026, 11, 24, 20, 0, tzinfo=UTC)
 def seed(db, rows):
     """rows: (minutes after T0, song) on live meter M-07 at V-BUEA-CIMFEST."""
     with connect(db, autocommit=True) as c, c.transaction():
-        c.execute("TRUNCATE plays, play_extents, play_corrections, play_weights, stats_runs, shares, flags, unidentified, "
+        c.execute("TRUNCATE plays, play_extents, play_corrections, play_weights, stats_runs, shares, flags, "
                   "windows, songs, meters, venues CASCADE")
         c.execute("INSERT INTO venues (venue_id, name, stratum, bars_in_stratum, source) VALUES "
                   "('V-BUEA-CIMFEST','CIMFEST demo table','BUEA-S',40,'live')")
@@ -108,7 +73,6 @@ def seed(db, rows):
                       (p["play_id"], s, p["started_at"], prev, h))
             c.execute("INSERT INTO play_extents (play_id, ended_at, n_windows, duration_s, venue_day) VALUES (%s,%s,20,200,%s)",
                       (p["play_id"], p["started_at"] + timedelta(seconds=200), p["started_at"].date()))
-        c.execute("INSERT INTO unidentified (meter_id, day, seconds) VALUES ('M-07', %s, 200)", (T0.date(),))
         for k in range(120):
             c.execute("INSERT INTO windows (meter_id, window_start, loudness_db, received, source) VALUES "
                       "('M-07', %s, -20, true, 'live')", (T0 + timedelta(seconds=10 * k),))
@@ -134,7 +98,7 @@ def test_run_stats_raw_vs_standardised(db):
         assert (std["mode"], std["rule_version"], raw["mode"], raw["rule_version"]) == \
             ("standardised", "sr-1.0", "raw", "raw")
         assert std["finished_at"] is not None and std["params"]["n_plays"] == 10
-        assert std["params"]["escrow_share"] == pytest.approx(200 / (200 + 10 * 200))
+        assert std["params"]["escrow_share"] == 0.0                         # D-011: no escrow
         sh = {r["song_id"]: r for r in c.execute("SELECT * FROM shares WHERE stats_run_id = %s", (std["stats_run_id"],))}
         rs = {r["song_id"]: r for r in c.execute("SELECT * FROM shares WHERE stats_run_id = %s", (raw["stats_run_id"],))}
         assert sh[A]["raw_plays"] == 7 and sh[A]["weighted_plays"] == 3.75 and rs[A]["weighted_plays"] == 7

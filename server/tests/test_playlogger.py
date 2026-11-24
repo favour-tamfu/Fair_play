@@ -21,7 +21,7 @@ M = "M-90"
 def clean(migrated_db):
     with connect(migrated_db, autocommit=True) as c:
         c.execute("TRUNCATE raw_batches, match_events, plays, play_extents, play_corrections, playlogger_state, "
-                  "unidentified, jobs, songs, owners, fp_hashes, flags RESTART IDENTITY CASCADE")
+                  "jobs, songs, owners, fp_hashes, flags RESTART IDENTITY CASCADE")
         with c.transaction():
             upsert_meter(c, json.loads((TV_DIR / "tv_keys.json").read_text(encoding="utf-8")))
         for sid, title, dur in (("S-000001", "Makossa Night", 240.0), ("S-000002", "Bikutsi Morning", 200.0)):
@@ -143,14 +143,6 @@ def test_play_event_on_feed(migrated_db):
     d = got[0]["data"]
     assert d["song_id"] == "S-000001" and d["title"] == "Makossa Night" and d["source"] == "virtual"
     assert d["started_at"] == "2026-11-24T20:00:00.000Z" and d["play_id"].startswith("P-")
-
-
-def test_unidentified_music_seconds(migrated_db):
-    add(migrated_db, [(0, 0), (10, 10), (20, 20)])
-    add(migrated_db, [(100, None), (110, None), (120, None)])              # loud, no match
-    add(migrated_db, [(200, None)], loud=-60.0)                            # silent bar
-    run(migrated_db)
-    assert q(migrated_db, "SELECT seconds FROM unidentified")[0]["seconds"] == 30.0
 
 
 def test_night_boundary(migrated_db):

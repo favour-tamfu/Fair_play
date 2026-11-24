@@ -8,7 +8,7 @@ meter's verdicts in window_start order (server/plays/segment.py) and reconciled 
   - logged play no longer confirmed   → play_correction "not_confirmed_on_recompute" (the original is never edited;
                                        stats skip superseded plays)
 One path covers live, late (after a network cut, out of order) and restarted processing: re-running is idempotent.
-"Music, unidentified" seconds per meter and night are recomputed into `unidentified`.
+Unidentified music is not recorded (D-011): an unmatched window is simply not a play.
 """
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from fairplay_core.schema import format_utc
 from server import config
 from server.db import notify
 from server.ledger import chain
-from server.plays.segment import Candidate, Event, segment, unidentified_seconds
+from server.plays.segment import Candidate, Event, segment
 
 log = logging.getLogger("playlogger")
 SUPERSEDED = "not_confirmed_on_recompute"
@@ -109,11 +109,7 @@ def rebuild_day(conn: psycopg.Connection, meter: dict, d: date) -> dict:
         if p["play_id"] not in used:
             corrected += _correct_once(conn, p["play_id"], SUPERSEDED, {"venue_day": str(d)})
 
-    secs = unidentified_seconds(events, confirmed)
-    conn.execute("""INSERT INTO unidentified (meter_id, day, seconds) VALUES (%s, %s, %s)
-                    ON CONFLICT (meter_id, day) DO UPDATE SET seconds = EXCLUDED.seconds""", (meter["meter_id"], d, secs))
-    return {"day": str(d), "events": len(events), "inserted": inserted, "updated": updated, "corrected": corrected,
-            "unidentified_s": secs}
+    return {"day": str(d), "events": len(events), "inserted": inserted, "updated": updated, "corrected": corrected}
 
 
 def process_meter(conn: psycopg.Connection, meter_id: str) -> list[dict]:

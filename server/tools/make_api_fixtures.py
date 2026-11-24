@@ -108,14 +108,14 @@ def build() -> dict[str, object]:
         rows = []
         for i in np.argsort(-sh, kind="stable"):
             s = songs[i]
-            half = 0.25 * sh[i] + 0.002
+            half = 0.0                                   # D-011: full coverage -> no sampling range
             flags = ["loop", "cooldown"] if i == loop_idx and mode == "standardised" else (["loop"] if i == loop_idx else [])
             rows.append({"song_id": s["song_id"], "title": s["title"], "artist_name": s["artist_name"],
                          "raw_plays": int(raw_plays[i]), "weighted_plays": round(float(counts[i]), 2),
                          "share": round(float(sh[i]), 5), "ci_low": round(float(max(sh[i] - half, 0)), 5),
                          "ci_high": round(float(min(sh[i] + half, 1)), 5), "amount_fcfa": amounts[i], "flags": flags})
         return {"stats_run_id": "R-20261124213000", "rule_version": "sr-1.0" if mode == "standardised" else "raw",
-                "pot_fcfa": POT, "escrow_share": 0.031, "rows": rows}
+                "pot_fcfa": POT, "escrow_share": 0.0, "rows": rows}
 
     shares_std = shares(weighted, "standardised")
     shares_raw = shares(raw_plays.astype(float), "raw")
@@ -165,7 +165,7 @@ def build() -> dict[str, object]:
               "last_anchor": anchor}
     overview = {"meters_online": sum(v["meters"][0]["online"] for v in venues), "meters_total": len(venues),
                 "venues": len(venues), "plays_raw": int(raw_plays.sum()), "plays_counted": round(float(weighted.sum()), 2),
-                "songs_ready": 2, "unidentified_music_min": 42.5, "rule_version": "sr-1.0", "ledger_intact": True,
+                "songs_ready": 2, "unidentified_music_min": 0.0, "rule_version": "sr-1.0", "ledger_intact": True,
                 "last_anchor": anchor}
     n_art = len(artists)
     compare = {"pot_fcfa": POT, "n_artists": n_art, "flat_each_fcfa": POT // n_art,

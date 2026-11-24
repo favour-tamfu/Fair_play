@@ -75,8 +75,7 @@ def share_rows(conn, period: str, mode: str, pot: int) -> tuple[Optional[dict], 
             "raw_plays": int(r["raw_plays"] or 0), "weighted_plays": float(r["weighted_plays"] or 0),
             "share": float(r["share"]), "ci_low": float(r["ci_low"] or 0), "ci_high": float(r["ci_high"] or 0),
             "amount_fcfa": a, "flags": list(r["flags"] or [])} for r, a in zip(rows, amounts)]
-    escrow = float((run["params"] or {}).get("escrow_share", 0.0))
-    return run, out, escrow
+    return run, out, 0.0                       # D-011: unidentified music is not recorded -> no escrow
 
 
 # --------------------------------------------------------------------------- endpoints (sync bodies run in a thread)
@@ -96,15 +95,9 @@ def _overview(period: str) -> dict:
                                          ON w.play_id = p.play_id AND w.stats_run_id = %s WHERE {ACTIVE} AND {where}""",
                                       [run["stats_run_id"]] + args).fetchone()["s"])
         ready = c.execute("SELECT count(*) AS n FROM songs WHERE status = 'ready'").fetchone()["n"]
-        if period == "mock_month":
-            unid = 0.0
-        else:
-            since = parse_utc(config.LIVE_SINCE).date() if period == "live" else datetime(1970, 1, 1).date()
-            unid = float(c.execute("SELECT COALESCE(sum(seconds), 0) AS s FROM unidentified WHERE day >= %s",
-                                   (since,)).fetchone()["s"]) / 60
         led = audit.status(c)
     return {"meters_online": m["online"], "meters_total": m["total"], "venues": n_venues, "plays_raw": raw,
-            "plays_counted": round(counted, 2), "songs_ready": ready, "unidentified_music_min": round(unid, 1),
+            "plays_counted": round(counted, 2), "songs_ready": ready, "unidentified_music_min": 0.0,
             "rule_version": config.RULE_VERSION, "ledger_intact": led["intact"], "last_anchor": led["last_anchor"]}
 
 

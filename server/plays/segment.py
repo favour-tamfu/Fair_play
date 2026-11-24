@@ -13,7 +13,6 @@ Rules for an accepted window of song s at song offset o heard at time t, against
   (Deviation from the literal brief, which starts a new play on a single back-jump: one stray window must not split
   a play into two — DECISIONS D-007.)
 Confirmed play: ≥ 2 accepted windows and covered ≥ min(30 s, 0.3 × L), covered = last_offset + 10 − first_offset.
-Unmatched windows louder than MUSIC_LOUDNESS_DB and outside every confirmed play = "music, unidentified" time.
 """
 from __future__ import annotations
 
@@ -130,16 +129,3 @@ def segment(events: Sequence[Event], song_length: Callable[[str], float]) -> lis
             continue
         pending = e                                                # off-track: hold one window and decide later
     return out
-
-
-def unidentified_seconds(events: Sequence[Event], plays: Sequence[Candidate]) -> float:
-    """Seconds of loud, unmatched windows that are not inside any confirmed play."""
-    spans = [(p.first_ws, p.ended_at) for p in plays if p.confirmed]
-    total = 0.0
-    for e in events:
-        if e.accepted or e.loudness_db is None or e.loudness_db <= config.MUSIC_LOUDNESS_DB:
-            continue
-        if any(a <= e.window_start < b for a, b in spans):
-            continue
-        total += WINDOW_S
-    return total
