@@ -8,9 +8,11 @@ import argparse
 import json
 import os
 import sqlite3
+import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from device.agent.eventlog import EventLog
+from device.tools.feedwatch import FeedWatcher
 
 STATE_DIR = os.path.join("device", "state")
 
@@ -40,6 +42,13 @@ table{border-collapse:collapse;font-size:12px;background:#fff} td,th{border-bott
 <h3 style="font-size:14px">every window, by sequence number</h3>
 <div class="grid" id="grid"></div>
 <p style="font-size:12px">green = acked by B · amber = queued · purple = parked · red = dead · black = made but no ack and not queued (MISSING) · grey = made, status not yet known</p>
+<h3 style="font-size:14px">B's feed: accepted matches</h3>
+<div class="row">
+ <div class="card">accepted<b id="acc">-</b></div>
+ <div class="card">rejected<b id="rej">-</b></div>
+ <div class="card">feed<b id="feed">-</b></div>
+</div>
+<table><thead><tr><th>time (A)</th><th>song</th><th>position in song</th><th>score</th><th>result</th></tr></thead><tbody id="matches"></tbody></table>
 <h3 style="font-size:14px">recent events</h3>
 <table><thead><tr><th>time</th><th>event</th><th>seq</th><th>detail</th></tr></thead><tbody id="events"></tbody></table>
 <script>
@@ -59,8 +68,42 @@ async function refresh(){
     tb.appendChild(tr);
   }
 }
-refresh(); setInterval(refresh, 1500);
+async function refreshMatches(){
+  const s = await (await fetch('/api/state')).json();
+  document.getElementById('acc').textContent = s.matches.accepted;
+  document.getElementById('rej').textContent = s.matches.rejected;
+  const f = document.getElementById('feed');
+  f.textContent = s.feed.connected ? 'connected' : ('down' + (s.feed.error ? ' ('+s.feed.error+')' : ''));
+  const tb = document.getElementById('matches'); tb.innerHTML = '';
+  for (const m of s.matches.recent.slice(0, 40)){
+    const tr = document.createElement('tr');
+    const pos = m.offset_s == null ? '' : (Number(m.offset_s).toFixed(1) + ' s');
+    tr.innerHTML = '<td>'+m.t.slice(11,19)+'</td><td>'+(m.title||'-')+'</td><td>'+pos+'</td><td>'+(m.confidence??'')+'</td><td>'+(m.accepted?'<b style="color:#2e7d32">accepted</b>':'rejected')+'</td>';
+    tb.appendChild(tr);
+  }
+}
+refresh(); refreshMatches(); setInterval(refresh, 1500); setInterval(refreshMatches, 1500);
 </script></body></html>"""
+
+
+def read_matches(meter: str, state_dir: str = STATE_DIR, limit: int = 300) -> dict:
+    path = os.path.join(state_dir, f"{meter}_feed.jsonl")
+    if not os.path.exists(path):
+        return {"accepted": 0, "rejected": 0, "recent": []}
+    with open(path, "r", encoding="utf-8") as fh:
+        recs = []
+        for line in fh.readlines()[-5000:]:
+            try:
+                recs.append(json.loads(line))
+            except ValueError:
+                continue
+    matches = [r for r in recs if r.get("kind") == "match" and r.get("meter_id") == meter]
+    accepted = [r for r in matches if r.get("accepted")]
+    return {
+        "accepted": len(accepted),
+        "rejected": len(matches) - len(accepted),
+        "recent": matches[-limit:][::-1],
+    }
 
 
 def build_state(meter: str, state_dir: str = STATE_DIR) -> dict:
@@ -119,7 +162,20 @@ def build_state(meter: str, state_dir: str = STATE_DIR) -> dict:
         "network": network,
         "seqs": seqs[-400:],
         "events": events[-200:],
+        "matches": read_matches(meter, state_dir),
+        "feed": FEED_STATUS,
     }
+
+
+def _sync_feed_status(watcher: FeedWatcher) -> None:
+    """Copy the watcher's status into FEED_STATUS every second, for the page."""
+    def loop():
+        import time
+        while True:
+            FEED_STATUS["connected"] = watcher.connected
+            FEED_STATUS["error"] = watcher.last_error
+            time.sleep(1)
+    threading.Thread(target=loop, daemon=True).start()
 
 
 def make_handler(meter: str, state_dir: str):
@@ -143,11 +199,19 @@ def make_handler(meter: str, state_dir: str):
     return Handler
 
 
+FEED_STATUS = {"connected": False, "error": None, "url": None}
+
+
 def main(argv=None) -> int:
-    p = argparse.ArgumentParser(description="agent monitor (read-only)")
+    p = argparse.ArgumentParser(description="agent monitor (read-only; watches B's feed)")
     p.add_argument("--meter", default="M-07")
     p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--sonacam", default="http://192.168.1.51:8000", help="B's base URL for the live feed")
     args = p.parse_args(argv)
+    watcher = FeedWatcher(args.sonacam, os.path.join(STATE_DIR, f"{args.meter}_feed.jsonl"))
+    watcher.start()
+    FEED_STATUS["url"] = watcher.url
+    _sync_feed_status(watcher)
     server = HTTPServer(("127.0.0.1", args.port), make_handler(args.meter, STATE_DIR))
     print(f"monitor for {args.meter}: http://127.0.0.1:{args.port}  (Ctrl+C to stop)")
     try:
