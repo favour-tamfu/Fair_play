@@ -76,7 +76,10 @@ REJECTED = {"unknown_meter": ("warn", "a meter the server does not know"),
             "seq_conflict": ("error", "a different report with the same number was already stored"),
             "admin_token_required": ("warn", "adding a meter or changing its key needs the admin password"),
             "invalid": ("warn", "the request is not valid"),
-            "meter_retired": ("warn", "this meter was retired by SONACAM")}
+            "meter_retired": ("warn", "this meter was retired by SONACAM"),
+            "rejected": ("warn", "SONACAM rejected this meter"), "retired": ("warn", "this meter was retired by SONACAM"),
+            "meter_id_taken": ("warn", "another meter already uses this id"),
+            "too_many_requests": ("warn", "too many meters are waiting for approval")}
 
 
 def rejected(conn, endpoint: str, body: Any, code: int, error: str, detail: Any = None) -> None:

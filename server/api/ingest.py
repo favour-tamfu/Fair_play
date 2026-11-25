@@ -32,7 +32,7 @@ def _with_conn(fn: Callable, body: Any, *extra) -> ingest.Result:
         r = fn(conn, body, *extra)
         what = ENDPOINT.get(getattr(fn, "__name__", ""), "device request")
         if r.code >= 400:                                 # D-024: refused requests go to the admins' activity log
-            activity.rejected(conn, what, body, r.code, r.body.get("error", "error"), r.body.get("detail"))
+            activity.rejected(conn, what, body, r.code, r.body.get("error") or r.body.get("status") or "error", r.body.get("detail"))
         elif fn is ingest.ingest_bulk:
             for item, res in zip(body.get("batches", []) if isinstance(body, dict) else [], r.body.get("results", [])):
                 if res.get("status") == "error":

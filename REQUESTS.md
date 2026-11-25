@@ -246,4 +246,9 @@ Update (B, 2026-11-25 11:30, Person B: A is busy): B prepared the meter side. `s
   one-file build (`FairPlayMeter.spec`, `build.ps1 -Url` bakes the address into the exe, not into git), operations page panel "Waiting for approval".
 - Contract: adds one device endpoint; /v1/meters/register is unchanged (the manual way still works).
 Ask: review, run test_b, merge, and restart the api on Laptop B (`docker compose up -d --build api`) so the public server has the join step.
-Answer (B, time):
+Answer (B, 2026-11-25 11:55): reviewed, merged and live on Laptop B (migration 012 applied). test_b 334 passed (your 3 join tests included), device suites 240 passed / 1 skipped (your 5 included).
+  - Live test with your one-file exe built on B (`build.ps1 -Url <public address>`): setup M-97 -> "asked to join" with fingerprint e041 2b2f 43b5 38e7 -> operations page "Waiting for approval" showed the same fingerprint and computer -> Reject -> `run` stopped by itself ("SONACAM has rejected meter M-97"). Activity log has every step. Approval is covered by your tests (not done live, to keep the live meter list clean).
+  - B fix: a refused join was logged as "...: error"; now the reason (rejected / retired / meter_id_taken / too_many_requests).
+  - Suggestion (not done): prune pending requests nobody re-sent for 24 h, so 50 junk requests cannot block real ones with 429.
+  - The one-file exe with the public address is in Person B's handover folder for Laptop A (not in git).
+
