@@ -1,0 +1,206 @@
+/* SONACAM operations page. Same values as the main site (css/landing.css, from apple.com):
+   text #1d1d1f / #6e6e73 / #86868b, tiles #f5f5f7 with 18px corners on white, hairlines #d2d2d7, blue #0071e3 pill
+   buttons, links #0066cc, one warm colour (#bf4800) for what needs attention. SF Pro. No badges, dots, glows or chips:
+   status is written in words. One column, so tables fit without sideways scrolling. Loaded after app.css and dash.css. */
+body.ops {
+  --ink: #1d1d1f;
+  --ink-2: #6e6e73;
+  --ink-3: #86868b;
+  --grey: #f5f5f7;
+  --hair: #d2d2d7;
+  --link: #0066cc;
+  --button: #0071e3;
+  --attn: #bf4800;
+  --r-s: 18px;
+  --text: "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --display: "SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --mono: "SF Mono", ui-monospace, Menlo, Consolas, monospace;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--text);
+  letter-spacing: -.016em;
+  -webkit-font-smoothing: antialiased;
+}
+body.ops :is(button, input, select, textarea) { font-family: var(--text); letter-spacing: inherit; }
+body.ops :is(h1, h2, h3) { font-family: var(--display); }
+body.ops .page { min-width: 0; }
+body.ops a { color: var(--link); }
+
+/* ---------- top bar: like the site's local nav (title left, quiet status right) ---------- */
+body.ops .topbar { height: 52px; padding: 0 32px; gap: 18px; background: rgba(255, 255, 255, .8);
+  backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid rgba(0, 0, 0, .12); }
+body.ops .crumb { margin: 0; font-size: 12px; color: var(--ink-3); display: flex; align-items: baseline; gap: 6px; }
+body.ops .crumb b { font-family: var(--display); font-size: 21px; font-weight: 600; color: var(--ink); letter-spacing: .011em; }
+body.ops .clock { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+body.ops .ledger { margin-left: auto; padding: 0; border: 0; border-radius: 0; background: none; animation: none;
+  font-size: 12px; color: var(--ink-2); white-space: nowrap; }
+body.ops .ledger::before { content: none; }
+body.ops .ledger.ok { color: var(--ink-2); background: none; }
+body.ops .ledger.bad { color: var(--attn); background: none; font-weight: 600; }
+
+/* ---------- page: one column of tiles ---------- */
+body.ops main.adm { display: block; max-width: 1120px; padding: 32px 32px 64px; }
+body.ops .adm > section { scroll-margin-top: 72px; }
+body.ops .panel { display: block; max-height: none; background: var(--grey); border: 0; border-radius: var(--r-s);
+  box-shadow: none; padding: 28px 32px; margin: 0 0 20px; }
+body.ops .panel[hidden] { display: none; }
+body.ops .panel .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; margin: 0 0 6px; }
+body.ops .panel h2 { margin: 0; font-size: 24px; line-height: 1.17; font-weight: 600; letter-spacing: .009em;
+  text-transform: none; color: var(--ink); }
+body.ops .note { font-size: 14px; line-height: 1.43; color: var(--ink-2); }
+body.ops .panel > p.note { margin: 0 0 18px; max-width: 760px; }
+body.ops .head .note { margin-left: auto; font-size: 14px; color: var(--ink-3); }
+body.ops .head .mock-toggle { margin-left: 0; }
+body.ops .mock-toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--ink-2); }
+body.ops code, body.ops pre { font-family: var(--mono); font-size: 13px; letter-spacing: 0; }
+/* key fingerprints and ids: SF Pro with even-width digits, like the rest of the page */
+body.ops .mono, body.ops td.mono { font-family: var(--text); font-size: 14px; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+
+/* ---------- tables: hairlines only, no boxes ---------- */
+body.ops .scroll { overflow-x: auto; overflow-y: visible; background: none; border-radius: 0; box-shadow: none; }
+body.ops table { width: 100%; border-collapse: collapse; font-size: 14px; }
+body.ops th { position: static; padding: 0 16px 10px 0; background: none; border-bottom: 1px solid var(--hair);
+  font-size: 12px; font-weight: 600; color: var(--ink-2); text-align: left; text-transform: none; letter-spacing: 0; white-space: nowrap; }
+body.ops td { padding: 14px 16px 14px 0; border-bottom: 1px solid rgba(0, 0, 0, .08); vertical-align: middle;
+  color: var(--ink); line-height: 1.3; }
+body.ops tbody tr:last-child td { border-bottom: 0; }
+body.ops :is(th, td):last-child { padding-right: 0; text-align: right; }
+body.ops :is(th, td).n { text-align: right; font-variant-numeric: tabular-nums; }
+body.ops td:first-child { font-weight: 600; white-space: nowrap; }
+body.ops td.mono { color: var(--ink-2); white-space: nowrap; }
+body.ops #meters td:nth-child(5), body.ops #joins td:nth-child(4) { white-space: nowrap; color: var(--ink-2); }
+body.ops td.note { color: var(--ink-3); font-weight: 400; text-align: left; }
+body.ops tr.retired td { color: var(--ink-3); }
+
+/* status in words (the scripts still mark it with .pill/.ok/.bad/.st-*) */
+body.ops .pill { display: inline-block; padding: 0; border: 0; border-radius: 0; background: none; font-size: inherit;
+  font-weight: 400; color: var(--ink-3); white-space: nowrap; }
+body.ops .pill.ok, body.ops .pill.st-ready { color: var(--ink); background: none; }
+body.ops .pill.bad, body.ops .pill.st-failed, body.ops .pill.st-duplicate_suspected { color: var(--attn); background: none; }
+body.ops .pill.st-processing, body.ops .pill.st-uploaded { color: var(--ink-2); }
+body.ops .pill::first-letter { text-transform: uppercase; }
+body.ops .chip { display: inline; padding: 0; border: 0; border-radius: 0; background: none; color: var(--ink-3);
+  font-size: 12px; font-weight: 400; }
+
+/* ---------- buttons: blue pill for the main action, text buttons for the rest ---------- */
+body.ops button { font-size: 14px; line-height: 1.2; font-weight: 400; border: 0; border-radius: 980px; padding: 8px 16px;
+  background: none; color: var(--link); cursor: pointer; white-space: nowrap; box-shadow: none; }
+body.ops button:hover:not(:disabled) { text-decoration: underline; background: none; }
+body.ops button:disabled { opacity: .35; cursor: default; text-decoration: none; }
+body.ops button.small { font-size: 14px; padding: 6px 12px; }
+body.ops :is(#btn-register, #btn-stats, #btn-anchor, #act-csv, button[data-to="approve"]) { background: var(--button); color: #fff; }
+body.ops :is(#btn-register, #btn-stats, #btn-anchor, #act-csv, button[data-to="approve"]):hover:not(:disabled) {
+  background: #0077ed; text-decoration: none; }
+body.ops :is(button.confirm, button.armed) { color: var(--attn); }
+body.ops :is(button.warn, .danger-btn) { background: none; color: var(--attn); }
+body.ops .danger-btn:not(:disabled) { background: var(--attn); color: #fff; }
+body.ops .danger-btn:hover:not(:disabled) { text-decoration: none; background: #a83f00; }
+body.ops :is(button, input, select):focus-visible { outline: 2px solid var(--button); outline-offset: 2px; }
+body.ops .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+/* fields */
+body.ops :is(input[type="search"], input:not([type]), input[type="text"], select) { border: 1px solid var(--hair);
+  border-radius: 12px; background: #fff; box-shadow: none; padding: 8px 12px; font-size: 14px; color: var(--ink); }
+body.ops select { padding-right: 30px; }
+
+/* ---------- waiting for approval ---------- */
+body.ops #joins td:last-child { display: flex; justify-content: flex-end; align-items: center; gap: 4px; }
+body.ops #joins .pill.ok { font-weight: 600; }
+body.ops #joins .note { font-size: 14px; color: var(--ink-2); }
+
+/* ---------- register a meter: one line ---------- */
+body.ops #register .head { margin-bottom: 6px; }
+body.ops #register p.note { margin-bottom: 16px; }
+body.ops input[type="file"] { font-size: 14px; color: var(--ink-2); max-width: 100%; border: 0; padding: 0; background: none; box-shadow: none; }
+body.ops input[type="file"]::file-selector-button { font: inherit; font-size: 14px; border: 1px solid var(--hair);
+  border-radius: 980px; padding: 7px 16px; margin-right: 12px; background: #fff; color: var(--ink); cursor: pointer; }
+body.ops .preview { margin: 12px 0 0; padding: 0; background: none; border: 0; min-height: 0; font-size: 13px; color: var(--ink-2); white-space: pre-wrap; }
+body.ops .preview:empty { display: none; }
+body.ops #register .row { margin-top: 16px; }
+
+/* ---------- activity log ---------- */
+body.ops .act-tools { display: flex; flex-direction: column; gap: 12px; margin: 14px 0 18px; }
+body.ops .filters, body.ops #act-kinds { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+body.ops :is(.filters, #act-kinds) button { font-size: 14px; padding: 6px 14px; border: 0; border-radius: 980px;
+  background: rgba(0, 0, 0, .05); color: var(--ink); }
+body.ops :is(.filters, #act-kinds) button:hover { text-decoration: none; background: rgba(0, 0, 0, .09); }
+body.ops :is(.filters, #act-kinds) button.on { background: var(--ink); color: #fff; }
+body.ops .act-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+body.ops .act-row input { flex: 1 1 240px; }
+body.ops #act-live { color: var(--ink-2); }
+body.ops #act-live[aria-pressed="true"] { color: var(--ink); background: none; box-shadow: none; }
+body.ops .act-scroll { max-height: 560px; overflow-y: auto; overflow-x: hidden; padding-right: 16px; scrollbar-gutter: stable; }
+body.ops table.act { table-layout: fixed; }
+body.ops table.act th:nth-child(1) { width: 136px; }
+body.ops table.act th:nth-child(2) { width: 124px; }
+body.ops table.act th:nth-child(4) { width: 76px; }
+body.ops table.act th:nth-child(5) { width: 76px; }
+body.ops table.act td { overflow-wrap: anywhere; }
+body.ops table.act th { position: sticky; top: 0; z-index: 1; background: var(--grey); padding-top: 4px; }
+body.ops table.act td { vertical-align: top; }
+body.ops table.act td.t { white-space: nowrap; color: var(--ink-2); font-weight: 400; font-variant-numeric: tabular-nums; }
+body.ops table.act td.soft, body.ops td.soft { color: var(--ink-3); white-space: nowrap; }
+body.ops table.act .kind { display: inline; padding: 0; border-radius: 0; background: none; color: var(--ink-2); font-size: 13px; white-space: nowrap; }
+body.ops table.act tr:is(.lv-warn, .lv-error) .kind { color: var(--attn); }
+body.ops table.act tr.lv-warn td:nth-child(3) { color: var(--ink); }
+body.ops table.act tr.lv-error td:nth-child(3) { color: var(--attn); font-weight: 400; }
+body.ops .act-more { margin-top: 12px; justify-content: center; }
+
+/* ---------- catalogue ---------- */
+body.ops #song-filters { margin: 14px 0 18px; }
+body.ops #songs td:nth-child(6) { white-space: nowrap; color: var(--ink-2); }
+body.ops #songs td:nth-child(2) { font-weight: 600; }
+
+/* ---------- review flags ---------- */
+body.ops .panel .head select { margin-left: auto; }
+body.ops .flags { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+body.ops .flags li { background: none; border: 0; border-bottom: 1px solid rgba(0, 0, 0, .08); border-radius: 0; margin: 0; padding: 14px 0; }
+body.ops .flags li:last-child { border-bottom: 0; }
+body.ops .flags li.reviewed { opacity: .5; }
+body.ops .flags .chip:first-child { color: var(--attn); font-size: 13px; }
+body.ops .flags .note { font-size: 13px; margin-top: 2px; }
+
+/* ---------- actions ---------- */
+body.ops .action { display: grid; grid-template-columns: 1fr auto; gap: 8px 24px; align-items: center; background: none;
+  border: 0; border-bottom: 1px solid rgba(0, 0, 0, .08); border-radius: 0; margin: 0; padding: 18px 0; }
+body.ops .action:last-child { border-bottom: 0; }
+body.ops .action b { font-family: var(--display); font-size: 17px; font-weight: 600; }
+body.ops .action .note { display: block; margin-top: 2px; }
+body.ops .action.danger { box-shadow: none; }
+body.ops .action .confirm { grid-column: 1 / -1; }
+body.ops .action .confirm label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--ink-2); margin-bottom: 12px; }
+body.ops .log { grid-column: 1 / -1; list-style: none; margin: 4px 0 0; padding: 0; font-size: 13px; color: var(--ink-2); }
+body.ops .log li { padding: 6px 0; border-bottom: 0; }
+body.ops .log li .t { color: var(--ink-3); margin-right: 6px; font-variant-numeric: tabular-nums; }
+body.ops .log li.err { color: var(--attn); }
+
+/* ---------- narrow screens ---------- */
+@media (max-width: 760px) {
+  body.ops .topbar { padding: 0 16px; }
+  body.ops main.adm { padding: 20px 16px 48px; }
+  body.ops .panel { padding: 22px 18px; }
+  body.ops .ledger { display: none; }
+  body.ops .action { grid-template-columns: 1fr; }
+  body.ops .head .note { margin-left: 0; }
+  /* keep what decides an action; the rest is on wider screens */
+  body.ops #joins-panel :is(th, td):is(:nth-child(3), :nth-child(4)),
+  body.ops #meters-panel :is(th, td):is(:nth-child(3), :nth-child(6), :nth-child(7)),
+  body.ops #catalogue :is(th, td):is(:nth-child(1), :nth-child(5), :nth-child(6)),
+  body.ops table.act :is(th, td):is(:nth-child(2), :nth-child(5)) { display: none; }
+  body.ops td { padding-right: 10px; }
+  /* waiting meters and meters: one stacked block per row instead of a wide table */
+  body.ops :is(#joins-panel, #meters-panel) thead { display: none; }
+  body.ops :is(#joins, #meters) tr { display: block; padding: 12px 0; border-bottom: 1px solid rgba(0, 0, 0, .08); }
+  body.ops :is(#joins, #meters) tr:last-child { border-bottom: 0; }
+  body.ops :is(#joins, #meters) td { display: block; padding: 1px 0; border: 0; text-align: left; white-space: normal; }
+  body.ops #joins td:nth-child(5)::before { content: "Key "; color: var(--ink-3); }
+  body.ops #joins td:last-child { display: flex; justify-content: flex-start; gap: 4px; margin-top: 8px; padding: 0; }
+  body.ops #meters td:last-child { text-align: left; }
+  body.ops #meters td:last-child button { padding-left: 0; }
+  /* log: time on two short lines */
+  body.ops table.act th:nth-child(1) { width: 84px; }
+  body.ops table.act th:nth-child(4) { width: 56px; }
+  body.ops table.act td.t { white-space: normal; overflow-wrap: normal; font-size: 13px; }
+  body.ops #songs button { white-space: normal; text-align: right; padding-right: 0; }
+  body.ops .act-scroll { padding-right: 0; }
+}

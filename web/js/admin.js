@@ -394,7 +394,7 @@ $("act-q").addEventListener("input", () => { clearTimeout(actSearch); actSearch 
 $("act-live").addEventListener("click", () => {
   act.live = !act.live;
   $("act-live").setAttribute("aria-pressed", String(act.live));
-  $("act-live").textContent = act.live ? "● Live" : "❚❚ Paused";
+  $("act-live").textContent = act.live ? "Live" : "Paused";
   if (act.live) actPoll();
 });
 $("act-older").addEventListener("click", async () => {

@@ -37,6 +37,11 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   Verified in the browser against a fake backend (scratchpad). test_a 100 passed; server tests not run on A.
   **B must pull a/work and restart the api again** (server + web). User's own meter **M-9275** runs from
   `Downloads\FairPlayMeter_one_file` (old build, waiting); new build in `Downloads\FairPlayMeter_latest\`.
+- **Operations page restyle (user: "tables poorly designed, green dot, header — use the main site's CSS, remove vibe-coded
+  elements"):** new `web/css/ops.css` (landing.css values; body class `d2 ops`), the old admin block removed from dash.css.
+  One column; hairline tables, status in words, log status as plain text, Approve blue pill / others text buttons,
+  Live/Paused without symbols; on phones the waiting list and meters stack, minor columns hide. Checked in the browser
+  against a fake backend (scratchpad fake_ops2.py) at 1280 px and 375 px. Needs B's pull to show on the live site.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look
