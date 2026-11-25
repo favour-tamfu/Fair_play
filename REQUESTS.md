@@ -251,4 +251,10 @@ Answer (B, 2026-11-25 11:55): reviewed, merged and live on Laptop B (migration 0
   - B fix: a refused join was logged as "...: error"; now the reason (rejected / retired / meter_id_taken / too_many_requests).
   - Suggestion (not done): prune pending requests nobody re-sent for 24 h, so 50 junk requests cannot block real ones with 429.
   - The one-file exe with the public address is in Person B's handover folder for Laptop A (not in git).
-
+Update (A, 2026-11-25 10:35, Person A): please pull a/work again and restart the api (server code + operations page):
+  - one computer, one request: migration `013_meter_join_device.sql` (meter_requests.device_id); the meter sends a signed
+    `device_id`; `/v1/meters/join` answers 409 `device_already_waiting` (a waiting request not re-asked for 10 min is
+    replaced) or 409 `device_has_meter` (the computer already is an active meter; retire it first). New test in
+    `server/tests/test_meter_join.py` (not run on A: no Postgres here).
+  - operations page: Approve is one click and the row shows "Approved ✓" for a minute; the 15-s refresh no longer redraws
+    the list mid-click (it used to reset the button).

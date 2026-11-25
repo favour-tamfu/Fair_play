@@ -21,6 +21,50 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   `Downloads\FairPlayMeter_one_file\FairPlayMeter.exe`; for B: `Downloads\Fair_Play_R-033_for_B.bundle`.
   **Pushed a/work (037bcff) at the user's request** so B can pull: B runs `git pull origin a/work` (or merges it into main),
   `scripts\test_b.ps1`, then restarts the api. Waiting on B's answer in REQUESTS R-033.
+  **B has deployed it**: the public server answers /v1/meters/join (checked 2026-11-25 ~10:10).
+- **Zero-question meter (user):** double-click → sets itself up (random free id M-2000..9999, bar V-BUEA-CIMFEST, built-in
+  address) → "Waiting for approval from SONACAM" → once approved, listens in a background thread with a menu (status,
+  pause/resume, check connection, details, stop). Approval remembered in `device\state\<id>.approved`; taken id → new id by
+  itself; older server → checks approval via signed heartbeat. Meter-only change (`meter_app.py`, `run_pipeline(on_ready=)`),
+  B needs nothing. test_a **98 passed**. New exe copied to `Downloads\FairPlayMeter_one_file\`. A trial run left test meter
+  **M-8862** (fp 84f9 2b00 1b6a d4ce, key deleted) in SONACAM's waiting list → user should Reject it.
+- **One computer = one request/meter + approval feedback (user):** meter keeps its identity in `%PROGRAMDATA%\FairPlayMeter`
+  (every copy of the exe on a computer is the same meter; a meter already set up next to an exe stays there), sends a
+  signed `device_id` (hash of MachineGuid); server (migration 013, joins.py) answers 409 device_already_waiting /
+  device_has_meter (stale >10 min requests replaced). Meter prints a big "APPROVED by SONACAM" banner + beep; menu Status
+  shows "Approved yes (time)". Dashboard: Approve is one click, row shows "Approved ✓ starts counting within 15 s" for
+  60 s; list only redrawn when changed and not mid-click (the 15-s refresh used to reset the button — the bug).
+  Verified in the browser against a fake backend (scratchpad). test_a 100 passed; server tests not run on A.
+  **B must pull a/work and restart the api again** (server + web). User's own meter **M-9275** runs from
+  `Downloads\FairPlayMeter_one_file` (old build, waiting); new build in `Downloads\FairPlayMeter_latest\`.
+- **Operations page restyle (user: "tables poorly designed, green dot, header — use the main site's CSS, remove vibe-coded
+  elements"):** new `web/css/ops.css` (landing.css values; body class `d2 ops`), the old admin block removed from dash.css.
+  One column; hairline tables, status in words, log status as plain text, Approve blue pill / others text buttons,
+  Live/Paused without symbols; on phones the waiting list and meters stack, minor columns hide. Checked in the browser
+  against a fake backend (scratchpad fake_ops2.py) at 1280 px and 375 px. Needs B's pull to show on the live site.
+- **Typography of the SONACAM app (user: "fix the type face weights, header, the whole typography — in the dash, not the
+  main site; no empty places"):** new `web/css/type.css`, loaded last on the dashboard and operations pages: one scale
+  32/28/21/17/14/12 px, weights 400/600 only, Display >= 20 px, Text below, no monospace (tabular digits). Dashboard went
+  from 25 text styles to 9. Header "Section › Page" 14 px on both pages, log status plain text. Overview: "Who earned
+  what" full width, map + live activity side by side (no blank area, no sideways scroll); empty live list explains itself.
+  Stylesheet links carry `?v=1125c` (browsers kept an old dash.css). Main site untouched.
+  Balanced cards (user): cards in a row stretch to one height and their white panel fills it (overview + Trust); card
+  titles never wrap; play-log status is plain words ("Play log intact.") instead of a green box.
+- **Maps (user: "OpenStreetMap to fit the aesthetic of any page, light and dark"):** `js/osm.js` themes every Leaflet map
+  from the background it sits on (and the system light/dark switch): grey tiles via CSS filter (still OSM tiles), dark =
+  inverted charcoal; site-style zoom buttons, attribution, pop-ups; dot colours per theme. Checked on the dashboard
+  (light) and the landing map tile (dark). Imports and page scripts now carry `?v=1125c` (browsers cached old modules).
+- **Meter verified live (2026-11-25 11:15–11:20) against the public server:** exe from an empty folder set itself up with
+  no questions as **M-7463** (fp d1a1 485b f51d 3f8e), waited; a 2nd copy from another folder was the same meter (shared
+  `%PROGRAMDATA%\FairPlayMeter`), no new request; request listed on the live operations page; after approval the meter
+  showed "APPROVED by SONACAM", started listening with the menu, came online, report #1 stored (activity log shows the
+  chain). M-7463 is a real approved meter now (runs from scratchpad\meterA in terminal tab "Meter test A").
+  **Bug found:** two-click buttons got class `confirm`, which app.css hides (`.confirm{display:none}`, meant for the reset
+  box) → Approve/Retire vanished after the first click and could not be confirmed (the user's "button disappears"). Fixed:
+  class `armed` in admin.js (live page approval was done by triggering the button's own handler). Not deployed: B pulls.
+  Server-side one-request-per-computer (migration 013) not testable until B pulls.
+- **Sign-in page (user: "empty with a footer floating in the middle"):** fills the window, footer at the bottom, white
+  card on the site grey, full-width button, error line hidden until needed; lede now covers artists and SONACAM staff.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look

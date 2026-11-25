@@ -8,6 +8,9 @@ re-sends the same request to ask how it stands. Answers (`status`):
   rejected  SONACAM said no (403)
   retired   the meter was registered and later retired (403)
 Errors: 401 bad_signature, 409 meter_id_taken (another key holds or waits for this id), 422 invalid, 429 too_many_requests.
+One computer, one meter (optional signed `device_id`, a hash of the computer's machine id): 409 device_already_waiting
+when the same computer already waits under another id (a request not re-asked for 10 min is replaced instead), and
+409 device_has_meter when the computer already is an active meter (SONACAM retires it first).
 Until approval the meter is unknown, so its reports are refused with 404 and wait in its outbox: a smuggled meter
 cannot add plays until SONACAM has looked at it.
 """
@@ -22,6 +25,7 @@ from server import activity, ingest
 from server.registry import PUB_FIELDS, key_fingerprint, upsert_meter
 
 MAX_PENDING = 50
+STALE_S = 600          # a waiting request not re-asked for 10 min may be replaced by another from the same computer
 
 
 def _status(code: int, status: str, meter_id: str, key: str, **extra: Any) -> ingest.Result:
@@ -39,6 +43,7 @@ def request_join(conn: psycopg.Connection, body: Any) -> ingest.Result:
         return ingest.Result(401, {"error": "bad_signature", "detail": "the request must be signed with the meter's own key"})
     mid, key = rec["meter_id"], rec["public_key_b64"]
     computer = str(body.get("computer") or "")[:80] or None
+    device = str(body.get("device_id") or "")[:64] or None
     taken = {"error": "meter_id_taken", "detail": f"{mid} belongs to another meter: choose another meter id"}
 
     with conn.transaction():
@@ -49,6 +54,14 @@ def request_join(conn: psycopg.Connection, body: Any) -> ingest.Result:
             if m["retired_at"] is not None:
                 return _status(403, "retired", mid, key)
             return _status(200, "approved", mid, key)
+        if device:                                              # one meter per computer
+            active = conn.execute("""SELECT r.meter_id FROM meter_requests r JOIN meters m USING (meter_id)
+                                     WHERE r.device_id = %s AND r.status = 'approved' AND r.meter_id <> %s
+                                       AND m.retired_at IS NULL LIMIT 1""", (device, mid)).fetchone()
+            if active:
+                return ingest.Result(409, {"error": "device_has_meter", "meter": active["meter_id"],
+                                           "detail": f"this computer is already meter {active['meter_id']}; "
+                                                     "SONACAM must retire it before this computer can ask again"})
         r = conn.execute("SELECT * FROM meter_requests WHERE meter_id = %s FOR UPDATE", (mid,)).fetchone()
         if r is not None and r["public_key_b64"] == key:
             conn.execute("UPDATE meter_requests SET last_asked_at = now() WHERE meter_id = %s", (mid,))
@@ -57,16 +70,28 @@ def request_join(conn: psycopg.Connection, body: Any) -> ingest.Result:
             return _status(202, "pending", mid, key)            # 'approved' rows always have a meters row (handled above)
         if r is not None and r["status"] == "pending":
             return ingest.Result(409, taken)                    # someone else's request waits for this id
+        if device:                                              # one waiting request per computer
+            other = conn.execute("""SELECT meter_id, last_asked_at > now() - %s * interval '1 second' AS live
+                                    FROM meter_requests WHERE device_id = %s AND status = 'pending' AND meter_id <> %s""",
+                                 (STALE_S, device, mid)).fetchall()
+            alive = [o["meter_id"] for o in other if o["live"]]
+            if alive:
+                return ingest.Result(409, {"error": "device_already_waiting", "meter": alive[0],
+                                           "detail": f"this computer already asked to join as {alive[0]}"})
+            for o in other:                                     # left behind by a copy that stopped asking: replace it
+                conn.execute("DELETE FROM meter_requests WHERE meter_id = %s", (o["meter_id"],))
+                activity.record(conn, "meter", f"Waiting request {o['meter_id']} replaced by {mid} (same computer)",
+                                meter_id=o["meter_id"])
         n = conn.execute("SELECT count(*) AS n FROM meter_requests WHERE status = 'pending'").fetchone()["n"]
         if n >= MAX_PENDING:
             return ingest.Result(429, {"error": "too_many_requests", "detail": "too many meters are waiting; try later"})
         conn.execute(
-            """INSERT INTO meter_requests (meter_id, venue_id, public_key_b64, created_at, computer)
-               VALUES (%s, %s, %s, %s, %s)
+            """INSERT INTO meter_requests (meter_id, venue_id, public_key_b64, created_at, computer, device_id)
+               VALUES (%s, %s, %s, %s, %s, %s)
                ON CONFLICT (meter_id) DO UPDATE SET venue_id = EXCLUDED.venue_id, public_key_b64 = EXCLUDED.public_key_b64,
-                 created_at = EXCLUDED.created_at, computer = EXCLUDED.computer, status = 'pending',
-                 requested_at = now(), last_asked_at = now(), decided_at = NULL, decided_by = NULL""",
-            (mid, rec["venue_id"], key, rec.get("created_at"), computer))
+                 created_at = EXCLUDED.created_at, computer = EXCLUDED.computer, device_id = EXCLUDED.device_id,
+                 status = 'pending', requested_at = now(), last_asked_at = now(), decided_at = NULL, decided_by = NULL""",
+            (mid, rec["venue_id"], key, rec.get("created_at"), computer, device))
         activity.record(conn, "meter", f"New meter {mid} at {rec['venue_id']} asks to join (key {key_fingerprint(key)}"
                         + (f", computer {computer}" if computer else "") + "): approve or reject it under Meters",
                         "warn", meter_id=mid, venue_id=rec["venue_id"])

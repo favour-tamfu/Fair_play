@@ -1,0 +1,97 @@
+/* One type scale for the SONACAM app (dashboard + operations). Loaded LAST on both pages.
+   SF Pro Display only at 20 px and above, SF Pro Text below (as Apple does). Two weights: 400 and 600.
+   Numbers use even-width digits instead of a monospace font.
+
+     large    32 / 1.125  Display 600  +.004em   page title
+     figure   28 / 1.14   Display 600  +.007em   key figures
+     title    21 / 1.19   Display 600  +.011em   card and panel titles
+     headline 17 / 1.29   Text    600  -.022em   card lead lines, action names
+     body     14 / 1.43   Text    400  -.016em   everything else
+     label    12 / 1.33   Text    600  -.01em    column heads, section labels, figure labels (ink-2)
+     foot     12 / 1.33   Text    400  -.01em    notes, axis ticks, times (ink-2 / ink-3)          */
+body.d2 {
+  --tx: "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --dp: "SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --t-ink: #1d1d1f;
+  --t-ink2: #6e6e73;
+  --t-ink3: #86868b;
+  font-family: var(--tx);
+  font-size: 14px;
+  line-height: 1.43;
+  font-weight: 400;
+  letter-spacing: -.016em;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* one family for every element (no monospace, no Display at small sizes, no stray fonts) */
+body.d2 :is(p, span, a, b, strong, em, i, small, li, dt, dd, td, th, label, button, input, select, textarea, code, pre,
+            kbd, .mono, td.mono, dd.mono, .clock, .ledger, .leaflet-bar a) {
+  font-family: var(--tx);
+  letter-spacing: inherit;
+}
+body.d2 :is(em, i) { font-style: normal; }
+body.d2 :is(b, strong) { font-weight: 600; }
+
+/* large: page title */
+body.d2 :is(h1, h1.greet) { font-family: var(--dp); font-size: 32px; line-height: 1.125; font-weight: 600; letter-spacing: .004em; color: var(--t-ink); }
+
+/* title: card and panel titles */
+body.d2 h2, body.d2 .panel h2, body.d2 .card-o-head h2 { font-family: var(--dp); font-size: 21px; line-height: 1.19;
+  font-weight: 600; letter-spacing: .011em; color: var(--t-ink); text-transform: none; }
+
+/* figure: key numbers */
+body.d2 :is(.kv > b, #t-total) { font-family: var(--dp); font-size: 28px; line-height: 1.14; font-weight: 600; letter-spacing: .007em; color: var(--t-ink); }
+body.d2 .kv em { font-size: 14px; font-weight: 400; color: var(--t-ink2); letter-spacing: -.016em; }
+
+/* headline */
+body.d2 :is(h3, #earn-hero, .hero-line, #trust-status, .status, .action b) { font-family: var(--tx); font-size: 17px;
+  line-height: 1.29; font-weight: 600; letter-spacing: -.022em; color: var(--t-ink); }
+
+/* label: column heads, sidebar sections, figure labels */
+body.d2 :is(th, thead th, .side-h, .kpi-in > span, .t-label) { font-size: 12px; line-height: 1.33; font-weight: 600;
+  letter-spacing: -.01em; color: var(--t-ink2); text-transform: none; }
+
+/* body */
+body.d2 :is(td, li, dd, button, input, select, textarea, .menu a, .crumb, .crumb span) { font-size: 14px; letter-spacing: -.016em; }
+body.d2 td { font-weight: 400; line-height: 1.43; }
+body.d2 :is(td.n, td.share) { font-weight: 400; }
+body.d2 :is(td.share, #earn tr.top3 td:first-child) { font-weight: 600; }
+body.d2 :is(.mono, td.mono, dd.mono) { font-size: 14px; color: var(--t-ink2); letter-spacing: .01em; }
+body.d2 .menu a { font-weight: 400; }
+body.d2 .menu a.on { font-weight: 600; }
+
+/* foot: notes, small print, axis ticks, times */
+body.d2 :is(.note, .side-foot, .side-foot span, .kpi-in .sub, [id^="kf-"], .dots-y span, .dlabel, .tag, .chip, .clock,
+            .more, small, code) { font-size: 12px; line-height: 1.33; font-weight: 400; letter-spacing: -.01em; }
+body.d2 :is(.note, .dots-y span, .tag, .chip) { color: var(--t-ink2); }
+body.d2 :is(.side-foot, .side-foot span, .clock) { color: var(--t-ink3); }
+body.d2 .info { font-size: 11px; font-weight: 600; letter-spacing: 0; }
+
+/* stragglers that had their own sizes (13 px, Display at 12 px, monospace) */
+body.d2 :is(.lg span, details summary, a.dl, .map-toast, dl.facts dt) { font-size: 12px; line-height: 1.33; letter-spacing: -.01em; }
+body.d2 dl.facts dt { color: var(--t-ink2); font-weight: 400; }
+body.d2 .side-user span { font-size: 14px; }
+body.d2 #clock { font-family: var(--tx); font-size: 12px; font-weight: 400; color: var(--t-ink3); letter-spacing: -.01em; }
+body.d2 #t-root { font-family: var(--tx); font-size: 14px; color: var(--t-ink2); letter-spacing: .01em; overflow-wrap: anywhere; }
+
+/* no empty boxes: an empty live list says what it is waiting for */
+body.d2 .feed:not(:has(li))::before { content: "Nothing yet. Plays, meter reports and flags appear here as they happen.";
+  display: block; padding: 12px 0; font-size: 14px; color: var(--t-ink2); }
+
+/* live state next to a title: plain words, no dot */
+body.d2 .live-dot { font-size: 12px; color: var(--t-ink2); background: none; padding: 0; border: 0; }
+body.d2 .live-dot::before, body.d2 .live-dot::after { content: none; display: none; }
+
+/* top bar: same on both pages — "Section › Page" in body size, quiet status on the right */
+body.d2 .crumb { font-size: 14px; color: var(--t-ink2); font-weight: 400; }
+body.d2 .crumb b, body.d2 .crumb #crumb { font-family: var(--tx); font-size: 14px; font-weight: 600; color: var(--t-ink); letter-spacing: -.016em; }
+body.d2 .ledger { font-size: 12px; font-weight: 400; letter-spacing: -.01em; color: var(--t-ink2); background: none;
+  border: 0; box-shadow: none; padding: 0; animation: none; }
+body.d2 .ledger::before { content: none; }
+body.d2 .ledger.ok { color: var(--t-ink2); background: none; }
+body.d2 .ledger.bad { color: #bf4800; background: none; font-weight: 600; }
+
+/* operations page: panel notes that explain a panel read as body text */
+body.d2.ops .panel > p.note { font-size: 14px; line-height: 1.43; letter-spacing: -.016em; }
+body.d2.ops .head .note { font-size: 12px; }

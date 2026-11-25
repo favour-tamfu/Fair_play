@@ -3,7 +3,7 @@
 import { MOCK, get, feed, fmtHm } from "./api.js";
 import { VIEW, project, outlinePath } from "./cameroon.js";
 import { loadCovers, initials } from "./covers.js";
-import { osmMap } from "./osm.js";
+import { osmMap } from "./osm.js?v=1125c";
 
 const $ = (id) => document.getElementById(id);
 const fmtInt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("fr-FR"));

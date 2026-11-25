@@ -54,8 +54,10 @@ def _wait_for_empty_outbox(outbox, timeout_s: float) -> None:
 
 
 def run_pipeline(cfg: dict, mode: str, blocks, input_label: str, state_dir: str = STATE_DIR,
-                 show_screen: bool = True, client=None, drain_timeout_s: float = 60.0) -> int:
-    """Send every window from `blocks` as signed batches. Returns the number of windows made."""
+                 show_screen: bool = True, client=None, drain_timeout_s: float = 60.0, on_ready=None) -> int:
+    """Send every window from `blocks` as signed batches. Returns the number of windows made.
+    on_ready(screen) is called once everything is running: screen.uploader / screen.outbox give the live status
+    (the packaged meter's menu reads them). Ending `blocks` stops the pipeline cleanly."""
     meter = cfg["meter_id"]
     os.makedirs(state_dir, exist_ok=True)
     seed = load_seed(meter)
@@ -75,6 +77,8 @@ def run_pipeline(cfg: dict, mode: str, blocks, input_label: str, state_dir: str 
     if show_screen:
         view = StatusLoop(screen)
         view.start()
+    if on_ready is not None:
+        on_ready(screen)
 
     made = 0
     finished = False

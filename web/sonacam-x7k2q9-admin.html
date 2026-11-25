@@ -5,10 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Fair Play · SONACAM operations</title>
-<link rel="stylesheet" href="css/app.css">
-<link rel="stylesheet" href="css/dash.css">
+<link rel="stylesheet" href="css/app.css?v=1125c">
+<link rel="stylesheet" href="css/dash.css?v=1125c">
+<link rel="stylesheet" href="css/ops.css?v=1125c">
+<link rel="stylesheet" href="css/type.css?v=1125c">
 </head>
-<body class="d2 admin">
+<body class="d2 ops">
 <!-- SONACAM app, operations side (D-028): same sidebar as the dashboard; SONACAM sign-in required. -->
 <aside class="side" aria-label="Dashboard menu">
   <div class="org">
@@ -40,7 +42,7 @@
   <header class="topbar">
     <p class="crumb">Operations <span aria-hidden="true">›</span> <b id="crumb">Meters</b></p>
     <span class="clock" id="clock"></span>
-    <span class="ledger" id="ledger">Log —</span>
+    <span class="ledger" id="ledger">Checking the play log…</span>
   </header>
 
   <main class="adm">
@@ -81,7 +83,7 @@
         <select id="act-level" aria-label="Level"><option value="">All levels</option><option value="warn">Warnings and errors</option><option value="error">Errors only</option></select>
         <select id="act-meter" aria-label="Meter"><option value="">All meters</option></select>
         <input id="act-q" type="search" placeholder="Search: song, bar, meter, text" aria-label="Search the log">
-        <button type="button" id="act-live" aria-pressed="true">● Live</button>
+        <button type="button" id="act-live" aria-pressed="true">Live</button>
         <button type="button" id="act-csv">Export CSV</button>
       </div>
     </div>
@@ -141,6 +143,6 @@
   </main>
 </div>
 
-<script type="module" src="js/admin.js"></script>
+<script type="module" src="js/admin.js?v=1125d"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 // D-009: flags are review only. D-011: every bar is metered, no sampling, no range bars.
 // D-015: no money; an artist's share = the sum of their songs' shares. D-016: no rules panels.
 import { MOCK, get, feed, fmtTime, fmtHm, fmtDateTime } from "./api.js";
-import { osmMap } from "./osm.js";
+import { osmMap } from "./osm.js?v=1125c";
 import { VIEW, project, outlinePath } from "./cameroon.js";
 import { requireRole, showUser } from "./session.js";
 
@@ -301,7 +301,7 @@ function renderTrustStatus() {
   if (!l) return;
   const st = $("trust-status");
   st.className = "status" + (l.intact ? "" : " bad");
-  st.textContent = l.intact ? "✓ Play log intact" : `⚠ Play log changed${l.broken_at_play_id ? ` at play ${l.broken_at_play_id}` : ""}. Results are withheld.`;
+  st.textContent = l.intact ? "Play log intact." : `Play log changed${l.broken_at_play_id ? ` at play ${l.broken_at_play_id}` : ""}. Results are withheld.`;
   if (l.plays_checked != null) $("t-checked").textContent = fmtInt(l.plays_checked);
   if (l.last_root) $("t-root").textContent = l.last_root;
   $("t-anchor").textContent = l.last_anchor ? `${fmtDateTime(l.last_anchor.hour)}, published in the ${l.last_anchor.via}${l.last_anchor.tx_ref ? ` (${l.last_anchor.tx_ref})` : ""}` : "None yet";
