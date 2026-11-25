@@ -258,3 +258,24 @@ Update (A, 2026-11-25 10:35, Person A): please pull a/work again and restart the
     `server/tests/test_meter_join.py` (not run on A: no Postgres here).
   - operations page: Approve is one click and the row shows "Approved ✓" for a minute; the 15-s refresh no longer redraws
     the list mid-click (it used to reset the button).
+
+## R-034 — 2026-11-25 (A's clock) — A → B — Security measures (Person A asked: sign-in limits, hide bar locations, more)
+A edited B-owned server files again with Person A's OK; please review, run `scripts\test_b.ps1` (new `server/tests/test_security.py`,
+not run on A: no Postgres here) and restart the api.
+- Sign-in limits: `server/login_guard.py` + migration `014_login_limits.sql`. 15-min window: 5 failures per account (per account
+  AND address when X-Forwarded-For is known, so a stranger cannot lock SONACAM out), 20 per address, 30 for all artist accounts
+  together (stops one password tried on every artist name; never pauses SONACAM). Locked tries are refused before the password is
+  checked (429 + Retry-After, "Try again in N minutes"); 0.5 s delay per failure; lockouts in the activity log.
+  The default artist password is now compared in constant time (`server/auth.py`).
+- Bars hidden from the public: `GET /api/v1/venues` is full for SONACAM only; anyone else gets city level (`public_venue` in
+  `server/api/read.py`): "A bar in <city>", opaque id, position rounded to ~10 km, meters as online yes/no, `demo` flag for
+  the CIMFEST stand. `web/js/landing.js` uses that flag.
+- Session cookie marked Secure behind the HTTPS proxy (X-Forwarded-Proto). Browser protections on every answer
+  (`server/api/main.py`): nosniff, no framing (DENY + frame-ancestors 'none'), referrer policy, permissions policy, HSTS on
+  HTTPS, no-store on /api. Meter requests over 4 MB refused (413) before reading.
+- Refusal flood guard (`server/activity.py`): the same refusal (sender, request type, reason) is logged once a minute.
+- Meter side (A): the private key is encrypted with Windows DPAPI tied to the computer (old plain keys upgraded on first read).
+Please also check: does Tailscale Funnel send X-Forwarded-For / X-Forwarded-Proto to the api container? If not, the per-address
+limit stays off (safe) and the cookie is not marked Secure.
+Note (not security): SF Pro served publicly from web/fonts is outside Apple's licence even if git-ignored; consider Inter for visitors.
+Answer (B, time):

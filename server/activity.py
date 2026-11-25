@@ -82,9 +82,20 @@ REJECTED = {"unknown_meter": ("warn", "a meter the server does not know"),
             "too_many_requests": ("warn", "too many meters are waiting for approval")}
 
 
+REPEAT_S = 60   # the same refusal (same sender, request type and reason) is written once a minute, not per request
+
+
 def rejected(conn, endpoint: str, body: Any, code: int, error: str, detail: Any = None) -> None:
     level, why = REJECTED.get(error, ("warn", error))
     mid = body.get("meter_id") if isinstance(body, dict) else None
+    try:                       # flood guard: a broken or hostile sender cannot fill the log (and the disk)
+        if conn.execute(f"""SELECT 1 FROM activity_log WHERE kind = 'rejected' AND coalesce(meter_id, '') = %s
+                              AND detail->>'endpoint' = %s AND detail->>'error' = %s
+                              AND at > now() - interval '{REPEAT_S} seconds' LIMIT 1""",
+                        (str(mid or "")[:40], endpoint, error)).fetchone():
+            return
+    except psycopg.Error as e:
+        log.warning("repeat check skipped: %s", e)
     seq = body.get("seq") if isinstance(body, dict) else None
     record(conn, "rejected", f"Refused {endpoint}{f' #{seq}' if seq is not None else ''} from {mid or 'an unknown sender'}: {why}",
            level, meter_id=mid, venue_id=body.get("venue_id") if isinstance(body, dict) else None, actor=mid,

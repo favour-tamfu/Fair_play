@@ -10,6 +10,7 @@ const fmtInt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("fr-FR")
 const fmtPct = (x, d = 2) => (x == null ? "–" : (100 * x).toFixed(d) + " %");
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const LIVE_VENUE = "V-BUEA-CIMFEST";
+const isDemo = (v) => !!v && (v.demo === true || v.venue_id === LIVE_VENUE);   // public list: flag only (no ids)
 const TEST_ARTIST = "Fair Play test artist";        // fictional scenario tracks are never shown on the public page
 const TZ = "Africa/Douala";
 // "21:35" today, "24/11 21:35" on another day (Cameroon time)
@@ -76,9 +77,9 @@ function mapTile() {
   const key = period === "live" ? "live" : "mock_month";
   const max = Math.max(1, ...vs.map((v) => (v.plays ? v.plays[key] : 0)));
   const parts = [`<path class="land" d="${outlinePath()}"/>`];
-  for (const v of [...vs].sort((a, b) => (a.venue_id === LIVE_VENUE) - (b.venue_id === LIVE_VENUE))) {
+  for (const v of [...vs].sort((a, b) => isDemo(a) - isDemo(b))) {
     const [x, y] = project(v.lat, v.lon);
-    const n = v.plays ? v.plays[key] : 0, live = v.venue_id === LIVE_VENUE;
+    const n = v.plays ? v.plays[key] : 0, live = isDemo(v);
     const on = (v.meters || []).some((m) => m.online);
     let cls = "v", r;
     if (period === "live") { cls += live ? " live" : on ? "" : " off"; r = live ? 9 : 5; }
@@ -90,7 +91,7 @@ function mapTile() {
   $("mini-map").innerHTML = parts.join("");
   // OpenStreetMap when the internet is there (D-025): same bars, real streets; the outline above stays as the fallback
   osmMap($("mini-map"), { height: "420px" }).then((m) => m && m.draw(vs.map((v) => {
-    const n = v.plays ? v.plays[key] : 0, live = v.venue_id === LIVE_VENUE, on = (v.meters || []).some((x) => x.online);
+    const n = v.plays ? v.plays[key] : 0, live = isDemo(v), on = (v.meters || []).some((x) => x.online);
     const kind = period === "live" ? (live ? "live" : on ? "on" : "off") : (n ? "on" : "off");
     const r = period === "live" ? (live ? 10 : 6) : (n ? 5 + 11 * Math.sqrt(n / max) : 4);
     return { id: v.venue_id, lat: v.lat, lon: v.lon, kind, r,

@@ -63,6 +63,12 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   box) → Approve/Retire vanished after the first click and could not be confirmed (the user's "button disappears"). Fixed:
   class `armed` in admin.js (live page approval was done by triggering the button's own handler). Not deployed: B pulls.
   Server-side one-request-per-computer (migration 013) not testable until B pulls.
+- **Merged B's main (f59120b) into a/work** (D-031..D-033 dashboard/table changes, SF Pro served from git-ignored web/fonts).
+  My unfinished dashboard payout work is in `git stash` ("A: payouts on the dashboard") — redo it on B's new dashboard.
+- **Security (R-034, user asked):** sign-in limits (server/login_guard.py, migration 014), public /venues city-level only,
+  Secure cookie behind the proxy, browser protection headers, 4 MB cap on meter requests, refusal flood guard, constant-time
+  default-password check; meter key encrypted with DPAPI (device/tools/provision.py). test_a 104 passed; server tests in
+  server/tests/test_security.py NOT run on A (no Postgres) — B runs test_b. Not pushed.
 - **Sign-in page (user: "empty with a footer floating in the middle"):** fills the window, footer at the bottom, white
   card on the site grey, full-width button, error line hidden until needed; lede now covers artists and SONACAM staff.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.

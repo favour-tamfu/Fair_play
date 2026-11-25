@@ -12,7 +12,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import PlainTextResponse
 from fastapi.concurrency import run_in_threadpool
 
@@ -136,9 +136,29 @@ def _venues() -> list[dict]:
     return out
 
 
+DEMO_VENUE = "V-BUEA-CIMFEST"     # the public CIMFEST stand: the landing page may point it out (never by its id or name)
+
+
+def public_venue(v: dict) -> dict:
+    """What someone not signed in as SONACAM may know about a bar: its city, roughly where (the city area, about 10 km),
+    whether its meters are online and how many plays it had. Never its name, id, exact position or meter details."""
+    import hashlib
+    rough = lambda x: None if x is None else round(float(x), 1)                     # noqa: E731
+    return {"venue_id": "B-" + hashlib.sha256(f"fairplay-venue:{v['venue_id']}".encode()).hexdigest()[:10],
+            "name": f"A bar in {v['city']}" if v.get("city") else "A bar", "city": v.get("city"),
+            "lat": rough(v.get("lat")), "lon": rough(v.get("lon")), "source": v.get("source"),
+            "demo": v["venue_id"] == DEMO_VENUE, "plays": v.get("plays"),
+            "meters": [{"online": bool(m.get("online"))} for m in v.get("meters") or []]}
+
+
 @router.get("/venues")
-async def venues():
-    return await run_in_threadpool(_venues)
+async def venues(request: Request):
+    """SONACAM: every bar in full. Anyone else: city level only (public_venue)."""
+    from server.api.admin import is_sonacam
+    full = await run_in_threadpool(_venues)
+    if await run_in_threadpool(is_sonacam, request, request.headers.get("x-admin-token")):
+        return full
+    return [public_venue(v) for v in full]
 
 
 def _plays(period, mode, venue_id, song_id, limit) -> list[dict]:

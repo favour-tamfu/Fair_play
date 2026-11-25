@@ -31,27 +31,48 @@ class Login(BaseModel):
     password: str
 
 
-def _login(username: str, password: str, client: Optional[str]):
-    from server import activity
+def _login(username: str, password: str, address: Optional[str]):
+    """{"user"...} on success, {"blocked": {...}} when a sign-in limit applies (server/login_guard.py), None if wrong."""
+    from server import activity, login_guard
     with connect(autocommit=True) as c:
+        stop = login_guard.blocked(c, username, address)
+        if stop:                                           # refused before the password is even checked
+            return {"blocked": stop}
         r = auth.login(c, username, password)
         if r:
+            login_guard.succeeded(c, username, address)
             activity.record(c, "admin" if r["user"]["role"] == "sonacam" else "catalogue",
                             f"{r['user']['name']} signed in ({'SONACAM' if r['user']['role'] == 'sonacam' else 'artist portal'})",
                             actor=r["user"]["username"])
-        else:
-            activity.record(c, "admin", f"Failed sign-in as “{(username or '')[:60]}”", "warn", actor=client or "unknown")
-        return r
+            return r
+        locked = login_guard.failed(c, username, address)
+        activity.record(c, "admin", f"Failed sign-in as “{(username or '')[:60]}”", "warn", actor=address or "unknown")
+        if locked:
+            activity.record(c, "admin", locked, "error", actor=address or "unknown")
+    login_guard.slow_down()
+    return None
+
+
+def _https(request: Request) -> bool:
+    """HTTPS as the visitor sees it: the proxy (Tailscale Funnel) talks plain HTTP to us but says so in a header."""
+    return request.url.scheme == "https" or request.headers.get("x-forwarded-proto", "").lower() == "https"
 
 
 @router.post("/auth/login")
 async def login(body: Login, request: Request):
-    r = await run_in_threadpool(_login, body.username, body.password, request.client.host if request.client else None)
+    from server.login_guard import client_address
+    address = client_address(request.headers, request.client.host if request.client else None)
+    r = await run_in_threadpool(_login, body.username, body.password, address)
     if r is None:
         return JSONResponse({"error": "wrong_login", "detail": "Wrong name or password."}, status_code=401)
+    if "blocked" in r:
+        mins = max(1, round(r["blocked"]["retry_after_s"] / 60))
+        return JSONResponse({"error": "too_many_attempts",
+                             "detail": f"Too many failed sign-ins. Try again in {mins} minute{'s' if mins > 1 else ''}."},
+                            status_code=429, headers={"Retry-After": str(r["blocked"]["retry_after_s"])})
     resp = JSONResponse({"user": r["user"]})
     resp.set_cookie(auth.COOKIE, r["token"], max_age=auth.SESSION_HOURS * 3600, httponly=True, samesite="lax",
-                    secure=request.url.scheme == "https", path="/")
+                    secure=_https(request), path="/")
     return resp
 
 

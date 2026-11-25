@@ -66,6 +66,30 @@ app.include_router(auth_api.router)
 app.include_router(ops.router)
 
 
+MAX_DEVICE_BODY = 4 * 1024 * 1024    # a meter sends at most 50 reports at once (well under 1 MB); song uploads are elsewhere
+
+
+@app.middleware("http")
+async def security_headers(request, call_next):
+    """Browser protections on every answer, and a size cap on meter requests (refused before the body is read)."""
+    if request.url.path.startswith("/v1/"):
+        n = request.headers.get("content-length", "")
+        if n.isdigit() and int(n) > MAX_DEVICE_BODY:
+            return JSONResponse({"error": "too_large", "detail": "request body too large"}, status_code=413)
+    response = await call_next(request)
+    h = response.headers
+    h.setdefault("X-Content-Type-Options", "nosniff")                      # no guessing file types
+    h.setdefault("X-Frame-Options", "DENY")                                # no framing: stops click-jacking on Approve
+    h.setdefault("Content-Security-Policy", "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'")
+    h.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")     # page addresses do not leak to other sites
+    h.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()")
+    if request.headers.get("x-forwarded-proto", "").lower() == "https" or request.url.scheme == "https":
+        h.setdefault("Strict-Transport-Security", "max-age=15552000")      # browsers keep using HTTPS
+    if request.url.path.startswith("/api/") and "cache-control" not in h:
+        h["Cache-Control"] = "no-store"                                    # signed-in data is never cached
+    return response
+
+
 @app.middleware("http")
 async def record_admin_actions(request, call_next):
     """D-024: admin actions (done, failed or refused for a wrong password) go to the activity log."""

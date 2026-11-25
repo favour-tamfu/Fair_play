@@ -37,9 +37,52 @@ def seed_path(meter_id: str) -> str:
     return os.path.join(SECRETS_DIR, f"{meter_id}.seed")
 
 
+# The private seed is kept encrypted with Windows' data protection (DPAPI), tied to this computer: a copied .seed file
+# is useless on another machine. File content: "dpapi:<base64>" (Windows) or the hex seed (elsewhere, and older files).
+DPAPI_PREFIX = "dpapi:"
+
+
+def _dpapi(data: bytes, decrypt: bool) -> bytes:
+    import ctypes
+    from ctypes import wintypes
+
+    class BLOB(ctypes.Structure):
+        _fields_ = [("cbData", wintypes.DWORD), ("pbData", ctypes.POINTER(ctypes.c_char))]
+
+    buf = ctypes.create_string_buffer(data, len(data))
+    inp = BLOB(len(data), ctypes.cast(buf, ctypes.POINTER(ctypes.c_char)))
+    out = BLOB()
+    UI_FORBIDDEN, LOCAL_MACHINE = 0x1, 0x4        # machine scope: any account on THIS computer, no other computer
+    fn = ctypes.windll.crypt32.CryptUnprotectData if decrypt else ctypes.windll.crypt32.CryptProtectData
+    flags = UI_FORBIDDEN if decrypt else UI_FORBIDDEN | LOCAL_MACHINE
+    if not fn(ctypes.byref(inp), None, None, None, None, flags, ctypes.byref(out)):
+        raise OSError(f"Windows data protection failed (error {ctypes.GetLastError()})")
+    try:
+        return ctypes.string_at(out.pbData, out.cbData)
+    finally:
+        ctypes.windll.kernel32.LocalFree(out.pbData)
+
+
+def _write_seed(meter_id: str, seed: bytes) -> None:
+    text = binascii.hexlify(seed).decode("ascii")
+    if os.name == "nt":
+        text = DPAPI_PREFIX + base64.b64encode(_dpapi(seed, decrypt=False)).decode("ascii")
+    with open(seed_path(meter_id), "w", encoding="ascii") as fh:
+        fh.write(text + "\n")
+
+
 def load_seed(meter_id: str) -> bytes:
     with open(seed_path(meter_id), "r", encoding="ascii") as fh:
-        return binascii.unhexlify(fh.read().strip())
+        text = fh.read().strip()
+    if text.startswith(DPAPI_PREFIX):
+        return _dpapi(base64.b64decode(text[len(DPAPI_PREFIX):]), decrypt=True)
+    seed = binascii.unhexlify(text)
+    if os.name == "nt":                            # an older plain key: encrypt it in place from now on
+        try:
+            _write_seed(meter_id, seed)
+        except OSError:
+            pass
+    return seed
 
 
 def provision(meter_id: str, venue_id: str, cell_id: str = DEFAULT_CELL, input_src: str = "mic", mode: str = "demo", force: bool = False) -> dict:
@@ -50,8 +93,7 @@ def provision(meter_id: str, venue_id: str, cell_id: str = DEFAULT_CELL, input_s
     os.makedirs(METERS_DIR, exist_ok=True)
 
     key = nacl.signing.SigningKey.generate()
-    with open(seed_path(meter_id), "w", encoding="ascii") as fh:
-        fh.write(binascii.hexlify(bytes(key)).decode("ascii") + "\n")
+    _write_seed(meter_id, bytes(key))
 
     pub = {
         "meter_id": meter_id,

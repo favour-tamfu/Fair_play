@@ -70,7 +70,7 @@ def login(conn: psycopg.Connection, username: str, password: str) -> Optional[di
             # first sign-in of an artist that has songs in the catalogue (prototype rule, Person B)
             art = conn.execute("""SELECT artist_name FROM songs WHERE lower(artist_name) = %s AND source = 'upload'
                                   ORDER BY song_id LIMIT 1""", (key,)).fetchone()
-            if art is None or password != config.ARTIST_DEFAULT_PASSWORD:
+            if art is None or not hmac.compare_digest(password.encode(), (config.ARTIST_DEFAULT_PASSWORD or "").encode()):
                 return None
             user = conn.execute("""INSERT INTO users (username, display_name, role, artist_name, password_hash)
                                    VALUES (%s, %s, 'artist', %s, %s) RETURNING *""",
