@@ -4,6 +4,10 @@ Goal: the SONACAM server (API, workers, Postgres, web pages) is reachable on the
 and listeners (FairPlayMeter.exe) send their signed batches there instead of over the LAN. Both laptops follow this plan.
 Revised 2026-11-25 by A: **no bank cards** → no Oracle/Google/AWS VMs; free options that need no card only. Request R-032.
 
+**Decision (Person A, 2026-11-25): tunnelling, for the demo only.** Fair Play is meant for a government body: in real use SONACAM
+runs this same stack on its own servers (the docker compose file is the install). For the hackathon, Laptop B plays SONACAM's
+server and a tunnel gives it a public HTTPS address.
+
 ## 1. What we are serving (facts from the repo)
 - B's `docker compose` stack on Laptop B: `api` (uvicorn, serves `web/`, the live feed over SSE, sign-in with session cookies),
   4 workers (`worker_fp`, `worker_match` with the fingerprint index **in memory**, `worker_play`, `scheduler`) and **Postgres 16**.
@@ -13,11 +17,12 @@ Revised 2026-11-25 by A: **no bank cards** → no Oracle/Google/AWS VMs; free op
 | Option | Verdict | Why |
 |---|---|---|
 | **Tailscale Funnel** on Laptop B (`https://<laptop>.<tailnet>.ts.net`) | **Chosen** | Free personal plan, sign-in with Google/GitHub/Microsoft (no card). One command publishes port 8000 over HTTPS with a **stable** name. B's stack runs unchanged; nothing to migrate. Funnel is beta and its streaming limits aren't published: test the live feed (step 3). |
-| **ngrok** free static domain (`https://<name>.ngrok-free.app`) | **Backup** | Free account, no card, one command. Free plan shows a one-time warning page to browser visitors (meters and API calls are not affected). Use if Funnel misbehaves. |
+| **Cloudflare quick tunnel** (`cloudflared tunnel --url http://localhost:8000` → `https://<random>.trycloudflare.com`) | **Backup 1** | No account, no card, one command. But: **no server-sent events** (the dashboard's instant feed stops; the dashboard still refreshes its figures every 30 s), and **a new address each time it starts** (re-point the meters: edit `sonacam_url`, restart). Keep it running for the whole demo. A *named* Cloudflare tunnel fixes both but needs our own domain on Cloudflare. |
+| **ngrok** free static domain (`https://<name>.ngrok-free.app`) | **Backup 2** | Free account, no card, one command, fixed address, streams the live feed. Free plan shows a one-time warning page to browser visitors (meters and API calls are not affected). |
 | Render / Koyeb / Back4App free containers | Rejected | 512 MB or less, no free background workers, sleep when idle: our 4 workers + in-memory index don't fit without rewriting B's server. |
 | Oracle / Google Cloud / AWS free VMs | Rejected | Need a bank card. |
 | Hugging Face Spaces (Docker) | Rejected | Docker Spaces on the free CPU tier appear to need a paid plan since mid-2026. |
-| Cloudflare quick tunnel | Rejected | No server-sent events (our live feed); URL changes every start. Named tunnels need our own domain. |
+| Cloudflare Pages + Workers (no tunnel) | Not now | Free and no card, but can't run our Python server; would need a relay Worker plus a collect-and-publish loop on B — hours of new code. Containers on Cloudflare need the paid plan. |
 
 **The trade-off:** the server is Laptop B. It must stay **on, plugged in, awake and online** during the demo
 (Settings → Power → Screen and sleep: Never; Docker Desktop running; a stable connection, ideally not the same phone hotspot
@@ -32,7 +37,9 @@ and send them when it's back.
 3. In PowerShell (admin): `tailscale funnel --bg 8000`. The first time it opens a page to approve Funnel for the tailnet — approve.
 4. `tailscale funnel status` shows `https://<laptop>.<tailnet>.ts.net` → that is **the address**. Share it in the team chat.
 5. Phone on **mobile data**: open the address → landing loads; sign in to the SONACAM app → dashboard; watch the live feed 2 minutes.
-6. If 5 fails or the live feed stalls: backup — install ngrok, `ngrok config add-authtoken <token>`, claim the free static domain in
+6. If 5 fails: backup 1 — install cloudflared (`winget install --id Cloudflare.cloudflared`), run
+   `cloudflared tunnel --url http://localhost:8000`, use the printed `https://….trycloudflare.com` (no live feed; new address each start).
+   Backup 2 — install ngrok, `ngrok config add-authtoken <token>`, claim the free static domain in
    the ngrok dashboard, `ngrok http --url=<name>.ngrok-free.app 8000`; the address is `https://<name>.ngrok-free.app`.
 
 ### Step 2 — Point the listener at it (A, 10 min + rebuild)

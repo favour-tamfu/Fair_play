@@ -2,6 +2,9 @@
 Last updated: 2026-11-25 01:05 (Cameroon time).
 
 ## 0. Latest events (newest first)
+- **Decision (user): tunnelling, demo only** — "it's for a government program, they'll have their own computers" (SONACAM would host
+  the stack itself). User had answered "cloudflare". deploy/PLAN.md updated: **Tailscale Funnel = main** (stable address, live feed),
+  **Cloudflare quick tunnel = backup 1** (no SSE, new address each start), ngrok = backup 2. Cloudflare Pages+Workers relay idea parked.
 - User: **"we can't rely on tunneling"** → Tailscale/ngrok plan rejected too (deploy/PLAN.md still says Funnel; to be rewritten).
   Research: no-card + no-tunnel options: **Azure for Students** ($100 credit, no card, needs a full-time student school email;
   VM runs B's compose unchanged, free DNS name `<label>.<region>.cloudapp.azure.com`, Caddy HTTPS) — best fit if eligible;
