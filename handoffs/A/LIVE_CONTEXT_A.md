@@ -19,6 +19,8 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   merge and restart the api** before it works on the public server (live server answers 405 now → meter starts anyway).
   Exe tested: setup in an empty folder, address baked in, check HTTP 200. test_a 95 passed. Copy for the user:
   `Downloads\FairPlayMeter_one_file\FairPlayMeter.exe`; for B: `Downloads\Fair_Play_R-033_for_B.bundle`.
+  **Pushed a/work (037bcff) at the user's request** so B can pull: B runs `git pull origin a/work` (or merges it into main),
+  `scripts\test_b.ps1`, then restarts the api. Waiting on B's answer in REQUESTS R-033.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look
