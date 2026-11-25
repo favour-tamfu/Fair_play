@@ -2,6 +2,11 @@
 Last updated: 2026-11-25 01:05 (Cameroon time).
 
 ## 0. Latest events (newest first)
+- 01:45 User wants the film built on the SONACAM leader's "the best is yet to come" and to end with "Here it is." Added
+  **Direction 2 ("The Promise")** at the top of `pitch/DEMO_FILM_TREATMENT.md`. Context found: Ateh Bazore re-elected SONACAM Board Chair
+  30 Apr 2026 (733 votes, >94 %); promises quarterly payments, 12 FCFA/crate, digital cards, WIPO Connect (105,000 works); Oct 2025
+  communiqué paid a flat 27,000 FCFA from 40M FCFA. **The quote "the best is yet to come" is NOT verified** (Cameroon Tribune paywalled);
+  the user must supply the source before it is attributed on screen.
 - 01:30 User asked to direct the 2-minute motion-graphics demo film like a film-maker. Researched explainer/motion-design practice;
   wrote **`pitch/DEMO_FILM_TREATMENT.md`** (one-song journey with match cuts, 10-shot list with VO and sound, Apple visual rules,
   licensed music, animatic-first pipeline, schedule before 12:00). Not produced yet.

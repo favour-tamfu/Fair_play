@@ -1,5 +1,52 @@
 # Fair Play — demo film treatment (2:00 max, motion graphics)
 
+## DIRECTION 2 (preferred): "The best is yet to come" → "Here it is."
+The film is an answer to a promise. It opens on SONACAM's own words, shows the gap between the promise and today, then
+spends the rest of its time showing the thing that closes the gap, and ends on two words: **"Here it is."**
+
+### Context (what is on the record, with sources)
+- **30 Apr 2026:** Ateh Bazore re-elected **Board Chair (PCA) of SONACAM** with 733 votes (over 94 %), at the general assembly;
+  Cameroon Tribune profile and interview, 4 May 2026 (Kimeng Hilton); Camer.be, 1 May 2026.
+- His promises for the next five years (Cameroon Tribune): **payments "every three months"** instead of irregular lump sums;
+  **12 FCFA per crate** of beer under the brewery agreements; make public administrations pay authors' rights; health insurance;
+  "music palaces" in Bamenda, Yaoundé, Douala. Digital steps so far: **digital professional cards**, **105,000 works** in WIPO Connect.
+- Camer.be (the outlet, not Bazore): the mandate must deliver results on **payment delays, transparency of accounts, data access for
+  artists**, and digitise collection.
+- Where it stands today: the **6 Oct 2025 communiqué** of the Director General paid a **flat 27,000 FCFA advance per artist**
+  from a **40 million FCFA** envelope (Cameroun24; Camer.be). Same amount for everyone, whatever was played.
+- **"The best is yet to come": NOT verified.** It is not in the free text of the three articles (the Cameroon Tribune pages are
+  paywalled after a few paragraphs). Before it goes on screen as a quote: get the exact source (video, communiqué, page and date)
+  and the exact wording and speaker (Board Chair Ateh Bazore, or the Director General, who is a different person). If it can't be
+  sourced, don't put it in quotation marks or attribute it to anyone: use it as our own unattributed line instead, e.g.
+  on-screen type "The best is yet to come." with no name and no quotation marks.
+- Show SONACAM's words as **their** words with a small source line; don't imply SONACAM endorses Fair Play.
+
+### Shot list (2:00)
+| # | Time | Picture | Voice-over / on-screen type | Sound |
+|---|---|---|---|---|
+| 1 | 0:00–0:08 | Black. A newspaper headline types itself, Cameroon Tribune style but our own typesetting: **"Payments every three months."** Source line: *Cameroon Tribune, 4 May 2026*. | (no VO) | typewriter, room tone |
+| 2 | 0:08–0:16 | The verified quote/promise holds centre screen; then the type **"The best is yet to come."** (only if sourced, with speaker + date). | (no VO) — let it sit | one low note |
+| 3 | 0:16–0:30 | Hard cut to the present: the Oct 2025 communiqué's numbers count in as type: **40,000,000 FCFA** → divided equally → **27,000 FCFA each**. A row of artist names all receive the same slice. | "Today, the money is shared as a guess: the same for everyone, whatever really played." | coins, flat |
+| 4 | 0:30–0:38 | A beer cap pops; **12 FCFA** on the crate. | "Every crate of beer already pays for music." | cap pop, beat comes in |
+| 5 | 0:38–1:05 | The one-song journey (Direction 1 shots 4–6): speaker in a maquis → sound wave → fingerprint dots ("No sound leaves the bar") → dots fly onto the map → land on the real dashboard. | "A meter beside the speaker counts every song in every bar. Only fingerprints leave the room, signed and sealed." | ticks per dot, whoosh |
+| 6 | 1:05–1:20 | Dashboard: the chart fills by artist; the period switch closes a month; shares appear. | "So every three months, each artist's share follows what played." | squares tick on the beat |
+| 7 | 1:20–1:32 | iPhone: the artist's page — covers, bars that played them. Type: **"Data access for artists."** | "And every artist can see it." | chime |
+| 8 | 1:32–1:42 | The chain of plays; one edited → red, "Results withheld." Type: **"Transparent by design."** | "Change one play and the results stop." | crack, music drops |
+| 9 | 1:42–1:52 | The 27,000 slices from shot 3 re-split by plays; **7,7×** less to the wrong artists *(simulated month)*. | "The same levy. Shared by what really played." | music returns |
+| 10 | 1:52–2:00 | Black. Hold 1 s of silence. Then, centred, white: **"Here it is."** → Fair Play wordmark, CIMFEST 2026, team. | VO (or type only): "Here it is." | silence → one clean hit |
+
+Why it works: shots 1–3 set up a promise and a gap in 30 s without us saying a word about ourselves; every later shot
+answers one promise (quarterly payments → shot 6, data access → 7, transparency → 8, collection from beer → 4); the last line
+pays off the first. VO ≈ 90 words, so the type and the music carry the film.
+
+### Before production
+- Source the quote (or drop the attribution). Note the date, speaker and link in this file.
+- Check the event's rules on using press material and logos; use our own typesetting, not newspaper screenshots or the SONACAM logo.
+
+---
+
+## DIRECTION 1: follow one song
+
 ## The idea in one line
 **Follow one song**: it plays in a maquis in Douala, becomes a constellation of fingerprint dots, flies across Cameroon, lands
 as a square on the SONACAM chart, and ends as a fair share on the artist's phone. One continuous journey, told with match cuts.
