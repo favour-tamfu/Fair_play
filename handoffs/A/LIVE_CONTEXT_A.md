@@ -2,6 +2,12 @@
 Last updated: 2026-11-25 01:05 (Cameroon time).
 
 ## 0. Latest events (newest first)
+- 02:05 User confirmed → wrote **`deploy/PLAN.md`** (shared A+B plan) + `deploy/docker-compose.cloud.yml`, `deploy/Caddyfile`,
+  `deploy/cloud-init.yaml`; request **R-023** to B. Choice: **Oracle Cloud Always Free ARM VM** running B's compose unchanged + Caddy HTTPS on
+  `<ip>.sslip.io`; **fallback first: Tailscale Funnel from B's laptop**. Rejected: Render/Koyeb (512 MB, no free workers; matcher keeps
+  the fingerprint index in memory), HF Spaces (Docker now paid), Cloudflare quick tunnel (no SSE), Fly/Railway. Override validated with
+  `docker compose config` (Docker is installed on Laptop A); **nothing deployed yet**. Not pushed (needs the user's OK each time).
+  Listener change later: set `DEFAULT_SONACAM` in device/packaging/meter_app.py to the HTTPS address and rebuild.
 - 01:55 User wants the system on the internet: pick a FREE host for B's SONACAM server (API + Postgres + web pages), point the
   listener (FairPlayMeter.exe) at it over HTTPS instead of the LAN, and write ONE shared plan for A's and B's machines with as little
   manual configuration as possible. I restated my understanding and asked the user to confirm before writing the plan (no files yet).

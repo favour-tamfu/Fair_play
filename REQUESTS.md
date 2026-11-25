@@ -144,3 +144,11 @@ Answer (B, time):
 - A added `/dist/` and `/build/` to `.gitignore` (your file) so build outputs are never committed.
 Ask: when a bar laptop is set up, register its key on the admin page (POST of the meter public key), as for M-07.
 Answer (B, time):
+## R-023 — 2026-11-25 02:05 — A → B — Put Fair Play online: shared plan in deploy/PLAN.md (please review and agree)
+(A's R-019/R-020 collide with yours by number; on merge renumber A's to R-021/R-022.)
+- Person A wants the server on the internet (free host) and the listener sending over HTTPS, one plan for both laptops.
+- Chosen: Oracle Cloud Always Free ARM VM running your docker compose unchanged + Caddy (HTTPS on <ip>.sslip.io) via
+  `deploy/docker-compose.cloud.yml` (validated with `docker compose config`, not run). Fallback first: Tailscale Funnel from Laptop B.
+- Rejected with reasons in the plan: Render/Koyeb (512 MB, no free workers), HF Spaces, Cloudflare quick tunnel (no SSE), Fly/Railway.
+Ask: (1) Step 0 Funnel now; (2) merge a/work, then deploy to the VM and pg_dump/pg_restore your DB (steps 2–3); (3) share the ADMIN_TOKEN privately.
+Answer (B, time):

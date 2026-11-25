@@ -1,0 +1,15 @@
+#cloud-config
+# First boot of the Oracle "Always Free" Ubuntu VM (deploy/PLAN.md, step 1): installs Docker + compose plugin and git,
+# opens ports 80/443 in the VM's own firewall (Oracle Ubuntu images ship iptables rules that block them).
+# Paste into "Advanced options → Management → Initialization script (cloud-init)". Untested: written before the VM exists.
+package_update: true
+packages:
+  - git
+  - ca-certificates
+  - curl
+runcmd:
+  - curl -fsSL https://get.docker.com | sh
+  - usermod -aG docker ubuntu
+  - iptables -I INPUT 6 -p tcp --dport 80 -m state --state NEW -j ACCEPT
+  - iptables -I INPUT 6 -p tcp --dport 443 -m state --state NEW -j ACCEPT
+  - netfilter-persistent save || true
