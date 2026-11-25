@@ -100,9 +100,13 @@ def rebuild_day(conn: psycopg.Connection, meter: dict, d: date) -> dict:
             inserted += 1
             continue
         used.add(ex["play_id"])
+        # only when the extent really changed: an unchanged rewrite would move updated_at and make the scheduler
+        # recompute the shares after every 10-s report although nothing changed
         conn.execute("""UPDATE play_extents SET ended_at = %s, n_windows = %s, duration_s = %s, loudness_db = %s,
-                        updated_at = now() WHERE play_id = %s""",
-                     (c.ended_at, c.n_windows, round(c.duration_s, 1), c.mean_loudness_db, ex["play_id"]))
+                        updated_at = now() WHERE play_id = %s
+                        AND (ended_at, n_windows, duration_s, loudness_db) IS DISTINCT FROM (%s, %s, %s, %s)""",
+                     (c.ended_at, c.n_windows, round(c.duration_s, 1), c.mean_loudness_db, ex["play_id"],
+                      c.ended_at, c.n_windows, round(c.duration_s, 1), c.mean_loudness_db))
         updated += 1
         if abs((c.started_at - ex["started_at"]).total_seconds()) > config.SAME_PLAY_TOL_S:
             corrected += _correct_once(conn, ex["play_id"], START_MOVED, {"started_at": format_utc(c.started_at)})
