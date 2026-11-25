@@ -51,7 +51,9 @@ The meter is designed as a small sealed box: a two-layer circuit board (64 × 44
 <p align="center"><img src="web/assets/meter/01-closed-hero.jpg" width="49%" alt="The Fair Play meter box, closed: white case, four screws, status light, label"> <img src="web/assets/meter/03-exploded.jpg" width="49%" alt="The meter box exploded: lid with screws, circuit board, bottom case"></p>
 <p align="center"><img src="web/assets/meter/05-board-top.jpg" width="49%" alt="Top of the circuit board: microphone, main module, power supply, USB-C"> <img src="web/assets/meter/02-usb-c-side.jpg" width="49%" alt="The box from the side with the USB-C power opening"></p>
 
-**Video:** [the box assembling and coming apart (20 s)](web/assets/meter/meter-assembly.mp4) · More views: [exploded side](web/assets/meter/04-exploded-side.jpg), [board underside wiring](web/assets/meter/06-underside-wiring.jpg), [power trace](web/assets/meter/07-net-3v8-highlight.jpg). The renders still carry the project's earlier working name on the board and lid labels.
+<p align="center"><img src="web/assets/meter/meter-assembly.webp" width="80%" alt="Animation: the meter box assembling and coming apart (3D model)"></p>
+
+Full-quality video: [meter-assembly.mp4](web/assets/meter/meter-assembly.mp4) (20 s) · More views: [exploded side](web/assets/meter/04-exploded-side.jpg), [board underside wiring](web/assets/meter/06-underside-wiring.jpg), [power trace](web/assets/meter/07-net-3v8-highlight.jpg). The renders still carry the project's earlier working name on the board and lid labels.
 
 **What the meter does, all day, by itself:**
 1. Listens for 10 seconds every minute.
