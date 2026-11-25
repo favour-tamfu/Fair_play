@@ -1,5 +1,7 @@
 # Fair Play
 
+### *Fair Play. Fair Pay.*
+
 **A small "listening box" in every bar tells SONACAM which Cameroonian songs were really played, so each artist's share of the royalties follows real plays, not a flat 27,000 FCFA for everyone.**
 
 CIMFEST Hackathon 2026 · "Africa's creative economy" · Buea, Cameroon
