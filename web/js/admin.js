@@ -173,7 +173,7 @@ $("btn-stats").addEventListener("click", async (ev) => {
   try {
     const r = await post(`/api/v1/stats/run?period=${period}&mode=both`);
     if (r.mock) log(`mock: would run stats for <b>${period}</b>`, "mock");
-    else log(`Stats run <b>${esc(r.stats_run_id)}</b> for ${period}: ${fmtInt(r.n_plays)} plays, ${fmtInt(r.n_songs)} songs, ${fmtInt(r.n_flags)} flags, ${fmtInt(r.duration_ms)} ms`, "ok");
+    else log(`Shares recalculated for ${period === "live" ? "live" : "the mock month"}: ${fmtInt(r.n_plays)} plays, ${fmtInt(r.n_songs)} songs, ${fmtInt(r.n_flags)} flags (${fmtInt(r.duration_ms)} ms). <a href="sonacam-x7k2q9.html?period=${period}#overview">See the results on the dashboard</a>`, "ok");
     loadFlags();
   } catch (e) { log(`Stats run failed: ${esc(e.message)}`, "err"); }
   busy(ev.target, false);
