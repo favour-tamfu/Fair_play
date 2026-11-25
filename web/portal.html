@@ -14,6 +14,7 @@
   <div class="ln-row">
     <span class="ln-title">Fair Play · Artist portal</span>
     <div class="ln-links">
+      <a href="#when">When played</a>
       <a href="#songs">My songs</a>
       <a href="#upload">Upload a song</a>
       <span class="who" id="who"></span>
@@ -38,6 +39,26 @@
       <div class="tile"><span>Plays counted</span><div><b id="t-counted">–</b><small id="t-counted-sub"></small></div></div>
       <div class="tile"><span>Songs in the catalogue</span><div><b id="t-songs">–</b><small id="t-songs-sub"></small></div></div>
     </div>
+  </section>
+
+  <section class="wrap am-block" id="when">
+    <h2 class="am-h">When your songs were played <span class="soft" id="when-sub"></span></h2>
+    <div class="cols2 analytics">
+      <div class="card"><h3>Plays by day <span class="soft" id="chart-range"></span></h3>
+        <div class="chart-box">
+          <div class="chart-y" id="chart-y" aria-hidden="true"></div>
+          <div class="chart-plot"><div class="chart-grid" id="chart-grid" aria-hidden="true"></div><div class="chart tall" id="chart"></div><div class="chart-x" id="chart-x"></div></div>
+        </div>
+        <p class="chart-unit">Plays of your songs per day (Cameroon time). Hover a bar for its exact count.</p></div>
+      <div class="card"><h3>Latest plays</h3>
+        <ol class="pt-recent" id="recent"><li class="soft">Loading…</li></ol>
+        <p class="chart-unit">Which bar played a song stays with SONACAM.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap am-block" id="how">
+    <h2 class="am-h">How your share is computed</h2>
+    <ol class="pt-how" id="how-steps"><li class="soft">Loading…</li></ol>
   </section>
 
   <section class="wrap am-block" id="songs">

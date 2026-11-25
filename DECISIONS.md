@@ -173,3 +173,8 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Dashboard: the fictional test artist is not counted as an artist and is labelled "fictional test"; simulated bars shown as "Bar <City> 01"; jargon replaced (counting rules, fingerprint of each hour, public anchors file; no run ids); the small bars in the key-figure cards (a repeat of the chart) removed.
 - Meter 3D model: renders and assembly video on the landing page ("Meet the meter.") and in the README; the renders still carry the old working name on the labels.
 
+## D-030 — 2026-11-25 10:15 — Person B — Artists see when their songs were played (never where)
+- `GET /api/v1/me/plays?period=` (artist only): plays per Cameroon day and the latest plays (song, time, weight, counted less) — never the bar, city or meter. `/me/songs` totals add `all_counted` (all artists' counted plays in the period).
+- Portal: "When your songs were played" (chart by day with a scale, latest plays) and "How your share is computed" (heard → counted → compared → share, with the artist's own numbers).
+- Play extents are written only when they change: the scheduler no longer recomputes live shares every 15 s with nothing new.
+

@@ -98,3 +98,14 @@ def test_public_feed_hides_bars_and_detail():
     assert _public({"event": "match", "data": {"accepted": True}}) is None
     assert _public({"event": "flag", "data": {}}) is None
     assert _public({"event": "play", "data": {**play["data"], "artist_name": "Fair Play test artist"}}) is None
+
+
+def test_artist_sees_when_own_songs_were_played_never_the_bar(app_client, migrated_db):
+    c, _ = sign_in(app_client, "Locko", config.ARTIST_DEFAULT_PASSWORD)
+    r = c.get("/api/v1/me/plays", params={"period": "live"})
+    assert r.status_code == 200 and set(r.json()) == {"period", "days", "recent"}
+    for p in r.json()["recent"]:
+        assert not {"venue_id", "meter_id", "city"} & set(p)
+    assert TestClient(app_client).get("/api/v1/me/plays").status_code == 403
+    totals = c.get("/api/v1/me/songs").json()["totals"]["live"]
+    assert "all_counted" in totals

@@ -15,11 +15,16 @@ showUser(user, $("who"));
 $("hello").textContent = `Welcome, ${user.name}.`;
 $("f-artist").value = user.artist_name;
 let period = "mock_month", data = null;
+const plays = {};   // period -> GET /api/v1/me/plays
 
 async function load() {
   const r = await fetch("/api/v1/me/songs", { cache: "no-store" });
   if (r.status === 403) { location.replace("login.html?next=portal.html"); return; }
   data = await r.json();
+  await Promise.all(["mock_month", "live"].map(async (p) => {
+    const x = await fetch(`/api/v1/me/plays?period=${p}&limit=20`, { cache: "no-store" });
+    if (x.ok) plays[p] = await x.json();
+  }));
   draw();
 }
 function draw() {
@@ -40,6 +45,49 @@ function draw() {
       <td><span class="st st-${cls}">${label}</span></td><td class="n">${fmtInt(p.counted_plays)}</td><td class="n">${fmtPct(p.share)}</td>
       <td class="soft">${fmtDateTime(s.uploaded_at)}</td></tr>`;
   }).join("") || `<tr><td colspan="5" class="soft">No song yet. Upload your first song below.</td></tr>`;
+  drawWhen(); drawHow();
+}
+
+// ---------- when your songs were played (dates and times only, never the bar) ----------
+const dayLabel = (date, o) => new Date(date + "T12:00:00Z").toLocaleDateString("en-GB", o);
+function drawWhen() {
+  const d = plays[period] || { days: [], recent: [] };
+  const days = d.days || [];
+  $("when-sub").textContent = period === "live" ? "live" : "last 30 days (mock month)";
+  const total = days.reduce((n, x) => n + x.plays, 0);
+  const busiest = days.reduce((b, x) => (!b || x.plays > b.plays ? x : b), null);
+  $("chart-range").textContent = days.length ? `${fmtInt(total)} plays` + (busiest && days.length > 1
+    ? ` · busiest ${dayLabel(busiest.date, { weekday: "short", day: "numeric", month: "short" })} (${fmtInt(busiest.plays)})` : "") : "";
+  const peak = Math.max(1, ...days.map((x) => x.plays));
+  const raw = peak / 4, mag = 10 ** Math.floor(Math.log10(raw));
+  const step = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].map((m) => m * mag).find((s) => s >= raw) || 10 * mag;
+  const top = Math.max(step * 4, 4), ticks = [0, 1, 2, 3, 4].map((k) => Math.round(k * top / 4));
+  $("chart-y").innerHTML = ticks.map((v) => `<span style="bottom:${(100 * v) / top}%">${fmtInt(v)}</span>`).join("");
+  $("chart-grid").innerHTML = ticks.map((v) => `<i style="bottom:${(100 * v) / top}%"></i>`).join("");
+  $("chart").innerHTML = days.map((x) => {
+    const label = `${dayLabel(x.date, { weekday: "short", day: "numeric", month: "short" })}: ${fmtInt(x.plays)} plays`;
+    return `<i data-v="${esc(label)}" aria-label="${esc(label)}" style="height:${(100 * x.plays) / top}%"></i>`;
+  }).join("") || "";
+  const every = days.length > 10 ? Math.ceil(days.length / 6) : 1;
+  $("chart-x").innerHTML = days.map((x, i) => `<span>${i % every === 0 ? dayLabel(x.date, days.length > 10 ? { day: "numeric", month: "short" } : { weekday: "short" }) : ""}</span>`).join("")
+    || `<span class="soft">No play yet in this period.</span>`;
+  const recent = d.recent || [];
+  $("recent").innerHTML = recent.map((p) => `<li><b>${esc(p.title)}</b><span>${fmtDateTime(p.started_at)}${p.counted_less
+    ? ` · ${p.weight === 0 ? "not counted (repeat pause)" : `counted ${p.weight === 0.5 ? "½" : p.weight === 0.25 ? "¼" : p.weight}`}` : ""}</span></li>`).join("")
+    || `<li class="soft">No play yet in this period.</li>`;
+}
+
+// ---------- how your share is computed, with the artist's own numbers ----------
+function drawHow() {
+  const t = data.totals[period];
+  const where = period === "live" ? "live, since the meters started" : "in the last 30 days (mock month)";
+  if (t.frozen) { $("how-steps").innerHTML = `<li>SONACAM's play log failed its integrity check, so results are withheld until it is restored.</li>`; return; }
+  $("how-steps").innerHTML = [
+    `<b>Heard.</b> Meters in bars heard your songs <b>${fmtInt(t.raw_plays)}</b> times ${where}.`,
+    `<b>Counted.</b> Repeats of the same song close together count less (the 3rd in a row counts ½, the 4th ¼, then nothing for 2 hours), so <b>${fmtInt(t.counted_plays)}</b> plays count.`,
+    `<b>Compared.</b> All artists together have <b>${fmtInt(t.all_counted)}</b> counted plays in the same period.`,
+    `<b>Your share</b> = ${fmtInt(t.counted_plays)} ÷ ${fmtInt(t.all_counted)} = <b>${fmtPct(t.share)}</b>. It is the sum of your songs' shares. SONACAM shares the levy by these shares and pays its members under its own rules.`,
+  ].map((s) => `<li>${s}</li>`).join("");
 }
 document.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => {
   period = b.dataset.p;
