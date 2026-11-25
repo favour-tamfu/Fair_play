@@ -90,7 +90,9 @@ def _register(conn, body, admin: bool = False) -> ingest.Result:
 async def register_meter(request: Request):
     """Same as dropping a .pub.json into contract/meters and restarting. Adding a meter or changing a key needs the
     admin token (D-020); re-sending a meter's current key, or a key that matches contract/meters, is always fine."""
-    admin = bool(config.ADMIN_TOKEN) and token_ok(request.headers.get(HEADER))
+    # a signed-in SONACAM user (the admin page, D-028) or the X-Admin-Token header (scripts)
+    from server.api.admin import is_sonacam
+    admin = bool(config.ADMIN_TOKEN) and await run_in_threadpool(is_sonacam, request, request.headers.get(HEADER))
     body = await _json_body(request)
     if body is None:
         return JSONResponse({"error": "invalid", "detail": "body is not valid JSON"}, status_code=422)

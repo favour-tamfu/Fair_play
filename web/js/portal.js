@@ -5,6 +5,7 @@ import { requireRole, showUser } from "./session.js";
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const fmtInt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("fr-FR"));
+const n = (v, one, many) => `${fmtInt(v)} ${Math.round(v) === 1 ? one : many}`;   // "1 play", "2 plays"
 const fmtPct = (x) => (x == null ? "–" : (100 * x).toFixed(x < 0.1 ? 2 : 1) + " %");
 const STATUS = { ready: ["ready", "Recognisable"], uploaded: ["wait", "Processing"], processing: ["wait", "Processing"],
   duplicate_suspected: ["warn", "Being checked by SONACAM"], failed: ["bad", "Could not be read"] };
@@ -56,7 +57,7 @@ function drawWhen() {
   $("when-sub").textContent = period === "live" ? "live" : "last 30 days (mock month)";
   const total = days.reduce((n, x) => n + x.plays, 0);
   const busiest = days.reduce((b, x) => (!b || x.plays > b.plays ? x : b), null);
-  $("chart-range").textContent = days.length ? `${fmtInt(total)} plays` + (busiest && days.length > 1
+  $("chart-range").textContent = days.length ? n(total, "play", "plays") + (busiest && days.length > 1
     ? ` · busiest ${dayLabel(busiest.date, { weekday: "short", day: "numeric", month: "short" })} (${fmtInt(busiest.plays)})` : "") : "";
   const peak = Math.max(1, ...days.map((x) => x.plays));
   const raw = peak / 4, mag = 10 ** Math.floor(Math.log10(raw));
@@ -65,7 +66,7 @@ function drawWhen() {
   $("chart-y").innerHTML = ticks.map((v) => `<span style="bottom:${(100 * v) / top}%">${fmtInt(v)}</span>`).join("");
   $("chart-grid").innerHTML = ticks.map((v) => `<i style="bottom:${(100 * v) / top}%"></i>`).join("");
   $("chart").innerHTML = days.map((x) => {
-    const label = `${dayLabel(x.date, { weekday: "short", day: "numeric", month: "short" })}: ${fmtInt(x.plays)} plays`;
+    const label = `${dayLabel(x.date, { weekday: "short", day: "numeric", month: "short" })}: ${n(x.plays, "play", "plays")}`;
     return `<i data-v="${esc(label)}" aria-label="${esc(label)}" style="height:${(100 * x.plays) / top}%"></i>`;
   }).join("") || "";
   const every = days.length > 10 ? Math.ceil(days.length / 6) : 1;
@@ -83,9 +84,9 @@ function drawHow() {
   const where = period === "live" ? "live, since the meters started" : "in the last 30 days (mock month)";
   if (t.frozen) { $("how-steps").innerHTML = `<li>SONACAM's play log failed its integrity check, so results are withheld until it is restored.</li>`; return; }
   $("how-steps").innerHTML = [
-    `<b>Heard.</b> Meters in bars heard your songs <b>${fmtInt(t.raw_plays)}</b> times ${where}.`,
-    `<b>Counted.</b> Repeats of the same song close together count less (the 3rd in a row counts ½, the 4th ¼, then nothing for 2 hours), so <b>${fmtInt(t.counted_plays)}</b> plays count.`,
-    `<b>Compared.</b> All artists together have <b>${fmtInt(t.all_counted)}</b> counted plays in the same period.`,
+    `<b>Heard.</b> Meters in bars heard your songs <b>${n(t.raw_plays, "time", "times")}</b> ${where}.`,
+    `<b>Counted.</b> Repeats of the same song close together count less (the 3rd in a row counts ½, the 4th ¼, then nothing for 2 hours), so <b>${n(t.counted_plays, "play counts", "plays count")}</b>.`,
+    `<b>Compared.</b> All artists together have <b>${n(t.all_counted, "counted play", "counted plays")}</b> in the same period.`,
     `<b>Your share</b> = ${fmtInt(t.counted_plays)} ÷ ${fmtInt(t.all_counted)} = <b>${fmtPct(t.share)}</b>. It is the sum of your songs' shares. SONACAM shares the levy by these shares and pays its members under its own rules.`,
   ].map((s) => `<li>${s}</li>`).join("");
 }

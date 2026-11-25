@@ -421,3 +421,7 @@ div.leader b { font-family: var(--display); font-size: 24px; font-weight: 600; }
 @media (max-width: 900px) { .pt-how { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 600px) { .pt-how { grid-template-columns: 1fr; } }
 .pt-recent li span { white-space: normal; text-align: right; }
+
+/* day charts: bars and their labels keep a sensible width when there are only a few days */
+.chart-plot .chart i, .chart-plot .chart-x span { max-width: 48px; }
+.chart-plot .chart, .chart-plot .chart-x { justify-content: flex-start; }
