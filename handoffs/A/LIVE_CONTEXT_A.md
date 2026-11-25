@@ -2,6 +2,9 @@
 Last updated: 2026-11-25 01:05 (Cameroon time).
 
 ## 0. Latest events (newest first)
+- 01:15 User asked how to make a demo video. Advice given (no files changed): 2–3 min story = problem → meter in a bar → live play
+  on the dashboard → artist sees it → fair split vs flat (7,7×) → tamper check turns red → close. Record with OBS / Win+Alt+R,
+  live against B's server if possible, otherwise mock mode; keep the laptop awake (clock-drift bug).
 - 01:10 User said **"Not now"** to fixing the M-07 clock-drift bug (B's R-020). Leave it unfixed until asked; keep Laptop A awake during the demo.
   Local commits after the push (not on GitHub): aa8e632 and this update.
 - 01:05 **a/work pushed to GitHub** (user's explicit OK for this push): origin/a/work = 5ed3504. Push URL switched back to
