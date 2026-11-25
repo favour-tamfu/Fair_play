@@ -40,6 +40,7 @@ DATABASE_URL = (os.environ.get("DATABASE_URL") or _from_dotenv("DATABASE_URL")
 
 # Workers
 JOB_POLL_S = 0.5                 # how often an idle worker checks the job board
+JOB_STALE_S = 300                # a job still 'running' after 5 min was abandoned (worker restarted mid-job): requeued
 
 # Catalogue (B-T04, contract §5)
 UPLOAD_MAX_BYTES = 50 * 1024 * 1024   # c-1.1 (PROPOSED 2026-11-24): was 30 MB in c-1.0
