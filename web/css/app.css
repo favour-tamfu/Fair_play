@@ -284,3 +284,7 @@ table.act .k-admin { background: #efe9fb; color: #5b2fb3; }
 table.act tr.lv-warn td:nth-child(3) { color: var(--amber); }
 table.act tr.lv-error td:nth-child(3) { color: var(--red); font-weight: 600; }
 .act-more { margin-top: 8px; }
+
+/* OpenStreetMap in the dashboard map card (D-025) */
+.map-wrap .osm-map { width: 100%; border-radius: 10px; overflow: hidden; }
+.leaflet-container { font: inherit; font-size: 12px; }

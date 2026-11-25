@@ -3,6 +3,7 @@
 // D-009: flags are review only. D-011: every bar is metered, no sampling, no range bars.
 // D-015: no money; an artist's share = the sum of their songs' shares. D-016: no rules panels.
 import { MOCK, get, feed, fmtTime, fmtHm, fmtDateTime } from "./api.js";
+import { osmMap } from "./osm.js";
 import { VIEW, project, outlinePath } from "./cameroon.js";
 
 const LIVE_VENUE = "V-BUEA-CIMFEST";
@@ -192,11 +193,23 @@ function renderMap(venues) {
   svg.setAttribute("viewBox", `0 0 ${VIEW.w} ${VIEW.h}`);
   svg.innerHTML = parts.join("");
   $("map-note").textContent = `${venues.length} bars, ${online} with a meter online`;
+  // OpenStreetMap when the internet is there (D-025); the outline above stays as the fallback
+  const key = state.period === "mock_month" ? "mock_month" : "live";
+  const most = Math.max(1, ...venues.map((v) => (v.plays ? v.plays[key] : 0)));
+  osmMap(svg, { height: "100%" }).then((m) => m && m.draw(venues.map((v) => {
+    const on = (v.meters || []).some((x) => x.online), live = v.venue_id === LIVE_VENUE, n = v.plays ? v.plays[key] : 0;
+    const meters = (v.meters || []).map((x) => `${esc(x.meter_id)} ${x.online ? "online" : "offline"}`).join(", ");
+    return { id: v.venue_id, lat: v.lat, lon: v.lon, kind: live ? "live" : on ? "on" : "off", colour: live ? "#d46306" : on ? "#0071e3" : "#8e8e93",   // the legend's colours
+      r: live ? 10 : 5 + 8 * Math.sqrt(n / most),
+      title: `${v.name}, ${v.city}`,
+      html: `<b>${esc(v.name)}</b>, ${esc(v.city)}<br>${fmtInt(n)} plays ${key === "live" ? "live" : "in the mock month"}${meters ? `<br>${meters}` : ""}` };
+  })));
 }
 
 let toastTimer = null;
 function showPlayOnMap(venueId, text) {
   const ring = document.querySelector(`circle[data-ring="${CSS.escape(venueId || "")}"]`);
+  if ($("map")._osm) $("map")._osm.pulse(venueId);
   if (ring) { ring.classList.remove("go"); void ring.getBoundingClientRect(); ring.classList.add("go"); }
   const v = venuesById.get(venueId);
   const t = $("map-toast");

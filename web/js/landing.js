@@ -3,6 +3,7 @@
 import { MOCK, get, feed, fmtHm } from "./api.js";
 import { VIEW, project, outlinePath } from "./cameroon.js";
 import { loadCovers, initials } from "./covers.js";
+import { osmMap } from "./osm.js";
 
 const $ = (id) => document.getElementById(id);
 const fmtInt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("fr-FR"));
@@ -84,6 +85,14 @@ function mapTile() {
   }
   $("mini-map").setAttribute("viewBox", `0 0 ${VIEW.w} ${VIEW.h}`);
   $("mini-map").innerHTML = parts.join("");
+  // OpenStreetMap when the internet is there (D-025): same bars, real streets; the outline above stays as the fallback
+  osmMap($("mini-map"), { height: "420px" }).then((m) => m && m.draw(vs.map((v) => {
+    const n = v.plays ? v.plays[key] : 0, live = v.venue_id === LIVE_VENUE, on = (v.meters || []).some((x) => x.online);
+    const kind = period === "live" ? (live ? "live" : on ? "on" : "off") : (n ? "on" : "off");
+    const r = period === "live" ? (live ? 10 : 6) : (n ? 5 + 11 * Math.sqrt(n / max) : 4);
+    return { id: v.venue_id, lat: v.lat, lon: v.lon, kind, r,
+      html: `<b>${esc(barName(v))}</b><br>${fmtInt(n)} plays ${period === "live" ? "live" : "in the mock month"}` };
+  }), { fit: true }));
   if (period === "live") {
     const on = vs.filter((v) => (v.meters || []).some((m) => m.online)).length;
     $("map-title").textContent = `${on} bar${on === 1 ? "" : "s"} sending right now.`;

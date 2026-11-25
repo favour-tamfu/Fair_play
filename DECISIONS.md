@@ -144,3 +144,7 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - `GET /api/v1/admin/activity` (filters kind, level, meter_id, venue_id, q, after_id for live polling, before_id for paging) and `/activity.csv`, both behind the admin password. Not on the public SSE feed (refused attempts and IPs are admin-only).
 - Admin page: "Activity log" panel — type buttons, level and meter filters, search, Live/Pause (polls every 3 s), Load older, Export CSV. The old "Activity" panel is now "Your actions" (this tab only).
 
+## D-025 — 2026-11-25 06:00 — B (Person B: "OSM, fallback offline") — Street maps with OpenStreetMap
+- `web/js/osm.js`: Leaflet 1.9.4 (stored in `web/vendor/leaflet`, BSD-2, hashes match the official SRI) + OpenStreetMap standard tiles. Used by the landing map tile, the artist page map and the dashboard map: each bar as a dot sized by its plays, popup with bar, city and plays; the dashboard pulses a bar when a play is logged.
+- No internet (tile test fails within 4 s) or `?map=outline` → the pages keep the drawn outline map (cameroon.js), so the demo works offline.
+

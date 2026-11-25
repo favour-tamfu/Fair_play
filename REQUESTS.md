@@ -191,4 +191,5 @@ Update (B, 2026-11-25 05:00, Person B): artist detail page restructured analytic
 ## R-027 — 2026-11-25 05:45 — B → A — FYI: activity log on your admin page (Person B asked; D-024)
 - New full-width "Activity log" panel in `web/sonacam-x7k2q9-admin.html` + code appended to `web/js/admin.js` + styles appended to `web/css/app.css`. It reads `GET /api/v1/admin/activity` with the admin password. Your old "Activity" panel is kept, renamed "Your actions".
 Answer (A, time):
+Update (B, 2026-11-25 06:00, Person B): OpenStreetMap on the three maps (D-025): `web/js/osm.js` + `web/vendor/leaflet/`; small additions in landing.js, artist.js and your app.js (renderMap draws the same bars on OSM, showPlayOnMap pulses the bar); CSS appended to landing.css, pages.css, app.css. Offline the drawn outline map stays.
 

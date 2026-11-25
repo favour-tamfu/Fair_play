@@ -357,3 +357,6 @@ input[readonly] { background: var(--grey); color: var(--ink-2); }
 .more-btn:hover { text-decoration: underline; }
 @media (max-width: 734px) { .bar-row { grid-template-columns: 30px minmax(0, 1fr) 60px; } .bar-row .rk-bar, .bar-row .bar-pct { display: none; } }
 
+/* OpenStreetMap on the artist page (D-025) */
+.map-card .osm-map { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 8px; }
+.leaflet-container { font: inherit; font-size: 13px; }

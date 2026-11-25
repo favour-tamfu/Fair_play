@@ -4,6 +4,7 @@
 import { MOCK, get, feed, fmtHm, fmtDateTime } from "./api.js";
 import { VIEW, project, outlinePath } from "./cameroon.js";
 import { loadCovers } from "./covers.js";
+import { osmMap } from "./osm.js";
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -186,6 +187,13 @@ async function drawMap(byVenue) {
   }
   svg.setAttribute("viewBox", `0 0 ${VIEW.w} ${VIEW.h}`);
   svg.innerHTML = parts.join("");
+  // OpenStreetMap when the internet is there (D-025): each bar that played this artist, sized by its counted plays
+  osmMap(svg, { height: "380px" }).then((m) => m && m.draw(byVenue.map((b) => {
+    const v = coords.get(b.venue_id) || {};
+    return { id: b.venue_id, lat: v.lat, lon: v.lon, kind: "hit", r: 6 + 10 * Math.sqrt((b.plays_counted || 0) / max),
+      title: `${barLabel(b.name)}: ${fmtInt(b.plays_counted)}`,
+      html: `<b>${esc(barLabel(b.name))}</b>, ${esc(b.city)}<br>${fmtInt(b.plays_counted)} plays counted${b.plays_raw != null ? ` (${fmtInt(b.plays_raw)} heard)` : ""}` };
+  }), { fit: true }));
   const cities = new Set(byVenue.map((b) => b.city));
   $("map-sub").textContent = shown ? `${byVenue.length} bars, ${cities.size} cities` : "";
 }
