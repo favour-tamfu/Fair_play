@@ -110,11 +110,25 @@ async function load() {
     return `<div class="am-row"><img src="${coverFor(s.title)}" alt=""><span class="am-n">${i + 1}</span><div><b>${esc(s.title)}</b><span>${line}</span></div></div>`;
   }).join("") || `<div class="empty">No songs yet.</div>`;
 
-  // Bars: a shelf of square tiles, most counted first.
+  // Bars: a ranked list (no sideways scrolling), most counted first; the top 10, then "Show all".
   const venues = [...(a.plays_by_venue || [])].sort((x, y) => (y.plays_counted || 0) - (x.plays_counted || 0));
-  $("venues").innerHTML = venues.map((v) => `<figure class="am-tile"><div class="am-art" style="background-image:url('${artFor(v.venue_id)}')"><span>${fmtInt(v.plays_counted)}</span></div>
-    <figcaption><b>${esc(barLabel(v.name))}</b><span>${esc(v.city)} · ${fmtInt(v.plays_counted)} counted</span></figcaption></figure>`).join("")
-    || `<div class="empty wrap">No bar has played this artist in this period yet.</div>`;
+  const vmax = Math.max(1, ...venues.map((v) => v.plays_counted || 0));
+  const vtotal = venues.reduce((n, v) => n + (v.plays_counted || 0), 0);
+  let showAll = false;
+  const drawVenues = () => {
+    const list = showAll ? venues : venues.slice(0, 10);
+    $("venues").innerHTML = list.map((v, i) => `<li><div class="rk-row bar-row">
+        <span class="rk-n">${i + 1}</span>
+        <span class="rk-who"><b>${esc(barLabel(v.name))}</b><span>${esc(v.city)}${v.plays_raw != null ? ` · ${fmtInt(v.plays_raw)} heard` : ""}</span></span>
+        <span class="rk-bar" aria-hidden="true"><i style="width:${(100 * (v.plays_counted || 0) / vmax).toFixed(1)}%"></i></span>
+        <b class="rk-share">${fmtInt(v.plays_counted)}</b><span class="bar-pct">${vtotal ? fmtPct((v.plays_counted || 0) / vtotal) : ""}</span></div></li>`).join("")
+      || `<li class="empty">No bar has played this artist in this period yet.</li>`;
+    $("venues-more").hidden = venues.length <= 10;
+    $("venues-more").textContent = showAll ? "Show the top 10" : `Show all ${venues.length} bars`;
+  };
+  $("venues-more").onclick = () => { showAll = !showAll; drawVenues(); };
+  $("venues-sub").textContent = venues.length ? `${venues.length} bars · plays counted` : "";
+  drawVenues();
   $("am-hero").style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.72) 100%), url('${ownCover ? ownCover.src : artFor(artistName)}')`;
   $("am-hero").classList.toggle("has-cover", !!ownCover);
 
