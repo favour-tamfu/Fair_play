@@ -84,37 +84,76 @@ $("meters").addEventListener("click", async (e) => {
 });
 
 // ---------- new meters waiting for approval (server/joins.py) ----------
-async function loadJoins() {
-  if (MOCK) return;
-  try {
-    const rows = await getJson("/api/v1/admin/meter-requests");
-    $("joins-panel").hidden = rows.length === 0;
-    $("joins-note").textContent = rows.length ? `${rows.length} waiting` : "";
-    $("joins").innerHTML = rows.map((r) => `<tr>
+// The list refreshes every 15 s. It is only redrawn when it changed and nobody is in the middle of a click, so a
+// button never jumps back under the pointer. Decided meters stay on screen for a while with their result.
+const decided = new Map();   // meter_id -> {to: "approve"|"reject", at: ms, row}
+let joinsKey = "";
+let joinsBusy = 0;
+const DECIDED_SHOW_MS = 60000;
+
+function joinRow(r) {
+  const d = decided.get(r.meter_id);
+  const action = d
+    ? (d.to === "approve"
+        ? `<span class="pill ok">Approved ✓</span> <span class="note">starts counting within 15 s</span>`
+        : `<span class="pill bad">Rejected</span>`)
+    : `<button class="small" data-join="${esc(r.meter_id)}" data-to="approve">Approve</button>
+       <button class="small" data-join="${esc(r.meter_id)}" data-to="reject">Reject</button>`;
+  return `<tr data-row="${esc(r.meter_id)}" data-asked="${esc(r.requested_at || "")}">
       <td><b>${esc(r.meter_id)}</b></td><td>${esc(r.bar)}${r.city ? ` · ${esc(r.city)}` : ""}</td><td>${esc(r.computer || "")}</td>
-      <td>${fmtDateTime(r.requested_at)}</td>
+      <td>${r.requested_at ? fmtDateTime(r.requested_at) : ""}</td>
       <td class="mono">${esc(r.key_fingerprint)}</td>
-      <td><button class="small" data-join="${esc(r.meter_id)}" data-to="approve">Approve</button>
-          <button class="small" data-join="${esc(r.meter_id)}" data-to="reject">Reject</button></td></tr>`).join("");
-  } catch (e) { $("joins-panel").hidden = true; }
+      <td>${action}</td></tr>`;
 }
-// Approve or reject: a second click within 5 s confirms.
+
+async function loadJoins() {
+  if (MOCK || joinsBusy || $("joins").querySelector("button.confirm")) return;
+  let rows;
+  try { rows = await getJson("/api/v1/admin/meter-requests"); } catch (e) { return; }   // keep what is shown
+  const now = Date.now();
+  for (const [id, d] of decided) if (now - d.at > DECIDED_SHOW_MS) decided.delete(id);
+  const all = rows.filter((r) => !decided.has(r.meter_id)).concat([...decided.values()].map((d) => d.row));
+  const key = JSON.stringify(all.map((r) => [r.meter_id, r.key_fingerprint, decided.get(r.meter_id)?.to || ""]));
+  if (key === joinsKey) return;
+  joinsKey = key;
+  $("joins-panel").hidden = all.length === 0;
+  $("joins-note").textContent = rows.length ? `${rows.length} waiting` : "none waiting";
+  $("joins").innerHTML = all.map(joinRow).join("");
+}
+
+// Approve: one click (the fingerprint check is the confirmation). Reject: a second click within 5 s confirms.
 $("joins").addEventListener("click", async (e) => {
   const b = e.target.closest("button[data-join]");
   if (!b) return;
-  const id = b.dataset.join, to = b.dataset.to, label = to === "approve" ? "Approve" : "Reject";
-  if (!b.classList.contains("confirm")) {
-    b.classList.add("confirm"); b.textContent = `Click again to ${to}`;
-    setTimeout(() => { b.classList.remove("confirm"); b.textContent = label; }, 5000);
+  const id = b.dataset.join, to = b.dataset.to;
+  if (to === "reject" && !b.classList.contains("confirm")) {
+    b.classList.add("confirm"); b.textContent = "Click again to reject";
+    setTimeout(() => { if (b.isConnected) { b.classList.remove("confirm"); b.textContent = "Reject"; } }, 5000);
     return;
   }
-  b.disabled = true;
+  const tr = b.closest("tr");
+  const cells = [...tr.children].map((td) => td.textContent.trim());
+  const row = { meter_id: id, bar: cells[1], city: "", computer: cells[2], requested_at: tr.dataset.asked || null,
+                key_fingerprint: cells[4] };
+  joinsBusy++;
+  tr.querySelectorAll("button").forEach((x) => { x.disabled = true; });
+  b.textContent = to === "approve" ? "Approving…" : "Rejecting…";
   try {
     await post(`/api/v1/admin/meter-requests/${encodeURIComponent(id)}/${to}`);
-    log(to === "approve" ? `Meter <b>${esc(id)}</b> approved: its reports are accepted from now on`
+    decided.set(id, { to, at: Date.now(), row });
+    tr.lastElementChild.innerHTML = to === "approve"
+      ? `<span class="pill ok">Approved ✓</span> <span class="note">starts counting within 15 s</span>`
+      : `<span class="pill bad">Rejected</span>`;
+    log(to === "approve" ? `Meter <b>${esc(id)}</b> approved: it starts counting within 15 s`
                          : `Meter <b>${esc(id)}</b> rejected: its reports stay refused`, to === "approve" ? "ok" : "warn");
-  } catch (err) { log(`Could not ${to} ${esc(id)}: ${esc(err.message)}`, "err"); }
-  loadJoins(); loadMeters();
+    loadMeters();
+  } catch (err) {
+    log(`Could not ${to} ${esc(id)}: ${esc(err.message)}`, "err");
+    tr.querySelectorAll("button").forEach((x) => { x.disabled = false; });
+    b.textContent = to === "approve" ? "Approve" : "Reject";
+  } finally {
+    joinsBusy--;
+  }
 });
 
 // ---------- ledger ----------

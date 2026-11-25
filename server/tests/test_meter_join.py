@@ -18,13 +18,15 @@ def cl(migrated_db, monkeypatch):
     with TestClient(app) as c:
         with connect(migrated_db, autocommit=True) as db:
             db.execute("DELETE FROM meter_requests")
-            db.execute("DELETE FROM meters WHERE meter_id IN ('M-81', 'M-82', 'M-83')")
+            db.execute("DELETE FROM meters WHERE meter_id IN ('M-81', 'M-82', 'M-83', 'M-84', 'M-85', 'M-86')")
         yield c
 
 
-def join_body(meter, seed=None, computer="BAR-LAPTOP"):
+def join_body(meter, seed=None, computer="BAR-LAPTOP", device=None):
     seed = seed or generate_seed()
     body = {**make_pub_record(meter, "V-BUEA-CIMFEST", seed), "computer": computer}
+    if device:
+        body["device_id"] = device
     body["sig"] = sign_dict(seed, body)
     return body, seed
 
@@ -65,6 +67,28 @@ def test_reject_and_id_hijack_and_bad_signature(cl):
     r = cl.post("/v1/meters/join", json=body)
     assert (r.status_code, r.json()["status"]) == (403, "rejected")
     assert cl.post("/v1/meters/join", json=other).status_code == 202                      # a rejected id can be asked for anew
+
+
+def test_one_request_and_one_meter_per_computer(cl, migrated_db):
+    a, _ = join_body("M-84", device="pc-1")
+    assert cl.post("/v1/meters/join", json=a).status_code == 202
+    b, _ = join_body("M-85", device="pc-1")                                              # second copy, same computer
+    r = cl.post("/v1/meters/join", json=b)
+    assert (r.status_code, r.json()["error"], r.json()["meter"]) == (409, "device_already_waiting", "M-84")
+    assert [w["meter_id"] for w in cl.get("/api/v1/admin/meter-requests", headers=H).json()] == ["M-84"]
+    with connect(migrated_db, autocommit=True) as db:                                    # the first copy stopped asking
+        db.execute("UPDATE meter_requests SET last_asked_at = now() - interval '11 minutes' WHERE meter_id = 'M-84'")
+    assert cl.post("/v1/meters/join", json=b).status_code == 202                         # replaces the stale one
+    assert [w["meter_id"] for w in cl.get("/api/v1/admin/meter-requests", headers=H).json()] == ["M-85"]
+    cl.post("/api/v1/admin/meter-requests/M-85/approve", headers=H)
+    c, _ = join_body("M-86", device="pc-1")                                              # already a meter: no more
+    r = cl.post("/v1/meters/join", json=c)
+    assert (r.status_code, r.json()["error"], r.json()["meter"]) == (409, "device_has_meter", "M-85")
+    assert cl.post("/v1/meters/join", json=b).json()["status"] == "approved"             # the meter itself is fine
+    cl.post("/api/v1/admin/meters/M-85/retire", headers=H)
+    assert cl.post("/v1/meters/join", json=c).status_code == 202                         # retired: may ask again
+    other_pc, _ = join_body("M-81", device="pc-2")
+    assert cl.post("/v1/meters/join", json=other_pc).status_code == 202
 
 
 def test_registered_id_cannot_be_taken(cl):

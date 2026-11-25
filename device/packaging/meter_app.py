@@ -28,6 +28,39 @@ import time
 import tomllib
 
 APP_DIR = os.path.dirname(sys.executable) if getattr(sys, "frozen", False) else os.getcwd()
+
+
+def data_dir():
+    """Where the meter keeps its key, settings and queue: ONE place per computer, so every copy of the exe on this
+    computer is the same meter (and cannot ask SONACAM a second time). A meter set up next to an older exe stays there."""
+    if glob.glob(os.path.join(APP_DIR, "device", "config", "*.toml")) or not getattr(sys, "frozen", False):
+        return APP_DIR
+    for base in (os.environ.get("PROGRAMDATA"), os.environ.get("LOCALAPPDATA")):
+        if base:
+            d = os.path.join(base, "FairPlayMeter")
+            try:
+                os.makedirs(d, exist_ok=True)
+                return d
+            except OSError:
+                continue
+    return APP_DIR
+
+
+def device_id():
+    """A stable, anonymous id for this computer (hash of Windows' MachineGuid), sent with the join request."""
+    import hashlib
+    raw = ""
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Cryptography",
+                            0, winreg.KEY_READ | winreg.KEY_WOW64_64KEY) as k:
+            raw = winreg.QueryValueEx(k, "MachineGuid")[0]
+    except Exception:  # noqa: BLE001 - not Windows, or no access: fall back to the network card's address
+        import uuid
+        raw = f"node-{uuid.getnode()}"
+    return hashlib.sha256(f"fairplay:{raw}".encode()).hexdigest()[:32]
+
+
 DEFAULT_VENUE = "V-BUEA-CIMFEST"
 WAIT_S = 15
 OLD_SERVER_WAIT_S = 30          # an older server logs every refused heartbeat: ask less often
@@ -131,6 +164,7 @@ def ask_to_join(cfg):
         pub = json.load(fh)
     body = {k: pub[k] for k in ("meter_id", "venue_id", "public_key_b64", "created_at") if k in pub}
     body["computer"] = socket.gethostname()[:80]
+    body["device_id"] = device_id()
     body["sig"] = sign_dict(load_seed(mid), body)
     try:
         r = httpx.post(cfg["sonacam_url"].rstrip("/") + "/v1/meters/join", json=body, timeout=30)
@@ -144,6 +178,8 @@ def ask_to_join(cfg):
         return "error", f"HTTP {r.status_code}"
     if j.get("error") == "meter_id_taken":
         return "taken", j.get("detail", "")
+    if j.get("error") in ("device_already_waiting", "device_has_meter"):
+        return "computer_busy", j.get("detail", "")
     return j.get("status") or "error", j.get("detail") or f"HTTP {r.status_code}"
 
 
@@ -167,7 +203,7 @@ def heartbeat_status(cfg):
 def approval(cfg):
     """(status, detail, old_server). The join step first; an older server is asked through the heartbeat."""
     status, detail = ask_to_join(cfg)
-    if status in ("approved", "pending", "rejected", "retired", "taken", "unreachable"):
+    if status in ("approved", "pending", "rejected", "retired", "taken", "unreachable", "computer_busy"):
         return status, detail, False
     status, detail = heartbeat_status(cfg)
     return status, detail, True
@@ -177,15 +213,23 @@ def wait_for_approval(cfg):
     """Wait until SONACAM approves this meter. Returns the (maybe renumbered) config, or None to stop."""
     if os.path.exists(_approved_flag(cfg["meter_id"])):
         return cfg                                   # approved before: start even without internet (reports wait)
-    shown = old_note = offline_note = False
+    shown = old_note = offline_note = busy_note = False
     while True:
         status, detail, old = approval(cfg)
         if status == "approved":
             os.makedirs(os.path.dirname(_approved_flag(cfg["meter_id"])), exist_ok=True)
-            open(_approved_flag(cfg["meter_id"]), "w").close()
-            if shown:
-                print("\n\nApproved by SONACAM.")
+            with open(_approved_flag(cfg["meter_id"]), "w", encoding="utf-8") as fh:
+                fh.write(time.strftime("%Y-%m-%d %H:%M"))
+            line = "=" * 64
+            print(f"\a\n\n  {line}\n   APPROVED by SONACAM. Meter {cfg['meter_id']} now counts the music played here.\n  {line}")
             return cfg
+        if status == "computer_busy":                # this computer already asked (or already is a meter)
+            if not busy_note:
+                print(f"\n  {detail}.\n  Waiting: SONACAM can reject or retire the other one.\n")
+                busy_note = True
+            print(".", end="", flush=True)
+            time.sleep(OLD_SERVER_WAIT_S)
+            continue
         if status == "taken":                        # someone else has this id: take another one, silently
             cfg = _renumber(cfg)
             shown = False
@@ -268,7 +312,13 @@ class Listener:
             state = "paused"
         else:
             state = "listening"
-        lines = [f"State            {state}",
+        flag = _approved_flag(self.cfg["meter_id"])
+        since = ""
+        if os.path.exists(flag):
+            with open(flag, encoding="utf-8") as fh:
+                since = fh.read().strip()
+        lines = [f"Approved         yes, by SONACAM{f' ({since})' if since else ''}",
+                 f"State            {state}",
                  f"Running for      {int((time.time() - self.started_at) // 60)} min"]
         if s is not None:
             loud = f"{s.last_window[2]:.0f} dB" if s.last_window else "no sound measured yet"
@@ -301,7 +351,7 @@ def _details(cfg):
     print(f"  SONACAM          {cfg['sonacam_url']}")
     print(f"  Key fingerprint  {key_fingerprint(_pub_key(cfg['meter_id']))}")
     print(f"  Computer         {socket.gethostname()}")
-    print(f"  Folder           {APP_DIR}")
+    print(f"  Kept in          {os.getcwd()}")
 
 
 MENU = """
@@ -384,7 +434,7 @@ def check():
 
 
 def main(argv=None):
-    os.chdir(APP_DIR)
+    os.chdir(data_dir())
     p = argparse.ArgumentParser(prog="FairPlayMeter")
     sub = p.add_subparsers(dest="cmd")
     s = sub.add_parser("setup", help="set up this meter by hand (normally automatic)")

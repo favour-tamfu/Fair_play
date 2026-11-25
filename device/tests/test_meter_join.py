@@ -59,7 +59,8 @@ def test_join_request_is_signed_by_the_meters_own_key(here, monkeypatch):
     assert meter_app.ask_to_join(cfg) == ("pending", "HTTP 202")
     url, body = sent[0]
     assert url == "https://sonacam.example/v1/meters/join" and body["computer"]
-    assert verify_dict(meter_app._pub_key(cfg["meter_id"]), body)
+    assert body["device_id"] == meter_app.device_id() and len(body["device_id"]) == 32     # same id every time
+    assert verify_dict(meter_app._pub_key(cfg["meter_id"]), body)                          # device id is signed too
 
 
 def test_waits_until_approved_then_remembers(here, monkeypatch, capsys):
@@ -68,7 +69,7 @@ def test_waits_until_approved_then_remembers(here, monkeypatch, capsys):
     assert meter_app.wait_for_approval(cfg) == cfg
     out = capsys.readouterr().out
     assert "Waiting for approval from SONACAM" in out and meter_app.key_fingerprint(sent[0][1]["public_key_b64"]) in out
-    assert len(sent) == 3
+    assert "APPROVED by SONACAM" in out and len(sent) == 3
     sent.clear()
     assert meter_app.wait_for_approval(cfg) == cfg and sent == []      # approved before: starts even offline
 
@@ -85,6 +86,28 @@ def test_taken_id_picks_another_by_itself(here, monkeypatch):
     new = meter_app.wait_for_approval(cfg)
     assert new["meter_id"] != "M-2000" and new["venue_id"] == cfg["venue_id"]
     assert not os.path.exists(meter_app._cfg_path("M-2000")) and os.path.exists(meter_app._cfg_path(new["meter_id"]))
+
+
+def test_computer_that_already_asked_waits(here, monkeypatch, capsys):
+    cfg = meter_app.setup(quiet=True)
+    fake_server(monkeypatch, [(409, {"error": "device_already_waiting", "meter": "M-3000",
+                                     "detail": "this computer already asked to join as M-3000"}),
+                              (200, {"status": "approved"})])
+    assert meter_app.wait_for_approval(cfg) == cfg                           # waited, did not make a new request id
+    assert "already asked to join as M-3000" in capsys.readouterr().out
+
+
+def test_every_copy_on_a_computer_shares_one_meter(tmp_path, monkeypatch):
+    monkeypatch.setattr(meter_app.sys, "frozen", True, raising=False)
+    monkeypatch.setenv("PROGRAMDATA", str(tmp_path / "pd"))
+    for copy in ("a", "b"):
+        monkeypatch.setattr(meter_app, "APP_DIR", str(tmp_path / copy))
+        assert meter_app.data_dir() == str(tmp_path / "pd" / "FairPlayMeter")
+    old = tmp_path / "old" / "device" / "config"                             # a meter set up next to an older exe
+    old.mkdir(parents=True)
+    (old / "M-21.toml").write_text("meter_id = 'M-21'\n")
+    monkeypatch.setattr(meter_app, "APP_DIR", str(tmp_path / "old"))
+    assert meter_app.data_dir() == str(tmp_path / "old")
 
 
 def test_older_server_is_asked_through_the_heartbeat(here, monkeypatch, capsys):

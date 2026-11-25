@@ -28,6 +28,15 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   itself; older server → checks approval via signed heartbeat. Meter-only change (`meter_app.py`, `run_pipeline(on_ready=)`),
   B needs nothing. test_a **98 passed**. New exe copied to `Downloads\FairPlayMeter_one_file\`. A trial run left test meter
   **M-8862** (fp 84f9 2b00 1b6a d4ce, key deleted) in SONACAM's waiting list → user should Reject it.
+- **One computer = one request/meter + approval feedback (user):** meter keeps its identity in `%PROGRAMDATA%\FairPlayMeter`
+  (every copy of the exe on a computer is the same meter; a meter already set up next to an exe stays there), sends a
+  signed `device_id` (hash of MachineGuid); server (migration 013, joins.py) answers 409 device_already_waiting /
+  device_has_meter (stale >10 min requests replaced). Meter prints a big "APPROVED by SONACAM" banner + beep; menu Status
+  shows "Approved yes (time)". Dashboard: Approve is one click, row shows "Approved ✓ starts counting within 15 s" for
+  60 s; list only redrawn when changed and not mid-click (the 15-s refresh used to reset the button — the bug).
+  Verified in the browser against a fake backend (scratchpad). test_a 100 passed; server tests not run on A.
+  **B must pull a/work and restart the api again** (server + web). User's own meter **M-9275** runs from
+  `Downloads\FairPlayMeter_one_file` (old build, waiting); new build in `Downloads\FairPlayMeter_latest\`.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look
