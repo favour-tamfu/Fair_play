@@ -243,7 +243,7 @@ function renderEarnings(e) {
       <td class="n">${fmtInt(s.raw_plays)}</td><td class="n">${fmtInt(s.counted_plays)}</td><td class="n">${fmtPct(s.share)}</td>
       <td><div class="bar" title="${esc(s.title)}: ${fmtPct(s.share)} of counted plays"><i style="width:${(100 * s.share / max).toFixed(1)}%"></i></div></td></tr>`).join("") : "";
     return `<tr class="artist${r.rank <= 3 ? " top3" : ""}" data-artist="${esc(r.artist_name)}">
-      <td>${r.rank}</td><td class="name"><span class="caret">${open ? "▾" : "▸"}</span>${esc(r.artist_name)}${r.artist_name === TEST_ARTIST ? ' <span class="chip test" title="Fictional tracks used for the mock month's gaming scenarios">fictional test</span>' : `<a href="${link}">page</a>`}</td>
+      <td>${r.rank}</td><td class="name"><span class="caret">${open ? "▾" : "▸"}</span>${esc(r.artist_name)}${r.artist_name === TEST_ARTIST ? ' <span class="chip test" title="Fictional tracks used in the mock month gaming scenarios">fictional test</span>' : `<a href="${link}">page</a>`}</td>
       <td class="n">${r.n_songs}</td><td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.counted_plays)}</td>
       <td class="n share">${fmtPct(r.share)}</td><td><div class="bar" title="${esc(r.artist_name)}: ${fmtPct(r.share)} of counted plays"><i style="width:${w}%"></i></div></td></tr>${songs}`;
   }).join("") || `<tr><td colspan="7" class="note">${e.frozen ? "Withheld until the log is restored." : "No plays counted in this period yet. Shares appear after the first counted play."}</td></tr>`;
