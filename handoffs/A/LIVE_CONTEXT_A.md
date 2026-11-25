@@ -42,6 +42,12 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   One column; hairline tables, status in words, log status as plain text, Approve blue pill / others text buttons,
   Live/Paused without symbols; on phones the waiting list and meters stack, minor columns hide. Checked in the browser
   against a fake backend (scratchpad fake_ops2.py) at 1280 px and 375 px. Needs B's pull to show on the live site.
+- **Typography of the SONACAM app (user: "fix the type face weights, header, the whole typography — in the dash, not the
+  main site; no empty places"):** new `web/css/type.css`, loaded last on the dashboard and operations pages: one scale
+  32/28/21/17/14/12 px, weights 400/600 only, Display >= 20 px, Text below, no monospace (tabular digits). Dashboard went
+  from 25 text styles to 9. Header "Section › Page" 14 px on both pages, log status plain text. Overview: "Who earned
+  what" full width, map + live activity side by side (no blank area, no sideways scroll); empty live list explains itself.
+  Stylesheet links carry `?v=1125b` (browsers kept an old dash.css). Main site untouched.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look

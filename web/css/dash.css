@@ -302,3 +302,14 @@ body.d2.ops .adm > section { scroll-margin-top: 70px; }
 .org { background: #fff; padding: 14px 14px 12px; }
 .org-logo { display: block; width: 100%; height: auto; }
 
+
+/* Overview layout without empty gaps: "Who earned what" across the full width (its table fits, no sideways scroll);
+   the map and the live activity side by side underneath, stretched to the same height. */
+body.d2 .ov2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: stretch; }
+body.d2 .ov2 > .earn-panel { grid-column: 1 / -1; }
+body.d2 .ov2-side { display: contents; }
+body.d2 .ov2 :is(.map-panel, .feed-panel) { display: flex; flex-direction: column; }
+body.d2 .ov2 :is(.map-panel, .feed-panel) > .card-i { flex: 1; }
+body.d2 .ov2 .feed { max-height: 380px; }
+body.d2 .ov2 .scroll { max-height: none; }
+@media (max-width: 900px) { body.d2 .ov2 { grid-template-columns: minmax(0, 1fr); } }

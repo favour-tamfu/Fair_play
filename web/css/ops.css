@@ -49,6 +49,8 @@ body.ops .panel h2 { margin: 0; font-size: 24px; line-height: 1.17; font-weight:
   text-transform: none; color: var(--ink); }
 body.ops .note { font-size: 14px; line-height: 1.43; color: var(--ink-2); }
 body.ops .panel > p.note { margin: 0 0 18px; max-width: 760px; }
+body.ops .panel > .head + .scroll { margin-top: 18px; }
+body.ops #joins td:nth-child(3) { white-space: nowrap; color: var(--ink-2); }
 body.ops .head .note { margin-left: auto; font-size: 14px; color: var(--ink-3); }
 body.ops .head .mock-toggle { margin-left: 0; }
 body.ops .mock-toggle { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--ink-2); }
