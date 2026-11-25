@@ -2,6 +2,11 @@
 Last updated: 2026-11-25 01:05 (Cameroon time).
 
 ## 0. Latest events (newest first)
+- User: **"we can't rely on tunneling"** → Tailscale/ngrok plan rejected too (deploy/PLAN.md still says Funnel; to be rewritten).
+  Research: no-card + no-tunnel options: **Azure for Students** ($100 credit, no card, needs a full-time student school email;
+  VM runs B's compose unchanged, free DNS name `<label>.<region>.cloudapp.azure.com`, Caddy HTTPS) — best fit if eligible;
+  else 512 MB free containers (Render web service — card need unclear; SnapDeploy 4×512 MB, sleeps) which need B's 5 processes merged
+  into one and the in-memory index to fit 512 MB (risky). Koyeb now needs a card; Fly/Railway trials too short. Asked the user which.
 - (A's clock ~02:20; B's clock/notes run ~6 h ahead) **Merged B's main into a/work** (5fb5af7; only REQUESTS.md conflicted;
   `scripts\test_a.ps1` → 90 passed). B's changes now on a/work — **§4 below is partly outdated, these win**:
   sign-in with roles (`login.html`, `js/session.js`, `js/login.js`; SONACAM user `sonacam` + ADMIN_TOKEN; artists = name + `SONACAM`),
