@@ -7,7 +7,7 @@
 Steps:
   1. database migrations applied
   2. meters registered from contract/meters/*.pub.json, their venues known
-  3. catalogue: the package songs (config.CATALOGUE_RANGE, S-000013…S-000195) ready and fingerprinted
+  3. catalogue: every uploaded song ready and fingerprinted (and CATALOGUE_SIZE songs, when .env sets it)
   4. mock ownership: each catalogue song's artist as 100 % owner where no owner is set (D-015)
   5. mock month on the catalogue (D-014): generated + imported if missing (or --reimport)
   6. stats runs: live and mock_month, raw + standardised
@@ -58,9 +58,11 @@ def main(argv=None) -> int:
                         f"{len(meters)} key files loaded")
 
         s = c.execute("""SELECT count(*) AS n, count(*) FILTER (WHERE status = 'ready' AND n_hashes > 0) AS ready
-                         FROM songs WHERE song_id BETWEEN %s AND %s""", CATALOGUE).fetchone()
-        ok["catalogue"] = (s["n"] == config.CATALOGUE_SIZE and s["ready"] == config.CATALOGUE_SIZE,
-                           f"{s['ready']}/{s['n']} songs ready and fingerprinted (expected {config.CATALOGUE_SIZE})")
+                         FROM songs WHERE song_id BETWEEN %s AND %s AND source = 'upload'""", CATALOGUE).fetchone()
+        want = config.CATALOGUE_SIZE
+        ok["catalogue"] = (s["n"] > 0 and s["ready"] == s["n"] and (not want or s["n"] == want),
+                           f"{s['ready']}/{s['n']} songs ready and fingerprinted"
+                           + (f" (expected {want})" if want else "" if s["n"] else " (import the song package first)"))
 
         owners = set_artist_owners(c, *CATALOGUE)
         no_owner = c.execute("""SELECT count(*) AS n FROM songs s WHERE s.song_id BETWEEN %s AND %s

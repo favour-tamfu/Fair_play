@@ -33,7 +33,7 @@ services:
     environment:
       TZ: UTC
     ports:
-      - "127.0.0.1:55432:5432"        # host tools/tests only; not reachable from the hotspot
+      - "127.0.0.1:${DB_PORT:-55432}:5432"   # host tools/tests only; not reachable from the hotspot
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -48,7 +48,7 @@ services:
     <<: *app
     command: uvicorn server.api.main:app --host 0.0.0.0 --port 8000
     ports:
-      - "8000:8000"                   # the meter (Laptop A) and the browser connect here
+      - "${API_PORT:-8000}:8000"      # the meters and the browsers connect here
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=3).status == 200 else 1)"]
       interval: 5s

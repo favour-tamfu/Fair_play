@@ -115,6 +115,7 @@ CLOCK_SKEW_MAX_S = 5.0           # brief §12: |meter clock − server clock| > 
 CLOCK_SKEW_EVERY_S = 3600        # at most one clock_skew flag per meter per hour
 WINDOW_LAG_MAX_S = 180           # R-020: live meter says queue 0 but its newest window started > 3 min ago → clock_skew flag
 
-# The team's song package v3 (FP-001…FP-183) as imported: S-000013…S-000195 (song_map.csv in the package).
-CATALOGUE_RANGE = ("S-000013", "S-000195")
-CATALOGUE_SIZE = 183
+# The demo catalogue = every uploaded song (any id). On Laptop B the team's package v3 is S-000013…S-000195 (183 songs);
+# a fresh install numbers it from S-000001. CATALOGUE_SIZE > 0 makes demo_seed also check the count (0 = any, at least 1).
+CATALOGUE_RANGE = (os.environ.get("CATALOGUE_FIRST") or "S-000000", os.environ.get("CATALOGUE_LAST") or "S-999999")
+CATALOGUE_SIZE = int(os.environ.get("CATALOGUE_SIZE") or _from_dotenv("CATALOGUE_SIZE") or 0)
