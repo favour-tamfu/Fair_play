@@ -388,3 +388,7 @@ body.d2 .kpi { background: #fff; border: 1px solid #e8e8ed; box-shadow: none; }
 body.d2 .kpi-in { background: transparent; border: 0; margin: 0; }
 body.d2 #shares tr.group td { padding: 18px 8px 8px; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: #86868b; background: none; }
 body.d2 #shares tr.unplayed td { color: #86868b; }
+/* plain "Hearing now / Last heard": no tinted box, no accent line, no glowing dot */
+.now-card, .now-card.live { background: none; border: 0; border-radius: 0; padding: 4px 4px 12px; box-shadow: none; border-bottom: 0; }
+.now-card .now-label, .now-card.live .now-label { color: #86868b; }
+.now-card.live .now-label::before, .now-card .now-label::before { content: none; display: none; animation: none; }

@@ -58,7 +58,9 @@ function renderDots(e) {   // D-031: ranked horizontal bars (was a dot matrix th
   const rows = all.slice(0, 12);
   $("dots-tbody").innerHTML = all.map((r) => `<tr><td>${esc(r.artist_name)}</td><td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.counted_plays)}</td></tr>`).join("");
   if (!rows.length) { box.innerHTML = `<p class="dots-empty">${e.frozen ? "Withheld until the log is restored." : "No plays in this period yet."}</p>`; $("dots-x").textContent = ""; return; }
-  const max = Math.max(...rows.map((r) => r.raw_plays || 0), 1);
+  // headroom: the longest bar stops short of the end (scale = a round number at least 20 % above the top value)
+  const top = Math.max(...rows.map((r) => r.raw_plays || 0), 1) * 1.2;
+  const step = 10 ** Math.floor(Math.log10(top)), max = [1, 2, 2.5, 5, 10].map((k) => k * step).find((v) => v >= top);
   box.innerHTML = rows.map((r, i) => `<div class="rbar" role="listitem" tabindex="0" data-i="${i}"
       aria-label="${esc(r.artist_name)}: ${fmtInt(r.counted_plays)} plays counted of ${fmtInt(r.raw_plays)} heard, ${fmtPct(r.share)}">
       <span class="rk">${i + 1}</span><span class="nm" title="${esc(r.artist_name)}">${esc(r.artist_name)}</span>
