@@ -5,9 +5,13 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
 
 ---
 ## 1. RIGHT NOW (resume here)
-- **IN PROGRESS (2026-11-25):** B's public address is live (shared privately, in `Downloads\for_laptop_A\READ_ME_LAPTOP_A.txt`;
-  never commit it). Doing "Way 1": merge origin/main (e6d4705: point_meter.ps1 + meter clock fix) into a/work, run
-  `scripts\point_meter.ps1 -Meter M-07` to set `sonacam_url` in `device\config\M-07.toml` (do NOT commit that file), restart meter.
+- **2026-11-25 (B's public address live; it is only in `Downloads\for_laptop_A\READ_ME_LAPTOP_A.txt` — never commit it):**
+  merged origin/main (e6d4705) into a/work locally. User chose B's "Way 2" (packaged meter) over repointing M-07, so
+  M-07.toml was left as it was (still LAN). New meter **M-21** @ V-BUEA-CIMFEST unzipped to `C:\FairPlayMeter` (outside the repo),
+  `setup` done (key + `contract\meters\M-21.pub.json` there), `check` → answers (HTTP 200). Funnel was briefly slow (~23 s
+  replies, check timeout 5 s), then ~3 s again.
+  **Open:** user signs in as SONACAM and registers M-21.pub.json (Operations > Meters > Register a meter); then start
+  `C:\FairPlayMeter\FairPlayMeter.exe` (run) and play a catalogue song to see it on the dashboard within ~30 s.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look
