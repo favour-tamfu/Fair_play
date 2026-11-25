@@ -325,3 +325,8 @@ input[readonly] { background: var(--grey); color: var(--ink-2); }
   .rk-share { font-size: 16px; }
 }
 
+/* artist page: analytics first (B 2026-11-25) — the day chart gets the wider column */
+.cols2.analytics { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); align-items: stretch; }
+.cols2.analytics .chart-x span { white-space: nowrap; overflow: visible; }
+@media (max-width: 1068px) { .cols2.analytics { grid-template-columns: 1fr; } }
+

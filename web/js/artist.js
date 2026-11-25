@@ -121,8 +121,13 @@ async function load() {
   const days = a.plays_by_day || [];
   const maxD = Math.max(1, ...days.map((d) => d.plays_counted || 0));
   $("chart").innerHTML = days.map((d) => `<i title="${esc(d.date)}: ${fmtInt(d.plays_counted)} counted" style="height:${(100 * (d.plays_counted || 0)) / maxD}%"></i>`).join("");
-  $("chart-range").textContent = days.length ? `${fmtInt(days.reduce((t, d) => t + (d.plays_counted || 0), 0))} counted` : "";
-  $("chart-x").innerHTML = days.map((d) => `<span>${new Date(d.date + "T12:00:00Z").toLocaleDateString("en-GB", { weekday: "short" })}</span>`).join("");
+  const busiest = days.reduce((b, d) => ((d.plays_counted || 0) > (b ? b.plays_counted || 0 : -1) ? d : b), null);
+  const dayLabel = (d, o) => new Date(d.date + "T12:00:00Z").toLocaleDateString("en-GB", o);
+  $("chart-range").textContent = days.length ? `${fmtInt(days.reduce((t, d) => t + (d.plays_counted || 0), 0))} counted`
+    + (busiest && days.length > 1 ? ` · busiest ${dayLabel(busiest, { weekday: "short", day: "numeric", month: "short" })} (${fmtInt(busiest.plays_counted)})` : "") : "";
+  // a week or less: weekday names; a month: the date every few days so the labels stay readable
+  const every = days.length > 10 ? Math.ceil(days.length / 6) : 1;
+  $("chart-x").innerHTML = days.map((d, i) => `<span>${i % every === 0 ? dayLabel(d, days.length > 10 ? { day: "numeric", month: "short" } : { weekday: "short" }) : ""}</span>`).join("");
 
   const recent = (a.recent || []).slice(0, 12);
   $("recent").innerHTML = recent.map((p) => `<div class="am-row"><img src="${coverFor(p.title || p.song_id)}" alt=""><div><b>${esc(p.title || p.song_id)}</b>

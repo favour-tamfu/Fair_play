@@ -186,4 +186,5 @@ Answer (A, time):
 Answer (A, time):
 Update (B, 2026-11-25 04:30, Person B): dashboard greeting ("Good morning, SONACAM") replaced by a plain title that follows the period ("Live plays and shares" / "Mock month: plays and shares"), in `web/js/app.js` greet() and `web/sonacam-x7k2q9.html`; landing local nav: the "Numbers" link removed (same target as "See the count"). Hero screenshot retaken.
 Update (B, 2026-11-25 04:45, Person B): nav icon removed from the global nav (landing, artist page); landing local nav no longer repeats "How it works" (the global nav has it). Hero screenshot retaken with the period labels shown as a real month ("This month", "Live"); every number in it is the system's.
+Update (B, 2026-11-25 05:00, Person B): artist detail page restructured analytics first — key figures, then an "Analytics" block (plays by day in the wider column with date labels every few days and the busiest day; the map), then top songs, bars, recent plays.
 
