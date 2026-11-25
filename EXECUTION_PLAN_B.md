@@ -190,3 +190,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Wed 12:25 | Dashboard polish (D-032) + Songs shows all 183 | flat cards, no pills, quiet feed, balanced top row, share bars out of 100 %, unplayed catalogue songs listed; screenshots checked |
 | Wed 12:33 | Overview: bar headroom, plain 'Last heard' | longest bar stops at about 80 % (scale = round number 20 % above the top value); no tinted box, accent line or glowing dot on Hearing now |
 | Wed 12:40 | SF Pro web fonts | 10 faces (Display/Text, Regular-Heavy) downloaded to ..\fonts_sfpro (not in repo), Latin woff2 copies (30-36 KB) in web/fonts (git-ignored); fonts.css linked on all pages; server sends font/woff2; verified loaded in the browser |
+| Wed 12:50 | One table look (D-033) | tables.css: overview table style on operations (4 tables) and the artist portal; checked on screen |

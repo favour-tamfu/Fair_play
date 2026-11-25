@@ -1,0 +1,14 @@
+/* One table look for every page (D-033): the overview's "Who earned what" table.
+   12 px grey semibold headers over a light line, 14 px rows with a faint separator, 6 px cells, tabular figures.
+   Linked last on the overview, operations and artist portal pages. Phone layouts keep their own rules (below 761 px). */
+@media (min-width: 761px) {
+  html body :is(table.earn, .d2 table, .ops table, .pt-table) { border-collapse: collapse; font-size: 14px; }
+  html body:is(.d2, .ops, .page) :is(table.earn, table, .pt-table) th {
+    font-size: 12px; font-weight: 600; color: #6e6e73; letter-spacing: -.01em; text-transform: none;
+    padding: 6px; border-bottom: 1px solid #d2d2d7; text-align: left; white-space: nowrap; }
+  html body:is(.d2, .ops, .page) :is(table.earn, table, .pt-table) td {
+    font-size: 14px; color: #1d1d1f; padding: 6px; border-bottom: 1px solid #f0f0f2; border-top: 0;
+    line-height: 1.45; font-variant-numeric: tabular-nums; vertical-align: middle; }
+  html body:is(.d2, .ops, .page) :is(table, .pt-table) :is(th, td).n { text-align: right; }
+  html body:is(.d2, .ops, .page) :is(table, .pt-table) tbody tr:last-child td { border-bottom: 1px solid #f0f0f2; }
+}

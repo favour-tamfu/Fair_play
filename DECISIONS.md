@@ -190,3 +190,7 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Live activity: no coloured dots or row lines (alternate row tint instead); "Last heard / Hearing now" is a plain block with a left accent; top row cards share one fixed height.
 - Share bars in Who earned what and Songs are out of 100 % of counted plays, no longer relative to the leader.
 - Songs lists the whole catalogue: played songs ranked first, then "Not played in this period" (0 plays).
+
+## D-033 (B, 2026-11-25) One table look on every page
+- web/css/tables.css carries the overview's "Who earned what" table look (12 px grey semibold headers over a light line, 14 px rows, faint separators, 6 px cells, tabular figures) and is linked last on the overview, operations and artist portal pages.
+- Desktop widths only (from 761 px): the phone layouts of operations and the portal keep their own rules.
