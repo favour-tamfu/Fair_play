@@ -20,8 +20,8 @@ knows exactly where we are. Older dated handoffs in this folder are history; thi
 - Design: Apple style (apple.com / Apple Music page values), no scroll animations, no counting-up numbers, few colours.
 - **Update this file after every message** (user's instruction, 2026-11-25).
 
-## 3. Commits (all local on a/work; origin/a/work is 47 behind)
-Latest first: f3d1c0a packaged meter exe · 56d9e58 handoff · 32273e3 landing Apple restyle · 0a84281 real song names ·
+## 3. Commits (all local on a/work; never pushed — run `git log --oneline -15` for the newest)
+Latest first: (this context file's own commits) · b3a1edc live context + tools/covers · f3d1c0a packaged meter exe · 56d9e58 handoff · 32273e3 landing Apple restyle · 0a84281 real song names ·
 8d5e000 covers · 2885974 dashboard Apple style · fc5081e music landing/covers · 7950a96 artist page · 6209ad8 portal …
 Tests at f3d1c0a: `scripts\test_a.ps1` → **88 passed**; `pytest --noconftest server/tests/test_api_fixtures.py -q` → **19 passed**.
 
@@ -45,6 +45,7 @@ Tests at f3d1c0a: `scripts\test_a.ps1` → **88 passed**; `pytest --noconftest s
 
 ## 6. Packages for B (in `C:\Users\DELL\Downloads`)
 - `Fair_Play_handover_for_B.zip` (723.9 MB): README_HANDOVER.md, code/Fair_Play_a-work.bundle (a/work @ f3d1c0a), songs/v3 zip, meter/FairPlayMeter_windows.zip, covers/FP-xxx.webp + covers.csv, docs/.
+- Note: the bundle inside the handover zip is at f3d1c0a; the standalone `Downloads\Fair_Play_a-work.bundle` is newer (rebuilt after each commit). Give B the standalone bundle too.
 - `Fair_Play_a-work.bundle` (code only). B: `git fetch <bundle> a/work:refs/remotes/laptopA/a-work` then `git merge laptopA/a-work`.
 - `FairPlayMeter_windows.zip` (63.9 MB): the listener as an exe (see §7).
 - **If you commit again, rebuild the bundle and the handover zip** (`git bundle create …\Downloads\Fair_Play_a-work.bundle a/work`; `python -I tools\covers\make_handover.py <repo> <Downloads>`).
