@@ -44,25 +44,44 @@ function busy(btn, on) { btn.disabled = on; btn.classList.toggle("busy", on); }
 
 // ---------- meters ----------
 async function loadMeters() {
+  // D-029: SONACAM's meter list (key fingerprint, retired); the mock month's simulated bars only when asked for
+  const showMock = $("show-mock") && $("show-mock").checked;
   try {
-    const venues = await get("venues");
-    const all = venues.flatMap((v) => (v.meters || []).map((m) => ({ ...m, venue: v })))
-      .sort((a, b) => (b.online - a.online) || a.meter_id.localeCompare(b.meter_id));
-    // the mock month's simulated bars are not real meters: hidden unless asked for
-    const showMock = $("show-mock") && $("show-mock").checked;
-    const rows = all.filter((m) => showMock || m.venue.source !== "mock");
-    const online = rows.filter((m) => m.online).length;
-    $("meters").innerHTML = rows.map((m) => `<tr>
-      <td><b>${esc(m.meter_id)}</b></td><td>${esc(m.venue.name)}</td><td>${esc(m.venue.city)}</td>
-      <td><span class="pill ${m.online ? "ok" : ""}">${m.online ? "online" : "offline"}</span></td>
-      <td>${m.last_seen ? fmtDateTime(m.last_seen) : "never"}</td>
-      <td class="n${m.queued ? " amber" : ""}">${fmtInt(m.queued)}</td>
-      <td class="n">${m.catch_rate == null ? "–" : Math.round(100 * m.catch_rate) + " %"}</td></tr>`).join("")
-      || `<tr><td colspan="7" class="note">No meters registered.</td></tr>`;
-    const real = all.filter((m) => m.venue.source !== "mock").length;
-    $("meters-note").textContent = `${online} of ${rows.length} online · ${real} real or test meters` + (showMock ? `, ${all.length - real} mock-month bars` : "");
+    const rows = MOCK ? [] : await getJson(`/api/v1/admin/meters${showMock ? "?mock=1" : ""}`);
+    rows.sort((x, y) => (!!x.retired_at - !!y.retired_at) || (y.online - x.online) || x.meter_id.localeCompare(y.meter_id));
+    const real = rows.filter((m) => m.source !== "mock");
+    $("meters").innerHTML = rows.map((m) => {
+      const status = m.retired_at ? ["retired", "bad"] : m.source === "mock" ? ["mock month", ""] : m.online ? ["online", "ok"] : ["offline", ""];
+      const canRetire = !m.retired_at && m.source !== "mock";
+      return `<tr class="${m.retired_at ? "retired" : ""}">
+      <td><b>${esc(m.meter_id)}</b></td><td>${esc(String(m.bar || "").replace(/^mock bar\s+/i, "Bar "))}</td><td>${esc(m.city || "")}</td>
+      <td><span class="pill ${status[1]}">${status[0]}</span></td>
+      <td>${m.retired_at ? `retired ${fmtDateTime(m.retired_at)}` : m.last_seen ? fmtDateTime(m.last_seen) : "never"}</td>
+      <td class="mono" title="SHA-256 of the meter's public key, first 16 characters">${esc(m.key_fingerprint)}</td>
+      <td class="n">${m.catch_rate == null ? "–" : Math.round(100 * m.catch_rate) + " %"}</td>
+      <td>${canRetire ? `<button class="small" data-retire="${esc(m.meter_id)}">Retire</button>` : ""}</td></tr>`;
+    }).join("") || `<tr><td colspan="8" class="note">No meters registered.</td></tr>`;
+    const online = real.filter((m) => m.online).length, retired = real.filter((m) => m.retired_at).length;
+    $("meters-note").textContent = `${online} of ${real.length - retired} meters online` + (retired ? ` · ${retired} retired` : "")
+      + (showMock ? ` · ${rows.length - real.length} mock-month bars` : "");
   } catch (e) { $("meters-note").textContent = `could not load: ${e.message}`; }
 }
+// Retire: a second click within 5 s confirms; the meter's reports are refused from then on (re-register to restore).
+$("meters").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-retire]");
+  if (!b) return;
+  if (!b.classList.contains("confirm")) {
+    b.classList.add("confirm"); b.textContent = "Click again to retire";
+    setTimeout(() => { b.classList.remove("confirm"); b.textContent = "Retire"; }, 5000);
+    return;
+  }
+  b.disabled = true;
+  try {
+    await post(`/api/v1/admin/meters/${encodeURIComponent(b.dataset.retire)}/retire`);
+    log(`Meter <b>${esc(b.dataset.retire)}</b> retired: its reports are refused from now on`, "warn");
+  } catch (err) { log(`Could not retire ${esc(b.dataset.retire)}: ${esc(err.message)}`, "err"); }
+  loadMeters();
+});
 
 // ---------- ledger ----------
 async function loadLedger() {
@@ -150,6 +169,8 @@ $("btn-register").addEventListener("click", async (ev) => {
 let songs = [];
 let songFilter = "all";
 const STATUS_ORDER = ["duplicate_suspected", "failed", "processing", "uploaded", "ready"];
+const STATUS_LABEL = { all: "all", duplicate_suspected: "waiting for review", failed: "could not be read", processing: "processing",
+  uploaded: "just uploaded", ready: "ready" };
 async function loadSongs() {
   try {
     songs = await getJson(MOCK ? FIX + "songs.json" : "/api/v1/songs");
@@ -160,12 +181,12 @@ function renderSongs() {
   const counts = {};
   for (const s of songs) counts[s.status] = (counts[s.status] || 0) + 1;
   const keys = ["all", ...STATUS_ORDER.filter((k) => counts[k])];
-  $("song-filters").innerHTML = keys.map((k) => `<button data-f="${k}" class="${k === songFilter ? "on" : ""}">${k.replace("_", " ")} ${k === "all" ? songs.length : counts[k]}</button>`).join("");
+  $("song-filters").innerHTML = keys.map((k) => `<button data-f="${k}" class="${k === songFilter ? "on" : ""}">${STATUS_LABEL[k] || k} ${k === "all" ? songs.length : counts[k]}</button>`).join("");
   const list = songs.filter((s) => songFilter === "all" || s.status === songFilter)
-    .sort((a, b) => STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status) || a.song_id.localeCompare(b.song_id));
+    .sort((a, b) => STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status) || String(b.uploaded_at).localeCompare(String(a.uploaded_at)) || b.song_id.localeCompare(a.song_id));
   $("songs").innerHTML = list.map((s) => `<tr>
     <td class="mono">${esc(s.song_id)}</td><td>${esc(s.title)}</td><td>${esc(s.artist_name)}</td>
-    <td><span class="pill st-${esc(s.status)}">${esc(s.status.replace("_", " "))}</span>${s.duplicate_of ? ` <span class="note">of ${esc(s.duplicate_of)}</span>` : ""}</td>
+    <td><span class="pill st-${esc(s.status)}">${esc(STATUS_LABEL[s.status] || s.status)}</span>${s.duplicate_of ? ` <span class="note">of ${esc(s.duplicate_of)}</span>` : ""}</td>
     <td class="n">${fmtInt(s.n_hashes)}</td><td>${s.uploaded_at ? fmtDateTime(s.uploaded_at) : ""}</td>
     <td>${s.status === "duplicate_suspected" ? `<button class="small" data-approve="${esc(s.song_id)}">Not a duplicate: index it</button>` : ""}</td></tr>`).join("")
     || `<tr><td colspan="7" class="note">No songs.</td></tr>`;
@@ -200,15 +221,17 @@ async function loadFlags() {
     const flags = MOCK ? await getJson(FIX + "flags.json") : await getJson(`/api/v1/flags?period=${period}`);
     // group repeats of the same flag (same type, song, bar and text without numbers), newest first
     const groups = new Map();
-    for (const f of flags.filter((x) => x.type !== "cooldown")) {
+    const showReviewed = $("show-reviewed") && $("show-reviewed").checked;
+    for (const f of flags.filter((x) => x.type !== "cooldown" && (showReviewed || !x.reviewed_at))) {
       const key = [f.type, f.song_id, f.venue_id, String(f.detail || "").replace(/[0-9]+/g, "#")].join("|");
       const g = groups.get(key);
-      if (g) { g.n += 1; if (f.created_at > g.f.created_at) g.f = f; } else groups.set(key, { f, n: 1 });
+      if (g) { g.n += 1; g.ids.push(f.flag_id); if (f.created_at > g.f.created_at) g.f = f; } else groups.set(key, { f, n: 1, ids: [f.flag_id] });
     }
     $("flags").innerHTML = [...groups.values()].sort((a, b) => String(b.f.created_at).localeCompare(String(a.f.created_at)))
-      .map(({ f, n }) => `<li><span class="chip">${esc(f.type)}</span>${n > 1 ? ` <span class="chip">×${n}</span>` : ""} <b>${esc(f.song_id || "")}</b>
+      .map(({ f, n, ids }) => `<li class="${f.reviewed_at ? "reviewed" : ""}"><span class="chip">${esc(f.type)}</span>${n > 1 ? ` <span class="chip">×${n}</span>` : ""} <b>${esc(f.song_id || "")}</b>
+      <button class="small flag-btn" data-review="${ids.join(",")}" data-to="${f.reviewed_at ? "0" : "1"}">${f.reviewed_at ? "Reopen" : "Mark reviewed"}</button>
       ${f.venue_id ? `<span class="note">${esc(f.venue_id)}</span>` : ""}<div class="note">${esc(f.detail)} · ${n > 1 ? "latest " : ""}${fmtDateTime(f.created_at)}</div></li>`).join("")
-      || `<li class="note">No flags for this period.</li>`;
+      || `<li class="note">${showReviewed ? "No flags for this period." : "Nothing left to review for this period."}</li>`;
   } catch (e) { $("flags").innerHTML = `<li class="note">could not load: ${esc(e.message)}</li>`; }
 }
 $("flags-period").addEventListener("change", loadFlags);
@@ -339,3 +362,16 @@ document.querySelectorAll("[data-op]").forEach((a) => a.addEventListener("click"
 markSection(location.hash.slice(1));
 if (location.hash) { const el = document.getElementById(location.hash.slice(1)); if (el) setTimeout(() => el.scrollIntoView(), 300); }
 if ($("show-mock")) $("show-mock").addEventListener("change", loadMeters);
+
+$("flags").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-review]");
+  if (!b) return;
+  b.disabled = true;
+  const to = b.dataset.to === "1";
+  try {
+    for (const id of b.dataset.review.split(",")) await post(`/api/v1/flags/${id}/review`, { reviewed: to });
+    log(`${b.dataset.review.split(",").length} flag(s) marked ${to ? "reviewed" : "not reviewed"}`, "ok");
+  } catch (err) { log(`Could not update the flag: ${esc(err.message)}`, "err"); }
+  loadFlags();
+});
+if ($("show-reviewed")) $("show-reviewed").addEventListener("change", loadFlags);

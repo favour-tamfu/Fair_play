@@ -75,7 +75,8 @@ REJECTED = {"unknown_meter": ("warn", "a meter the server does not know"),
             "bad_signature": ("error", "the signature does not match the meter's key (possible fake report)"),
             "seq_conflict": ("error", "a different report with the same number was already stored"),
             "admin_token_required": ("warn", "adding a meter or changing its key needs the admin password"),
-            "invalid": ("warn", "the request is not valid")}
+            "invalid": ("warn", "the request is not valid"),
+            "meter_retired": ("warn", "this meter was retired by SONACAM")}
 
 
 def rejected(conn, endpoint: str, body: Any, code: int, error: str, detail: Any = None) -> None:

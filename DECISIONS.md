@@ -166,3 +166,10 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Artists: `portal.html` (own songs, totals per period, upload with owners and shares; MoMo optional; the artist name is forced to their own). SONACAM pages (dashboard, admin, artist analytics) redirect to sign-in. Public ranking page `artist.html` removed (D-026 superseded for the public part); the landing page stays as the product page.
 - Routine 15-s share recomputes are no longer written to the activity log or the dashboard's live list (they flooded both).
 
+## D-029 — 2026-11-25 08:45 — B (Person B: fix the issues) — Review flags, retire meters, clearer SONACAM pages
+- Flags can be marked reviewed (who, when, note) and reopened; the operations page hides reviewed flags by default and reviews a whole group of repeats at once (migration 011, c-1.6).
+- A meter can be retired (Retire, confirmed by a second click): its reports and heartbeats are refused (403 meter_retired, in the activity log); a re-registration with the admin password restores it. The meters list shows each key's fingerprint (SHA-256, 16 characters); mock-month bars only on request.
+- Catalogue: uploads waiting for SONACAM first (waiting for review, could not be read, processing, just uploaded), newest first, in plain words.
+- Dashboard: the fictional test artist is not counted as an artist and is labelled "fictional test"; simulated bars shown as "Bar <City> 01"; jargon replaced (counting rules, fingerprint of each hour, public anchors file; no run ids); the small bars in the key-figure cards (a repeat of the chart) removed.
+- Meter 3D model: renders and assembly video on the landing page ("Meet the meter.") and in the README; the renders still carry the old working name on the labels.
+

@@ -11,6 +11,8 @@ const USER = await requireRole("sonacam");   // D-028: SONACAM only (signed in)
 showUser(USER, document.getElementById("who"));
 
 const LIVE_VENUE = "V-BUEA-CIMFEST";
+const TEST_ARTIST = "Fair Play test artist";   // fictional tracks of the mock month's gaming scenarios
+const barName = (n) => String(n || "").replace(/^mock bar\s+/i, "Bar ");   // simulated bars: no "Mock" label
 const state = { period: "live", mode: "standardised", tab: "overview" };
 const venuesById = new Map();
 const $ = (id) => document.getElementById(id);
@@ -30,7 +32,7 @@ function renderKpis(o) {
   setKpi("k-raw", fmtInt(o.plays_raw));
   setKpi("k-counted", fmtInt(o.plays_counted));
   setKpi("k-songs", fmtInt(o.songs_ready));
-  $("rule").textContent = `rule ${o.rule_version}`;
+  $("rule").textContent = `Counting rules ${o.rule_version}`;
   const foot = (id, html) => { const el = $(id); if (el) el.innerHTML = html; };
   foot("kf-counted", o.plays_raw ? `<b>${fmtPct(o.plays_counted / o.plays_raw).replace(".00", "")}</b> of plays heard` : "no plays yet");
   foot("kf-raw", `in <b>${fmtInt(o.venues)}</b> metered bars`);
@@ -194,7 +196,7 @@ function renderMap(venues) {
     const meters = (v.meters || []).map((m) => `${m.meter_id} ${m.online ? "online" : "offline"}`).join(", ");
     parts.push(`<circle class="ring" data-ring="${esc(v.venue_id)}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="6"/>`);
     parts.push(`<circle class="venue${on ? " on" : " off"}${live ? " live" : ""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${live ? 8 : 5.5}">
-      <title>${esc(v.name)}, ${esc(v.city)}${meters ? ` (${esc(meters)})` : ""}</title></circle>`);
+      <title>${esc(barName(v.name))}, ${esc(v.city)}${meters ? ` (${esc(meters)})` : ""}</title></circle>`);
   }
   svg.setAttribute("viewBox", `0 0 ${VIEW.w} ${VIEW.h}`);
   svg.innerHTML = parts.join("");
@@ -207,8 +209,8 @@ function renderMap(venues) {
     const meters = (v.meters || []).map((x) => `${esc(x.meter_id)} ${x.online ? "online" : "offline"}`).join(", ");
     return { id: v.venue_id, lat: v.lat, lon: v.lon, kind: live ? "live" : on ? "on" : "off", colour: live ? "#d46306" : on ? "#0071e3" : "#8e8e93",   // the legend's colours
       r: live ? 10 : 5 + 8 * Math.sqrt(n / most),
-      title: `${v.name}, ${v.city}`,
-      html: `<b>${esc(v.name)}</b>, ${esc(v.city)}<br>${fmtInt(n)} plays ${key === "live" ? "live" : "in the mock month"}${meters ? `<br>${meters}` : ""}` };
+      title: `${barName(v.name)}, ${v.city}`,
+      html: `<b>${esc(barName(v.name))}</b>, ${esc(v.city)}<br>${fmtInt(n)} plays ${key === "live" ? "live" : "in the mock month"}${meters ? `<br>${meters}` : ""}` };
   })));
 }
 
@@ -219,7 +221,7 @@ function showPlayOnMap(venueId, text) {
   if (ring) { ring.classList.remove("go"); void ring.getBoundingClientRect(); ring.classList.add("go"); }
   const v = venuesById.get(venueId);
   const t = $("map-toast");
-  t.textContent = `${text}${v ? ` at ${v.name}, ${v.city}` : ""}`;
+  t.textContent = `${text}${v ? ` at ${barName(v.name)}, ${v.city}` : ""}`;
   t.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove("show"), 5000);
@@ -231,7 +233,7 @@ let lastEarn = null;
 function renderEarnings(e) {
   lastEarn = e;
   $("earn-frozen").classList.toggle("show", !!e.frozen);
-  setKpi("k-artists", e.frozen ? "–" : fmtInt(e.rows.filter((r) => r.counted_plays > 0).length));
+  setKpi("k-artists", e.frozen ? "–" : fmtInt(e.rows.filter((r) => r.counted_plays > 0 && r.artist_name !== TEST_ARTIST).length));
   const max = Math.max(...e.rows.map((r) => r.share), 0.0001);
   $("earn").innerHTML = e.rows.map((r) => {
     const w = (100 * r.share / max).toFixed(1);
@@ -241,7 +243,7 @@ function renderEarnings(e) {
       <td class="n">${fmtInt(s.raw_plays)}</td><td class="n">${fmtInt(s.counted_plays)}</td><td class="n">${fmtPct(s.share)}</td>
       <td><div class="bar" title="${esc(s.title)}: ${fmtPct(s.share)} of counted plays"><i style="width:${(100 * s.share / max).toFixed(1)}%"></i></div></td></tr>`).join("") : "";
     return `<tr class="artist${r.rank <= 3 ? " top3" : ""}" data-artist="${esc(r.artist_name)}">
-      <td>${r.rank}</td><td class="name"><span class="caret">${open ? "▾" : "▸"}</span>${esc(r.artist_name)}<a href="${link}">page</a></td>
+      <td>${r.rank}</td><td class="name"><span class="caret">${open ? "▾" : "▸"}</span>${esc(r.artist_name)}${r.artist_name === TEST_ARTIST ? ' <span class="chip test" title="Fictional tracks used for the mock month's gaming scenarios">fictional test</span>' : `<a href="${link}">page</a>`}</td>
       <td class="n">${r.n_songs}</td><td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.counted_plays)}</td>
       <td class="n share">${fmtPct(r.share)}</td><td><div class="bar" title="${esc(r.artist_name)}: ${fmtPct(r.share)} of counted plays"><i style="width:${w}%"></i></div></td></tr>${songs}`;
   }).join("") || `<tr><td colspan="7" class="note">${e.frozen ? "Withheld until the log is restored." : "No plays counted in this period yet. Shares appear after the first counted play."}</td></tr>`;
@@ -249,9 +251,9 @@ function renderEarnings(e) {
   // Hero sentence: the answer to "who earned what", computed from the rows shown.
   const top = e.frozen ? null : e.rows[0];
   $("earn-hero").textContent = e.frozen ? "Results are withheld until the play log is restored."
-    : top ? `${top.artist_name} leads with ${fmtPct(top.share)} of counted plays. ${fmtInt(e.rows.filter((r) => r.counted_plays > 0).length)} artists have plays in this period.`
+    : top ? `${top.artist_name} leads with ${fmtPct(top.share)} of counted plays. ${fmtInt(e.rows.filter((r) => r.counted_plays > 0 && r.artist_name !== TEST_ARTIST).length)} artists have plays in this period.`
     : "No artist has counted plays in this period yet.";
-  $("earn-note").textContent = `An artist earns for all their songs together, so their songs' shares are added up. Click an artist to see the songs.${e.stats_run_id ? ` Rule ${e.rule_version}, run ${e.stats_run_id}.` : ""}`;
+  $("earn-note").textContent = `An artist earns for all their songs together, so their songs' shares are added up. Click an artist to see the songs, or "page" for their analytics.`;
   renderDots(e);
   renderSparks(e);
   applyFilter();
@@ -289,7 +291,7 @@ function renderShares(s) {
       <td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.weighted_plays)}</td><td class="n share">${fmtPct(r.share)}</td>
       <td><div class="bar"><i style="width:${(100 * r.share / max).toFixed(1)}%"></i></div></td><td>${flags}</td></tr>`;
   }).join("") || `<tr><td colspan="8" class="note">No plays counted in this period yet.</td></tr>`;
-  $("shares-note").textContent = `A song's share is its counted plays divided by all counted plays. Rule ${s.rule_version}${s.stats_run_id ? `, run ${s.stats_run_id}` : ""}.`;
+  $("shares-note").textContent = "A song's share is its counted plays divided by all counted plays.";
   applyFilter();
 }
 
@@ -307,7 +309,7 @@ function renderTrustStatus() {
 
 function renderAnchors(list) {
   $("anchors").innerHTML = list.map((a) => `<tr><td>${fmtDateTime(a.hour)}</td><td class="n">${a.n_plays == null ? "–" : fmtInt(a.n_plays)}</td>
-    <td class="mono" title="${esc(a.root)}">${esc((a.root || "").slice(0, 16))}…</td><td>${esc(a.via)}${a.tx_ref ? ` · ${esc(a.tx_ref)}` : ""}</td></tr>`).join("")
+    <td class="mono" title="${esc(a.root)}">${esc((a.root || "").slice(0, 16))}…</td><td>${a.via === "file" ? "public anchors file" : esc(a.via)}${a.tx_ref ? ` · ${esc(a.tx_ref)}` : ""}</td></tr>`).join("")
     || `<tr><td colspan="4" class="note">No hour anchored yet.</td></tr>`;
 }
 

@@ -47,3 +47,7 @@
 - `GET /api/v1/artists/{artist_name}` now requires header `X-Admin-Token` (403 without it). Shape unchanged. Public pages use `/api/v1/artist-shares` (ranking) and `/api/v1/artists` (names) only.
 - Status: applied (privacy decision by Person B); A informed in R-028.
 
+
+## c-1.6 — 2026-11-25 08:30 — B (Person B: fix the open issues, D-029) — review flags, retire meters
+- Additive: `GET /api/v1/flags` items get `reviewed_at` (UTC or null) and `reviewed_by`. `POST /api/v1/flags/{flag_id}/review` `{"reviewed": bool, "note"?}` (SONACAM).
+- New (SONACAM): `GET /api/v1/admin/meters[?mock=1]` (meters with key fingerprint, retired), `POST /api/v1/admin/meters/{id}/retire`. A retired meter's batches and heartbeats get 403 `{"error":"meter_retired"}`; an admin re-registration restores it.

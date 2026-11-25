@@ -49,7 +49,7 @@
     <div class="head"><h2>Meters</h2><span class="note" id="meters-note"></span><label class="note mock-toggle"><input type="checkbox" id="show-mock"> show the mock-month bars</label></div>
     <div class="scroll">
       <table>
-        <thead><tr><th>meter</th><th>bar</th><th>city</th><th>status</th><th>last seen</th><th class="n">queued</th><th class="n">catch rate</th></tr></thead>
+        <thead><tr><th>meter</th><th>bar</th><th>city</th><th>status</th><th>last seen</th><th>key fingerprint</th><th class="n">catch rate</th><th></th></tr></thead>
         <tbody id="meters"></tbody>
       </table>
     </div>
@@ -87,7 +87,8 @@
   <section class="panel" id="flags-panel">
     <div class="head"><h2>Review flags</h2>
       <select id="flags-period"><option value="live">Live</option><option value="mock_month">Mock month</option></select></div>
-    <p class="note">Flags never change a count; they tell SONACAM what to look at. Repeats of the same flag are grouped.</p>
+    <p class="note">Flags never change a count; they tell SONACAM what to look at. Repeats of the same flag are grouped.
+      <label class="mock-toggle"><input type="checkbox" id="show-reviewed"> show reviewed</label></p>
     <div class="scroll"><ul class="flags" id="flags"></ul></div>
   </section>
 

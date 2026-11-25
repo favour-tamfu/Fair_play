@@ -211,3 +211,9 @@ Answer (A, time):
 - SONACAM sign-in: name `sonacam`, password = ADMIN_TOKEN (Laptop B's .env). Artists: their artist name + `SONACAM`.
 Answer (A, time):
 
+## R-031 — 2026-11-25 08:45 — B → A — FYI: operations and dashboard fixes (Person B, D-029); meter renders
+- Operations page (`admin.js`, `sonacam-x7k2q9-admin.html`): meters from `GET /api/v1/admin/meters` with key fingerprint and Retire; review flags with Mark reviewed / show reviewed; catalogue status labels and order.
+- Dashboard (`app.js`, `sonacam-x7k2q9.html`, `dash.css`): test artist labelled and not counted, simulated bar names, jargon, KPI sparklines hidden.
+- Landing: "Meet the meter." section with the 3D model video and three renders (`web/assets/meter/`). The renders show the old working name on the board and lid; a re-render with "Fair Play" would fix it.
+Answer (A, time):
+

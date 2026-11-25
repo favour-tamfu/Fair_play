@@ -57,6 +57,8 @@ def ingest_batch(conn: psycopg.Connection, raw: Any) -> Result:
         meter = get_meter(conn, batch.meter_id)
         if meter is None:
             return Result(404, {"error": "unknown_meter"})
+        if meter.get("retired_at") is not None:       # D-029: retired by SONACAM
+            return Result(403, {"error": "meter_retired"})
         if not verify_dict(meter["public_key_b64"], raw):
             log.warning("bad signature from %s seq %s", batch.meter_id, batch.seq)
             return Result(401, {"error": "bad_signature"})
@@ -130,6 +132,8 @@ def ingest_heartbeat(conn: psycopg.Connection, raw: Any) -> Result:
         meter = get_meter(conn, hb.meter_id)
         if meter is None:
             return Result(404, {"error": "unknown_meter"})
+        if meter.get("retired_at") is not None:       # D-029: retired by SONACAM
+            return Result(403, {"error": "meter_retired"})
         if not verify_dict(meter["public_key_b64"], raw):
             return Result(401, {"error": "bad_signature"})
         skew = (now - parse_utc(hb.sent_at)).total_seconds()

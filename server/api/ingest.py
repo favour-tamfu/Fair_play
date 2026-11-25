@@ -79,6 +79,8 @@ def _register(conn, body, admin: bool = False) -> ingest.Result:
     try:
         with conn.transaction():
             r = upsert_meter(conn, body)
+            if admin:                                   # D-029: re-registered by SONACAM: no longer retired
+                conn.execute("UPDATE meters SET retired_at = NULL WHERE meter_id = %s", (r["meter_id"],))
     except (ValueError, KeyError) as e:
         return ingest.Result(422, {"error": "invalid", "detail": str(e)})
     return ingest.Result(200, {"ok": True, **r})

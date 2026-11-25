@@ -21,7 +21,7 @@ import psycopg
 
 from fairplay_core.schema import format_utc
 from server import config
-from server.api import auth_api, feed, ingest, ledger, logs, read, songs, stats
+from server.api import auth_api, feed, ingest, ledger, logs, ops, read, songs, stats
 from server.api.events import bus
 from server.db import connect, ping
 from server.db.migrate import migrate
@@ -62,6 +62,7 @@ app.include_router(read.router)
 app.include_router(stats.router)
 app.include_router(logs.router)
 app.include_router(auth_api.router)
+app.include_router(ops.router)
 
 
 @app.middleware("http")

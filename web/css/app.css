@@ -288,3 +288,10 @@ table.act tr.lv-error td:nth-child(3) { color: var(--red); font-weight: 600; }
 /* OpenStreetMap in the dashboard map card (D-025) */
 .map-wrap .osm-map { width: 100%; border-radius: 10px; overflow: hidden; }
 .leaflet-container { font: inherit; font-size: 12px; }
+
+/* D-029: retire a meter, review flags */
+tr.retired td { color: #999; }
+button.small.confirm { background: var(--red); color: #fff; border-color: var(--red); }
+.flags li.reviewed { opacity: .55; }
+.flags .flag-btn { float: right; }
+td.mono, .mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }

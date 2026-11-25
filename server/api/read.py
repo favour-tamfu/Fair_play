@@ -121,7 +121,7 @@ def _venues() -> list[dict]:
     out = []
     for v in vs:
         meters = [{"meter_id": m["meter_id"],
-                   "online": m["source"] != "mock" and m["last_seen"] is not None
+                   "online": m["source"] != "mock" and m.get("retired_at") is None and m["last_seen"] is not None
                    and (now - m["last_seen"]).total_seconds() <= config.METER_OFFLINE_S,
                    "last_seen": _ts(m["last_seen"]), "queued": int(m["queued"] or 0),
                    "catch_rate": float(m["catch_rate"] if m["catch_rate"] is not None else 0.8)}
@@ -168,14 +168,15 @@ async def shares(period: str = PERIOD, mode: str = MODE):
 
 def _flags(period: str) -> list[dict]:
     # stats flags of this period's runs + flags not from a stats run (e.g. duplicate_suspected from the catalogue)
-    sql = """SELECT flag_id, type, song_id, venue_id, detail, created_at FROM flags
+    sql = """SELECT flag_id, type, song_id, venue_id, detail, created_at, reviewed_at, reviewed_by FROM flags
              WHERE stats_run_id IN (SELECT stats_run_id FROM stats_runs WHERE period = %s)
                 OR (stats_run_id IS NULL AND created_at >= %s)"""
     since = parse_utc(config.LIVE_SINCE) if period == "live" else datetime(1970, 1, 1, tzinfo=timezone.utc)
     args = [period, since]
     with connect() as c:
         rows = c.execute(sql + " ORDER BY created_at DESC, flag_id DESC LIMIT 500", args).fetchall()
-    return [{**r, "detail": r["detail"] or "", "created_at": format_utc(r["created_at"])} for r in rows]
+    return [{**r, "detail": r["detail"] or "", "created_at": format_utc(r["created_at"]),
+             "reviewed_at": format_utc(r["reviewed_at"]) if r["reviewed_at"] else None} for r in rows]
 
 
 @router.get("/flags", dependencies=[Depends(require_admin)])   # D-028: SONACAM only

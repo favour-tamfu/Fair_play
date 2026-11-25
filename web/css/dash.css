@@ -293,3 +293,7 @@ body.d2.admin .page { min-width: 0; }
 body.d2.admin .adm { padding: 16px 24px 40px; scroll-padding-top: 70px; }
 body.d2.admin .adm > section { scroll-margin-top: 70px; }
 .mock-toggle { display: inline-flex; gap: 6px; align-items: center; margin-left: 12px; }
+
+/* D-029: the small bars in the key-figure cards repeated the Plays by artist chart: not shown */
+.kpi .spark { display: none; }
+.chip.test { background: #eef1f6; color: #3a4a63; }
