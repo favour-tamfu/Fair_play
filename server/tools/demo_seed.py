@@ -67,8 +67,9 @@ def main(argv=None) -> int:
                                 AND NOT EXISTS (SELECT 1 FROM owners o WHERE o.song_id = s.song_id)""", CATALOGUE).fetchone()["n"]
         ok["ownership"] = (no_owner == 0, f"{len(owners)} set now, {no_owner} songs without owner")
 
-        mock = c.execute("""SELECT count(*) AS n, count(*) FILTER (WHERE song_id BETWEEN %s AND %s) AS cat
-                            FROM plays WHERE chain = 'mock'""", CATALOGUE).fetchone()
+        mock = c.execute("""SELECT count(*) AS n, count(*) FILTER (WHERE song_id BETWEEN %s AND %s
+                                                               OR song_id = ANY(%s)) AS cat
+                            FROM plays WHERE chain = 'mock'""", (*CATALOGUE, list(catalogue_month.TEST_TRACK_IDS))).fetchone()
         if not ok["catalogue"][0]:
             note = "skipped: the catalogue is not ready (import the song package first)"
             mock = {"n": 0, "cat": 0}
@@ -81,7 +82,7 @@ def main(argv=None) -> int:
             note = f"imported now: {r['plays']} plays"
         else:
             note = f"{mock['n']} plays already loaded"
-        ok["mock month"] = (mock["n"] > 0 and mock["cat"] == mock["n"], note + " (all on catalogue songs)")
+        ok["mock month"] = (mock["n"] > 0 and mock["cat"] == mock["n"], note + " (catalogue songs + 3 fictional test tracks)")
 
         runs = []
         for period in ("live", "mock_month"):

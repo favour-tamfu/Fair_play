@@ -56,6 +56,30 @@ def check_clock(conn, meter: dict, skew_s: float, source: str) -> Optional[dict]
                     f"meter clock {abs(skew_s):.1f} s {way} the server ({source}); allowed ±{config.CLOCK_SKEW_MAX_S:g} s")
 
 
+def check_window_lag(conn, meter: dict, queued: int, now) -> Optional[dict]:
+    """R-020: a live meter whose queue is empty should have sent a window that started a few seconds ago (demo: every
+    10 s, field: every 60 s). If its newest window is older than WINDOW_LAG_MAX_S, its window times are behind the real
+    time (e.g. stamped from a sample count that never caught up after a sleep) or it stopped listening."""
+    if meter.get("source") != "live" or queued != 0:
+        return None
+    newest = conn.execute("SELECT max(window_start) AS m FROM raw_batches WHERE meter_id = %s",
+                          (meter["meter_id"],)).fetchone()["m"]
+    if newest is None:
+        return None
+    lag = (now - newest).total_seconds()
+    if lag <= config.WINDOW_LAG_MAX_S:
+        return None
+    recent = conn.execute("""SELECT 1 FROM flags WHERE type = 'clock_skew' AND meter_id = %s
+                             AND created_at > now() - make_interval(secs => %s)""",
+                          (meter["meter_id"], config.CLOCK_SKEW_EVERY_S)).fetchone()
+    if recent:
+        return None
+    h, m = divmod(int(lag) // 60, 60)
+    return add_flag(conn, "clock_skew", meter,
+                    f"newest window started {h} h {m:02d} min ago although the meter has nothing queued: "
+                    f"its window times are behind the real time, or it stopped listening")
+
+
 def check_cell(conn, meter: dict, cell_id: Optional[str]) -> Optional[dict]:
     registered = meter.get("cell_id")
     if not cell_id or not registered or cell_id == registered:

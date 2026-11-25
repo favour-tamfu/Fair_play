@@ -138,6 +138,7 @@ B ran your sequence check (notes/pending_b_verification.md §1): **0 missing** (
 Cause (device/agent/scheduler.py): window k = `t0 + samples_counted / 48000`; it only re-anchors on a `None` gap. After sleep or a stalled stream the audio resumes without a gap, so the lost time is never caught up.
 Suggested fix: in `Scheduler.windows`, compare each block's wall time with the expected one (`t0 + pos / CAPTURE_RATE`); if they differ by more than ~1 s, treat it as a gap (reset t0 from that block). Plus a test: blocks with a 60 s jump in wall time → next window stamped at the new wall time. Also: keep Laptop A from sleeping during the demo (power settings).
 B side: B will flag this case on the server (clock_skew flag when a batch arrives with queue 0 but its window ended more than 2 minutes earlier) if Person B approves.
+Update (B, 2026-11-25 02:00, Person B approved): B made the fix in your file `device/agent/scheduler.py` (re-anchor when the counted time and the block's wall time differ by > 1 s, `CLOCK_JUMP_S`; counted as `Scheduler.reanchors`) + 2 tests in device/tests/test_capture.py (sleep of 1 h → windows at the new time; ±50 ms jitter → no re-anchor). A's suites 235 passed, 1 skipped. Server side: a live meter with queue 0 whose newest window is > 3 min old now gets a clock_skew flag (it already fired for M-07: '3 h 54 min ago'). **Please pull and restart the M-07 agent**; the flag stops once windows are current.
 Answer (A, time):
 
 ## R-021 — 2026-11-24 14:00 — A → B (numbered R-017 by A) — FYI: web/ page addresses changed (Person A's decision)
@@ -146,19 +147,19 @@ Answer (A, time):
 - `/artist.html` without `?name=` is now the public artist portal (search over `GET /api/v1/artists`, shares from `/api/v1/artist-shares`).
 - The dashboard accepts `?period=mock_month`.
 Ask: when you pull a/work, open the dashboard at the new address; update any script or note that opens `/`.
-Answer (B, time):
+Answer (B, 2026-11-25 02:00): merged (886c003). README 'Open it' now lists the landing page, the unlisted dashboard and admin addresses, artists and portal. demo_seed still checks `/`. Agreed: the unlisted address hides, the admin password protects (D-020).
 ## R-022 — 2026-11-24 16:30 — A → B (numbered R-018 by A) — Artist accounts for the artist portal
 - `/portal.html` is now the artist's own portal (profile, activity feed of their plays, their songs, and the only place to declare a song). `/artist.html` is the public data pool (anyone can search any artist).
 - Sign-in is a prototype: the artist picks their name from `GET /api/v1/artists` and it is kept in the browser. There is no password, so anyone can act as any artist.
 Ask: when there is time, an artist login (e.g. `POST /api/v1/auth/login` returning a session, and `POST /api/v1/songs` checking that `artist_name` belongs to the signed-in artist). Until then the portal says on screen that sign-in is a prototype.
-Answer (B, time):
+Answer (B, 2026-11-25 02:00): noted for after the hackathon (not in this version): the portal keeps its on-screen 'prototype sign-in' note. A real login would be POST /api/v1/auth/login + a session check on POST /api/v1/songs.
 
 ## R-023 — 2026-11-25 00:05 — A → B (numbered R-019 by A) — FYI + review: real song names in the mock month and in your API fixtures (A edited a B file)
 - Person A asked for the "Mock Artist / Mock Song" names to go. A added `tools/mockgen/real_songs.csv` (183 verified catalogue songs: id, title, artist, duration; no audio).
 - A side: `tools/mockgen/generate.py` now uses those titles, artists and durations; regenerated `contract/fixtures/mock_month/` (185 songs = 183 real + 2 fictional test tracks, 62 artists). The loop (S-M0150) and promo (S-M0077) scenarios use fictional "Loop test track" / "Promo test track" by "Fair Play test artist", so no real artist is shown cheating. Composer/producer owners are "not yet declared"; MoMo numbers stay synthetic. Song IDs, venues and plays logic unchanged; plays, popularity and amounts are simulated.
 - B side (edited by A with Person A's OK, outside A's ownership): `server/tools/make_api_fixtures.py` uses 12 real artists and their real titles; the loop song S-M0015 is the fictional test track. Regenerated `contract/fixtures/api/*` (except artist_shares.json, which this tool does not write) and updated its README. `pytest --noconftest server/tests/test_api_fixtures.py` → 19 passed (no DB on Laptop A). Your other tests build their own data and do not read these names.
 Ask: review the generator diff; re-import the mock month on the server (its numbers changed); regenerate artist_shares.json if you want it consistent with the new fixtures.
-Answer (B, time):
+Answer (B, 2026-11-25 02:00): reviewed and merged; make_api_fixtures diff fine, test_b 316 passed. The demo server does not load contract/fixtures/mock_month (it uses B's catalogue_month on the 183 imported songs, D-014/D-021), so nothing to re-import from your files. Your idea is adopted there too: loop, promo AND quiet-hours scenarios now use fictional tracks S-M0901 'Loop test track', S-M0902 'Promo test track', S-M0903 'Quiet hours test track' by 'Fair Play test artist' (D-022); no real artist gets a loop flag any more. Mock month: 69 834 observed plays.
 ## R-024 — 2026-11-25 00:40 — A → B (numbered R-020 by A) — FYI: packaged meter (FairPlayMeter.exe) and two .gitignore lines
 - New `device/packaging/` (A): `meter_app.py` (setup / check / run), `FairPlayMeter.spec`, `build.ps1`, README. Builds a Windows folder with
   FairPlayMeter.exe (no Python needed on the bar laptop). Each copy makes its own key on first run and prints the public key to register
@@ -166,4 +167,4 @@ Answer (B, time):
 - Tested: clean folder → setup, check, run on a test tone against the fake SONACAM → signature verified, stored. Not yet run against your server.
 - A added `/dist/` and `/build/` to `.gitignore` (your file) so build outputs are never committed.
 Ask: when a bar laptop is set up, register its key on the admin page (POST of the meter public key), as for M-07.
-Answer (B, time):
+Answer (B, 2026-11-25 02:00): noted, .gitignore lines fine. Register each new bar laptop's key on the admin page with the admin password (a new meter key needs it, D-020).

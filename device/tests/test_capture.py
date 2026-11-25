@@ -84,3 +84,24 @@ def test_file_source_is_resampled_to_48k(tmp_path):
     sf.write(path, x8, SAMPLE_RATE, subtype="FLOAT")
     loaded = FileSource(str(path)).load()
     assert loaded.size == CAPTURE_RATE * 2
+
+
+def test_window_times_follow_the_clock_after_a_sleep():
+    """R-020: the stream resumes after a sleep without a gap marker; windows must use the new wall time."""
+    x = _tone_48k(25)
+    def blocks():
+        yield from _blocks(x, t0=1_000_000.0)              # 25 s of audio, then the laptop sleeps for an hour
+        yield from _blocks(x, t0=1_000_000.0 + 3600.0)     # audio resumes, no None in between
+    sch = Scheduler("demo")
+    starts = [w.start_utc for w in sch.windows(blocks())]
+    assert starts == pytest.approx([1_000_000.0, 1_000_010.0, 1_003_600.0, 1_003_610.0])
+    assert sch.reanchors == 1
+
+
+def test_small_clock_jitter_does_not_reanchor():
+    x = _tone_48k(35)
+    rng = np.random.default_rng(1)
+    jittered = ((t + rng.uniform(-0.05, 0.05), b) for t, b in _blocks(x))   # callback timing jitter of ±50 ms
+    sch = Scheduler("demo")
+    starts = [w.start_utc for w in sch.windows(jittered)]
+    assert len(starts) == 3 and sch.reanchors == 0

@@ -168,8 +168,11 @@ def test_catalogue_month_is_seeded_and_has_scenarios():
     assert g1["plays_observed"] == g2["plays_observed"] and g1["plays_true"] == g2["plays_true"]
     assert cm.generate(songs, venues, meters, seed=8, days=10)["plays_true"] != g1["plays_true"]
     used = {p[2] for p in g1["plays_true"]}
-    assert used <= set(songs["song_id"]) and len(used) == len(songs)          # only (and all) catalogue songs
-    assert {p[5] for p in g1["plays_true"]} >= {"normal", "loop", "quiet_hours"}
+    assert used - set(cm.TEST_TRACK_IDS) == set(songs["song_id"])            # all catalogue songs + the test tracks
+    scen = {p[5]: {q[2] for q in g1["plays_true"] if q[5] == p[5]} for p in g1["plays_true"]}
+    assert set(scen) >= {"normal", "loop", "quiet_hours"}
+    assert scen["loop"] == {"S-M0901"} and scen["quiet_hours"] == {"S-M0903"}  # no real artist in a gaming scenario
+    assert not scen["normal"] & set(cm.TEST_TRACK_IDS)
     assert len(g1["plays_observed"]) < len(g1["plays_true"])                  # catch rate < 1 misses some
     cut_meter = g1["scenario"]["power_cut"][0]
     assert any(s[0] == cut_meter and s[3] == 0 for s in g1["slots"])
@@ -191,9 +194,11 @@ def test_import_uses_existing_catalogue_songs(db, tmp_path):
         for _ in range(2):                                                     # re-import keeps the songs
             r = import_mock(c, out)
             assert r["songs_from_catalogue"] == len(songs)
-        rows = c.execute("SELECT source, n_hashes FROM songs").fetchall()
+        rows = c.execute("SELECT source, n_hashes FROM songs WHERE song_id <> ALL(%s)", (list(cm.TEST_TRACK_IDS),)).fetchall()
         assert len(rows) == len(songs) and all(x["source"] == "upload" and x["n_hashes"] == 99 for x in rows)
+        test = c.execute("SELECT artist_name, source FROM songs WHERE song_id = ANY(%s)", (list(cm.TEST_TRACK_IDS),)).fetchall()
+        assert test == [{"artist_name": cm.TEST_ARTIST, "source": "mock"}] * 3
         assert c.execute("SELECT count(*) AS n FROM plays WHERE chain = 'mock'").fetchone()["n"] == len(g["plays_observed"])
         from server.stats.run import run_both
         run_both(c, "mock_month")
-        assert compare.compare_flat(c, POT)["n_artists"] == 3
+        assert compare.compare_flat(c, POT)["n_artists"] == 4                  # 3 catalogue artists + the test artist

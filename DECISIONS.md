@@ -128,3 +128,10 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Mock month regenerated on all 183 songs (same seed 20261124; D-014): 90 063 true / **71 957 observed plays**, 61 artists, shares sum 1.0; flags cooldown 73, loop 51, low_audience 28. New scenario songs: loop S-000083 (Zambe, Cysoul) at V-DLA-AKWA01; quiet hours V-DLA-DLA02 / S-000052; power cut M-20 (19–21 Nov).
 - Mock ownership (D-015): the 123 new songs registered with their artist as 100 % owner.
 - The catalogue range lives in `config.CATALOGUE_RANGE` / `CATALOGUE_SIZE` (demo_seed, artist_owners, catalogue_month defaults).
+
+## D-022 — 2026-11-25 02:00 — B (Person B: "fix the issues") — Meter window clock, lag flag, fictional scenario tracks
+- Meter (A's file, Person B approved): `Scheduler.windows` re-anchors window times to the wall clock when the counted time and a block's wall time differ by more than 1 s (sleep, stalled stream). Before, M-07 ran 3 h 54 min behind after Laptop A slept (R-020).
+- Server: on a heartbeat from a live meter with queue 0, if its newest window started more than 180 s ago → `clock_skew` flag ("window times behind the real time, or it stopped listening"), at most once per hour (`WINDOW_LAG_MAX_S`).
+- Mock month: the loop, promo and quiet-hours scenarios use fictional tracks S-M0901/02/03 by "Fair Play test artist" (A's idea, R-023), so no real artist is shown gaming the system. 69 834 observed plays; loop flags only on the test tracks.
+- A's merge (886c003): new landing page at `/`, dashboard and admin at unlisted addresses (R-021); README updated (pages, album covers via iTunes Search, Pexels/Unsplash photos).
+

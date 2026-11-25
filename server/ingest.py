@@ -135,7 +135,8 @@ def ingest_heartbeat(conn: psycopg.Connection, raw: Any) -> Result:
         skew = (now - parse_utc(hb.sent_at)).total_seconds()
         conn.execute("UPDATE meters SET last_seen = %s, queued = %s, clock_skew_s = %s WHERE meter_id = %s",
                      (now, hb.queued, skew, hb.meter_id))
-        calibration.check_clock(conn, meter, skew, "heartbeat")
+        if calibration.check_clock(conn, meter, skew, "heartbeat") is None:
+            calibration.check_window_lag(conn, meter, hb.queued, now)
         notify(conn, "meter", {"meter_id": hb.meter_id, "online": True, "queued": hb.queued,
                                "last_seen": format_utc(now)})
     return Result(200, {"ok": True, "server_time": format_utc(now)})

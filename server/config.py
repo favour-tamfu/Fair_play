@@ -113,6 +113,7 @@ CALIB_RECHECK_S = 600            # runs received in the last 10 min are re-evalu
 CALIB_EVERY_S = 15               # scheduler re-check interval
 CLOCK_SKEW_MAX_S = 5.0           # brief §12: |meter clock − server clock| > 5 s → clock_skew flag
 CLOCK_SKEW_EVERY_S = 3600        # at most one clock_skew flag per meter per hour
+WINDOW_LAG_MAX_S = 180           # R-020: live meter says queue 0 but its newest window started > 3 min ago → clock_skew flag
 
 # The team's song package v3 (FP-001…FP-183) as imported: S-000013…S-000195 (song_map.csv in the package).
 CATALOGUE_RANGE = ("S-000013", "S-000195")

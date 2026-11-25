@@ -7,7 +7,7 @@ from fairplay_core.schema import format_utc
 from fairplay_core.signing import generate_seed, sign_batch
 from server.calibration import recheck_recent
 from server.db import connect
-from server.tests.test_ingest import SEED, clean, client, hb, make, q  # noqa: F401  (fixtures: M-90 registered)
+from server.tests.test_ingest import SEED, T0, clean, client, hb, make, q  # noqa: F401  (fixtures: M-90 registered)
 
 NOW = datetime.now(timezone.utc).replace(microsecond=0)
 SONGS = ["S-000001", "S-000002", "S-000003", "S-000004"]
@@ -99,3 +99,30 @@ def test_meter_moved_flag(client, migrated_db):
         assert client.post("/v1/batches", json=make(seq, seconds=10 * seq, cell_id="624-01-0999-00001")).status_code == 200
     f = q(migrated_db, "SELECT detail FROM flags WHERE type = 'meter_moved'")
     assert [x["detail"] for x in f] == ["cell 624-01-0412-01733 -> 624-01-0999-00001 (registered at V-BUEA-CIMFEST)"]
+
+
+def test_window_lag_flag_for_a_live_meter(client, migrated_db):
+    """R-020: queue empty, heartbeat clock right, but the newest window is hours old → clock_skew flag (once)."""
+    with connect(migrated_db, autocommit=True) as c:
+        c.execute("DELETE FROM raw_batches WHERE meter_id = 'M-90'")
+        c.execute("UPDATE meters SET source = 'live' WHERE meter_id = 'M-90'")
+    try:
+        old = datetime.now(timezone.utc) - timedelta(hours=3, minutes=54)
+        assert client.post("/v1/batches", json=make(1, seconds=(old - T0).total_seconds())).status_code == 200
+        now = datetime.now(timezone.utc)
+        assert client.post("/v1/heartbeat", json=hb(now, queued=5)).status_code == 200   # backlog: no flag
+        assert q(migrated_db, "SELECT * FROM flags") == []
+        for _ in range(2):
+            assert client.post("/v1/heartbeat", json=hb(now, queued=0)).status_code == 200
+        f = q(migrated_db, "SELECT type, meter_id, detail FROM flags")
+        assert len(f) == 1 and f[0]["type"] == "clock_skew" and "3 h 54 min ago" in f[0]["detail"]
+        with connect(migrated_db, autocommit=True) as c:                                  # a fresh window: no flag
+            c.execute("TRUNCATE flags")
+        assert client.post("/v1/batches", json=make(2, seconds=(now - timedelta(seconds=15) - T0).total_seconds())).status_code == 200
+        assert client.post("/v1/heartbeat", json=hb(now, queued=0)).status_code == 200
+        assert q(migrated_db, "SELECT * FROM flags") == []
+    finally:
+        with connect(migrated_db, autocommit=True) as c:
+            c.execute("UPDATE meters SET source = 'virtual' WHERE meter_id = 'M-90'")
+            c.execute("DELETE FROM match_events WHERE meter_id = 'M-90'")
+            c.execute("DELETE FROM raw_batches WHERE meter_id = 'M-90'")
