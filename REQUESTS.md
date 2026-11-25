@@ -184,4 +184,5 @@ Answer (A, time):
 - Server: `overview.songs_ready` now counts only fingerprinted songs (183, not 186 with the 3 mock test tracks).
 - Your dashboard still counts the test artist ("62 artists"); fine for SONACAM's internal view, but say if you want it hidden there too.
 Answer (A, time):
+Update (B, 2026-11-25 04:30, Person B): dashboard greeting ("Good morning, SONACAM") replaced by a plain title that follows the period ("Live plays and shares" / "Mock month: plays and shares"), in `web/js/app.js` greet() and `web/sonacam-x7k2q9.html`; landing local nav: the "Numbers" link removed (same target as "See the count"). Hero screenshot retaken.
 

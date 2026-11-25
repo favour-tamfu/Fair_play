@@ -32,10 +32,9 @@ function renderKpis(o) {
   foot("kf-meters", `<b>${fmtInt(o.meters_total - o.meters_online)}</b> offline or simulated`);
 }
 
-// Greeting and breadcrumb (dashboard layout).
+// Page title: says which period is on screen (B for Person B, 2026-11-25: plain title instead of a greeting).
 function greet() {
-  const h = +new Date().toLocaleString("en-GB", { timeZone: "Africa/Douala", hour: "2-digit", hour12: false });
-  if ($("greet")) $("greet").textContent = `${h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening"}, SONACAM`;
+  if ($("greet")) $("greet").textContent = state.period === "mock_month" ? "Mock month: plays and shares" : "Live plays and shares";
 }
 
 // Dot-matrix chart: one group of square columns per artist; light squares = plays heard, dark = plays counted.
@@ -379,6 +378,7 @@ $("ledger").addEventListener("click", () => showTab("trust"));
 document.querySelectorAll("[data-period]").forEach((b) => b.addEventListener("click", () => {
   state.period = b.dataset.period;
   setOn("period", state.period);
+  greet();
   openArtists.clear();
   loadAll();
 }));
