@@ -3,48 +3,136 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Fair Play · artist</title>
-<link rel="stylesheet" href="css/app.css">
-<style>
-  .wrap { max-width: 520px; margin: 0 auto; padding: 14px 16px 40px; }
-  h1 { font-size: 22px; margin: 6px 0 2px; }
-  .sub { color: var(--muted); font-size: 13px; }
-  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 14px 0; }
-  .card { background: var(--chip); border-radius: 10px; padding: 12px; }
-  .card span { display: block; color: var(--muted); font-size: 12px; }
-  .card b { font-size: 20px; }
-  .banner { display: none; background: var(--teal); color: #fff; border-radius: 10px; padding: 10px 12px; margin: 10px 0; font-size: 14px; }
-  .banner.show { display: block; }
-  h2 { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin: 18px 0 6px; }
-  .row { display: flex; justify-content: space-between; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
-  .chart { display: flex; align-items: flex-end; gap: 3px; height: 90px; }
-  .chart i { flex: 1; background: var(--teal); opacity: .6; border-radius: 3px 3px 0 0; min-height: 2px; }
-  .muted { color: var(--muted); font-size: 12px; }
-</style>
+<meta name="theme-color" content="#000000">
+<title>Artists · Fair Play</title>
+<link rel="stylesheet" href="css/landing.css">
+<link rel="stylesheet" href="css/pages.css">
 </head>
-<body>
-<main class="wrap">
-  <div class="sub">Fair Play · artist page</div>
-  <h1 id="name">–</h1>
-  <div class="sub" id="songs"></div>
+<body class="page">
 
-  <div class="banner" id="banner"></div>
-
-  <div class="cards">
-    <div class="card"><span>counted plays</span><b id="counted">–</b></div>
-    <div class="card"><span>share of all plays</span><b id="share">–</b></div>
+<nav class="globalnav" aria-label="Site">
+  <div class="gn-row">
+    <a class="gn-mark" href="index.html" aria-label="Fair Play home"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+    <a href="index.html">Overview</a>
+    <a href="artist.html" aria-current="page">Artists</a>
+    <a href="portal.html">Artist portal</a>
+    <a href="index.html#how">How it works</a>
   </div>
+</nav>
 
-  <h2>Bars that played your song</h2>
-  <div id="venues"></div>
+<nav class="localnav" aria-label="Artists">
+  <div class="ln-row">
+    <a class="ln-title" href="artist.html">Artists</a>
+    <div class="ln-links">
+      <a href="artist.html">Find an artist</a>
+      <a href="#paid">How you get paid</a>
+      <a class="pill" href="portal.html">Artist portal</a>
+    </div>
+  </div>
+</nav>
 
-  <h2>Plays by day</h2>
-  <div class="chart" id="chart"></div>
-  <div class="muted" id="chart-range"></div>
-
-  <h2>Recent plays</h2>
-  <div id="recent"></div>
+<!-- Finder: shown when no ?name= -->
+<main id="finder" hidden>
+  <section class="wrap p-head">
+    <p class="eyebrow">Public data</p>
+    <h1>Find your plays.</h1>
+    <p class="lede">Search your name to see your share of bar plays, the bars that played you and your recent plays.</p>
+  </section>
+  <section class="wrap">
+    <label class="search"><span class="sr">Search for an artist</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="q" type="search" placeholder="Search by artist name" autocomplete="off">
+    </label>
+  </section>
+  <section class="wrap leaders-wrap">
+    <h2 class="small-h">Leading this month.</h2>
+    <div class="leaders" id="leaders"></div>
+  </section>
+  <section class="grey p-section" style="margin-top:60px">
+    <div class="wrap"><h2 class="small-h">All artists.</h2><div id="artist-list"><div class="empty">Loading artists…</div></div></div>
+  </section>
 </main>
+
+<!-- Profile: shown with ?name= (artist page in the style of a music app's artist page) -->
+<main id="profile">
+  <section class="am-hero" id="am-hero">
+    <div class="am-hero-in wrap">
+      <div class="am-id">
+        <button class="am-round" id="share-link" aria-label="Copy the link to this artist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M8 8l4-4 4 4M5 13v6h14v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div>
+          <h1 id="name">–</h1>
+          <p id="songs-line"></p>
+        </div>
+      </div>
+      <div class="seg dark" role="group" aria-label="period">
+        <button data-period="live" class="on">Live</button>
+        <button data-period="mock_month">Month</button>
+      </div>
+    </div>
+    <span id="avatar" hidden></span><span id="watermark" hidden></span>
+  </section>
+
+  <section class="wrap am-block">
+    <div class="tiles">
+      <div class="tile"><span>Share of bar plays</span><div><b id="share">–</b><small id="share-sub"></small></div></div>
+      <div class="tile"><span>Rank</span><div><b id="rank">–</b><small id="rank-label"></small></div></div>
+      <div class="tile"><span>Plays counted</span><div><b id="counted">–</b><small id="counted-sub"></small></div></div>
+      <div class="tile dark now" id="now">
+        <span><i class="pulse" id="now-dot"></i><em id="now-label" style="font-style:normal">Last heard</em></span>
+        <div>
+          <b id="now-title">–</b>
+          <small id="now-where"></small>
+          <div class="track"><i id="now-progress"></i></div>
+          <div class="times"><span id="now-start"></span><span id="now-ago"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap am-block">
+    <h2 class="am-h">Top songs <span>›</span></h2>
+    <div class="am-grid" id="songs"></div>
+  </section>
+
+  <section class="am-block">
+    <h2 class="am-h wrap">Bars that played this artist <span>›</span></h2>
+    <div class="am-shelf" id="venues"></div>
+  </section>
+
+  <section class="wrap am-block">
+    <div class="cols2">
+      <div class="card map-card"><h3>Where they were played <span class="soft" id="map-sub"></span></h3><svg id="pmap" viewBox="0 0 400 560" role="img" aria-label="Map of the bars that played this artist"></svg></div>
+      <div class="card"><h3>Plays by day <span class="soft" id="chart-range"></span></h3><div class="chart tall" id="chart"></div><div class="chart-x" id="chart-x"></div></div>
+    </div>
+  </section>
+
+  <section class="wrap am-block last">
+    <h2 class="am-h">Recent plays <span>›</span></h2>
+    <div class="am-grid" id="recent"></div>
+  </section>
+</main>
+
+<section class="p-section" id="paid">
+  <div class="wrap">
+    <h2>How you get paid.</h2>
+    <div class="paid">
+      <div><b>1</b><p>Bars pay a copyright levy on the drinks they buy.</p></div>
+      <div><b>2</b><p>A meter in each bar recognises the songs. No sound leaves the bar.</p></div>
+      <div><b>3</b><p>Your share is your counted plays divided by all counted plays.</p></div>
+      <div><b>4</b><p>Your rights society applies its rules and pays you.</p></div>
+    </div>
+    <p class="fineprint">Shares are indicative until the period is closed. Repeats of the same song in a short time count less, so looping a song in one bar does not inflate it.</p>
+  </div>
+</section>
+
+<footer class="foot">
+  <div class="wrap">
+    <p id="foot">Fair Play is a prototype built at the CIMFEST Hackathon 2026.</p>
+    <p>Times are Cameroon time.</p>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<script type="module" src="js/site.js"></script>
 <script type="module" src="js/artist.js"></script>
 </body>
 </html>

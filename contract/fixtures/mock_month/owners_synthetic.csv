@@ -1,601 +1,556 @@
 song_id,owner_name,role,share_pct,momo
-S-M0001,Mock Singer 36,singer,50.0,+237699080436
-S-M0001,Mock Composer 36,composer,30.0,+237699043207
-S-M0001,Mock Producer 36,producer,20.0,+237699046738
-S-M0002,Mock Singer 03,singer,50.0,+237699078476
-S-M0002,Mock Composer 03,composer,30.0,+237699084697
-S-M0002,Mock Producer 03,producer,20.0,+237699001783
-S-M0003,Mock Singer 19,singer,50.0,+237699010914
-S-M0003,Mock Composer 19,composer,30.0,+237699028793
-S-M0003,Mock Producer 19,producer,20.0,+237699082942
-S-M0004,Mock Singer 116,singer,50.0,+237699079681
-S-M0004,Mock Composer 116,composer,30.0,+237699046300
-S-M0004,Mock Producer 116,producer,20.0,+237699023264
-S-M0005,Mock Singer 51,singer,50.0,+237699053076
-S-M0005,Mock Composer 51,composer,30.0,+237699076514
-S-M0005,Mock Producer 51,producer,20.0,+237699060601
-S-M0006,Mock Singer 58,singer,50.0,+237699086773
-S-M0006,Mock Composer 58,composer,30.0,+237699075335
-S-M0006,Mock Producer 58,producer,20.0,+237699060310
-S-M0007,Mock Singer 57,singer,50.0,+237699041257
-S-M0007,Mock Composer 57,composer,30.0,+237699011889
-S-M0007,Mock Producer 57,producer,20.0,+237699037418
-S-M0008,Mock Singer 94,singer,50.0,+237699042588
-S-M0008,Mock Composer 94,composer,30.0,+237699011372
-S-M0008,Mock Producer 94,producer,20.0,+237699065193
-S-M0009,Mock Singer 08,singer,50.0,+237699086749
-S-M0009,Mock Composer 08,composer,30.0,+237699027407
-S-M0009,Mock Producer 08,producer,20.0,+237699045389
-S-M0010,Mock Singer 10,singer,50.0,+237699024783
-S-M0010,Mock Composer 10,composer,30.0,+237699026869
-S-M0010,Mock Producer 10,producer,20.0,+237699023666
-S-M0011,Mock Singer 34,singer,50.0,+237699074601
-S-M0011,Mock Composer 34,composer,30.0,+237699084085
-S-M0011,Mock Producer 34,producer,20.0,+237699081656
-S-M0012,Mock Singer 59,singer,50.0,+237699010527
-S-M0012,Mock Composer 59,composer,30.0,+237699088163
-S-M0012,Mock Producer 59,producer,20.0,+237699006655
-S-M0013,Mock Singer 81,singer,50.0,+237699059443
-S-M0013,Mock Composer 81,composer,30.0,+237699035786
-S-M0013,Mock Producer 81,producer,20.0,+237699014617
-S-M0014,Mock Singer 59,singer,50.0,+237699082466
-S-M0014,Mock Composer 59,composer,30.0,+237699031872
-S-M0014,Mock Producer 59,producer,20.0,+237699031033
-S-M0015,Mock Singer 53,singer,50.0,+237699014387
-S-M0015,Mock Composer 53,composer,30.0,+237699091526
-S-M0015,Mock Producer 53,producer,20.0,+237699092097
-S-M0016,Mock Singer 113,singer,50.0,+237699016553
-S-M0016,Mock Composer 113,composer,30.0,+237699015586
-S-M0016,Mock Producer 113,producer,20.0,+237699028472
-S-M0017,Mock Singer 20,singer,50.0,+237699015361
-S-M0017,Mock Composer 20,composer,30.0,+237699045565
-S-M0017,Mock Producer 20,producer,20.0,+237699011549
-S-M0018,Mock Singer 69,singer,50.0,+237699002114
-S-M0018,Mock Composer 69,composer,30.0,+237699070903
-S-M0018,Mock Producer 69,producer,20.0,+237699005539
-S-M0019,Mock Singer 66,singer,50.0,+237699017464
-S-M0019,Mock Composer 66,composer,30.0,+237699083099
-S-M0019,Mock Producer 66,producer,20.0,+237699005338
-S-M0020,Mock Singer 57,singer,50.0,+237699059114
-S-M0020,Mock Composer 57,composer,30.0,+237699051599
-S-M0020,Mock Producer 57,producer,20.0,+237699068071
-S-M0021,Mock Singer 97,singer,50.0,+237699039363
-S-M0021,Mock Composer 97,composer,30.0,+237699082821
-S-M0021,Mock Producer 97,producer,20.0,+237699031799
-S-M0022,Mock Singer 33,singer,50.0,+237699050452
-S-M0022,Mock Composer 33,composer,30.0,+237699073601
-S-M0022,Mock Producer 33,producer,20.0,+237699087500
-S-M0023,Mock Singer 115,singer,50.0,+237699085113
-S-M0023,Mock Composer 115,composer,30.0,+237699053651
-S-M0023,Mock Producer 115,producer,20.0,+237699004347
-S-M0024,Mock Singer 40,singer,50.0,+237699018149
-S-M0024,Mock Composer 40,composer,30.0,+237699088911
-S-M0024,Mock Producer 40,producer,20.0,+237699023674
-S-M0025,Mock Singer 66,singer,50.0,+237699024938
-S-M0025,Mock Composer 66,composer,30.0,+237699064256
-S-M0025,Mock Producer 66,producer,20.0,+237699057123
-S-M0026,Mock Singer 63,singer,50.0,+237699041626
-S-M0026,Mock Composer 63,composer,30.0,+237699028227
-S-M0026,Mock Producer 63,producer,20.0,+237699004925
-S-M0027,Mock Singer 102,singer,50.0,+237699037361
-S-M0027,Mock Composer 102,composer,30.0,+237699092581
-S-M0027,Mock Producer 102,producer,20.0,+237699052375
-S-M0028,Mock Singer 53,singer,50.0,+237699010167
-S-M0028,Mock Composer 53,composer,30.0,+237699009332
-S-M0028,Mock Producer 53,producer,20.0,+237699083345
-S-M0029,Mock Singer 35,singer,50.0,+237699005196
-S-M0029,Mock Composer 35,composer,30.0,+237699040409
-S-M0029,Mock Producer 35,producer,20.0,+237699092484
-S-M0030,Mock Singer 03,singer,50.0,+237699009911
-S-M0030,Mock Composer 03,composer,30.0,+237699083713
-S-M0030,Mock Producer 03,producer,20.0,+237699084357
-S-M0031,Mock Singer 44,singer,50.0,+237699090265
-S-M0031,Mock Composer 44,composer,30.0,+237699023987
-S-M0031,Mock Producer 44,producer,20.0,+237699097957
-S-M0032,Mock Singer 100,singer,50.0,+237699080202
-S-M0032,Mock Composer 100,composer,30.0,+237699057936
-S-M0032,Mock Producer 100,producer,20.0,+237699077947
-S-M0033,Mock Singer 02,singer,50.0,+237699064248
-S-M0033,Mock Composer 02,composer,30.0,+237699061628
-S-M0033,Mock Producer 02,producer,20.0,+237699077899
-S-M0034,Mock Singer 108,singer,50.0,+237699013455
-S-M0034,Mock Composer 108,composer,30.0,+237699082605
-S-M0034,Mock Producer 108,producer,20.0,+237699053606
-S-M0035,Mock Singer 66,singer,50.0,+237699051422
-S-M0035,Mock Composer 66,composer,30.0,+237699096698
-S-M0035,Mock Producer 66,producer,20.0,+237699085757
-S-M0036,Mock Singer 17,singer,50.0,+237699046279
-S-M0036,Mock Composer 17,composer,30.0,+237699078413
-S-M0036,Mock Producer 17,producer,20.0,+237699038508
-S-M0037,Mock Singer 37,singer,50.0,+237699063956
-S-M0037,Mock Composer 37,composer,30.0,+237699024979
-S-M0037,Mock Producer 37,producer,20.0,+237699026646
-S-M0038,Mock Singer 67,singer,50.0,+237699013976
-S-M0038,Mock Composer 67,composer,30.0,+237699043361
-S-M0038,Mock Producer 67,producer,20.0,+237699047787
-S-M0039,Mock Singer 38,singer,50.0,+237699041688
-S-M0039,Mock Composer 38,composer,30.0,+237699060417
-S-M0039,Mock Producer 38,producer,20.0,+237699023256
-S-M0040,Mock Singer 14,singer,50.0,+237699036751
-S-M0040,Mock Composer 14,composer,30.0,+237699050505
-S-M0040,Mock Producer 14,producer,20.0,+237699036639
-S-M0041,Mock Singer 80,singer,50.0,+237699032749
-S-M0041,Mock Composer 80,composer,30.0,+237699043389
-S-M0041,Mock Producer 80,producer,20.0,+237699037946
-S-M0042,Mock Singer 81,singer,50.0,+237699068574
-S-M0042,Mock Composer 81,composer,30.0,+237699023544
-S-M0042,Mock Producer 81,producer,20.0,+237699029687
-S-M0043,Mock Singer 15,singer,50.0,+237699094885
-S-M0043,Mock Composer 15,composer,30.0,+237699067084
-S-M0043,Mock Producer 15,producer,20.0,+237699091634
-S-M0044,Mock Singer 34,singer,50.0,+237699048091
-S-M0044,Mock Composer 34,composer,30.0,+237699077029
-S-M0044,Mock Producer 34,producer,20.0,+237699032836
-S-M0045,Mock Singer 30,singer,50.0,+237699053543
-S-M0045,Mock Composer 30,composer,30.0,+237699096049
-S-M0045,Mock Producer 30,producer,20.0,+237699084856
-S-M0046,Mock Singer 80,singer,50.0,+237699065258
-S-M0046,Mock Composer 80,composer,30.0,+237699020235
-S-M0046,Mock Producer 80,producer,20.0,+237699080439
-S-M0047,Mock Singer 88,singer,50.0,+237699053272
-S-M0047,Mock Composer 88,composer,30.0,+237699076628
-S-M0047,Mock Producer 88,producer,20.0,+237699063291
-S-M0048,Mock Singer 88,singer,50.0,+237699028815
-S-M0048,Mock Composer 88,composer,30.0,+237699017671
-S-M0048,Mock Producer 88,producer,20.0,+237699073489
-S-M0049,Mock Singer 113,singer,50.0,+237699020240
-S-M0049,Mock Composer 113,composer,30.0,+237699059744
-S-M0049,Mock Producer 113,producer,20.0,+237699069479
-S-M0050,Mock Singer 93,singer,50.0,+237699086071
-S-M0050,Mock Composer 93,composer,30.0,+237699091894
-S-M0050,Mock Producer 93,producer,20.0,+237699013210
-S-M0051,Mock Singer 39,singer,50.0,+237699061437
-S-M0051,Mock Composer 39,composer,30.0,+237699063621
-S-M0051,Mock Producer 39,producer,20.0,+237699009509
-S-M0052,Mock Singer 13,singer,50.0,+237699072571
-S-M0052,Mock Composer 13,composer,30.0,+237699058079
-S-M0052,Mock Producer 13,producer,20.0,+237699008449
-S-M0053,Mock Singer 74,singer,50.0,+237699093593
-S-M0053,Mock Composer 74,composer,30.0,+237699072341
-S-M0053,Mock Producer 74,producer,20.0,+237699013740
-S-M0054,Mock Singer 110,singer,50.0,+237699095888
-S-M0054,Mock Composer 110,composer,30.0,+237699016939
-S-M0054,Mock Producer 110,producer,20.0,+237699080088
-S-M0055,Mock Singer 118,singer,50.0,+237699059368
-S-M0055,Mock Composer 118,composer,30.0,+237699044518
-S-M0055,Mock Producer 118,producer,20.0,+237699078262
-S-M0056,Mock Singer 28,singer,50.0,+237699079511
-S-M0056,Mock Composer 28,composer,30.0,+237699093137
-S-M0056,Mock Producer 28,producer,20.0,+237699094602
-S-M0057,Mock Singer 29,singer,50.0,+237699025338
-S-M0057,Mock Composer 29,composer,30.0,+237699072185
-S-M0057,Mock Producer 29,producer,20.0,+237699059007
-S-M0058,Mock Singer 05,singer,50.0,+237699009504
-S-M0058,Mock Composer 05,composer,30.0,+237699052054
-S-M0058,Mock Producer 05,producer,20.0,+237699061616
-S-M0059,Mock Singer 17,singer,50.0,+237699017129
-S-M0059,Mock Composer 17,composer,30.0,+237699012934
-S-M0059,Mock Producer 17,producer,20.0,+237699056495
-S-M0060,Mock Singer 67,singer,50.0,+237699057243
-S-M0060,Mock Composer 67,composer,30.0,+237699047592
-S-M0060,Mock Producer 67,producer,20.0,+237699046598
-S-M0061,Mock Singer 66,singer,50.0,+237699052263
-S-M0061,Mock Composer 66,composer,30.0,+237699072774
-S-M0061,Mock Producer 66,producer,20.0,+237699076392
-S-M0062,Mock Singer 45,singer,50.0,+237699079924
-S-M0062,Mock Composer 45,composer,30.0,+237699051770
-S-M0062,Mock Producer 45,producer,20.0,+237699049215
-S-M0063,Mock Singer 38,singer,50.0,+237699059959
-S-M0063,Mock Composer 38,composer,30.0,+237699013913
-S-M0063,Mock Producer 38,producer,20.0,+237699093123
-S-M0064,Mock Singer 100,singer,50.0,+237699011973
-S-M0064,Mock Composer 100,composer,30.0,+237699078595
-S-M0064,Mock Producer 100,producer,20.0,+237699011710
-S-M0065,Mock Singer 56,singer,50.0,+237699008770
-S-M0065,Mock Composer 56,composer,30.0,+237699048819
-S-M0065,Mock Producer 56,producer,20.0,+237699065786
-S-M0066,Mock Singer 97,singer,50.0,+237699041860
-S-M0066,Mock Composer 97,composer,30.0,+237699092162
-S-M0066,Mock Producer 97,producer,20.0,+237699077432
-S-M0067,Mock Singer 116,singer,50.0,+237699067123
-S-M0067,Mock Composer 116,composer,30.0,+237699073053
-S-M0067,Mock Producer 116,producer,20.0,+237699033363
-S-M0068,Mock Singer 39,singer,50.0,+237699089836
-S-M0068,Mock Composer 39,composer,30.0,+237699081711
-S-M0068,Mock Producer 39,producer,20.0,+237699076253
-S-M0069,Mock Singer 25,singer,50.0,+237699027053
-S-M0069,Mock Composer 25,composer,30.0,+237699079522
-S-M0069,Mock Producer 25,producer,20.0,+237699036419
-S-M0070,Mock Singer 115,singer,50.0,+237699031443
-S-M0070,Mock Composer 115,composer,30.0,+237699031301
-S-M0070,Mock Producer 115,producer,20.0,+237699015761
-S-M0071,Mock Singer 77,singer,50.0,+237699014778
-S-M0071,Mock Composer 77,composer,30.0,+237699008625
-S-M0071,Mock Producer 77,producer,20.0,+237699093612
-S-M0072,Mock Singer 35,singer,50.0,+237699043790
-S-M0072,Mock Composer 35,composer,30.0,+237699073749
-S-M0072,Mock Producer 35,producer,20.0,+237699038331
-S-M0073,Mock Singer 75,singer,50.0,+237699072968
-S-M0073,Mock Composer 75,composer,30.0,+237699017599
-S-M0073,Mock Producer 75,producer,20.0,+237699055299
-S-M0074,Mock Singer 62,singer,50.0,+237699093613
-S-M0074,Mock Composer 62,composer,30.0,+237699036078
-S-M0074,Mock Producer 62,producer,20.0,+237699078030
-S-M0075,Mock Singer 109,singer,50.0,+237699047936
-S-M0075,Mock Composer 109,composer,30.0,+237699013992
-S-M0075,Mock Producer 109,producer,20.0,+237699037635
-S-M0076,Mock Singer 31,singer,50.0,+237699098663
-S-M0076,Mock Composer 31,composer,30.0,+237699000489
-S-M0076,Mock Producer 31,producer,20.0,+237699071776
-S-M0077,Mock Singer 119,singer,50.0,+237699095119
-S-M0077,Mock Composer 119,composer,30.0,+237699042380
-S-M0077,Mock Producer 119,producer,20.0,+237699011847
-S-M0078,Mock Singer 113,singer,50.0,+237699085053
-S-M0078,Mock Composer 113,composer,30.0,+237699087793
-S-M0078,Mock Producer 113,producer,20.0,+237699063707
-S-M0079,Mock Singer 22,singer,50.0,+237699012192
-S-M0079,Mock Composer 22,composer,30.0,+237699047817
-S-M0079,Mock Producer 22,producer,20.0,+237699058825
-S-M0080,Mock Singer 20,singer,50.0,+237699068609
-S-M0080,Mock Composer 20,composer,30.0,+237699054451
-S-M0080,Mock Producer 20,producer,20.0,+237699001230
-S-M0081,Mock Singer 64,singer,50.0,+237699045431
-S-M0081,Mock Composer 64,composer,30.0,+237699072258
-S-M0081,Mock Producer 64,producer,20.0,+237699082539
-S-M0082,Mock Singer 06,singer,50.0,+237699029535
-S-M0082,Mock Composer 06,composer,30.0,+237699096831
-S-M0082,Mock Producer 06,producer,20.0,+237699045854
-S-M0083,Mock Singer 36,singer,50.0,+237699044231
-S-M0083,Mock Composer 36,composer,30.0,+237699001209
-S-M0083,Mock Producer 36,producer,20.0,+237699030192
-S-M0084,Mock Singer 53,singer,50.0,+237699091844
-S-M0084,Mock Composer 53,composer,30.0,+237699073822
-S-M0084,Mock Producer 53,producer,20.0,+237699078129
-S-M0085,Mock Singer 117,singer,50.0,+237699011058
-S-M0085,Mock Composer 117,composer,30.0,+237699039092
-S-M0085,Mock Producer 117,producer,20.0,+237699099703
-S-M0086,Mock Singer 120,singer,50.0,+237699087920
-S-M0086,Mock Composer 120,composer,30.0,+237699068449
-S-M0086,Mock Producer 120,producer,20.0,+237699028390
-S-M0087,Mock Singer 19,singer,50.0,+237699083689
-S-M0087,Mock Composer 19,composer,30.0,+237699004321
-S-M0087,Mock Producer 19,producer,20.0,+237699010641
-S-M0088,Mock Singer 108,singer,50.0,+237699099910
-S-M0088,Mock Composer 108,composer,30.0,+237699002396
-S-M0088,Mock Producer 108,producer,20.0,+237699066568
-S-M0089,Mock Singer 11,singer,50.0,+237699065012
-S-M0089,Mock Composer 11,composer,30.0,+237699062331
-S-M0089,Mock Producer 11,producer,20.0,+237699009044
-S-M0090,Mock Singer 90,singer,50.0,+237699089703
-S-M0090,Mock Composer 90,composer,30.0,+237699086344
-S-M0090,Mock Producer 90,producer,20.0,+237699002899
-S-M0091,Mock Singer 102,singer,50.0,+237699024082
-S-M0091,Mock Composer 102,composer,30.0,+237699045329
-S-M0091,Mock Producer 102,producer,20.0,+237699014302
-S-M0092,Mock Singer 107,singer,50.0,+237699077676
-S-M0092,Mock Composer 107,composer,30.0,+237699080834
-S-M0092,Mock Producer 107,producer,20.0,+237699019820
-S-M0093,Mock Singer 27,singer,50.0,+237699091063
-S-M0093,Mock Composer 27,composer,30.0,+237699028890
-S-M0093,Mock Producer 27,producer,20.0,+237699065626
-S-M0094,Mock Singer 108,singer,50.0,+237699003616
-S-M0094,Mock Composer 108,composer,30.0,+237699000547
-S-M0094,Mock Producer 108,producer,20.0,+237699000542
-S-M0095,Mock Singer 14,singer,50.0,+237699005165
-S-M0095,Mock Composer 14,composer,30.0,+237699081998
-S-M0095,Mock Producer 14,producer,20.0,+237699060592
-S-M0096,Mock Singer 63,singer,50.0,+237699080148
-S-M0096,Mock Composer 63,composer,30.0,+237699096318
-S-M0096,Mock Producer 63,producer,20.0,+237699023855
-S-M0097,Mock Singer 57,singer,50.0,+237699084940
-S-M0097,Mock Composer 57,composer,30.0,+237699024488
-S-M0097,Mock Producer 57,producer,20.0,+237699005723
-S-M0098,Mock Singer 38,singer,50.0,+237699080096
-S-M0098,Mock Composer 38,composer,30.0,+237699096819
-S-M0098,Mock Producer 38,producer,20.0,+237699092779
-S-M0099,Mock Singer 03,singer,50.0,+237699077210
-S-M0099,Mock Composer 03,composer,30.0,+237699084612
-S-M0099,Mock Producer 03,producer,20.0,+237699069812
-S-M0100,Mock Singer 93,singer,50.0,+237699083798
-S-M0100,Mock Composer 93,composer,30.0,+237699044655
-S-M0100,Mock Producer 93,producer,20.0,+237699004015
-S-M0101,Mock Singer 41,singer,50.0,+237699020178
-S-M0101,Mock Composer 41,composer,30.0,+237699011372
-S-M0101,Mock Producer 41,producer,20.0,+237699012492
-S-M0102,Mock Singer 80,singer,50.0,+237699050453
-S-M0102,Mock Composer 80,composer,30.0,+237699053983
-S-M0102,Mock Producer 80,producer,20.0,+237699074518
-S-M0103,Mock Singer 50,singer,50.0,+237699063001
-S-M0103,Mock Composer 50,composer,30.0,+237699008602
-S-M0103,Mock Producer 50,producer,20.0,+237699085113
-S-M0104,Mock Singer 45,singer,50.0,+237699015521
-S-M0104,Mock Composer 45,composer,30.0,+237699081332
-S-M0104,Mock Producer 45,producer,20.0,+237699073462
-S-M0105,Mock Singer 107,singer,50.0,+237699019304
-S-M0105,Mock Composer 107,composer,30.0,+237699001574
-S-M0105,Mock Producer 107,producer,20.0,+237699027075
-S-M0106,Mock Singer 12,singer,50.0,+237699070990
-S-M0106,Mock Composer 12,composer,30.0,+237699052255
-S-M0106,Mock Producer 12,producer,20.0,+237699098020
-S-M0107,Mock Singer 89,singer,50.0,+237699061154
-S-M0107,Mock Composer 89,composer,30.0,+237699050931
-S-M0107,Mock Producer 89,producer,20.0,+237699005450
-S-M0108,Mock Singer 90,singer,50.0,+237699061630
-S-M0108,Mock Composer 90,composer,30.0,+237699000437
-S-M0108,Mock Producer 90,producer,20.0,+237699004235
-S-M0109,Mock Singer 46,singer,50.0,+237699088414
-S-M0109,Mock Composer 46,composer,30.0,+237699045893
-S-M0109,Mock Producer 46,producer,20.0,+237699070957
-S-M0110,Mock Singer 32,singer,50.0,+237699017312
-S-M0110,Mock Composer 32,composer,30.0,+237699037115
-S-M0110,Mock Producer 32,producer,20.0,+237699009172
-S-M0111,Mock Singer 01,singer,50.0,+237699018353
-S-M0111,Mock Composer 01,composer,30.0,+237699037637
-S-M0111,Mock Producer 01,producer,20.0,+237699098002
-S-M0112,Mock Singer 113,singer,50.0,+237699045856
-S-M0112,Mock Composer 113,composer,30.0,+237699054301
-S-M0112,Mock Producer 113,producer,20.0,+237699078408
-S-M0113,Mock Singer 114,singer,50.0,+237699063640
-S-M0113,Mock Composer 114,composer,30.0,+237699087269
-S-M0113,Mock Producer 114,producer,20.0,+237699057241
-S-M0114,Mock Singer 29,singer,50.0,+237699014513
-S-M0114,Mock Composer 29,composer,30.0,+237699024828
-S-M0114,Mock Producer 29,producer,20.0,+237699094602
-S-M0115,Mock Singer 04,singer,50.0,+237699030134
-S-M0115,Mock Composer 04,composer,30.0,+237699041836
-S-M0115,Mock Producer 04,producer,20.0,+237699057801
-S-M0116,Mock Singer 15,singer,50.0,+237699069977
-S-M0116,Mock Composer 15,composer,30.0,+237699025749
-S-M0116,Mock Producer 15,producer,20.0,+237699064923
-S-M0117,Mock Singer 09,singer,50.0,+237699094059
-S-M0117,Mock Composer 09,composer,30.0,+237699015792
-S-M0117,Mock Producer 09,producer,20.0,+237699014843
-S-M0118,Mock Singer 100,singer,50.0,+237699050835
-S-M0118,Mock Composer 100,composer,30.0,+237699069087
-S-M0118,Mock Producer 100,producer,20.0,+237699040403
-S-M0119,Mock Singer 108,singer,50.0,+237699047416
-S-M0119,Mock Composer 108,composer,30.0,+237699012933
-S-M0119,Mock Producer 108,producer,20.0,+237699011921
-S-M0120,Mock Singer 19,singer,50.0,+237699013409
-S-M0120,Mock Composer 19,composer,30.0,+237699094785
-S-M0120,Mock Producer 19,producer,20.0,+237699027807
-S-M0121,Mock Singer 90,singer,50.0,+237699030470
-S-M0121,Mock Composer 90,composer,30.0,+237699061469
-S-M0121,Mock Producer 90,producer,20.0,+237699042790
-S-M0122,Mock Singer 22,singer,50.0,+237699061098
-S-M0122,Mock Composer 22,composer,30.0,+237699040078
-S-M0122,Mock Producer 22,producer,20.0,+237699063462
-S-M0123,Mock Singer 45,singer,50.0,+237699041181
-S-M0123,Mock Composer 45,composer,30.0,+237699015344
-S-M0123,Mock Producer 45,producer,20.0,+237699040878
-S-M0124,Mock Singer 72,singer,50.0,+237699021762
-S-M0124,Mock Composer 72,composer,30.0,+237699094914
-S-M0124,Mock Producer 72,producer,20.0,+237699058830
-S-M0125,Mock Singer 87,singer,50.0,+237699031704
-S-M0125,Mock Composer 87,composer,30.0,+237699092045
-S-M0125,Mock Producer 87,producer,20.0,+237699003605
-S-M0126,Mock Singer 105,singer,50.0,+237699041840
-S-M0126,Mock Composer 105,composer,30.0,+237699047727
-S-M0126,Mock Producer 105,producer,20.0,+237699047413
-S-M0127,Mock Singer 06,singer,50.0,+237699022559
-S-M0127,Mock Composer 06,composer,30.0,+237699009524
-S-M0127,Mock Producer 06,producer,20.0,+237699057245
-S-M0128,Mock Singer 24,singer,50.0,+237699056577
-S-M0128,Mock Composer 24,composer,30.0,+237699058971
-S-M0128,Mock Producer 24,producer,20.0,+237699070200
-S-M0129,Mock Singer 34,singer,50.0,+237699064794
-S-M0129,Mock Composer 34,composer,30.0,+237699058715
-S-M0129,Mock Producer 34,producer,20.0,+237699065243
-S-M0130,Mock Singer 38,singer,50.0,+237699031621
-S-M0130,Mock Composer 38,composer,30.0,+237699024628
-S-M0130,Mock Producer 38,producer,20.0,+237699078743
-S-M0131,Mock Singer 120,singer,50.0,+237699054914
-S-M0131,Mock Composer 120,composer,30.0,+237699019697
-S-M0131,Mock Producer 120,producer,20.0,+237699043141
-S-M0132,Mock Singer 94,singer,50.0,+237699062601
-S-M0132,Mock Composer 94,composer,30.0,+237699052637
-S-M0132,Mock Producer 94,producer,20.0,+237699036065
-S-M0133,Mock Singer 39,singer,50.0,+237699051273
-S-M0133,Mock Composer 39,composer,30.0,+237699080830
-S-M0133,Mock Producer 39,producer,20.0,+237699073670
-S-M0134,Mock Singer 117,singer,50.0,+237699088640
-S-M0134,Mock Composer 117,composer,30.0,+237699012826
-S-M0134,Mock Producer 117,producer,20.0,+237699092105
-S-M0135,Mock Singer 60,singer,50.0,+237699050363
-S-M0135,Mock Composer 60,composer,30.0,+237699073339
-S-M0135,Mock Producer 60,producer,20.0,+237699052027
-S-M0136,Mock Singer 61,singer,50.0,+237699079987
-S-M0136,Mock Composer 61,composer,30.0,+237699024592
-S-M0136,Mock Producer 61,producer,20.0,+237699031445
-S-M0137,Mock Singer 53,singer,50.0,+237699083738
-S-M0137,Mock Composer 53,composer,30.0,+237699038392
-S-M0137,Mock Producer 53,producer,20.0,+237699049414
-S-M0138,Mock Singer 18,singer,50.0,+237699011585
-S-M0138,Mock Composer 18,composer,30.0,+237699005594
-S-M0138,Mock Producer 18,producer,20.0,+237699007205
-S-M0139,Mock Singer 113,singer,50.0,+237699084199
-S-M0139,Mock Composer 113,composer,30.0,+237699082188
-S-M0139,Mock Producer 113,producer,20.0,+237699005556
-S-M0140,Mock Singer 02,singer,50.0,+237699028061
-S-M0140,Mock Composer 02,composer,30.0,+237699056529
-S-M0140,Mock Producer 02,producer,20.0,+237699033413
-S-M0141,Mock Singer 21,singer,50.0,+237699017299
-S-M0141,Mock Composer 21,composer,30.0,+237699073077
-S-M0141,Mock Producer 21,producer,20.0,+237699031389
-S-M0142,Mock Singer 28,singer,50.0,+237699074269
-S-M0142,Mock Composer 28,composer,30.0,+237699090278
-S-M0142,Mock Producer 28,producer,20.0,+237699001468
-S-M0143,Mock Singer 34,singer,50.0,+237699082717
-S-M0143,Mock Composer 34,composer,30.0,+237699070616
-S-M0143,Mock Producer 34,producer,20.0,+237699085654
-S-M0144,Mock Singer 16,singer,50.0,+237699037226
-S-M0144,Mock Composer 16,composer,30.0,+237699070917
-S-M0144,Mock Producer 16,producer,20.0,+237699015361
-S-M0145,Mock Singer 03,singer,50.0,+237699060084
-S-M0145,Mock Composer 03,composer,30.0,+237699066845
-S-M0145,Mock Producer 03,producer,20.0,+237699011967
-S-M0146,Mock Singer 82,singer,50.0,+237699036491
-S-M0146,Mock Composer 82,composer,30.0,+237699050174
-S-M0146,Mock Producer 82,producer,20.0,+237699095842
-S-M0147,Mock Singer 117,singer,50.0,+237699099546
-S-M0147,Mock Composer 117,composer,30.0,+237699044957
-S-M0147,Mock Producer 117,producer,20.0,+237699077210
-S-M0148,Mock Singer 15,singer,50.0,+237699031096
-S-M0148,Mock Composer 15,composer,30.0,+237699077059
-S-M0148,Mock Producer 15,producer,20.0,+237699068766
-S-M0149,Mock Singer 36,singer,50.0,+237699070540
-S-M0149,Mock Composer 36,composer,30.0,+237699075307
-S-M0149,Mock Producer 36,producer,20.0,+237699038784
-S-M0150,Mock Singer 61,singer,50.0,+237699064088
-S-M0150,Mock Composer 61,composer,30.0,+237699033362
-S-M0150,Mock Producer 61,producer,20.0,+237699001072
-S-M0151,Mock Singer 112,singer,50.0,+237699020905
-S-M0151,Mock Composer 112,composer,30.0,+237699075652
-S-M0151,Mock Producer 112,producer,20.0,+237699052508
-S-M0152,Mock Singer 84,singer,50.0,+237699016375
-S-M0152,Mock Composer 84,composer,30.0,+237699071150
-S-M0152,Mock Producer 84,producer,20.0,+237699016590
-S-M0153,Mock Singer 92,singer,50.0,+237699083630
-S-M0153,Mock Composer 92,composer,30.0,+237699092036
-S-M0153,Mock Producer 92,producer,20.0,+237699098913
-S-M0154,Mock Singer 70,singer,50.0,+237699055596
-S-M0154,Mock Composer 70,composer,30.0,+237699020048
-S-M0154,Mock Producer 70,producer,20.0,+237699083906
-S-M0155,Mock Singer 51,singer,50.0,+237699099032
-S-M0155,Mock Composer 51,composer,30.0,+237699065094
-S-M0155,Mock Producer 51,producer,20.0,+237699014159
-S-M0156,Mock Singer 24,singer,50.0,+237699044824
-S-M0156,Mock Composer 24,composer,30.0,+237699084294
-S-M0156,Mock Producer 24,producer,20.0,+237699039257
-S-M0157,Mock Singer 104,singer,50.0,+237699008004
-S-M0157,Mock Composer 104,composer,30.0,+237699083545
-S-M0157,Mock Producer 104,producer,20.0,+237699075533
-S-M0158,Mock Singer 97,singer,50.0,+237699043377
-S-M0158,Mock Composer 97,composer,30.0,+237699047971
-S-M0158,Mock Producer 97,producer,20.0,+237699046932
-S-M0159,Mock Singer 04,singer,50.0,+237699015067
-S-M0159,Mock Composer 04,composer,30.0,+237699030634
-S-M0159,Mock Producer 04,producer,20.0,+237699018092
-S-M0160,Mock Singer 86,singer,50.0,+237699090710
-S-M0160,Mock Composer 86,composer,30.0,+237699094072
-S-M0160,Mock Producer 86,producer,20.0,+237699004464
-S-M0161,Mock Singer 11,singer,50.0,+237699023285
-S-M0161,Mock Composer 11,composer,30.0,+237699019256
-S-M0161,Mock Producer 11,producer,20.0,+237699029205
-S-M0162,Mock Singer 89,singer,50.0,+237699049019
-S-M0162,Mock Composer 89,composer,30.0,+237699099561
-S-M0162,Mock Producer 89,producer,20.0,+237699058644
-S-M0163,Mock Singer 100,singer,50.0,+237699049328
-S-M0163,Mock Composer 100,composer,30.0,+237699001390
-S-M0163,Mock Producer 100,producer,20.0,+237699008411
-S-M0164,Mock Singer 16,singer,50.0,+237699024366
-S-M0164,Mock Composer 16,composer,30.0,+237699084057
-S-M0164,Mock Producer 16,producer,20.0,+237699084358
-S-M0165,Mock Singer 53,singer,50.0,+237699063758
-S-M0165,Mock Composer 53,composer,30.0,+237699055617
-S-M0165,Mock Producer 53,producer,20.0,+237699064914
-S-M0166,Mock Singer 15,singer,50.0,+237699067020
-S-M0166,Mock Composer 15,composer,30.0,+237699079444
-S-M0166,Mock Producer 15,producer,20.0,+237699076290
-S-M0167,Mock Singer 69,singer,50.0,+237699005810
-S-M0167,Mock Composer 69,composer,30.0,+237699072494
-S-M0167,Mock Producer 69,producer,20.0,+237699036660
-S-M0168,Mock Singer 112,singer,50.0,+237699053952
-S-M0168,Mock Composer 112,composer,30.0,+237699088118
-S-M0168,Mock Producer 112,producer,20.0,+237699033845
-S-M0169,Mock Singer 10,singer,50.0,+237699084447
-S-M0169,Mock Composer 10,composer,30.0,+237699033110
-S-M0169,Mock Producer 10,producer,20.0,+237699048257
-S-M0170,Mock Singer 48,singer,50.0,+237699076862
-S-M0170,Mock Composer 48,composer,30.0,+237699068915
-S-M0170,Mock Producer 48,producer,20.0,+237699085201
-S-M0171,Mock Singer 117,singer,50.0,+237699050479
-S-M0171,Mock Composer 117,composer,30.0,+237699043086
-S-M0171,Mock Producer 117,producer,20.0,+237699090955
-S-M0172,Mock Singer 37,singer,50.0,+237699058712
-S-M0172,Mock Composer 37,composer,30.0,+237699012016
-S-M0172,Mock Producer 37,producer,20.0,+237699085027
-S-M0173,Mock Singer 16,singer,50.0,+237699034059
-S-M0173,Mock Composer 16,composer,30.0,+237699058291
-S-M0173,Mock Producer 16,producer,20.0,+237699049881
-S-M0174,Mock Singer 59,singer,50.0,+237699053141
-S-M0174,Mock Composer 59,composer,30.0,+237699051699
-S-M0174,Mock Producer 59,producer,20.0,+237699010497
-S-M0175,Mock Singer 62,singer,50.0,+237699039855
-S-M0175,Mock Composer 62,composer,30.0,+237699099820
-S-M0175,Mock Producer 62,producer,20.0,+237699091733
-S-M0176,Mock Singer 80,singer,50.0,+237699063083
-S-M0176,Mock Composer 80,composer,30.0,+237699039150
-S-M0176,Mock Producer 80,producer,20.0,+237699017750
-S-M0177,Mock Singer 38,singer,50.0,+237699033885
-S-M0177,Mock Composer 38,composer,30.0,+237699031646
-S-M0177,Mock Producer 38,producer,20.0,+237699019160
-S-M0178,Mock Singer 115,singer,50.0,+237699002482
-S-M0178,Mock Composer 115,composer,30.0,+237699060796
-S-M0178,Mock Producer 115,producer,20.0,+237699092746
-S-M0179,Mock Singer 63,singer,50.0,+237699044820
-S-M0179,Mock Composer 63,composer,30.0,+237699042026
-S-M0179,Mock Producer 63,producer,20.0,+237699030753
-S-M0180,Mock Singer 35,singer,50.0,+237699059847
-S-M0180,Mock Composer 35,composer,30.0,+237699056652
-S-M0180,Mock Producer 35,producer,20.0,+237699000731
-S-M0181,Mock Singer 116,singer,50.0,+237699027802
-S-M0181,Mock Composer 116,composer,30.0,+237699017028
-S-M0181,Mock Producer 116,producer,20.0,+237699070303
-S-M0182,Mock Singer 111,singer,50.0,+237699063376
-S-M0182,Mock Composer 111,composer,30.0,+237699071348
-S-M0182,Mock Producer 111,producer,20.0,+237699098180
-S-M0183,Mock Singer 60,singer,50.0,+237699062035
-S-M0183,Mock Composer 60,composer,30.0,+237699087902
-S-M0183,Mock Producer 60,producer,20.0,+237699047750
-S-M0184,Mock Singer 03,singer,50.0,+237699076143
-S-M0184,Mock Composer 03,composer,30.0,+237699065088
-S-M0184,Mock Producer 03,producer,20.0,+237699090332
-S-M0185,Mock Singer 72,singer,50.0,+237699072069
-S-M0185,Mock Composer 72,composer,30.0,+237699028473
-S-M0185,Mock Producer 72,producer,20.0,+237699096321
-S-M0186,Mock Singer 67,singer,50.0,+237699078200
-S-M0186,Mock Composer 67,composer,30.0,+237699046073
-S-M0186,Mock Producer 67,producer,20.0,+237699086680
-S-M0187,Mock Singer 18,singer,50.0,+237699011410
-S-M0187,Mock Composer 18,composer,30.0,+237699050711
-S-M0187,Mock Producer 18,producer,20.0,+237699073241
-S-M0188,Mock Singer 77,singer,50.0,+237699044008
-S-M0188,Mock Composer 77,composer,30.0,+237699064967
-S-M0188,Mock Producer 77,producer,20.0,+237699055310
-S-M0189,Mock Singer 101,singer,50.0,+237699065410
-S-M0189,Mock Composer 101,composer,30.0,+237699041684
-S-M0189,Mock Producer 101,producer,20.0,+237699096981
-S-M0190,Mock Singer 13,singer,50.0,+237699098457
-S-M0190,Mock Composer 13,composer,30.0,+237699015401
-S-M0190,Mock Producer 13,producer,20.0,+237699028822
-S-M0191,Mock Singer 87,singer,50.0,+237699073375
-S-M0191,Mock Composer 87,composer,30.0,+237699097035
-S-M0191,Mock Producer 87,producer,20.0,+237699074998
-S-M0192,Mock Singer 17,singer,50.0,+237699034649
-S-M0192,Mock Composer 17,composer,30.0,+237699000471
-S-M0192,Mock Producer 17,producer,20.0,+237699012386
-S-M0193,Mock Singer 90,singer,50.0,+237699004094
-S-M0193,Mock Composer 90,composer,30.0,+237699050817
-S-M0193,Mock Producer 90,producer,20.0,+237699077734
-S-M0194,Mock Singer 51,singer,50.0,+237699048969
-S-M0194,Mock Composer 51,composer,30.0,+237699087500
-S-M0194,Mock Producer 51,producer,20.0,+237699098554
-S-M0195,Mock Singer 01,singer,50.0,+237699046497
-S-M0195,Mock Composer 01,composer,30.0,+237699032526
-S-M0195,Mock Producer 01,producer,20.0,+237699097791
-S-M0196,Mock Singer 116,singer,50.0,+237699041157
-S-M0196,Mock Composer 116,composer,30.0,+237699007403
-S-M0196,Mock Producer 116,producer,20.0,+237699079368
-S-M0197,Mock Singer 20,singer,50.0,+237699008481
-S-M0197,Mock Composer 20,composer,30.0,+237699022192
-S-M0197,Mock Producer 20,producer,20.0,+237699055546
-S-M0198,Mock Singer 72,singer,50.0,+237699080205
-S-M0198,Mock Composer 72,composer,30.0,+237699026609
-S-M0198,Mock Producer 72,producer,20.0,+237699092470
-S-M0199,Mock Singer 22,singer,50.0,+237699082258
-S-M0199,Mock Composer 22,composer,30.0,+237699023838
-S-M0199,Mock Producer 22,producer,20.0,+237699003697
-S-M0200,Mock Singer 112,singer,50.0,+237699037270
-S-M0200,Mock Composer 112,composer,30.0,+237699095315
-S-M0200,Mock Producer 112,producer,20.0,+237699004869
+S-M0001,Tenor,singer,50.0,+237699031872
+S-M0001,Composer not yet declared,composer,30.0,+237699031033
+S-M0001,Producer not yet declared,producer,20.0,+237699092336
+S-M0002,Kocee,singer,50.0,+237699014387
+S-M0002,Composer not yet declared,composer,30.0,+237699091526
+S-M0002,Producer not yet declared,producer,20.0,+237699092097
+S-M0003,Salatiel,singer,50.0,+237699059855
+S-M0003,Composer not yet declared,composer,30.0,+237699016553
+S-M0003,Producer not yet declared,producer,20.0,+237699015586
+S-M0004,Kameni,singer,50.0,+237699028472
+S-M0004,Composer not yet declared,composer,30.0,+237699057741
+S-M0004,Producer not yet declared,producer,20.0,+237699015361
+S-M0005,Tenor,singer,50.0,+237699045565
+S-M0005,Composer not yet declared,composer,30.0,+237699011549
+S-M0005,Producer not yet declared,producer,20.0,+237699054028
+S-M0006,Mr. Leo,singer,50.0,+237699002114
+S-M0006,Composer not yet declared,composer,30.0,+237699070903
+S-M0006,Producer not yet declared,producer,20.0,+237699005539
+S-M0007,Locko,singer,50.0,+237699019482
+S-M0007,Composer not yet declared,composer,30.0,+237699017464
+S-M0007,Producer not yet declared,producer,20.0,+237699083099
+S-M0008,Mr. Leo,singer,50.0,+237699005338
+S-M0008,Composer not yet declared,composer,30.0,+237699042925
+S-M0008,Producer not yet declared,producer,20.0,+237699059114
+S-M0009,Lady Ponce,singer,50.0,+237699051599
+S-M0009,Composer not yet declared,composer,30.0,+237699068071
+S-M0009,Producer not yet declared,producer,20.0,+237699080310
+S-M0010,Tim Kayzer,singer,50.0,+237699039363
+S-M0010,Composer not yet declared,composer,30.0,+237699082821
+S-M0010,Producer not yet declared,producer,20.0,+237699031799
+S-M0011,KRYS M,singer,50.0,+237699098442
+S-M0011,Composer not yet declared,composer,30.0,+237699050452
+S-M0011,Producer not yet declared,producer,20.0,+237699073601
+S-M0012,Kocee,singer,50.0,+237699087500
+S-M0012,Composer not yet declared,composer,30.0,+237699079265
+S-M0012,Producer not yet declared,producer,20.0,+237699085113
+S-M0013,X-Maleya,singer,50.0,+237699053651
+S-M0013,Composer not yet declared,composer,30.0,+237699004347
+S-M0013,Producer not yet declared,producer,20.0,+237699049308
+S-M0014,Sabrina,singer,50.0,+237699018149
+S-M0014,Composer not yet declared,composer,30.0,+237699088911
+S-M0014,Producer not yet declared,producer,20.0,+237699023674
+S-M0015,Ngoma,singer,50.0,+237699022806
+S-M0015,Composer not yet declared,composer,30.0,+237699024938
+S-M0015,Producer not yet declared,producer,20.0,+237699064256
+S-M0016,Mr. Leo,singer,50.0,+237699057123
+S-M0016,Composer not yet declared,composer,30.0,+237699094884
+S-M0016,Producer not yet declared,producer,20.0,+237699041626
+S-M0017,Charlotte Dipanda,singer,50.0,+237699028227
+S-M0017,Composer not yet declared,composer,30.0,+237699004925
+S-M0017,Producer not yet declared,producer,20.0,+237699000707
+S-M0018,Libianca,singer,50.0,+237699037361
+S-M0018,Composer not yet declared,composer,30.0,+237699092581
+S-M0018,Producer not yet declared,producer,20.0,+237699052375
+S-M0019,Blanche Bailly,singer,50.0,+237699089354
+S-M0019,Composer not yet declared,composer,30.0,+237699010167
+S-M0019,Producer not yet declared,producer,20.0,+237699009332
+S-M0020,Vernyuy Tina,singer,50.0,+237699083345
+S-M0020,Composer not yet declared,composer,30.0,+237699010674
+S-M0020,Producer not yet declared,producer,20.0,+237699005196
+S-M0021,Vanister Enama,singer,50.0,+237699040409
+S-M0021,Composer not yet declared,composer,30.0,+237699092484
+S-M0021,Producer not yet declared,producer,20.0,+237699068938
+S-M0022,Baladji Kwata,singer,50.0,+237699009911
+S-M0022,Composer not yet declared,composer,30.0,+237699083713
+S-M0022,Producer not yet declared,producer,20.0,+237699084357
+S-M0023,Kocee,singer,50.0,+237699080069
+S-M0023,Composer not yet declared,composer,30.0,+237699090265
+S-M0023,Producer not yet declared,producer,20.0,+237699023987
+S-M0024,Ridimz,singer,50.0,+237699097957
+S-M0024,Composer not yet declared,composer,30.0,+237699032069
+S-M0024,Producer not yet declared,producer,20.0,+237699080202
+S-M0025,Blanche Bailly,singer,50.0,+237699057936
+S-M0025,Composer not yet declared,composer,30.0,+237699077947
+S-M0025,Producer not yet declared,producer,20.0,+237699062781
+S-M0026,Ambe,singer,50.0,+237699064248
+S-M0026,Composer not yet declared,composer,30.0,+237699061628
+S-M0026,Producer not yet declared,producer,20.0,+237699077899
+S-M0027,Aveiro Djess,singer,50.0,+237699073904
+S-M0027,Composer not yet declared,composer,30.0,+237699013455
+S-M0027,Producer not yet declared,producer,20.0,+237699082605
+S-M0028,Magasco,singer,50.0,+237699053606
+S-M0028,Composer not yet declared,composer,30.0,+237699032308
+S-M0028,Producer not yet declared,producer,20.0,+237699051422
+S-M0029,Darina Victry,singer,50.0,+237699096698
+S-M0029,Composer not yet declared,composer,30.0,+237699085757
+S-M0029,Producer not yet declared,producer,20.0,+237699083369
+S-M0030,Daphne,singer,50.0,+237699046279
+S-M0030,Composer not yet declared,composer,30.0,+237699078413
+S-M0030,Producer not yet declared,producer,20.0,+237699038508
+S-M0031,King Luca,singer,50.0,+237699068616
+S-M0031,Composer not yet declared,composer,30.0,+237699063956
+S-M0031,Producer not yet declared,producer,20.0,+237699024979
+S-M0032,Magasco,singer,50.0,+237699026646
+S-M0032,Composer not yet declared,composer,30.0,+237699006113
+S-M0032,Producer not yet declared,producer,20.0,+237699013976
+S-M0033,Aveiro Djess,singer,50.0,+237699043361
+S-M0033,Composer not yet declared,composer,30.0,+237699047787
+S-M0033,Producer not yet declared,producer,20.0,+237699016512
+S-M0034,Boy Tag,singer,50.0,+237699041688
+S-M0034,Composer not yet declared,composer,30.0,+237699060417
+S-M0034,Producer not yet declared,producer,20.0,+237699023256
+S-M0035,Stanley Enow,singer,50.0,+237699033823
+S-M0035,Composer not yet declared,composer,30.0,+237699036751
+S-M0035,Producer not yet declared,producer,20.0,+237699050505
+S-M0036,Kocee,singer,50.0,+237699036639
+S-M0036,Composer not yet declared,composer,30.0,+237699073694
+S-M0036,Producer not yet declared,producer,20.0,+237699032749
+S-M0037,Mimie,singer,50.0,+237699043389
+S-M0037,Composer not yet declared,composer,30.0,+237699037946
+S-M0037,Producer not yet declared,producer,20.0,+237699018291
+S-M0038,Blanche Bailly,singer,50.0,+237699068574
+S-M0038,Composer not yet declared,composer,30.0,+237699023544
+S-M0038,Producer not yet declared,producer,20.0,+237699029687
+S-M0039,Asaba,singer,50.0,+237699079275
+S-M0039,Composer not yet declared,composer,30.0,+237699094885
+S-M0039,Producer not yet declared,producer,20.0,+237699067084
+S-M0040,Mink's,singer,50.0,+237699091634
+S-M0040,Composer not yet declared,composer,30.0,+237699085419
+S-M0040,Producer not yet declared,producer,20.0,+237699048091
+S-M0041,Happy d'Efoulan,singer,50.0,+237699077029
+S-M0041,Composer not yet declared,composer,30.0,+237699032836
+S-M0041,Producer not yet declared,producer,20.0,+237699046049
+S-M0042,Stanley Enow,singer,50.0,+237699053543
+S-M0042,Composer not yet declared,composer,30.0,+237699096049
+S-M0042,Producer not yet declared,producer,20.0,+237699084856
+S-M0043,Tzy Panchak,singer,50.0,+237699048925
+S-M0043,Composer not yet declared,composer,30.0,+237699065258
+S-M0043,Producer not yet declared,producer,20.0,+237699020235
+S-M0044,Kocee,singer,50.0,+237699080439
+S-M0044,Composer not yet declared,composer,30.0,+237699055303
+S-M0044,Producer not yet declared,producer,20.0,+237699053272
+S-M0045,Mink's,singer,50.0,+237699076628
+S-M0045,Composer not yet declared,composer,30.0,+237699063291
+S-M0045,Producer not yet declared,producer,20.0,+237699007246
+S-M0046,Maahlox,singer,50.0,+237699028815
+S-M0046,Composer not yet declared,composer,30.0,+237699017671
+S-M0046,Producer not yet declared,producer,20.0,+237699073489
+S-M0047,Aveiro Djess,singer,50.0,+237699003514
+S-M0047,Composer not yet declared,composer,30.0,+237699020240
+S-M0047,Producer not yet declared,producer,20.0,+237699059744
+S-M0048,Locko,singer,50.0,+237699069479
+S-M0048,Composer not yet declared,composer,30.0,+237699050330
+S-M0048,Producer not yet declared,producer,20.0,+237699086071
+S-M0049,Locko,singer,50.0,+237699091894
+S-M0049,Composer not yet declared,composer,30.0,+237699013210
+S-M0049,Producer not yet declared,producer,20.0,+237699095251
+S-M0050,Mink's,singer,50.0,+237699061437
+S-M0050,Composer not yet declared,composer,30.0,+237699063621
+S-M0050,Producer not yet declared,producer,20.0,+237699009509
+S-M0051,Mr. Leo,singer,50.0,+237699062187
+S-M0051,Composer not yet declared,composer,30.0,+237699072571
+S-M0051,Producer not yet declared,producer,20.0,+237699058079
+S-M0052,Mr. Leo,singer,50.0,+237699008449
+S-M0052,Composer not yet declared,composer,30.0,+237699052322
+S-M0052,Producer not yet declared,producer,20.0,+237699093593
+S-M0053,Coco Argentee,singer,50.0,+237699072341
+S-M0053,Composer not yet declared,composer,30.0,+237699013740
+S-M0053,Producer not yet declared,producer,20.0,+237699095993
+S-M0054,Mic Monsta,singer,50.0,+237699095888
+S-M0054,Composer not yet declared,composer,30.0,+237699016939
+S-M0054,Producer not yet declared,producer,20.0,+237699080088
+S-M0055,Kocee,singer,50.0,+237699040671
+S-M0055,Composer not yet declared,composer,30.0,+237699059368
+S-M0055,Producer not yet declared,producer,20.0,+237699044518
+S-M0056,Locko,singer,50.0,+237699078262
+S-M0056,Composer not yet declared,composer,30.0,+237699099665
+S-M0056,Producer not yet declared,producer,20.0,+237699079511
+S-M0057,Blanche Bailly,singer,50.0,+237699093137
+S-M0057,Composer not yet declared,composer,30.0,+237699094602
+S-M0057,Producer not yet declared,producer,20.0,+237699009010
+S-M0058,Sabrina,singer,50.0,+237699025338
+S-M0058,Composer not yet declared,composer,30.0,+237699072185
+S-M0058,Producer not yet declared,producer,20.0,+237699059007
+S-M0059,Seppo,singer,50.0,+237699005014
+S-M0059,Composer not yet declared,composer,30.0,+237699009504
+S-M0059,Producer not yet declared,producer,20.0,+237699052054
+S-M0060,PhillBill,singer,50.0,+237699061616
+S-M0060,Composer not yet declared,composer,30.0,+237699016771
+S-M0060,Producer not yet declared,producer,20.0,+237699017129
+S-M0061,Ulanda,singer,50.0,+237699012934
+S-M0061,Composer not yet declared,composer,30.0,+237699056495
+S-M0061,Producer not yet declared,producer,20.0,+237699000785
+S-M0062,Kocee,singer,50.0,+237699057243
+S-M0062,Composer not yet declared,composer,30.0,+237699047592
+S-M0062,Producer not yet declared,producer,20.0,+237699046598
+S-M0063,Blanche Bailly,singer,50.0,+237699067927
+S-M0063,Composer not yet declared,composer,30.0,+237699052263
+S-M0063,Producer not yet declared,producer,20.0,+237699072774
+S-M0064,Lydol,singer,50.0,+237699076392
+S-M0064,Composer not yet declared,composer,30.0,+237699092011
+S-M0064,Producer not yet declared,producer,20.0,+237699079924
+S-M0065,Salatiel,singer,50.0,+237699051770
+S-M0065,Composer not yet declared,composer,30.0,+237699049215
+S-M0065,Producer not yet declared,producer,20.0,+237699023570
+S-M0066,Fhish,singer,50.0,+237699059959
+S-M0066,Composer not yet declared,composer,30.0,+237699013913
+S-M0066,Producer not yet declared,producer,20.0,+237699093123
+S-M0067,Aveiro Djess,singer,50.0,+237699084504
+S-M0067,Composer not yet declared,composer,30.0,+237699011973
+S-M0067,Producer not yet declared,producer,20.0,+237699078595
+S-M0068,Cysoul,singer,50.0,+237699011710
+S-M0068,Composer not yet declared,composer,30.0,+237699072122
+S-M0068,Producer not yet declared,producer,20.0,+237699008770
+S-M0069,Trois Officiel,singer,50.0,+237699048819
+S-M0069,Composer not yet declared,composer,30.0,+237699065786
+S-M0069,Producer not yet declared,producer,20.0,+237699072881
+S-M0070,Yvi Atia,singer,50.0,+237699041860
+S-M0070,Composer not yet declared,composer,30.0,+237699092162
+S-M0070,Producer not yet declared,producer,20.0,+237699077432
+S-M0071,Cysoul,singer,50.0,+237699020826
+S-M0071,Composer not yet declared,composer,30.0,+237699067123
+S-M0071,Producer not yet declared,producer,20.0,+237699073053
+S-M0072,Blanche Bailly,singer,50.0,+237699033363
+S-M0072,Composer not yet declared,composer,30.0,+237699073823
+S-M0072,Producer not yet declared,producer,20.0,+237699089836
+S-M0073,Kocee,singer,50.0,+237699081711
+S-M0073,Composer not yet declared,composer,30.0,+237699076253
+S-M0073,Producer not yet declared,producer,20.0,+237699063449
+S-M0074,Locko,singer,50.0,+237699027053
+S-M0074,Composer not yet declared,composer,30.0,+237699079522
+S-M0074,Producer not yet declared,producer,20.0,+237699036419
+S-M0075,Blanche Bailly,singer,50.0,+237699053219
+S-M0075,Composer not yet declared,composer,30.0,+237699031443
+S-M0075,Producer not yet declared,producer,20.0,+237699031301
+S-M0076,LAB'L,singer,50.0,+237699015761
+S-M0076,Composer not yet declared,composer,30.0,+237699096129
+S-M0076,Producer not yet declared,producer,20.0,+237699014778
+S-M0077,Fair Play test artist,singer,50.0,+237699093612
+S-M0077,Composer not yet declared,composer,30.0,+237699055501
+S-M0077,Producer not yet declared,producer,20.0,+237699043790
+S-M0078,King Luca,singer,50.0,+237699073749
+S-M0078,Composer not yet declared,composer,30.0,+237699038331
+S-M0078,Producer not yet declared,producer,20.0,+237699012792
+S-M0079,Kocee,singer,50.0,+237699072968
+S-M0079,Composer not yet declared,composer,30.0,+237699017599
+S-M0079,Producer not yet declared,producer,20.0,+237699055299
+S-M0080,Nabila,singer,50.0,+237699094906
+S-M0080,Composer not yet declared,composer,30.0,+237699093613
+S-M0080,Producer not yet declared,producer,20.0,+237699036078
+S-M0081,Charlotte Dipanda,singer,50.0,+237699078030
+S-M0081,Composer not yet declared,composer,30.0,+237699061267
+S-M0081,Producer not yet declared,producer,20.0,+237699047936
+S-M0082,Lady Ponce,singer,50.0,+237699013992
+S-M0082,Composer not yet declared,composer,30.0,+237699037635
+S-M0082,Producer not yet declared,producer,20.0,+237699065191
+S-M0083,Daphne,singer,50.0,+237699098663
+S-M0083,Composer not yet declared,composer,30.0,+237699000489
+S-M0083,Producer not yet declared,producer,20.0,+237699071776
+S-M0084,Seppo,singer,50.0,+237699084633
+S-M0084,Composer not yet declared,composer,30.0,+237699095119
+S-M0084,Producer not yet declared,producer,20.0,+237699042380
+S-M0085,Locko,singer,50.0,+237699011847
+S-M0085,Composer not yet declared,composer,30.0,+237699027096
+S-M0085,Producer not yet declared,producer,20.0,+237699085053
+S-M0086,Aveiro Djess,singer,50.0,+237699087793
+S-M0086,Composer not yet declared,composer,30.0,+237699063707
+S-M0086,Producer not yet declared,producer,20.0,+237699012274
+S-M0087,Coco Argentee,singer,50.0,+237699012192
+S-M0087,Composer not yet declared,composer,30.0,+237699047817
+S-M0087,Producer not yet declared,producer,20.0,+237699058825
+S-M0088,Mr. Leo,singer,50.0,+237699003237
+S-M0088,Composer not yet declared,composer,30.0,+237699068609
+S-M0088,Producer not yet declared,producer,20.0,+237699054451
+S-M0089,Petit Pays,singer,50.0,+237699001230
+S-M0089,Composer not yet declared,composer,30.0,+237699009567
+S-M0089,Producer not yet declared,producer,20.0,+237699045431
+S-M0090,Kocee,singer,50.0,+237699072258
+S-M0090,Composer not yet declared,composer,30.0,+237699082539
+S-M0090,Producer not yet declared,producer,20.0,+237699043130
+S-M0091,Salatiel,singer,50.0,+237699029535
+S-M0091,Composer not yet declared,composer,30.0,+237699096831
+S-M0091,Producer not yet declared,producer,20.0,+237699045854
+S-M0092,Kocee,singer,50.0,+237699031538
+S-M0092,Composer not yet declared,composer,30.0,+237699044231
+S-M0092,Producer not yet declared,producer,20.0,+237699001209
+S-M0093,Diese Mbangue,singer,50.0,+237699030192
+S-M0093,Composer not yet declared,composer,30.0,+237699051555
+S-M0093,Producer not yet declared,producer,20.0,+237699091844
+S-M0094,Aloch237,singer,50.0,+237699073822
+S-M0094,Composer not yet declared,composer,30.0,+237699078129
+S-M0094,Producer not yet declared,producer,20.0,+237699054490
+S-M0095,Tim Kayzer,singer,50.0,+237699011058
+S-M0095,Composer not yet declared,composer,30.0,+237699039092
+S-M0095,Producer not yet declared,producer,20.0,+237699099703
+S-M0096,Sandrine Nnanga,singer,50.0,+237699004417
+S-M0096,Composer not yet declared,composer,30.0,+237699087920
+S-M0096,Producer not yet declared,producer,20.0,+237699068449
+S-M0097,Trois Officiel,singer,50.0,+237699028390
+S-M0097,Composer not yet declared,composer,30.0,+237699077798
+S-M0097,Producer not yet declared,producer,20.0,+237699083689
+S-M0098,Locko,singer,50.0,+237699004321
+S-M0098,Composer not yet declared,composer,30.0,+237699010641
+S-M0098,Producer not yet declared,producer,20.0,+237699066574
+S-M0099,Sabrina,singer,50.0,+237699099910
+S-M0099,Composer not yet declared,composer,30.0,+237699002396
+S-M0099,Producer not yet declared,producer,20.0,+237699066568
+S-M0100,Ulanda,singer,50.0,+237699013652
+S-M0100,Composer not yet declared,composer,30.0,+237699065012
+S-M0100,Producer not yet declared,producer,20.0,+237699062331
+S-M0101,Tenor,singer,50.0,+237699009044
+S-M0101,Composer not yet declared,composer,30.0,+237699068072
+S-M0101,Producer not yet declared,producer,20.0,+237699089703
+S-M0102,Mani Bella,singer,50.0,+237699086344
+S-M0102,Composer not yet declared,composer,30.0,+237699002899
+S-M0102,Producer not yet declared,producer,20.0,+237699024591
+S-M0103,Seppo,singer,50.0,+237699024082
+S-M0103,Composer not yet declared,composer,30.0,+237699045329
+S-M0103,Producer not yet declared,producer,20.0,+237699014302
+S-M0104,Kocee,singer,50.0,+237699085434
+S-M0104,Composer not yet declared,composer,30.0,+237699077676
+S-M0104,Producer not yet declared,producer,20.0,+237699080834
+S-M0105,Lady Ponce,singer,50.0,+237699019820
+S-M0105,Composer not yet declared,composer,30.0,+237699001457
+S-M0105,Producer not yet declared,producer,20.0,+237699091063
+S-M0106,Magasco,singer,50.0,+237699028890
+S-M0106,Composer not yet declared,composer,30.0,+237699065626
+S-M0106,Producer not yet declared,producer,20.0,+237699090943
+S-M0107,Magasco,singer,50.0,+237699003616
+S-M0107,Composer not yet declared,composer,30.0,+237699000547
+S-M0107,Producer not yet declared,producer,20.0,+237699000542
+S-M0108,Yvi Atia,singer,50.0,+237699015632
+S-M0108,Composer not yet declared,composer,30.0,+237699005165
+S-M0108,Producer not yet declared,producer,20.0,+237699081998
+S-M0109,Tenor,singer,50.0,+237699060592
+S-M0109,Composer not yet declared,composer,30.0,+237699098004
+S-M0109,Producer not yet declared,producer,20.0,+237699080148
+S-M0110,Charlotte Dipanda,singer,50.0,+237699096318
+S-M0110,Composer not yet declared,composer,30.0,+237699023855
+S-M0110,Producer not yet declared,producer,20.0,+237699028779
+S-M0111,X-Maleya,singer,50.0,+237699084940
+S-M0111,Composer not yet declared,composer,30.0,+237699024488
+S-M0111,Producer not yet declared,producer,20.0,+237699005723
+S-M0112,Mr. Leo,singer,50.0,+237699066913
+S-M0112,Composer not yet declared,composer,30.0,+237699080096
+S-M0112,Producer not yet declared,producer,20.0,+237699096819
+S-M0113,Charlotte Dipanda,singer,50.0,+237699092779
+S-M0113,Composer not yet declared,composer,30.0,+237699012023
+S-M0113,Producer not yet declared,producer,20.0,+237699077210
+S-M0114,Trois Officiel,singer,50.0,+237699084612
+S-M0114,Composer not yet declared,composer,30.0,+237699069812
+S-M0114,Producer not yet declared,producer,20.0,+237699081979
+S-M0115,Locko,singer,50.0,+237699083798
+S-M0115,Composer not yet declared,composer,30.0,+237699044655
+S-M0115,Producer not yet declared,producer,20.0,+237699004015
+S-M0116,Aloch237,singer,50.0,+237699045619
+S-M0116,Composer not yet declared,composer,30.0,+237699020178
+S-M0116,Producer not yet declared,producer,20.0,+237699011372
+S-M0117,Charlotte Dipanda,singer,50.0,+237699012492
+S-M0117,Composer not yet declared,composer,30.0,+237699069737
+S-M0117,Producer not yet declared,producer,20.0,+237699050453
+S-M0118,Reniss,singer,50.0,+237699053983
+S-M0118,Composer not yet declared,composer,30.0,+237699074518
+S-M0118,Producer not yet declared,producer,20.0,+237699054826
+S-M0119,PhillBill,singer,50.0,+237699063001
+S-M0119,Composer not yet declared,composer,30.0,+237699008602
+S-M0119,Producer not yet declared,producer,20.0,+237699085113
+S-M0120,Kocee,singer,50.0,+237699044878
+S-M0120,Composer not yet declared,composer,30.0,+237699015521
+S-M0120,Producer not yet declared,producer,20.0,+237699081332
+S-M0121,King Luca,singer,50.0,+237699073462
+S-M0121,Composer not yet declared,composer,30.0,+237699005302
+S-M0121,Producer not yet declared,producer,20.0,+237699019304
+S-M0122,Vanister Enama,singer,50.0,+237699001574
+S-M0122,Composer not yet declared,composer,30.0,+237699027075
+S-M0122,Producer not yet declared,producer,20.0,+237699009998
+S-M0123,Mink's,singer,50.0,+237699070990
+S-M0123,Composer not yet declared,composer,30.0,+237699052255
+S-M0123,Producer not yet declared,producer,20.0,+237699098020
+S-M0124,Darina Victry,singer,50.0,+237699074942
+S-M0124,Composer not yet declared,composer,30.0,+237699061154
+S-M0124,Producer not yet declared,producer,20.0,+237699050931
+S-M0125,Kameni,singer,50.0,+237699005450
+S-M0125,Composer not yet declared,composer,30.0,+237699007020
+S-M0125,Producer not yet declared,producer,20.0,+237699061630
+S-M0126,Stanley Enow,singer,50.0,+237699000437
+S-M0126,Composer not yet declared,composer,30.0,+237699004235
+S-M0126,Producer not yet declared,producer,20.0,+237699021913
+S-M0127,Mr. Leo,singer,50.0,+237699088414
+S-M0127,Composer not yet declared,composer,30.0,+237699045893
+S-M0127,Producer not yet declared,producer,20.0,+237699070957
+S-M0128,Raizy,singer,50.0,+237699041156
+S-M0128,Composer not yet declared,composer,30.0,+237699017312
+S-M0128,Producer not yet declared,producer,20.0,+237699037115
+S-M0129,Fhish,singer,50.0,+237699009172
+S-M0129,Composer not yet declared,composer,30.0,+237699077025
+S-M0129,Producer not yet declared,producer,20.0,+237699018353
+S-M0130,Sabrina,singer,50.0,+237699037637
+S-M0130,Composer not yet declared,composer,30.0,+237699098002
+S-M0130,Producer not yet declared,producer,20.0,+237699059196
+S-M0131,Mink's,singer,50.0,+237699045856
+S-M0131,Composer not yet declared,composer,30.0,+237699054301
+S-M0131,Producer not yet declared,producer,20.0,+237699078408
+S-M0132,King Luca,singer,50.0,+237699025448
+S-M0132,Composer not yet declared,composer,30.0,+237699063640
+S-M0132,Producer not yet declared,producer,20.0,+237699087269
+S-M0133,INDIRA,singer,50.0,+237699057241
+S-M0133,Composer not yet declared,composer,30.0,+237699044654
+S-M0133,Producer not yet declared,producer,20.0,+237699014513
+S-M0134,Mic Monsta,singer,50.0,+237699024828
+S-M0134,Composer not yet declared,composer,30.0,+237699094602
+S-M0134,Producer not yet declared,producer,20.0,+237699054125
+S-M0135,Lady Ponce,singer,50.0,+237699030134
+S-M0135,Composer not yet declared,composer,30.0,+237699041836
+S-M0135,Producer not yet declared,producer,20.0,+237699057801
+S-M0136,X-Maleya,singer,50.0,+237699053754
+S-M0136,Composer not yet declared,composer,30.0,+237699069977
+S-M0136,Producer not yet declared,producer,20.0,+237699025749
+S-M0137,Blanche Bailly,singer,50.0,+237699064923
+S-M0137,Composer not yet declared,composer,30.0,+237699044267
+S-M0137,Producer not yet declared,producer,20.0,+237699094059
+S-M0138,Mimie,singer,50.0,+237699015792
+S-M0138,Composer not yet declared,composer,30.0,+237699014843
+S-M0138,Producer not yet declared,producer,20.0,+237699046165
+S-M0139,X-Maleya,singer,50.0,+237699050835
+S-M0139,Composer not yet declared,composer,30.0,+237699069087
+S-M0139,Producer not yet declared,producer,20.0,+237699040403
+S-M0140,Magasco,singer,50.0,+237699091371
+S-M0140,Composer not yet declared,composer,30.0,+237699047416
+S-M0140,Producer not yet declared,producer,20.0,+237699012933
+S-M0141,Salatiel,singer,50.0,+237699011921
+S-M0141,Composer not yet declared,composer,30.0,+237699097340
+S-M0141,Producer not yet declared,producer,20.0,+237699013409
+S-M0142,Tzy Panchak,singer,50.0,+237699094785
+S-M0142,Composer not yet declared,composer,30.0,+237699027807
+S-M0142,Producer not yet declared,producer,20.0,+237699009340
+S-M0143,Mimie,singer,50.0,+237699030470
+S-M0143,Composer not yet declared,composer,30.0,+237699061469
+S-M0143,Producer not yet declared,producer,20.0,+237699042790
+S-M0144,Kameni,singer,50.0,+237699078558
+S-M0144,Composer not yet declared,composer,30.0,+237699061098
+S-M0144,Producer not yet declared,producer,20.0,+237699040078
+S-M0145,Tenor,singer,50.0,+237699063462
+S-M0145,Composer not yet declared,composer,30.0,+237699097146
+S-M0145,Producer not yet declared,producer,20.0,+237699041181
+S-M0146,Asaba,singer,50.0,+237699015344
+S-M0146,Composer not yet declared,composer,30.0,+237699040878
+S-M0146,Producer not yet declared,producer,20.0,+237699084011
+S-M0147,Aloch237,singer,50.0,+237699021762
+S-M0147,Composer not yet declared,composer,30.0,+237699094914
+S-M0147,Producer not yet declared,producer,20.0,+237699058830
+S-M0148,Magasco,singer,50.0,+237699060157
+S-M0148,Composer not yet declared,composer,30.0,+237699031704
+S-M0148,Producer not yet declared,producer,20.0,+237699092045
+S-M0149,Happy d'Efoulan,singer,50.0,+237699003605
+S-M0149,Composer not yet declared,composer,30.0,+237699029867
+S-M0149,Producer not yet declared,producer,20.0,+237699041840
+S-M0150,Fair Play test artist,singer,50.0,+237699047413
+S-M0150,Composer not yet declared,composer,30.0,+237699014792
+S-M0150,Producer not yet declared,producer,20.0,+237699022559
+S-M0151,Blanche Bailly,singer,50.0,+237699009524
+S-M0151,Composer not yet declared,composer,30.0,+237699057245
+S-M0151,Producer not yet declared,producer,20.0,+237699035086
+S-M0152,Prince Eyango,singer,50.0,+237699056577
+S-M0152,Composer not yet declared,composer,30.0,+237699058971
+S-M0152,Producer not yet declared,producer,20.0,+237699070200
+S-M0153,Locko,singer,50.0,+237699054703
+S-M0153,Composer not yet declared,composer,30.0,+237699064794
+S-M0153,Producer not yet declared,producer,20.0,+237699058715
+S-M0154,Tzy Panchak,singer,50.0,+237699065243
+S-M0154,Composer not yet declared,composer,30.0,+237699061664
+S-M0154,Producer not yet declared,producer,20.0,+237699031621
+S-M0155,King Luca,singer,50.0,+237699024628
+S-M0155,Composer not yet declared,composer,30.0,+237699078743
+S-M0155,Producer not yet declared,producer,20.0,+237699034270
+S-M0156,Cysoul,singer,50.0,+237699054914
+S-M0156,Composer not yet declared,composer,30.0,+237699019697
+S-M0156,Producer not yet declared,producer,20.0,+237699043141
+S-M0157,Stanley Enow,singer,50.0,+237699052966
+S-M0157,Composer not yet declared,composer,30.0,+237699062601
+S-M0157,Producer not yet declared,producer,20.0,+237699052637
+S-M0158,KRYS M,singer,50.0,+237699036065
+S-M0158,Composer not yet declared,composer,30.0,+237699096177
+S-M0158,Producer not yet declared,producer,20.0,+237699051273
+S-M0159,Tim Kayzer,singer,50.0,+237699080830
+S-M0159,Composer not yet declared,composer,30.0,+237699073670
+S-M0159,Producer not yet declared,producer,20.0,+237699055831
+S-M0160,Aveiro Djess,singer,50.0,+237699088640
+S-M0160,Composer not yet declared,composer,30.0,+237699012826
+S-M0160,Producer not yet declared,producer,20.0,+237699092105
+S-M0161,Lady Ponce,singer,50.0,+237699085022
+S-M0161,Composer not yet declared,composer,30.0,+237699050363
+S-M0161,Producer not yet declared,producer,20.0,+237699073339
+S-M0162,Locko,singer,50.0,+237699052027
+S-M0162,Composer not yet declared,composer,30.0,+237699026876
+S-M0162,Producer not yet declared,producer,20.0,+237699079987
+S-M0163,Cysoul,singer,50.0,+237699024592
+S-M0163,Composer not yet declared,composer,30.0,+237699031445
+S-M0163,Producer not yet declared,producer,20.0,+237699051929
+S-M0164,Prince Aime,singer,50.0,+237699083738
+S-M0164,Composer not yet declared,composer,30.0,+237699038392
+S-M0164,Producer not yet declared,producer,20.0,+237699049414
+S-M0165,AJ Bahboy,singer,50.0,+237699004166
+S-M0165,Composer not yet declared,composer,30.0,+237699011585
+S-M0165,Producer not yet declared,producer,20.0,+237699005594
+S-M0166,Mink's,singer,50.0,+237699007205
+S-M0166,Composer not yet declared,composer,30.0,+237699086852
+S-M0166,Producer not yet declared,producer,20.0,+237699084199
+S-M0167,Salatiel,singer,50.0,+237699082188
+S-M0167,Composer not yet declared,composer,30.0,+237699005556
+S-M0167,Producer not yet declared,producer,20.0,+237699007764
+S-M0168,Ben Decca,singer,50.0,+237699028061
+S-M0168,Composer not yet declared,composer,30.0,+237699056529
+S-M0168,Producer not yet declared,producer,20.0,+237699033413
+S-M0169,Mr. Leo,singer,50.0,+237699048756
+S-M0169,Composer not yet declared,composer,30.0,+237699017299
+S-M0169,Producer not yet declared,producer,20.0,+237699073077
+S-M0170,Magasco,singer,50.0,+237699031389
+S-M0170,Composer not yet declared,composer,30.0,+237699006654
+S-M0170,Producer not yet declared,producer,20.0,+237699074269
+S-M0171,Cabrel Nanjip,singer,50.0,+237699090278
+S-M0171,Composer not yet declared,composer,30.0,+237699001468
+S-M0171,Producer not yet declared,producer,20.0,+237699043667
+S-M0172,Lady Ponce,singer,50.0,+237699082717
+S-M0172,Composer not yet declared,composer,30.0,+237699070616
+S-M0172,Producer not yet declared,producer,20.0,+237699085654
+S-M0173,Kotto Boy,singer,50.0,+237699041521
+S-M0173,Composer not yet declared,composer,30.0,+237699037226
+S-M0173,Producer not yet declared,producer,20.0,+237699070917
+S-M0174,Les Rythmeurs ABC,singer,50.0,+237699015361
+S-M0174,Composer not yet declared,composer,30.0,+237699023942
+S-M0174,Producer not yet declared,producer,20.0,+237699060084
+S-M0175,Charlotte Dipanda,singer,50.0,+237699066845
+S-M0175,Composer not yet declared,composer,30.0,+237699011967
+S-M0175,Producer not yet declared,producer,20.0,+237699050831
+S-M0176,Ngoma,singer,50.0,+237699036491
+S-M0176,Composer not yet declared,composer,30.0,+237699050174
+S-M0176,Producer not yet declared,producer,20.0,+237699095842
+S-M0177,Blanche Bailly,singer,50.0,+237699007661
+S-M0177,Composer not yet declared,composer,30.0,+237699099546
+S-M0177,Producer not yet declared,producer,20.0,+237699044957
+S-M0178,Nabila,singer,50.0,+237699077210
+S-M0178,Composer not yet declared,composer,30.0,+237699042447
+S-M0178,Producer not yet declared,producer,20.0,+237699031096
+S-M0179,Asaba,singer,50.0,+237699077059
+S-M0179,Composer not yet declared,composer,30.0,+237699068766
+S-M0179,Producer not yet declared,producer,20.0,+237699014405
+S-M0180,Magasco,singer,50.0,+237699070540
+S-M0180,Composer not yet declared,composer,30.0,+237699075307
+S-M0180,Producer not yet declared,producer,20.0,+237699038784
+S-M0181,Lydol,singer,50.0,+237699092564
+S-M0181,Composer not yet declared,composer,30.0,+237699064088
+S-M0181,Producer not yet declared,producer,20.0,+237699033362
+S-M0182,KRYS M,singer,50.0,+237699001072
+S-M0182,Composer not yet declared,composer,30.0,+237699067496
+S-M0182,Producer not yet declared,producer,20.0,+237699020905
+S-M0183,KRYS M,singer,50.0,+237699075652
+S-M0183,Composer not yet declared,composer,30.0,+237699052508
+S-M0183,Producer not yet declared,producer,20.0,+237699046672
+S-M0184,Taku Joel,singer,50.0,+237699016375
+S-M0184,Composer not yet declared,composer,30.0,+237699071150
+S-M0184,Producer not yet declared,producer,20.0,+237699016590
+S-M0185,Kocee,singer,50.0,+237699041775
+S-M0185,Composer not yet declared,composer,30.0,+237699083630
+S-M0185,Producer not yet declared,producer,20.0,+237699092036

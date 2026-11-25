@@ -1,0 +1,143 @@
+﻿batch,file,title,lead_artist,decision,reason
+batch1,Ariel sheney -  SYMPA ( Clip officiel ).mp3,SYMPA,Ariel Sheney,exclude,Lead Ariel Sheney is Ivorian. Earlier step kept it in error.
+batch1,Ariel Sheney - AMINA (Clip officiel).mp3,AMINA,Ariel Sheney,exclude,Lead Ariel Sheney is Ivorian. Earlier step kept it in error.
+batch1,Aya Nakamura - Pookie (Clip officiel).mp3,Pookie,Aya Nakamura,exclude,Lead is Malian-born French. Not Cameroonian.
+batch1,BEBI PHILIP - CHEVALIER DE DIEU (Lyrics).mp3,Chevalier de Dieu,Bebi Philip,exclude,Lead Bebi Philip is Ivorian (Wikipedia). Earlier step kept it in error.
+batch1,BEBI PHILIP - ZEPELE ( Official Video).mp3,Zepele,Bebi Philip,exclude,Lead Bebi Philip is Ivorian (Wikipedia). Earlier step kept it in error.
+batch1,BEN DECCA - Souffrance D'Amour [Lyrics & Traduction].mp3,Souffrance d'Amour,Ben Decca,unknown,"Strict re-check: nationality not confirmed by a reliable source. Last.fm and African Music Library call him Cameroonian, but both are aggregators. The Grace Decca Wikipedia article calls Ben 'a well-known Makossa singer' and gives no nationality. Unknown until a reliable source is found."
+batch1,BENEDICTION - Quelqu'un Laisse Quelqu'un Prend (Clip Officiel).mp3,Quelqu'un laisse quelqu'un prend,Benediction,unknown,"Credit search: no source ties this title to a Cameroonian artist. The paroles.net page is under the name Benediction, but the Charts in France pages for Benediction are for a metal band (The Grand Leveller, 1993). No nationality found. Unknown; settle with label, distributor or YouTube channel credits."
+batch1,Blaise B - Le Goût de Ça [Official Video].mp3,Le Gout de Ca,Blaise B,unknown,"Strict re-check: Viberate says native of Cameroon, but that page is generic aggregator text. Bakwa Magazine confirms he is a rapper, not his nationality. Blaise Bsings is a different Cameroonian artist, so do not conflate. Unknown."
+batch1,Boy TAG - Grandma (Official Video).mp3,Grandma,Boy Tag,unknown,"Lead Boy Tag is confirmed Cameroonian: Cameroon Tribune calls him 'un rappeur camerounais originaire de la ville de Buea'. But 'Grandma' is not found in any source for him, and the same article names 'Mignoncite' as his first official single. Song credit unconfirmed, so unknown."
+batch1,Chidinma - Fallen in Love [Official Video].mp3,Fallen in Love,Chidinma,exclude,Lead is Nigerian (high).
+batch1,DADJU -  Jaloux (Clip Officiel).mp3,Jaloux,Dadju,exclude,Lead is French-born with Congolese heritage (high). Not Cameroonian.
+batch1,Daniela Ahanda - POSER (clip officiel HD).mp3,POSER,Daniela Ahanda,unknown,Strict re-check: sources disagree. Music in Africa profile says Cameroonian singer based in Douala; Viberate says Senegalese Afrobeat artist. Unknown until resolved.
+batch1,Diplome (paroles) - Josey.mp3,Diplome (paroles),Josey,exclude,Lead Josey is Ivorian (medium). Earlier step kept it in error.
+batch1,DJ KENNY ft. MINK'S - Ça Va Te Tuer.mp3,Ca Va Te Tuer,DJ Kenny,exclude,"Lead DJ Kenny is not Cameroonian: Qobuz says Congolese, Apple Music says Nigerian (low). Featured Mink's is Cameroonian, but the rule is lead-based."
+batch1,DJ KEROZEN OFFICIAL - KEROZEN feat SERGE BEYNAUD ＂CA DEPEND DE TOI＂ (OFFICIAL VIDEO).mp3,Ca depend de toi,DJ Kerozen,exclude,Lead DJ Kerozen is Ivorian (medium). Rumoured Cameroonian origin is not confirmed.
+batch1,DJ KEROZEN OFFICIAL - KEROZEN LA VICTOIRE OFFICAL VIDEO.mp3,La Victoire,DJ Kerozen,exclude,Lead DJ Kerozen is Ivorian (medium).
+batch1,Fally Ipupa - Amore (Clip officiel).mp3,Amore,Fally Ipupa,exclude,Lead is Congolese (Kinshasa) (high).
+batch1,Fally Ipupa - Juste une danse (Clip officiel).mp3,Juste une danse,Fally Ipupa,exclude,Lead is Congolese (high).
+batch1,"Fireboy DML, Wande Coal - Spell (Official Video).mp3",Spell,Fireboy DML,exclude,Lead is Nigerian (high).
+batch1,Hein Hein Hein.mp3,Hein Hein Hein,"Unknown (not in filename; possibly Locko, unconfirmed)",unknown,"An AllMusic listing titled 'Hein Hein Hein' appears to credit Locko (R&B, 4:09), but the page returned HTTP 403 and a second search found no Locko track with this title. Not confirmed, so unknown. If confirmed, Locko is Cameroonian (Wikipedia) and the song would become keep."
+batch1,Josey - Mise au point  (Clip Officiel).mp3,Mise au point,Josey,exclude,Lead Josey is Ivorian (medium). Earlier step kept it in error.
+batch1,Kizz Daniel - Poko (Official Video).mp3,Poko,Kizz Daniel,exclude,Lead is Nigerian (high).
+batch1,Kizz Daniel & Davido - One Ticket (Official Video).mp3,One Ticket,Kizz Daniel,exclude,Lead is Nigerian (high).
+batch1,KOLLINS Ft. CHIDINMA - Ma Préférée (Official Video).mp3,Ma Preferee,Kollins,unknown,Two searches found no source for an artist named Kollins or for this title with Chidinma. Unknown; settle with video or streaming credits.
+batch1,Lynda - Adieu ft. Dadju.mp3,Adieu,Lynda,exclude,Lead Lynda is French-born. Nationality not Cameroonian. Featured Dadju is Franco-Congolese.
+batch1,MAGIC DIEZEL MALADIE D'AMOUR  Vidéo officielle du titre N°3 de l'album Caviar..mp3,Maladie d'amour,Magic Diezel,exclude,Magic Diezel is an Ivorian zouglou duo (Tim and Sawako). Ivorian coverage includes the connectionivoirienne.net headline 'Zouglou Cote-d'Ivoire: Magic Diezel...' and afrique-sur7 articles. Audiomack lists 'Maladie d'amour' on the album Caviar. Not Cameroonian.
+batch1,MEIWAY OFFICIEL - Meiway - Korokoto (Clip officiel).mp3,Korokoto,Meiway,exclude,"Lead Meiway is Ivorian (medium, Wikipedia-derived). Earlier step kept it in error."
+batch1,Meshi Ft Locko - Come for me (Official Video).mp3,Come for me,Meshi,unknown,"Meshi (lead) is described as Cameroonian only by Viberate (aggregator, low) and one afro.video promotional article. Neither is a reliable source under the strict rule. Unknown. Locko (featured) is Cameroonian, but the rule is lead-based."
+batch1,Meshi Ft Salatiel - Rembourser [Official Video].mp3,Rembourser,Meshi,unknown,"Meshi (lead) nationality is not confirmed by a reliable source (Viberate low; afro.video promotional). Unknown. Featured Salatiel is Cameroonian (Wikipedia), but the rule is lead-based."
+batch1,PSquare - Bank Alert [Official Video].mp3,Bank Alert,PSquare,exclude,Lead is Nigerian (medium).
+batch1,Rudeboy - Reason With Me [Official Video].mp3,Reason With Me,Rudeboy,exclude,Lead is Nigerian (high).
+batch1,Shado Chris feat. Locko - Kitadi  (Official Video).mp3,Kitadi,Shado Chris,exclude,"Lead Shado Chris is Ivorian (medium). Featured Locko is Cameroonian, but the rule is lead-based."
+batch1,Singuila - Faut pas me toucher ( clip officiel ).mp3,Faut pas me toucher,Singuila,exclude,Lead is not Cameroonian (medium).
+batch1,Singuila - La femme de quelqu'un feat. Koffi Olomidé.mp3,La femme de quelqu'un,Singuila,exclude,Lead is not Cameroonian (medium).
+batch1,Teni - Case (Official Video).mp3,Case,Teni,exclude,Lead is Nigerian (high).
+batch1,Toofan - Toofan - Affairage (Clip Officiel).mp3,Affairage,Toofan,exclude,Lead is Togolese duo (medium). Earlier step kept it in error.
+batch1,Toofan - Toofan - Money (Clip Officiel).mp3,Money,Toofan,exclude,Lead is Togolese duo (medium). Earlier step kept it in error.
+batch1,WizBoyy - One plus One.mp3,One plus One,Wizboyy (Wiz Ofuasia),exclude,Lead is Nigerian (high).
+batch1,Wizboyy Ofuasia - Lovinjitis Ft. Teeyah (Clip Officiel HD).mp3,Lovinjitis,Wizboyy Ofuasia,exclude,Lead is Nigerian (high).
+batch1,YA LEVIS - #Katchua (CLIP OFFICIEL).mp3,#Katchua,Ya Levis,exclude,Lead is Congolese (high).
+batch1,Yemi Alade - Na Gode ft. Selebobo (Official Music Video).mp3,Na Gode,Yemi Alade,exclude,Lead is Nigerian (high).
+batch2,Adekunle Gold - Party No Dey Stop ft. Zinoleesky (Official Visualizer).mp3,Party No Dey Stop,Adekunle Gold,exclude,Lead artist is a Lagos-based Nigerian artist per sources; not Cameroonian
+batch2,Burna Boy - City Boys [Official Music Video].mp3,City Boys,Burna Boy,exclude,"Wikipedia: Nigerian singer, born Port Harcourt; not Cameroonian"
+batch2,Chiké & Mohbad - Egwu (Official Video).mp3,Egwu,Chiké,exclude,Chike is a Nigerian singer per Wikipedia mirror; Mohbad is a Lagos-based Nigerian rapper per NPR coverage; neither lead artist is Cameroonian
+batch2,Cleo Grae - Jongleur ft AJ Bahboy x FAI [Official Video].mp3,Jongleur,Cleo Grae,unknown,Only one weak profile calls Cleo Grae Cameroonian; no reliable nationality source found for the lead artist; 'FAI' not identified
+batch2,Davido - FEEL (Official Video).mp3,FEEL,Davido,exclude,"Wikipedia: Nigerian singer, born in Atlanta, raised in Lagos; not Cameroonian"
+batch2,"Elisha K, Rinyu - Loner (Official Video).mp3",Loner,Elisha K,unknown,Elisha K described as Cameroonian (born Limbe) only in low-quality bio sites; 'Loner' not found in any source; Rinyu's nationality not found
+batch2,Fally Ipupa - Afsana (Clip Officiel).mp3,Afsana,Fally Ipupa,exclude,Wikipedia: Congolese singer-songwriter (DR Congo); not Cameroonian
+batch2,Fireboy DML - YAWA (Official Video).mp3,YAWA,Fireboy DML,exclude,Wikipedia: Nigerian singer-songwriter born in Abeokuta; not Cameroonian
+batch2,Flavour - Big Baller (Official Video).mp3,Big Baller,Flavour,exclude,Described as a Nigerian highlife singer in coverage of this single; not Cameroonian
+batch2,Guchi - Closer [Official Video].mp3,Closer,Guchi,exclude,"Sources describe Guchi (Ugochi Lydia Onuoha) as Nigerian; 'Closer' not found in any source, so the filename title is also unconfirmed; excluded on nationality"
+batch2,Guchi & Yemi Alade - I Swear (Official Video).mp3,I Swear,Guchi,exclude,"Guchi described as Nigerian in sources; the lead artist is not Cameroonian, so the song is excluded even though 'I Swear' is confirmed"
+batch2,Khaid - Anabella (Official Music Video).mp3,Anabella,Khaid,exclude,Sources describe Khaid (Sulaimon Shekoni Solomon) as a Nigerian singer; not Cameroonian
+batch2,LOCKO - Don't Go (Official Video).mp3,Don't Go,LOCKO,unknown,Locko is described as Cameroonian only in bio sites; the Cameroon Tribune duo article is paywalled; no source found for a LOCKO song called 'Don't Go' (search returned other artists' songs)
+batch2,MIMIE - TERMINER ( official video ) directed by  ADAH AKENJI.mp3,TERMINER,MIMIE,unknown,"Mimie is a Cameroonian singer and actress (Douala), but no Mimie song titled 'Terminer' was found; the title search returned 'Terminer' by Wejdene (2024), so the filename may be wrong"
+batch2,Tayc - Lova (Clip officiel) ⧸ OGWifeys Experience.mp3,Lova,Tayc,unknown,"Tayc is usually described as French; a Shazam bio says Marseille-born of Cameroonian origin, which is origin rather than nationality; no 'Lova' video found; conflicting sources so unknown"
+batch2,Tzy Panchak- Holy Water[Official Video].mp3,Holy Water,Tzy Panchak,unknown,Only a promotional artist profile describes Tzy Panchak as Cameroonian (no independent source); no reliable source for the lead artist or the song
+batch2,Tzy Panchak-God Is Love(Official Music Video) ft Raizy.mp3,God Is Love,Tzy Panchak,unknown,Only a promotional artist profile describes Tzy Panchak as Cameroonian; song 'God Is Love' not found in any source; featured Raizy not checked
+batch2,V2M  - MAYA MAYA [OFFICIAL VIDEO] EXPLICIT VERSION.mp3,MAYA MAYA,V2M,unknown,No source found for an artist named V2M or a song 'Maya Maya' by V2M
+batch2,V2M - SOLDIER [OFFICIAL 2023].mp3,SOLDIER,V2M,unknown,No source found for an artist named V2M or a song 'Soldier' by V2M; search results only showed Stanley Enow's album of that name
+batch2,Vivid - Holy Water (lyric video).mp3,Holy Water,Vivid,unknown,"No nationality source found for an artist named Vivid; only a track list with a possible Japanese link, which is unconfirmed"
+batch3,ALVA - Areh (Official Video).mp3,Areh,Alva,unknown,"v3: Apple confirms 'Areh' by Alva. Nationality: only afrobirthdays.com (aggregator) says Cameroonian (Akumba Music, Jan 2025). No press source found. Unknown."
+batch3,AlemsKen - Top Boy (Official Music Video).mp3,Top Boy,AlemsKen,unknown,v3: searched AlemsKen and 'Top Boy' on the web and Apple: no artist credit or nationality source. Unknown.
+batch3,Après le Bacc 🎓 ｜ LE TALENTT ft. LiFkA (Clip Officiel – Réalisé par BLADE77FILMS).mp3,Après le Bacc,Le Talentt,unknown,"v3: Apple confirms 'Après le Bac (feat. LiFkA)' under Le Talentt. Web search found only credits (LiFkA is a Cameroonian rapper, a featured artist). No source for Le Talentt's nationality. Unknown."
+batch3,Aveiro Djess Waahh Papa  by jadel tresor.mp3,Waahh Papa,Aveiro Djess,unknown,"v3: 'Waahh Papa' not found under Aveiro Djess on Apple FR or US. Aveiro Djess is Cameroonian per v2 sources, so only the title is open. Unknown."
+batch3,Aves 49 - 50 [Official Music Video].mp3,50,Aves 49,exclude,Congolese (DRC) per Bandcamp/SoundCloud profile
+batch3,BA CLE-  Ndombolo reggae.mp3,Ndombolo reggae,Ba Cle,unknown,v3: searched Ba Cle / Ndombolo reggae on the web and Apple: nothing. No lead source. Unknown.
+batch3,"Boystar , Maniok , Zk2 & Diff , Dropzy - MD LOVE ( Clip officiel).mp3",MD Love,Boystar,unknown,"v3: Apple confirms 'MD LOVE (feat. MANIOK, ZK2&DIFF & DROPZY)' under boystar. No nationality source for Boystar found on the web. Unknown."
+batch3,Chako - Hero [Charity Video].mp3,Hero,Chako,unknown,"v3: Cameroon Tribune calls Chako an alias of Tzy Panchak (who spent much of life in Nigeria); nationality not stated explicitly. 'Hero' not found on Apple. Alias not resolved, so Unknown."
+batch3,Chako - Holy Father Ft Cleo Grae & Vivid (Studio Video ).mp3,Holy Father,Chako,unknown,"v3: Apple credits 'Holy Father (feat. Cleo Grae & Vivid)' to 'Chako & Tzy Panchak'. Chako/Tzy Panchak alias not resolved by a reliable source, so Unknown (team may decide the alias)."
+batch3,Chako - Lonely [Official Video].mp3,Lonely,Chako,unknown,v3: 'Lonely' not found on Apple for Chako. Chako alias unresolved (Cameroon Tribune says alias of Tzy Panchak). Unknown.
+batch3,ELISA.mp3,ELISA,,unknown,v3: no lead artist in the file name and no tag credit; no source found. Unknown.
+batch3,Elang City - Riz Sauté ( Clip Officiel ) Réalisé par Fred BOB.mp3,Riz Sauté,Elang City,unknown,v3: Apple confirms 'Riz sauté' by Elang City. Nationality: Viberate only; the Chicago claim is unverified. Unknown.
+batch3,Elisha K - Kryptonite (Visualizer).mp3,Kryptonite,Elisha K,unknown,"v3: 'Kryptonite' not found on Apple for Elisha K. Elisha K's nationality rests on aggregator profiles only (afrobirthdays, africanmusiclibrary, Viberate). Unknown."
+batch3,Elisha K - Ley Ley (Lyric Visualizer).mp3,Ley Ley,Elisha K,unknown,"v3: Apple confirms 'Ley Ley' by Elisha K. Nationality still aggregator-only (afrobirthdays, africanmusiclibrary, Viberate); no press or encyclopaedia source found. Unknown."
+batch3,"Elisha K, KING LUCA - NDIBA (Official Video).mp3",Ndiba,Elisha K,unknown,v3: Apple confirms 'Ndiba' by Elisha K & King Luca. Elisha K's nationality is aggregator-only. Unknown.
+batch3,Ella Nao - Mon Lopaire [Official Video].mp3,Mon Lopaire,Ella Nao,exclude,Viberate: French Afrobeat musician
+batch3,FADIL Le Sorcier feat PHILLBILL - PIMENT ROUGE  (official video by Mr TCHECK ).mp3,Piment Rouge,Fadil Le Sorcier,unknown,"v3: searched 'Fadil Le Sorcier', 'Piment Rouge' and 'PhillBill': no artist or song found; Viberate only. Unknown."
+batch3,"FREEBOI LAMMA - UMBRELLA FT STAINZ , FAASHON DEE and MIC MONSTA.mp3",Umbrella,Freeboi Lamma,unknown,"v3: Apple confirms 'Umbrella (feat. Faashon Dee, Stainz & Mic Monsta)' by Freeboi Lamma. No nationality source for Freeboi Lamma found. Unknown."
+batch3,Fernando Sucré - Back it up (clip officiel).mp3,Back it up,Fernando Sucré,unknown,v3: searched Fernando Sucré and 'Back it up': only an audiomack playlist mention. Unknown.
+batch3,Fernando Sucré - Respect feat. La Peuf (clip officiel).mp3,Respect,Fernando Sucré,unknown,v3: searched Fernando Sucré and 'Respect': only an audiomack playlist mention. Unknown.
+batch3,GENTY MANGA - JE SUIS BELLE (Clip Officiel).mp3,Je suis belle,Genty Manga,unknown,"v3: Apple confirms 'Je Suis Belle' by Genty Manga. No nationality source (the search returned Bébé Manga, a different artist). Unknown."
+batch3,Gambi - Vous me plaisez (Clip officiel).mp3,Vous me plaisez,Gambi,exclude,"French rapper (NRJ, Wikipedia)"
+batch3,Gloria Bash - Amour Amour (Clip Officiel).mp3,Amour Amour,Gloria Bash,exclude,"Excluded in v3: the Wikipedia article on Gloria Bash describes a Congolese (DRC) singer-songwriter, not a Cameroonian artist. Apple lists 'Amour Amour' under Gloria Bash. No Cameroonian source found."
+batch3,Gomez Oba - Above All Odds (Official Video).mp3,Above All Odds,Gomez Oba,unknown,v3: Apple confirms 'Above All Odds' by Gomez Oba. Viberate says Cameroonian (aggregator only). Unknown.
+batch3,INES D - YAYATO (CLIP OFFICIEL).mp3,Yayato,Ines D,unknown,"NEEDS TEAM DECISION: Ines D (Yayato, clip officiel). Evidence: camer.be article of 9 June 2026 says she comes from Cameroon and lives in the United States (Cameroonian-born, US-based per camer.be). No nationality or birthplace statement found, no label or Apple credit found. Not decided here."
+batch3,JOËL LA FLEUR - MEKALI MBONG FEAT CHICAGO ELANG CITY - PROD BY AMAH MIX (AUDIO OFFICIEL).mp3,Mekali Mbong,Joël La Fleur,unknown,v3: Apple confirms 'Mekali Mbong (feat. Chicago Elang City)' by Joel La Fleur. Only a Music in Africa directory stub found; no nationality source. Unknown.
+batch3,Jam TheBrain &  Espoir La Tigresse  -  Slow Down (Official Music Video).mp3,Slow Down,Jam TheBrain,unknown,v3: Apple confirms 'Slow Down' by Jam TheBrain & Espoir La Tigresse. Espoir La Tigresse is Gabonese (Music in Africa). No nationality source for Jam TheBrain. Unknown.
+batch3,Joy Awu feat Mimie - Enemies (Clip Officiel).mp3,Enemies,Joy Awu,unknown,v3: 'Enemies' by Joy Awu not found on Apple. Viberate only (generated text). Unknown.
+batch3,KEN MBELI ABEL x V2M - AYI (OFFICIAL MUSIC VIDEO).mp3,Ayi,Ken Mbeli Abel,unknown,v3: Apple confirms 'Ayi (feat. ken mbeli abel)' by V2M. No nationality source for V2M or Ken Mbeli Abel. Unknown.
+batch3,Kameni - JAH JAH (Official Video).mp3,Jah Jah,Kameni,unknown,"v3: Kameni is Cameroonian (v2 lead verified), but 'Jah Jah' not found on Apple FR or US for Kameni. Title unconfirmed. Unknown."
+batch3,Karisma solo_J'aime la bière (clip officiel).mp3,J'aime la bière,Karisma Solo,unknown,v3: Apple confirms 'J'aime la bière' by Karisma Solo. Nationality: Viberate only. Unknown.
+batch3,LOUZIO - MANNEQUIN.mp3,Mannequin,Louzio,exclude,French rapper (Soundcharts)
+batch3,La Reine YOSÉ ft Portable- ACCELERATE ( Won wa di)- OFFICIAL VIDEO.mp3,Accelerate (Won wa di),La Reine Yosé,unknown,v3: Apple confirms 'Accelerate (Won Wa Di)' by La Reine Yose & Portable. No Cameroonian source for La Reine Yosé found (Portable is Nigerian). Unknown.
+batch3,Llas Melo - Tiitëru (Clip Officiel).mp3,Tiitëru,Llas Melo,unknown,v3: Apple confirms 'Tiitëru' by Llas Melo. No nationality source found. Unknown.
+batch3,Loic Sumfor - Imperfections ft. Mic Monsta (Official Video).mp3,Imperfections,Loic Sumfor,unknown,v3: searched Loic Sumfor and 'Imperfections': no music source; Viberate only. Unknown.
+batch3,Longue Longue Ami judas.mp3,Ami judas,Longue Longue,unknown,"v3: Longue Longue is a Cameroonian singer per camer.be, Koaci and Journal du Cameroun. 'Ami judas' is not on Apple (its Longué longué releases are 'Je ne mourrai pas' and 'À bas Judas'). Title unconfirmed. Unknown."
+batch3,Mani Money - Changement (Clip officiel).mp3,Changement,Mani Money,unknown,"v3: Shazam credits 'Changement' (AFRICA DISTRO, 25 Jul 2025) to Mani Money, with Mani Bella Veronique as vocalist. No nationality source for Mani Money. Unknown."
+batch3,Ngah Rinyu ~ Barré Collé (Official Video).mp3,Barré Collé,Ngah Rinyu,unknown,"v3: Rinyu (Ngah Rinyu) is Cameroonian per Music in Africa and Cameroon Tribune, but 'Barré Collé' is not on Apple FR and a camer.be interview ties the title to a veteran bikutsi singer. Unknown."
+batch3,"Petit Bozard, @badnova. & @kameni237  - C'est Monté ! Le Tube Booster.mp3",C'est Monté,Petit Bozard,unknown,v3: Petit Bozard nationality only from LiveOne (aggregator). 'C'est Monté' not confirmed on Apple. Unknown.
+batch3,Phenomeno - In love (Clip Officiel).mp3,In love,Phenomeno,exclude,Malian (Musicinafrica/Audiomack)
+batch3,Phenomeno - Souka (Clip officiel).mp3,Souka,Phenomeno,exclude,Malian
+batch3,Phenomeno x AlemsKen - Dolbayob (Clip officiel).mp3,Dolbayob,Phenomeno,exclude,Malian
+batch3,"Ryan TB , FC meskin - PIED DE DOUKOURÉ (CLIP OFFICIEL).mp3",Pied de Doukouré,Ryan TB,unknown,v3: searched Ryan TB and 'Pied de Doukouré' on the web and Apple: nothing. Unknown.
+batch3,Scraypi – Racine ft. @Ck-Plus (Clip Officiel).mp3,Racine,Scraypi,exclude,Gabonese per Shazam
+batch3,"Taku Joel - NTANG ft Styyles, Mboko Mana, Draaag, BoyKaf, Vherse, Lop, Big Ac, Chefor, WizNova & DNA.mp3",Ntang,Taku Joel,unknown,"v3: Taku Joel is Cameroonian in the v2 catalogue, but 'NTANG' not found on Apple FR or US for Taku Joel. Title unconfirmed. Unknown."
+batch3,Tayc - Il s'appelait Tayc (Clip officiel).mp3,Il s'appelait Tayc,Tayc,unknown,"NEEDS TEAM DECISION: Tayc (Il s'appelait Tayc). Evidence: Wikimonde and Vikidia say born Marseille 2 May 1996 to Cameroonian parents; Wikimonde gives French nationality; Tayc says he is Cameroonian by origin (mother from Bamenda, father Bamileke; yop.l-frii interview). Not decided here."
+batch3,Tayc - Ma Lady (Clip officiel).mp3,Ma Lady,Tayc,unknown,"NEEDS TEAM DECISION: Tayc (Ma Lady). Same evidence as Tayc (Il s'appelait Tayc): French-born, Cameroonian parents, French nationality per Wikimonde. Not decided here."
+batch3,Tayc - NEED (Clip officiel).mp3,Need,Tayc,unknown,"NEEDS TEAM DECISION: Tayc (NEED). Same evidence as Tayc: French-born, Cameroonian parents, French nationality per Wikimonde. Not decided here."
+batch3,Tzy Panchak - See My Home (Viral Video).mp3,See My Home,Tzy Panchak,unknown,"v3: Tzy Panchak is Cameroonian (v2 verified), but 'See My Home' not found on Apple FR or US. Unknown."
+batch3,Tzy Panchak - Sentiment (Official Video).mp3,Sentiment,Tzy Panchak,unknown,v3: 'Sentiment' not found on Apple FR or US for Tzy Panchak. Unknown.
+batch3,V2M - ANYTHING FOR YOU  (DUBAI ONE TV PERFORMENCE).mp3,Anything For You,V2M,unknown,v3: no 'Anything For You' by V2M on Apple. V2M nationality not found. Unknown.
+batch3,Waka Man - Early Mo-Mo (official Videoclip).mp3,Early Mo-Mo,Waka Man,unknown,v3: Apple confirms 'Early Mo-Mo' by Waka Man. No nationality source found. Unknown.
+batch3,Waka Man - Sailor Official (Visualizer).mp3,Sailor,Waka Man,unknown,v3: Apple confirms 'Sailor' by Waka Man. No nationality source found. Unknown.
+batch3,Wendy Naya - Drill Makossa (Clip Officiel) Directed by LeCris Mila ｜ Afro Drill 2025.mp3,Drill Makossa,Wendy Naya,unknown,v3: Apple confirms 'Drill makossa' by Wendy Naya (album Wendy vs Naya). No Cameroonian source found. Unknown.
+batch3,Wizdom OG - Elle a Patienté (Clip Officiel).mp3,Elle a Patienté,Wizdom OG,unknown,"v3: Apple confirms 'Elle a Patienté' by WIZDOM OG. No Cameroonian source found. Great Wizdom (Music in Africa) is a Nigerian artist, a different person. Unknown."
+batch3,YVUTI - No Limi (Official Video).mp3,No Limi,Yvuti,unknown,v3: Apple confirms 'No Limi' by Yvuti. Lead: afrobirthdays only (aggregator; birthdate unverified). Unknown.
+batch3,afrosao - GAME OF THRONES (Clip officiel).mp3,Game of Thrones,Afrosao,exclude,Excluded in v3: tchadinfos.com (Feb 2026) describes AFROSAO as a Chadian rapper. Not Cameroonian. No Game of Thrones link found.
+batch4,AFROVIBES - 🎄NOUVEAU MIX MBOLE 2021 🎅🏻 ｜  DANCE NONSTOP POUR LES FÊTES DE FIN D'ANNÉE 🎄🎅🏻🎄🎅🏻.mp3,Nouveau Mix Mbole 2021 (DJ mix),,exclude,"DJ mix / compilation, not a song by a verified lead"
+batch4,AVEIRO DJESS LES VOILÀ QUI DANSENT.mp3,Les voilà qui dansent,Aveiro Djess,unknown,"v3: Aveiro Djess is Cameroonian (v2 verified), but 'Les voilà qui dansent' not found on Apple FR or US. Unknown."
+batch4,Anniversaire.mp3,Anniversaire,,unknown,v3: no lead artist in the file name; no Apple credit for 'Anniversaire' by Mr Biyong found. Unknown.
+batch4,Bienvenue Chez Nous.mp3,Bienvenue Chez Nous,,unknown,v3: no lead artist in the file name; title not found with a credit. Unknown.
+batch4,COLLECTIF CAN 2021 - VICTOIRE [MR BIYONG x N.O.NO x DU2G x THUMEUR].mp3,Victoire,Collectif CAN 2021,unknown,"v3: Cameroon Tribune: the CAN 2021 anthem came from the collective Africa Smile (Roland Julien Ntsa). 'Victoire' with Mr Biyong, N.O.NO, Du2G, Thumeur not found on the web or Apple. Unknown."
+batch4,Dj Arafat - Péter les Plombs feat. Tenor.mp3,Péter les Plombs,DJ Arafat,exclude,Ivorian (Wikipedia; Abidjan.net)
+batch4,Dj P2N - LIKOLO REMIX feat Tenor & Dj Amaroula (Clip officiel).mp3,Likolo Remix,DJ P2N,exclude,Viberate: DRC producer; not verified Cameroonian
+batch4,Djoum Djoum Me.mp3,Djoum Djoum Me,,unknown,v3: no lead artist in the file name; 'Djoum Djoum Me' by Mr Biyong not found on Apple. Unknown.
+batch4,ESTHÉTIQUE MOUANA le diable ne fait que.... clip officiel by serial Shooter.mp3,Le diable ne fait que,Esthétique Mouana,unknown,"v3: Viberate only. Apple has 'Le talent seul ne suffit pas' by Esthétique Mouana, not 'Le diable ne fait que'. Unknown."
+batch4,Force.mp3,Force,,unknown,v3: no lead artist in the file name; no source found. Unknown.
+batch4,Isis Kingue - NDOLO feat. Gaz Mawete (Clip officiel).mp3,Ndolo,Isis Kingue,unknown,v3: no source for an artist named Isis Kingue. Featured Gaz Mawete is DRC. Unknown.
+batch4,JOVIC LE CORRIGE (LES FESTIVITES) CLIP VIDEO OFFICIEL By Serial shoot.mp3,Les Festivités,Jovic le Corrigé,unknown,v3: Apple confirms 'Les Festivités' by Jovic Le Corrigé. No nationality source found. Unknown.
+batch4,KAN KAN BOYS ft MAJOIE AYI PARLER PARLER #Mbole #KKB.mp3,Ayi Parler Parler,Kankan Boys,unknown,v3: Apple confirms 'Parler Parler' by Kankan Boys. Band nationality only from LiveOne (aggregator). Unknown.
+batch4,Kankan Boys Levons les mains.mp3,Levons les mains,Kankan Boys,unknown,v3: Apple confirms 'Levons les mains' by Kankan Boys. Band nationality only from LiveOne (aggregator). Unknown.
+batch4,MAMI NYANGA.mp3,Mami Nyanga,,unknown,v3: no lead artist in the file name; no Apple credit found. Unknown.
+batch4,MR BIYONG - DJOUM DJOUM ME [AUDIO OFFICIEL].mp3,Djoum Djoum Me,Mr Biyong,unknown,v3: 'Djoum Djoum Me' by Mr Biyong not found on Apple. Web search finds only Franck Biyong (a different artist). Unknown.
+batch4,MR BIYONG - Mami Nyanga  [Audio Officiel].mp3,Mami Nyanga,Mr Biyong,unknown,v3: 'Mami Nyanga' by Mr Biyong not found on Apple. Mr Biyong has no verified source. Unknown.
+batch4,Mami Nyanga__1.mp3,Mami Nyanga,,unknown,"v3: no lead artist in the file name; second copy of Mami Nyanga (row 187), not a duplicate by fingerprint. Unknown."
+batch4,Mr Biyong - Juger Les Gens (ANIME OFFICIEL).mp3,Juger Les Gens,Mr Biyong,unknown,v3: 'Juger les gens' by Mr Biyong not found on Apple; no Cameroonian source for Mr Biyong. Unknown.
+batch4,Mr Biyong x Spaceboy High - On Y Va [Dance video par les JABBAWOCKEEZ].mp3,On Y Va,Mr Biyong,unknown,"v3: Apple has 'Hakimi' by Mr Biyong, not 'On Y Va'. No Cameroonian source for Mr Biyong. Unknown."
+batch4,NOUVEAU MIX CAMEROUN 2022 ｜ NEW CAMEROON MIX 2022  BY DJ TURBO LAZER.mp3,Nouveau Mix Cameroun 2022 (DJ mix),,exclude,DJ mix / compilation
+batch4,Petit Bozard - Unité (Official Music Video).mp3,Unité,Petit Bozard,unknown,v3: Petit Bozard nationality only from LiveOne (aggregator). 'Unité' not found on Apple. Unknown.
+batch4,TENOR - LE BEUHBEUH ｜ LA SAUCE GOMBO [CLUB MIX].mp3,Le Beuhbeuh (La Sauce Gombo) [Club Mix],Tenor,unknown,"v3: Tenor is Cameroonian (v2 verified), but 'Le Beuhbeuh' not found on Apple FR or US. Unknown."
+batch4,WATTO DE SOUZA - LA FILLE LÀ (Vidéo Officielle) By N E Films.mp3,La Fille Là,Watto de Souza,unknown,v3: Viberate only (promotional text). 'La Fille Là' not confirmed on Apple. Unknown.

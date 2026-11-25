@@ -1,82 +1,87 @@
 [
   {
-    "artist_name": "Mock Artist 01",
+    "artist_name": "Locko",
     "songs": [
       "S-M0001",
       "S-M0013"
     ]
   },
   {
-    "artist_name": "Mock Artist 02",
+    "artist_name": "Mr. Leo",
     "songs": [
       "S-M0002",
       "S-M0014"
     ]
   },
   {
-    "artist_name": "Mock Artist 03",
+    "artist_name": "Magasco",
     "songs": [
-      "S-M0003",
-      "S-M0015"
+      "S-M0003"
     ]
   },
   {
-    "artist_name": "Mock Artist 04",
+    "artist_name": "Kocee",
     "songs": [
       "S-M0004",
       "S-M0016"
     ]
   },
   {
-    "artist_name": "Mock Artist 05",
+    "artist_name": "Blanche Bailly",
     "songs": [
       "S-M0005",
       "S-M0017"
     ]
   },
   {
-    "artist_name": "Mock Artist 06",
+    "artist_name": "Charlotte Dipanda",
     "songs": [
       "S-M0006",
       "S-M0018"
     ]
   },
   {
-    "artist_name": "Mock Artist 07",
+    "artist_name": "Mink's",
     "songs": [
       "S-M0007",
       "S-M0019"
     ]
   },
   {
-    "artist_name": "Mock Artist 08",
+    "artist_name": "Lady Ponce",
     "songs": [
       "S-M0008",
       "S-M0020"
     ]
   },
   {
-    "artist_name": "Mock Artist 09",
+    "artist_name": "Salatiel",
     "songs": [
       "S-M0009"
     ]
   },
   {
-    "artist_name": "Mock Artist 10",
+    "artist_name": "Tenor",
     "songs": [
       "S-M0010"
     ]
   },
   {
-    "artist_name": "Mock Artist 11",
+    "artist_name": "Stanley Enow",
     "songs": [
       "S-M0011"
     ]
   },
   {
-    "artist_name": "Mock Artist 12",
+    "artist_name": "X-Maleya",
     "songs": [
       "S-M0012"
+    ]
+  },
+  {
+    "artist_name": "Fair Play test artist",
+    "songs": [
+      "S-M0015"
     ]
   }
 ]

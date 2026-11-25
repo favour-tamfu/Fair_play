@@ -1,7 +1,7 @@
 {
   "pot_fcfa": 100000000,
-  "n_artists": 12,
-  "flat_each_fcfa": 8333333,
+  "n_artists": 13,
+  "flat_each_fcfa": 7692307,
   "misallocated_flat_fcfa": 31400000,
   "misallocated_fairplay_fcfa": 4100000,
   "basis": "mock_month_truth"

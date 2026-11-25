@@ -24,3 +24,6 @@ node_modules/
 
 # Exception: tiny synthetic test tones used by core tests / MC0 golden SHA (no music, no rights issue)
 !core/tests/data/*.wav
+# Build outputs (meter exe, A)
+/dist/
+/build/

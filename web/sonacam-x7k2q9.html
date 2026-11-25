@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fair Play · SONACAM view</title>
+<link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/dash.css">
+</head>
+<body class="d2">
+<!-- Sidebar: who is signed in, the three views, period and counting, management links -->
+<aside class="side" aria-label="Dashboard menu">
+  <div class="org">
+    <span class="org-mark" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span>
+    <div><small>Rights society</small><b>SONACAM</b></div>
+    <svg class="org-chev" viewBox="0 0 10 16" aria-hidden="true"><path d="M2 6l3-3 3 3M2 10l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+
+  <p class="side-h">Main menu</p>
+  <nav class="menu" role="tablist" aria-label="Views">
+    <button role="tab" data-tab="overview" class="on"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1z" fill="currentColor"/></svg>Overview</button>
+    <button role="tab" data-tab="songs"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8 15V5l8-2v10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="6" cy="15" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="14" cy="13" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Songs</button>
+    <button role="tab" data-tab="trust"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l6 2.5v4.5c0 3.8-2.6 6.6-6 8-3.4-1.4-6-4.2-6-8V5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7.3 10l1.9 1.9 3.6-3.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Trust</button>
+  </nav>
+
+  <hr>
+  <p class="side-h">Period</p>
+  <div class="menu radio" role="group" aria-label="Period">
+    <button data-period="live" class="on"><i></i>Live demo</button>
+    <button data-period="mock_month"><i></i>Mock month</button>
+  </div>
+
+  <hr>
+  <p class="side-h">Counting</p>
+  <div class="menu radio" role="group" aria-label="Counting">
+    <button data-mode="standardised" class="on" title="Fair-play rules applied (repeats count less, catch rate corrected)"><i></i>Standardised</button>
+    <button data-mode="raw" title="Every confirmed play counts 1"><i></i>Raw</button>
+  </div>
+
+  <hr>
+  <p class="side-h">Management</p>
+  <nav class="menu">
+    <a href="sonacam-x7k2q9-admin.html"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.5v2.2M10 15.3v2.2M2.5 10h2.2M15.3 10h2.2M4.7 4.7l1.6 1.6M13.7 13.7l1.6 1.6M4.7 15.3l1.6-1.6M13.7 6.3l1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Admin</a>
+    <a href="index.html"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M3 10h14M10 3c2 2.2 2.8 4.6 2.8 7s-.8 4.8-2.8 7c-2-2.2-2.8-4.6-2.8-7S8 5.2 10 3z" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>Public site</a>
+    <a href="artist.html"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 17c.6-3 3-4.6 6-4.6s5.4 1.6 6 4.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Artists</a>
+  </nav>
+
+  <p class="side-foot"><span id="rule">rule —</span><br>Times are Cameroon time.<span id="mode-note"></span></p>
+</aside>
+
+<div class="page">
+  <header class="topbar">
+    <p class="crumb">Dashboard <span aria-hidden="true">›</span> <b id="crumb">Overview</b></p>
+    <label class="search"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M13 13l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span class="sr">Filter artists and songs</span><input id="q" type="search" placeholder="Filter artists and songs…" autocomplete="off"></label>
+    <span class="clock" id="clock"></span>
+    <button class="ledger" id="ledger" data-goto="trust">Log —</button>
+  </header>
+
+  <main>
+    <h1 class="greet" id="greet">Welcome back, SONACAM</h1>
+
+    <section class="kpis" aria-label="Key figures">
+      <div class="kpi"><div class="kpi-in"><span>Plays counted</span><div class="kv"><b id="k-counted">–</b><em>plays</em></div><div class="spark" id="sp-counted" aria-hidden="true"></div></div><p class="kpi-foot"><i aria-hidden="true"></i><span id="kf-counted"></span></p></div>
+      <div class="kpi"><div class="kpi-in"><span>Plays heard</span><div class="kv"><b id="k-raw">–</b><em>plays</em></div><div class="spark" id="sp-raw" aria-hidden="true"></div></div><p class="kpi-foot"><i aria-hidden="true"></i><span id="kf-raw"></span></p></div>
+      <div class="kpi"><div class="kpi-in"><span>Artists with plays</span><div class="kv"><b id="k-artists">–</b><em>artists</em></div></div><p class="kpi-foot"><i aria-hidden="true"></i><span id="kf-artists"></span></p></div>
+      <div class="kpi"><div class="kpi-in"><span>Meters online</span><div class="kv"><b id="k-meters">–</b><em>meters</em></div></div><p class="kpi-foot"><i aria-hidden="true"></i><span id="kf-meters"></span></p></div>
+      <div class="kpi"><div class="kpi-in"><span>Songs ready</span><div class="kv"><b id="k-songs">–</b><em>songs</em></div></div><p class="kpi-foot"><i aria-hidden="true"></i><span id="kf-songs">in the catalogue, can be matched</span></p></div>
+    </section>
+
+    <!-- Overview -->
+    <section class="view on" id="view-overview">
+      <!-- Dot-matrix chart: per artist, plays heard and plays counted as stacks of squares -->
+      <section class="card-o">
+        <div class="card-o-head"><h2>Plays by artist</h2><span class="info" title="Each square is a fixed number of plays. Dark squares were counted; light ones were heard but counted less (repeats, loops).">i</span>
+          <span class="more" aria-hidden="true">···</span></div>
+        <div class="card-i">
+          <div class="trend-top">
+            <p class="tot">Plays counted : <b id="t-total">–</b></p>
+            <p class="lg"><span><i class="lg-heard"></i>Heard</span><span><i class="lg-counted"></i>Counted</span></p>
+            <div class="pill-seg" role="group" aria-label="Period">
+              <button data-period="live" class="on">Live</button>
+              <button data-period="mock_month">Month</button>
+            </div>
+          </div>
+          <div class="dots" id="dots" role="img" aria-label="Plays heard and counted per artist"></div>
+          <div class="dots-x" id="dots-x"></div>
+          <div class="dot-tip" id="dot-tip" role="status"></div>
+          <details class="dots-table"><summary>Show as a table</summary><table><thead><tr><th>Artist</th><th class="n">Heard</th><th class="n">Counted</th></tr></thead><tbody id="dots-tbody"></tbody></table></details>
+        </div>
+      </section>
+
+      <div class="ov2">
+        <section class="card-o earn-panel">
+          <div class="card-o-head"><h2>Who earned what</h2><a class="dl" id="usage-dl" href="#" download>Usage report (CSV)</a></div>
+          <div class="card-i">
+            <p class="hero-line" id="earn-hero"></p>
+            <div class="frozen" id="earn-frozen">Results withheld: a recorded play was changed after it was logged (tamper check failed). Nothing is published until the log is restored.</div>
+            <div class="scroll">
+              <table class="earn">
+                <thead><tr><th>#</th><th>Artist</th><th class="n">Songs</th><th class="n">Heard</th><th class="n">Counted</th><th class="n">Share</th><th class="barcol"></th></tr></thead>
+                <tbody id="earn"></tbody>
+              </table>
+            </div>
+            <div class="compare" id="compare"></div>
+            <p class="note" id="earn-note">An artist earns for all their songs together: their songs' shares are added up. Click an artist to see the songs.</p>
+          </div>
+        </section>
+
+        <div class="ov2-side">
+          <section class="card-o map-panel">
+            <div class="card-o-head"><h2>Where music plays</h2><span class="note" id="map-note"></span></div>
+            <div class="card-i">
+              <div class="map-wrap">
+                <svg id="map" viewBox="0 0 400 560" role="img" aria-label="Map of Cameroon with the metered bars"></svg>
+                <div class="map-toast" id="map-toast"></div>
+              </div>
+              <div class="legend">
+                <span><i class="dot live"></i>Live meter</span>
+                <span><i class="dot on"></i>Online</span>
+                <span><i class="dot off"></i>Offline or simulated</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="card-o feed-panel">
+            <div class="card-o-head"><h2>Live activity</h2><span class="live-dot" id="feed-state">connecting</span></div>
+            <div class="card-i"><ol id="feed" class="feed"></ol></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <!-- Songs -->
+    <section class="view" id="view-songs">
+      <section class="card-o">
+        <div class="card-o-head"><h2>Songs</h2><span class="note" id="shares-note"></span></div>
+        <div class="card-i">
+          <div class="scroll">
+            <table>
+              <thead><tr><th>#</th><th>Title</th><th>Artist</th><th class="n">Heard</th><th class="n">Counted</th><th class="n">Share</th><th class="barcol"></th><th>Review flags</th></tr></thead>
+              <tbody id="shares"></tbody>
+            </table>
+          </div>
+          <p class="note">Flags are for SONACAM review only; they never change a song's count (D-009).</p>
+        </div>
+      </section>
+    </section>
+
+    <!-- Trust -->
+    <section class="view" id="view-trust">
+      <div class="trust2">
+        <section class="card-o">
+          <div class="card-o-head"><h2>Play log</h2></div>
+          <div class="card-i">
+            <div class="status" id="trust-status">–</div>
+            <dl class="facts">
+              <dt>Plays checked</dt><dd id="t-checked">–</dd>
+              <dt>Latest chain hash</dt><dd class="mono" id="t-root">–</dd>
+              <dt>Last public anchor</dt><dd id="t-anchor">–</dd>
+            </dl>
+          </div>
+        </section>
+        <section class="card-o">
+          <div class="card-o-head"><h2>Hourly anchors</h2><span class="note">Published Merkle roots, Cameroon time</span></div>
+          <div class="card-i">
+            <div class="scroll">
+              <table>
+                <thead><tr><th>Hour</th><th class="n">Plays</th><th>Root</th><th>Published in</th></tr></thead>
+                <tbody id="anchors"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <section class="card-o wide">
+          <div class="card-o-head"><h2>How to check it yourself</h2></div>
+          <div class="card-i">
+            <ol class="howto">
+              <li>Each bar's meter signs every 10-second sample with its own key, so the server cannot invent samples.</li>
+              <li>Every confirmed play is chained to the one before it: its hash covers the previous hash and the play (meter, bar, song, time, length).</li>
+              <li>Every hour the server publishes one Merkle root of that hour's plays in the public anchors file.</li>
+              <li>Changing or deleting any past play breaks the chain and no longer matches the published root. The banner turns red and the results are withheld until the log is restored.</li>
+            </ol>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
