@@ -87,6 +87,34 @@
             "catch_rate"
           ]
         }
+      },
+      "source": {
+        "type": "string",
+        "enum": [
+          "live",
+          "virtual",
+          "mock"
+        ],
+        "description": "c-1.4: where the bar's data comes from"
+      },
+      "plays": {
+        "type": "object",
+        "description": "c-1.4: recorded plays at this bar per period",
+        "properties": {
+          "live": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mock_month": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "live",
+          "mock_month"
+        ],
+        "additionalProperties": false
       }
     },
     "required": [

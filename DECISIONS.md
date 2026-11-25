@@ -135,3 +135,7 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Mock month: the loop, promo and quiet-hours scenarios use fictional tracks S-M0901/02/03 by "Fair Play test artist" (A's idea, R-023), so no real artist is shown gaming the system. 69 834 observed plays; loop flags only on the test tracks.
 - A's merge (886c003): new landing page at `/`, dashboard and admin at unlisted addresses (R-021); README updated (pages, album covers via iTunes Search, Pexels/Unsplash photos).
 
+## D-023 — 2026-11-25 03:30 — B (Person B) — Landing page speaks to SONACAM and shows live + monthly data
+- The public landing page is SONACAM's pitch page: it explains what Fair Play gives SONACAM; artists are one card and a link, not the main audience. Artist-facing content stays on artist.html and portal.html.
+- Numbers come from the API for both periods (switch), never typed in. c-1.4 (venues `source`, `plays` per period) added for the map.
+

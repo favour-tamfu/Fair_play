@@ -114,6 +114,8 @@ def _venues() -> list[dict]:
     with connect() as c:
         vs = c.execute("SELECT * FROM venues ORDER BY venue_id").fetchall()
         ms = c.execute("SELECT * FROM meters ORDER BY meter_id").fetchall()
+        counts = {(r["venue_id"], r["chain"]): r["n"] for r in c.execute(
+            f"SELECT venue_id, chain, count(*) AS n FROM plays p WHERE {ACTIVE} GROUP BY venue_id, chain")}
     out = []
     for v in vs:
         meters = [{"meter_id": m["meter_id"],
@@ -123,7 +125,12 @@ def _venues() -> list[dict]:
                    "catch_rate": float(m["catch_rate"] if m["catch_rate"] is not None else 0.8)}
                   for m in ms if m["venue_id"] == v["venue_id"]]
         out.append({"venue_id": v["venue_id"], "name": v["name"] or v["venue_id"], "city": v["city"], "lat": v["lat"],
-                    "lon": v["lon"], "stratum": v["stratum"], "bars_in_stratum": v["bars_in_stratum"], "meters": meters})
+                    "lon": v["lon"], "stratum": v["stratum"], "bars_in_stratum": v["bars_in_stratum"], "meters": meters,
+                    # c-1.4: live | virtual | mock, from the bar's meters (a bar with a real meter is live)
+                    "source": next((s for s in ("live", "virtual") if any(m["source"] == s for m in ms
+                                                                          if m["venue_id"] == v["venue_id"])), "mock"),
+                    "plays": {"live": counts.get((v["venue_id"], "live"), 0),
+                              "mock_month": counts.get((v["venue_id"], "mock"), 0)}})
     return out
 
 

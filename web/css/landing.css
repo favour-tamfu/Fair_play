@@ -654,3 +654,13 @@ body.dark .bento-wrap { padding: 70px 0 120px; }
   .cmp-row .cmp-bar { grid-column: 1 / -1; grid-row: 2; }
 }
 .cmp-big b { background: none; -webkit-background-clip: border-box; background-clip: border-box; color: #f5f5f7; }
+
+/* Period switch (live / mock month) and notes under the numbers, map and trust chain (B, 2026-11-25) */
+.period-switch { display: flex; justify-content: center; gap: 4px; margin: -16px auto 36px; padding: 4px; width: max-content; max-width: 100%;
+  border-radius: 980px; background: rgba(128, 128, 128, .16); }
+.period-switch button { font: inherit; font-size: 14px; border: 0; border-radius: 980px; padding: 7px 16px; background: transparent; color: inherit; cursor: pointer; }
+.period-switch button[aria-selected="true"] { background: var(--button); color: #fff; }
+.period-switch button:focus-visible { outline: 2px solid var(--button); outline-offset: 2px; }
+.period-note, .trust-note { margin: 28px auto 0; max-width: 640px; font-size: 14px; line-height: 1.45; opacity: .7; }
+.numbers .stat em { font-style: normal; }
+

@@ -118,6 +118,7 @@ def test_venues_live_venue_has_known_coordinates(world, client):
     assert (live["name"], live["city"], live["lat"], live["lon"]) == ("CIMFEST demo table", "Buea", 4.1527, 9.241)
     assert live["meters"][0]["meter_id"] == "M-07" and live["meters"][0]["online"] is True
     assert vs["V-DLA-AKWA01"]["meters"][0]["online"] is False
+    assert live["source"] == "live" and live["plays"] == {"live": 4, "mock_month": 0}   # c-1.4; superseded play excluded
 
 
 def test_plays_filters_order_and_weights(world, client):

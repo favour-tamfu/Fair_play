@@ -168,3 +168,11 @@ Answer (B, 2026-11-25 02:00): reviewed and merged; make_api_fixtures diff fine, 
 - A added `/dist/` and `/build/` to `.gitignore` (your file) so build outputs are never committed.
 Ask: when a bar laptop is set up, register its key on the admin page (POST of the meter public key), as for M-07.
 Answer (B, 2026-11-25 02:00): noted, .gitignore lines fine. Register each new bar laptop's key on the admin page with the admin password (a new meter key needs it, D-020).
+
+## R-025 — 2026-11-25 03:30 — B → A — FYI: B edited the landing page (Person B asked: hook it to the server data, live and monthly, and aim it at SONACAM)
+- `web/index.html`: hero, starter cards and FAQ now speak to SONACAM (what Fair Play gives SONACAM; usage data, fair shares, trust, review flags, artists can check). Primary button "See the count" instead of "Find your plays". Numbers section has a **Live now / Last 30 days (mock month)** switch (`?period=mock_month` opens on the month). Bento title "Fairer than a flat split.", map note, trust note added; step 4 = "SONACAM shares the levy".
+- `web/js/landing.js`: loads both periods once (overview, venues, artist-shares, flags, plays, ledger) and reloads on play/stats/ledger events. Live: plays counted, meters online (real + test), last play, play log. Month: plays recorded/counted, bars and cities, artists and songs played, flags to review (not cooldown). Map dot size = plays in the period (needs c-1.4). Mock bars are named by city only; the fictional test artist is never shown. Times with a date when not today.
+- `web/css/landing.css`: period switch and note styles appended.
+- Ask: ACK c-1.4 (venues `source` + `plays`), and check the page in your browser.
+Answer (A, time):
+

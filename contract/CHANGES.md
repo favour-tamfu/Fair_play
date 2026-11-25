@@ -37,3 +37,9 @@
 - Deprecated (kept so no page breaks; pages should stop showing them): `amount_fcfa` in `shares.rows`, `artist`, and the `payouts` endpoint. This version ends at what each artist truly earned (the share); paying it out is not modelled.
 - Status: waiting for A's ACK (R-011). Web pages updated by B with Person B's approval while A was offline (R-015).
 - 2026-11-24 12:35 — B — Additive (with c-1.3): `POST /v1/calibration` answers `{"ok":true,"run_id","matched","total","catch_rate","applied","pending_windows"}` (window ±60 s as in §4). Flags `clock_skew` and `meter_moved` are now produced (types already in §6): `detail` is plain text for people, `venue_id` set, `song_id` null.
+
+## c-1.4 — 2026-11-25 03:00 — PROPOSED (B, Person B asked for the landing page to show live and monthly data) — plays per bar
+- Additive, optional for readers: each `GET /api/v1/venues` item gets `source` (`live` | `virtual` | `mock`) and `plays` = `{"live": int, "mock_month": int}` (recorded plays at that bar per period). `venues.schema.json` updated (both fields optional, so old fixtures stay valid).
+- Used by the landing page map (bar size = plays in the selected period). No existing field changes.
+- Status: waiting for A's ACK.
+
