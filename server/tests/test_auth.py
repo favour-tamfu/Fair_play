@@ -98,3 +98,30 @@ def test_public_feed_hides_bars_and_detail():
     assert _public({"event": "match", "data": {"accepted": True}}) is None
     assert _public({"event": "flag", "data": {}}) is None
     assert _public({"event": "play", "data": {**play["data"], "artist_name": "Fair Play test artist"}}) is None
+
+
+def test_artist_sees_when_own_songs_were_played_never_the_bar(app_client, migrated_db):
+    c, _ = sign_in(app_client, "Locko", config.ARTIST_DEFAULT_PASSWORD)
+    r = c.get("/api/v1/me/plays", params={"period": "live"})
+    assert r.status_code == 200 and set(r.json()) == {"period", "days", "recent"}
+    for p in r.json()["recent"]:
+        assert not {"venue_id", "meter_id", "city"} & set(p)
+    assert TestClient(app_client).get("/api/v1/me/plays").status_code == 403
+    totals = c.get("/api/v1/me/songs").json()["totals"]["live"]
+    assert "all_counted" in totals
+
+
+def test_signed_in_sonacam_can_register_a_meter(app_client, migrated_db):
+    """Found in the walk-through: the admin page registers meters with the SONACAM session (no header)."""
+    from fairplay_core.signing import generate_seed, public_key_b64
+    rec = {"meter_id": "M-88", "venue_id": "V-BUEA-CIMFEST", "public_key_b64": public_key_b64(generate_seed()),
+           "created_at": "2026-11-25T00:00:00.000Z"}
+    with connect(migrated_db, autocommit=True) as c:
+        c.execute("DELETE FROM meters WHERE meter_id = 'M-88'")
+    assert TestClient(app_client).post("/v1/meters/register", json=rec).status_code == 403      # not signed in
+    artist, _ = sign_in(app_client, "Locko", config.ARTIST_DEFAULT_PASSWORD)
+    assert artist.post("/v1/meters/register", json=rec).status_code == 403                    # an artist: no
+    c, _ = sign_in(app_client, "sonacam", TOKEN)
+    assert c.post("/v1/meters/register", json=rec).status_code == 200
+    with connect(migrated_db, autocommit=True) as db:
+        db.execute("DELETE FROM meters WHERE meter_id = 'M-88'")

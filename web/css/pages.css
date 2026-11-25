@@ -410,3 +410,18 @@ div.leader b { font-family: var(--display); font-size: 24px; font-weight: 600; }
 .pt-form button.pill { border: 0; cursor: pointer; }
 @media (max-width: 734px) { .pt-tiles { grid-template-columns: 1fr; } .pt-form { grid-template-columns: 1fr; } .pt-form .owner { grid-template-columns: 1fr 1fr; } }
 .pt-tiles .tile { aspect-ratio: auto; min-height: 150px; }
+
+/* D-030: artist portal — when your songs were played, how your share is computed */
+.pt-recent { list-style: none; margin: 10px 0 0; padding: 0; max-height: 320px; overflow: auto; }
+.pt-recent li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid #e8e8ed; font-size: 14px; }
+.pt-recent li span { color: var(--ink-3); white-space: nowrap; font-size: 13px; }
+.pt-how { counter-reset: s; list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.pt-how li { counter-increment: s; background: var(--grey); border-radius: 16px; padding: 18px 18px 20px; font-size: 15px; line-height: 1.45; }
+.pt-how li::before { content: counter(s); display: block; font-family: var(--display); font-weight: 700; font-size: 22px; color: var(--button); margin-bottom: 6px; }
+@media (max-width: 900px) { .pt-how { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .pt-how { grid-template-columns: 1fr; } }
+.pt-recent li span { white-space: normal; text-align: right; }
+
+/* day charts: bars and their labels keep a sensible width when there are only a few days */
+.chart-plot .chart i, .chart-plot .chart-x span { max-width: 48px; }
+.chart-plot .chart, .chart-plot .chart-x { justify-content: flex-start; }

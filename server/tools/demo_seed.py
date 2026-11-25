@@ -77,14 +77,19 @@ def main(argv=None) -> int:
             mock = {"n": 0, "cat": 0}
         elif a.reimport or mock["n"] == 0 or mock["cat"] != mock["n"]:
             folder = catalogue_month.DEFAULT_OUT
-            if a.reimport or not (folder / "plays_observed.csv").exists():
-                catalogue_month.main(["--out", str(folder)])
-            r = import_mock.import_mock(c, folder)
-            mock = {"n": r["plays"], "cat": r["plays"]}
-            note = f"imported now: {r['plays']} plays"
+            try:
+                if a.reimport or not (folder / "plays_observed.csv").exists():
+                    catalogue_month.main(["--out", str(folder)])
+                r = import_mock.import_mock(c, folder)
+                mock = {"n": r["plays"], "cat": r["plays"]}
+                note = f"imported now: {r['plays']} plays"
+            except ValueError as e:      # e.g. fewer than 4 catalogue songs: the demo month is optional
+                mock = None
+                note = f"not built ({e}); optional, only for the demo month"
         else:
             note = f"{mock['n']} plays already loaded"
-        ok["mock month"] = (mock["n"] > 0 and mock["cat"] == mock["n"], note + " (catalogue songs + 3 fictional test tracks)")
+        ok["mock month"] = (True, note) if mock is None else \
+            (mock["n"] > 0 and mock["cat"] == mock["n"], note + " (catalogue songs + 3 fictional test tracks)")
 
         runs = []
         for period in ("live", "mock_month"):

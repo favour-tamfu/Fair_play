@@ -98,6 +98,7 @@ def _my_songs(artist_name: str) -> dict:
             s = artist_shares(c, period, "standardised")
             row = next((r for r in s["rows"] if r["artist_name"] == artist_name), None)
             periods[period] = {"frozen": s["frozen"], "share": row["share"] if row else 0.0,
+                               "all_counted": round(sum(r["counted_plays"] for r in s["rows"]), 2),
                                "counted_plays": row["counted_plays"] if row else 0, "raw_plays": row["raw_plays"] if row else 0,
                                "songs": {x["song_id"]: x for x in (row["songs"] if row else [])}}
     out = []
@@ -107,12 +108,39 @@ def _my_songs(artist_name: str) -> dict:
         out.append({**s, "uploaded_at": format_utc(s["uploaded_at"]), "n_hashes": s["n_hashes"] or 0,
                     "owners": owners.get(s["song_id"], []), "periods": per})
     return {"artist_name": artist_name, "songs": out,
-            "totals": {p: {k: periods[p][k] for k in ("share", "counted_plays", "raw_plays", "frozen")} for p in periods}}
+            "totals": {p: {k: periods[p][k] for k in ("share", "counted_plays", "raw_plays", "all_counted", "frozen")}
+                       for p in periods}}
 
 
 @router.get("/me/songs")
 async def my_songs(user: dict = Depends(require_artist)):
     return await run_in_threadpool(_my_songs, user["artist_name"])
+
+
+def _my_plays(artist_name: str, period: str, limit: int) -> dict:
+    """When the artist's songs were played (Cameroon days) and the latest plays: song, time, how much it counted.
+    Never the bar, the city or the meter (D-030)."""
+    from server.api.read import query_plays
+    from server.stats.periods import ACTIVE, period_sql
+    where, args = period_sql(period)
+    with connect() as c:
+        recent = query_plays(c, period, "standardised", artist=artist_name, limit=limit)
+        days = c.execute(f"""SELECT to_char((p.started_at AT TIME ZONE 'Africa/Douala')::date, 'YYYY-MM-DD') AS day,
+                                    count(*) AS plays
+                             FROM plays p JOIN songs s USING (song_id)
+                             WHERE {ACTIVE} AND {where} AND s.artist_name = %s
+                             GROUP BY 1 ORDER BY 1""", (*args, artist_name)).fetchall()
+    return {"period": period,
+            "days": [{"date": d["day"], "plays": d["plays"]} for d in days],
+            "recent": [{"song_id": p["song_id"], "title": p["title"], "started_at": p["started_at"],
+                        "duration_s": p.get("duration_s"), "weight": p.get("weight"),
+                        "counted_less": p.get("weight") is not None and p["weight"] < 1} for p in recent]}
+
+
+@router.get("/me/plays")
+async def my_plays(period: str = Query("mock_month", pattern="^(live|mock_month)$"), limit: int = Query(30, ge=1, le=200),
+                   user: dict = Depends(require_artist)):
+    return await run_in_threadpool(_my_plays, user["artist_name"], period, limit)
 
 
 def _recent(limit: int) -> list[dict]:

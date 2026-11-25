@@ -251,7 +251,7 @@ function renderEarnings(e) {
   // Hero sentence: the answer to "who earned what", computed from the rows shown.
   const top = e.frozen ? null : e.rows[0];
   $("earn-hero").textContent = e.frozen ? "Results are withheld until the play log is restored."
-    : top ? `${top.artist_name} leads with ${fmtPct(top.share)} of counted plays. ${fmtInt(e.rows.filter((r) => r.counted_plays > 0 && r.artist_name !== TEST_ARTIST).length)} artists have plays in this period.`
+    : top ? `${top.artist_name} leads with ${fmtPct(top.share)} of counted plays. ${((k) => `${fmtInt(k)} ${k === 1 ? "artist has" : "artists have"}`)(e.rows.filter((r) => r.counted_plays > 0 && r.artist_name !== TEST_ARTIST).length)} plays in this period.`
     : "No artist has counted plays in this period yet.";
   $("earn-note").textContent = `An artist earns for all their songs together, so their songs' shares are added up. Click an artist to see the songs, or "page" for their analytics.`;
   renderDots(e);

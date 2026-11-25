@@ -95,10 +95,10 @@ $lan = Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue |
     Select-Object -ExpandProperty IPAddress
 Say ""
 Say "Fair Play is running." Green
-Say "  Public site        $base/"
-Say "  Artists            $base/artist.html"
-Say "  SONACAM dashboard  $base/sonacam-x7k2q9.html"
-Say "  SONACAM admin      $base/sonacam-x7k2q9-admin.html   (admin password: ADMIN_TOKEN in .env)"
+Say "  Public page        $base/"
+Say "  Sign in            $base/login.html"
+Say "    SONACAM: name sonacam, password = ADMIN_TOKEN in .env (opens the dashboard and operations)"
+Say "    Artists: their artist name; prototype password SONACAM (opens the artist portal)"
 foreach ($ip in $lan) { Say "  Meters on this network send to   http://${ip}:$apiPort" }
 Say "  Let meters reach this computer once (admin PowerShell): .\scripts\firewall_b.ps1"
 if (-not $ready) { Say "Some readiness checks are not OK yet (see the lines above): import the song package with -SongPackage, then run this again." Yellow }
