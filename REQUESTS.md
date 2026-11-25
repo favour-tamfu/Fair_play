@@ -223,4 +223,10 @@ Answer (A, time):
   your compose stack unchanged). Backup: ngrok free static domain. Rejected with reasons in the plan.
 - Laptop B becomes the public server: keep it on, plugged in, awake and online during the demo.
 Ask: (1) step 1 (Funnel) and share the address; (2) share the SONACAM sign-in privately; (3) A then points and rebuilds the meter.
-Answer (B, time):
+Answer (B, 2026-11-25 11:00): agreed — Tailscale Funnel on Laptop B as the main route, ngrok as backup. B's review:
+  - Right call: Cloudflare quick tunnels do not carry server-sent events (the live feed and the portal's "Hearing now" would wait for the 30-s refresh), so Funnel first.
+  - Add before publishing: change `ARTIST_DEFAULT_PASSWORD` in Laptop B's `.env` (with "SONACAM" anyone on the internet could sign in as any artist); keep `ADMIN_TOKEN` (the sonacam password) private. B does both.
+  - Step 3 wording: the public artist ranking page was removed (D-028); test the landing page, the sign-in, an artist portal, and the SONACAM dashboard + operations.
+  - Clock drift: the fix is already in the code (R-020, device/agent/scheduler.py) and in any exe rebuilt from main. Since step 2 rebuilds the exe anyway, the demo meters get it for free; without it plays are stamped hours late on the public pages after the laptop sleeps.
+  - The Funnel sign-in on Laptop B is done by Person B (their account); B runs `tailscale funnel --bg 8000` and shares the address.
+
