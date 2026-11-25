@@ -12,7 +12,8 @@
 # Not included on purpose: the song package (audio and rights: handed over separately), .env, keys, the database.
 param(
     [string]$Version = "v1.0",
-    [switch]$SkipMeter
+    [switch]$SkipMeter,
+    [switch]$RebuildMeter      # default: reuse dist\FairPlayMeter_windows.zip when it exists
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
@@ -33,7 +34,8 @@ Say "  OK  FairPlay_Server_$Version.zip"
 
 # 2. meter (A's packaged FairPlayMeter.exe)
 if (-not $SkipMeter) {
-    & "$root\device\packaging\build.ps1"
+    if ($RebuildMeter -or -not (Test-Path "$root\dist\FairPlayMeter_windows.zip")) { & "$root\device\packaging\build.ps1" }
+    else { Say "  ..  reusing dist\FairPlayMeter_windows.zip (built $((Get-Item "$root\dist\FairPlayMeter_windows.zip").LastWriteTime))" }
     if (-not (Test-Path "$root\dist\FairPlayMeter_windows.zip")) { throw "the meter build did not produce dist\FairPlayMeter_windows.zip" }
     Copy-Item "$root\dist\FairPlayMeter_windows.zip" "$out\FairPlayMeter_windows_$Version.zip"
     Say "  OK  FairPlayMeter_windows_$Version.zip"
