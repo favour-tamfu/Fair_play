@@ -81,26 +81,20 @@ We could not get the electronics in time, so two laptops play the roles:
 
 ## 4. Quick start (Windows)
 
-**You need:** Windows 10/11, [Docker Desktop](https://www.docker.com/products/docker-desktop/) running, Python 3.11, Git.
+Fair Play is **one system in three parts**: the **SONACAM server** (one computer with Docker), a **meter** in each bar (during the hackathon: a laptop running `FairPlayMeter.exe`), and the **web pages** (served by the server). A release (`scripts\make_release.ps1`) packs them as `FairPlay_Server_<version>.zip`, `FairPlayMeter_windows_<version>.zip` (A's build, `device\packaging\`) and `FairPlay_Docs_<version>.zip`, with a `START_HERE.md` (from `docs\RELEASE_START_HERE.md`) and checksums.
 
-### Start the server (Laptop B in the demo)
+**You need:** Windows 10/11 and [Docker Desktop](https://www.docker.com/products/docker-desktop/) running. (Git and Python 3.11 only to develop or to run the tests.)
+
+### Install and start the server: one command
 ```powershell
-git clone https://github.com/favour-tamfu/Fair_play.git
+git clone https://github.com/favour-tamfu/Fair_play.git      # or unzip FairPlay_Server_<version>.zip
 cd Fair_play
-Copy-Item .env.example .env          # first time only; then set your own POSTGRES_PASSWORD (same value in DATABASE_URL) and ADMIN_TOKEN
-docker compose up -d --build         # starts the database and the five server parts (first time: a few minutes)
-docker compose ps                    # "api" and "db" should say (healthy)
+powershell -ExecutionPolicy Bypass -File .\scripts\install_server.ps1 -SongPackage C:\path\to\Fair_Play_song_package
 ```
+The installer checks Docker, creates `.env` with new random passwords (the admin password is `ADMIN_TOKEN` in `.env`; it is never printed), builds and starts every part, imports and fingerprints the songs (the song package is a folder with `catalogue.csv` and `audio/`, not in git), runs the readiness check (`demo_seed`: every line should say OK) and prints the addresses, including the one meters on the network use. Running it again is safe: it keeps `.env` and the data. Once, in an administrator PowerShell, run `.\scripts\firewall_b.ps1` so meters can reach port 8000.
 
-### Load the songs and prepare the demo
-```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e core -r server\requirements.txt
-python -m server.tools.import_catalogue C:\path\to\Fair_Play_song_package   # the team's song package (not in git)
-python -m server.tools.demo_seed     # checks and prepares the rest; every line should say OK
-```
-The song package is a folder with `catalogue.csv` and `audio/`. The server fingerprints the songs in about 2 minutes; `demo_seed` then builds the mock month on them.
+### Install a meter (each bar laptop)
+Unzip `FairPlayMeter_windows_<version>.zip` and double-click `FairPlayMeter.exe`: enter the meter id, the bar id and the server address. Register the public key it shows on the admin page (Register a meter, with the admin password), then double-click again to start listening. Details: `device\packaging\README.md`.
 
 ### Open it
 - Public landing page: **http://localhost:8000**

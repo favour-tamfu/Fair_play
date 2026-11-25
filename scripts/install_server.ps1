@@ -76,14 +76,11 @@ if ($SongPackage) {
     if ($LASTEXITCODE -ne 0) { Fail "could not copy the song package into the server" }
     docker compose exec -T api python -m server.tools.import_catalogue /tmp/pkg
     if ($LASTEXITCODE -ne 0) { Fail "the song import failed (see above)" }
-    docker cp "${cid}:/tmp/pkg/song_map.csv" (Join-Path $SongPackage 'song_map.csv') | Out-Null
+    New-Item -ItemType Directory -Force data | Out-Null
+    docker cp "${cid}:/tmp/pkg/song_map.csv" data\song_map.csv | Out-Null   # package id -> server id; the package is left untouched
     Say "  ..  fingerprinting the songs (about 2 minutes per 60 songs)"
-    $q = "from server.db import connect`nwith connect() as c: print(c.execute(""SELECT count(*) AS n FROM jobs WHERE kind = 'fingerprint' AND status IN ('queued', 'running')"").fetchone()['n'])"
-    for ($i = 0; $i -lt 240; $i++) {
-        $left = (docker compose exec -T api python -c $q).Trim()
-        if ($left -eq '0') { break }
-        Write-Host "      $left songs left" ; Start-Sleep 10
-    }
+    docker compose exec -T api python -m server.tools.wait_fingerprints
+    if ($LASTEXITCODE -ne 0) { Fail "fingerprinting did not finish (see: docker compose logs worker_fp)" }
     Say "  OK  songs imported and fingerprinted"
 }
 
