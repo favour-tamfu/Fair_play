@@ -2,6 +2,8 @@
 Last updated: 2026-11-25 01:05 (Cameroon time).
 
 ## 0. Latest events (newest first)
+- 01:10 User said **"Not now"** to fixing the M-07 clock-drift bug (B's R-020). Leave it unfixed until asked; keep Laptop A awake during the demo.
+  Local commits after the push (not on GitHub): aa8e632 and this update.
 - 01:05 **a/work pushed to GitHub** (user's explicit OK for this push): origin/a/work = 5ed3504. Push URL switched back to
   `DISABLED-no-push-from-this-clone` afterwards; re-enable only on the user's say-so (`git config remote.origin.pushurl https://github.com/favour-tamfu/Fair_play.git`).
 - **B's server answers again** (192.168.1.51:8000, checked 01:00). B's main is at dd42d2c: B loaded catalogue v3 (S-000073..S-000195, 549/549
