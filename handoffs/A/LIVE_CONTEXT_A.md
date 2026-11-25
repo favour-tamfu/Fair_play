@@ -5,7 +5,10 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
 
 ---
 ## 1. RIGHT NOW (resume here)
-- **No task in progress.** Last finished: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
+- **IN PROGRESS (2026-11-25):** B's public address is live (shared privately, in `Downloads\for_laptop_A\READ_ME_LAPTOP_A.txt`;
+  never commit it). Doing "Way 1": merge origin/main (e6d4705: point_meter.ps1 + meter clock fix) into a/work, run
+  `scripts\point_meter.ps1 -Meter M-07` to set `sonacam_url` in `device\config\M-07.toml` (do NOT commit that file), restart meter.
+- Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look
   before the next web change (`git fetch origin; git log --oneline a/work..origin/main`).
