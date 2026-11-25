@@ -44,8 +44,8 @@ Fair Play has four pieces. In real life they look like this:
 |---|---|---|
 | **The meter** | A small sealed box on the bar wall, about the size of a phone charger: a low-cost chip (RISC-V microcontroller), a small microphone and a 4G modem. Parts cost about $5–8. It plugs into the mains and needs no Wi-Fi from the bar. | Installed by SONACAM in every bar it licenses |
 | **The SONACAM server** | SONACAM's computer system (in a data centre or the cloud). It receives the meters' reports, recognises the songs, keeps the tamper-proof log and computes each artist's share. | SONACAM |
-| **The SONACAM app** | Web pages for SONACAM (sign-in required): meters on a map, songs heard live, each artist's share and analytics, items to review, the activity log, the log's integrity. | SONACAM staff and admins |
-| **The artist portal** | Web pages that work on a phone (sign-in required): artists or labels upload their songs with the owners and their shares, and follow their own songs' plays and share. | Artists, labels |
+| **The SONACAM app** | Web pages for SONACAM (sign-in required), one app with a sidebar: songs heard live, meters on a map, each artist's share and analytics, every song in the catalogue, the log's integrity, and operations (meters and new meters waiting for approval, the activity log, items to review, the catalogue). | SONACAM |
+| **The artist portal** | Web pages that work on a phone (sign-in required): artists or labels upload their songs with the owners and their shares, and follow their own songs only: when they were played, how many plays counted, their share and how it was computed. | Artists, labels |
 
 ### The meter box (3D model)
 The meter is designed as a small sealed box: a two-layer circuit board (64 × 44 mm, 1.6 mm FR4) with the microphone, the main module and its antenna lead, the power supply, a USB-C power input and a status light, in a four-screw case. The label on the lid tells people in the bar that it listens for music only and keeps no sound.
@@ -66,9 +66,9 @@ Full-quality video: [meter-assembly.mp4](web/assets/meter/meter-assembly.mp4) (2
 
 ### During the hackathon
 We could not get the electronics in time, so two laptops play the roles:
-- **Laptop A plays the meter.** It runs exactly the computation the box would run (microphone → fingerprint → seal → send), plus "virtual meters" fed with recorded audio for testing.
-- **Laptop B plays the SONACAM server** (Docker containers on Windows) and serves the web pages.
-- A phone hotspot or Wi-Fi stands in for 4G. In the demo the meter listens continuously (10 s every 10 s) so changes show up quickly.
+- **Laptop A plays the meter.** It runs exactly the computation the box would run (microphone → fingerprint → seal → send) as one program, `FairPlayMeter.exe`, plus "virtual meters" fed with recorded audio for testing.
+- **Laptop B plays the SONACAM server** (Docker containers on Windows) and serves the web pages. It is online at a fixed secure public address (`https://…ts.net`, through Tailscale Funnel), so meters, SONACAM and artists reach it from anywhere, phones included, not only on the same Wi-Fi.
+- Any internet connection stands in for 4G. In the demo the meter listens continuously (10 s every 10 s) so changes show up quickly.
 
 ---
 
@@ -76,24 +76,26 @@ We could not get the electronics in time, so two laptops play the roles:
 
 ```
  IN THE BAR (the meter; Laptop A in the demo)  AT SONACAM (the server; Laptop B in the demo)     ON SCREEN
- ┌──────────────────────────────┐ 4G / WiFi ┌─────────────────────────────────────────┐   ┌──────────────────────┐
+ ┌──────────────────────────────┐ 4G / net  ┌─────────────────────────────────────────┐   ┌──────────────────────┐
  │ microphone                   │  signed   │ 1. check the meter's signature          │   │ SONACAM dashboard    │
  │  → every 10 s: fingerprint   │ ────────► │ 2. match the fingerprint to a song      │──►│  live feed, map,     │
  │  → sign it (meter's own key) │  batches  │ 3. join matches into plays              │   │  songs, artists'     │
  │  → keep it until SONACAM     │           │ 4. write plays to the tamper-proof log  │   │  shares, flags       │
- │    confirms it was stored    │           │ 5. apply fair-play rules → shares       │   │ Artist page (phone)  │
+ │    confirms it was stored    │           │ 5. apply fair-play rules → shares       │   │ Artist portal (phone)│
  └──────────────────────────────┘           └─────────────────────────────────────────┘   └──────────────────────┘
 ```
 
 - **No internet? No problem.** The meter keeps every batch until the server confirms it, then sends the backlog in order.
-- **Songs are added** by artists or labels through the upload portal; the server fingerprints each song once.
+- **New meters ask to join.** A new meter makes its own key and asks SONACAM to join; its reports are refused until SONACAM checks the key fingerprint on the operations page and approves it.
+- **Songs are added** by artists or labels through the artist portal; the server fingerprints each song once (about a minute).
+- **The pages update as it happens.** A song recognised by a meter shows on the dashboard within seconds, and shares are recomputed within 15 s of a new play.
 - Detailed design: `docs/00_PROJECT_BRIEF.md`. Exact message formats: `docs/01_CONTRACT.md`.
 
 ---
 
 ## 4. Quick start (Windows)
 
-Fair Play is **one system in three parts**: the **SONACAM server** (one computer with Docker), a **meter** in each bar (during the hackathon: a laptop running `FairPlayMeter.exe`), and the **web pages** (served by the server). A release (`scripts\make_release.ps1`) packs them as `FairPlay_Server_<version>.zip`, `FairPlayMeter_windows_<version>.zip` (A's build, `device\packaging\`) and `FairPlay_Docs_<version>.zip`, with a `START_HERE.md` (from `docs\RELEASE_START_HERE.md`) and checksums.
+Fair Play is **one system in three parts**: the **SONACAM server** (one computer with Docker), a **meter** in each bar (during the hackathon: a laptop running `FairPlayMeter.exe`, one file), and the **web pages** (served by the server). A release (`scripts\make_release.ps1`) packs them as `FairPlay_Server_<version>.zip`, `FairPlayMeter.exe` (A's build: `device\packaging\build.ps1 -Url <server address>` builds the server's address in) and `FairPlay_Docs_<version>.zip`, with a `START_HERE.md` (from `docs\RELEASE_START_HERE.md`) and checksums.
 
 **You need:** Windows 10/11 and [Docker Desktop](https://www.docker.com/products/docker-desktop/) running. (Git and Python 3.11 only to develop or to run the tests.)
 
@@ -103,23 +105,25 @@ git clone https://github.com/favour-tamfu/Fair_play.git      # or unzip FairPlay
 cd Fair_play
 powershell -ExecutionPolicy Bypass -File .\scripts\install_server.ps1 -SongPackage C:\path\to\Fair_Play_song_package
 ```
-The installer checks Docker, creates `.env` with new random passwords (the admin password is `ADMIN_TOKEN` in `.env`; it is never printed), builds and starts every part, imports and fingerprints the songs (the song package is a folder with `catalogue.csv` and `audio/`, not in git), runs the readiness check (`demo_seed`: every line should say OK) and prints the addresses, including the one meters on the network use. Running it again is safe: it keeps `.env` and the data. Once, in an administrator PowerShell, run `.\scripts\firewall_b.ps1` so meters can reach port 8000.
+The installer checks Docker, creates `.env` with new random passwords (the admin password is `ADMIN_TOKEN` in `.env`; it is never printed), builds and starts every part, imports and fingerprints the songs (the song package is a folder with `catalogue.csv` and `audio/`, not in git), runs the readiness check (`demo_seed`: every line should say OK) and prints the addresses. Running it again is safe: it keeps `.env` and the data.
+
+### Put it online (one fixed public address)
+Install [Tailscale](https://tailscale.com/download) on the server computer, sign in, then run `tailscale funnel --bg 8000`. The server is then reachable at a fixed secure address, `https://<computer name>.<tailnet>.ts.net`, from any network and any phone. Nothing on the router changes. The address is shared privately by the team; it is not in this repository.
 
 ### Install a meter (each bar laptop)
-Unzip `FairPlayMeter_windows_<version>.zip` and double-click `FairPlayMeter.exe`: enter the meter id, the bar id and the server address. Register the public key it shows on the admin page (Register a meter, with the admin password), then double-click again to start listening. Details: `device\packaging\README.md`.
+Copy `FairPlayMeter.exe` (built with the server's public address inside) to the laptop and double-click it. It asks no questions: it makes its own key, shows the key fingerprint and **asks SONACAM to join**. On the operations page (Meters › Waiting for approval) SONACAM checks the fingerprint matches the one on the meter's screen and clicks Approve; the meter then starts listening by itself. One computer holds one meter. Details: `device\packaging\README.md`.
 
 ### Open it
-- Public landing page: **http://localhost:8000**
-- SONACAM dashboard (unlisted address): **http://localhost:8000/sonacam-x7k2q9.html** (add `?period=mock_month` for the mock month)
-- SONACAM admin page (unlisted; asks for the admin password): http://localhost:8000/sonacam-x7k2q9-admin.html
-- Artists (public search) and one artist: http://localhost:8000/artist.html, **http://localhost:8000/artist.html?name=Locko&period=mock_month**
-- Server health: http://localhost:8000/health
+Use the public address (`https://<public address>`), or `http://localhost:8000` on the server computer itself.
+- Public landing page: **`/`**
+- Sign in: **`/login.html`**. SONACAM signs in as `sonacam` with the admin password (`ADMIN_TOKEN` in `.env`) and lands on the dashboard; the sidebar leads to operations. An artist signs in with their artist name and the prototype artist password (`ARTIST_DEFAULT_PASSWORD` in the server settings) and lands on their portal.
+- Server health: `/health`
 
-The unlisted addresses hide the SONACAM pages from the public site; they do not protect them. Admin actions are protected by the admin password (`ADMIN_TOKEN`).
+There are two roles. **SONACAM** sees everything; **an artist** sees only their own songs. The SONACAM pages, plays, flags, the usage report and per-artist detail need a SONACAM sign-in (a session cookie, 12 hours); the public page shows only totals.
 
-### Let a meter connect (Laptop A on the same Wi-Fi or hotspot)
+### On the same Wi-Fi without internet (optional)
 Run once in an **administrator** PowerShell: `powershell -ExecutionPolicy Bypass -File .\scripts\firewall_b.ps1`
-(opens port 8000 on private networks only). Laptop A then sends to `http://<Laptop B's IP>:8000`.
+(opens port 8000 on private networks only). A meter can then send to `http://<server's IP>:8000`.
 
 ### Stop
 `docker compose stop` (data is kept) · start again with `docker compose start`.
@@ -134,11 +138,11 @@ The server is six small programs (Docker containers) that share one database.
 | Part | Its job, in plain words |
 |---|---|
 | `db` | The database (PostgreSQL): songs, fingerprints, plays, the log, results. |
-| `api` | The front door: receives meter batches and song uploads, answers the web pages, streams the live feed. |
+| `api` | The front door: receives meter batches, join requests and song uploads, signs people in, answers the web pages, streams the live feed. |
 | `worker_fp` | Learns each uploaded song: makes its fingerprint and checks it is not a copy of a song already in the catalogue. |
 | `worker_match` | Recognises songs: compares each 10-second fingerprint from a meter with the catalogue. |
 | `worker_play` | Turns recognised moments into plays ("song X played at bar Y from 21:03 to 21:07") and writes them to the log. |
-| `scheduler` | Housekeeping: re-checks the log every 2 s, publishes an hourly checkpoint, refreshes the results every 5 min, watches which meters are online. |
+| `scheduler` | Housekeeping: re-checks the log every second, publishes an hourly checkpoint, refreshes the results within 15 s of a new play, watches which meters are online, keeps the activity log to 14 days. |
 
 ### Everyday commands
 | I want to… | Command |
@@ -165,25 +169,29 @@ Full shapes and examples: `docs/01_CONTRACT.md` and `contract/schemas/`.
 | `POST /v1/batches` · `/v1/batches/bulk` | send fingerprint batches (one, or up to 50 when catching up) |
 | `POST /v1/heartbeat` | "I'm alive", queue size; the answer carries the server's clock |
 | `POST /v1/calibration` | known songs played near the meter → the meter's real catch rate |
-| `POST /v1/meters/register` | register a meter's public key |
+| `POST /v1/meters/join` | a new meter asks to join (waits until SONACAM approves; it asks again to learn the answer) |
+| `POST /v1/meters/register` | register a meter's public key directly (SONACAM only) |
 
 **For the pages**
 | Endpoint | What it gives |
 |---|---|
+| `POST /api/v1/auth/login` · `/logout` · `GET /api/v1/auth/me` | sign in and out, who is signed in |
+| `GET /api/v1/me/songs` · `/api/v1/me/plays` | an artist's own songs, and when they were played (artist portal) |
 | `GET /api/v1/overview` | headline numbers (meters online, plays, songs, log status) |
 | `GET /api/v1/artist-shares` | what each artist earned: their share of all counted plays |
-| `GET /api/v1/shares` · `/api/v1/plays` · `/api/v1/flags` | per-song shares, recent plays, items flagged for review |
-| `GET /api/v1/venues` · `/api/v1/artists/{name}` | bars and meters on the map · one artist's page |
+| `GET /api/v1/shares` · `/api/v1/plays` · `/api/v1/flags` | per-song shares, recent plays, items flagged for review (plays and flags: SONACAM) |
+| `GET /api/v1/venues` · `/api/v1/artists/{name}` | bars and meters on the map · one artist's analytics (SONACAM) |
 | `GET /api/v1/compare-flat` | flat split vs Fair Play on the mock month (against what really played) |
 | `GET /api/v1/ledger/status` · `/api/v1/ledger/anchors` | is the log intact? hourly checkpoints |
 | `GET /api/v1/feed` | live feed (Server-Sent Events) |
 | `POST/GET /api/v1/songs` | upload a song (with owners and consent) · list the catalogue |
 | `GET /api/v1/export/usage_report.csv` | usage report: per song, plays and shares |
+| `GET /api/v1/admin/meters` · `/api/v1/admin/meter-requests` · `/api/v1/admin/activity` | operations: meters (retire), new meters waiting (approve or reject), the activity log (SONACAM) |
 | `POST /api/v1/stats/run` · `POST /api/v1/demo/reset?confirm=yes` | recompute results now · wipe live test data |
 
 Every list accepts `period=live|mock_month` and `mode=standardised|raw` (with or without the fair-play rules).
 
-**Admin actions are protected.** Demo reset, recompute, approving a suspected duplicate, and adding a meter or changing its key need the header `X-Admin-Token` with the `ADMIN_TOKEN` from `.env`. Nobody else on the network can re-key a meter.
+**Admin actions are protected.** Demo reset, recompute, approving a meter or a suspected duplicate, retiring a meter, and adding a meter or changing its key need a SONACAM sign-in (or, for scripts, the header `X-Admin-Token` with the `ADMIN_TOKEN` from `.env`). Nobody else can approve or re-key a meter. Every sign-in, refused request and admin action is written to the activity log.
 
 ---
 
@@ -252,19 +260,21 @@ All numbers were measured on the two hackathon laptops. Accuracy through a real 
 *(Section owned by A: running the meter software on Laptop A, microphone check, virtual meters, calibration tool, measured accuracy.)*
 
 ## 10. Web pages
-*(Section owned by A: SONACAM dashboard, artist page, upload portal, admin page.)*
+*(Section owned by A: public landing page, sign-in, SONACAM dashboard and operations, artist portal with song upload.)*
 
 ---
 
 ## 11. Limits (what this prototype does not do)
 
-- **No meter box yet.** During the hackathon, laptops stand in for the meter and for SONACAM's server (see [The real product](#2-the-real-product)); a phone hotspot or Wi-Fi stands in for 4G.
+- **No meter box yet.** During the hackathon, laptops stand in for the meter and for SONACAM's server (see [The real product](#2-the-real-product)); any internet connection stands in for 4G.
+- **The server is a laptop.** The public address works only while Laptop B is on, with Docker and Tailscale running.
 - **The mock month is simulated.** Bars, plays and listening patterns are generated (seeded, repeatable); only the songs are real. It exists to show what a month of data looks like and to compare the flat split with Fair Play against a known truth.
 - **No money moves.** Results end at each artist's share; owners are set to the artist (100 %) as a placeholder until real splits are registered.
 - **One credited artist per song.** Featured artists are not yet given their own share.
 - **Recognition needs the song in the catalogue.** Music that was never uploaded is not counted and not recorded.
 - **Catch rates are 0.8 until a meter is calibrated** on site with known songs.
 - **Test keys only.** The meters' signing keys are prototype keys; a real deployment would provision them securely.
+- **Prototype passwords.** All artists share one prototype password; a real deployment would give each artist their own.
 
 ---
 
@@ -297,6 +307,9 @@ All code in this repository was written during the hackathon (Mon 23 Nov – Wed
 | FFmpeg | Debian package in the server image | LGPL/GPL | decoding uploaded songs | B |
 | Docker Desktop | — | Docker subscription terms | running the server | B |
 | Leaflet | 1.9.4 (in `web/vendor/leaflet`, checked against the published integrity hashes) | BSD-2-Clause | street maps on the web pages | B |
+| PyInstaller | 6.11.1 | GPL-2.0 with bootloader exception | packing the meter as one `FairPlayMeter.exe` | A |
+| Tailscale (Funnel) | Windows client | Tailscale terms | the server's public https address | B |
+| fontTools, brotli | 4.55.3, 1.1.0 | MIT | making small web copies of the fonts (not shipped) | B |
 
 ### Data and assets
 | What | Source |
@@ -306,5 +319,5 @@ All code in this repository was written during the hackathon (Mon 23 Nov – Wed
 | Album covers | Looked up through the public iTunes Search API (`tools/covers/`) and stored in `web/assets/covers/`. They belong to their artists and labels and are shown only next to those artists' own songs. |
 | Photos | Pexels and Unsplash photos under their licences (credits in the landing page footer). |
 | Map tiles | OpenStreetMap standard tiles, loaded from the internet when it is available (© OpenStreetMap contributors, ODbL; credited on each map). Without internet the pages show our drawn outline map. Add `?map=outline` to a page address to force it. |
-| Fonts and icons | SF Pro (Apple) is not in this repo: Apple's licence does not allow redistributing it. To show it, put the `.woff2` files in `web/fonts/` (git-ignored; `web/css/fonts.css` lists the 10 names: SF Pro Display and Text, Regular to Heavy). Without them the pages use the system font. |
+| Fonts | SF Pro (Apple) is not in this repo: Apple's licence does not allow redistributing it. To show it, put the `.woff2` files in `web/fonts/` (git-ignored; `web/css/fonts.css` lists the 10 names: SF Pro Display and Text, Regular to Heavy). Without them the pages use the system font. |
 | Test signals | Synthetic tones made by our code (`core/tests/data`). |
