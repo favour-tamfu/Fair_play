@@ -70,9 +70,9 @@ async function loadMeters() {
 $("meters").addEventListener("click", async (e) => {
   const b = e.target.closest("button[data-retire]");
   if (!b) return;
-  if (!b.classList.contains("confirm")) {
-    b.classList.add("confirm"); b.textContent = "Click again to retire";
-    setTimeout(() => { b.classList.remove("confirm"); b.textContent = "Retire"; }, 5000);
+  if (!b.classList.contains("armed")) {
+    b.classList.add("armed"); b.textContent = "Click again to retire";
+    setTimeout(() => { b.classList.remove("armed"); b.textContent = "Retire"; }, 5000);
     return;
   }
   b.disabled = true;
@@ -107,7 +107,7 @@ function joinRow(r) {
 }
 
 async function loadJoins() {
-  if (MOCK || joinsBusy || $("joins").querySelector("button.confirm")) return;
+  if (MOCK || joinsBusy || $("joins").querySelector("button.armed")) return;
   let rows;
   try { rows = await getJson("/api/v1/admin/meter-requests"); } catch (e) { return; }   // keep what is shown
   const now = Date.now();
@@ -126,9 +126,9 @@ $("joins").addEventListener("click", async (e) => {
   const b = e.target.closest("button[data-join]");
   if (!b) return;
   const id = b.dataset.join, to = b.dataset.to;
-  if (to === "reject" && !b.classList.contains("confirm")) {
-    b.classList.add("confirm"); b.textContent = "Click again to reject";
-    setTimeout(() => { if (b.isConnected) { b.classList.remove("confirm"); b.textContent = "Reject"; } }, 5000);
+  if (to === "reject" && !b.classList.contains("armed")) {
+    b.classList.add("armed"); b.textContent = "Click again to reject";
+    setTimeout(() => { if (b.isConnected) { b.classList.remove("armed"); b.textContent = "Reject"; } }, 5000);
     return;
   }
   const tr = b.closest("tr");

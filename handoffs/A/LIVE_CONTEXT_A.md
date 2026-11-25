@@ -54,6 +54,15 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   from the background it sits on (and the system light/dark switch): grey tiles via CSS filter (still OSM tiles), dark =
   inverted charcoal; site-style zoom buttons, attribution, pop-ups; dot colours per theme. Checked on the dashboard
   (light) and the landing map tile (dark). Imports and page scripts now carry `?v=1125c` (browsers cached old modules).
+- **Meter verified live (2026-11-25 11:15–11:20) against the public server:** exe from an empty folder set itself up with
+  no questions as **M-7463** (fp d1a1 485b f51d 3f8e), waited; a 2nd copy from another folder was the same meter (shared
+  `%PROGRAMDATA%\FairPlayMeter`), no new request; request listed on the live operations page; after approval the meter
+  showed "APPROVED by SONACAM", started listening with the menu, came online, report #1 stored (activity log shows the
+  chain). M-7463 is a real approved meter now (runs from scratchpad\meterA in terminal tab "Meter test A").
+  **Bug found:** two-click buttons got class `confirm`, which app.css hides (`.confirm{display:none}`, meant for the reset
+  box) → Approve/Retire vanished after the first click and could not be confirmed (the user's "button disappears"). Fixed:
+  class `armed` in admin.js (live page approval was done by triggering the button's own handler). Not deployed: B pulls.
+  Server-side one-request-per-computer (migration 013) not testable until B pulls.
 - **Sign-in page (user: "empty with a footer floating in the middle"):** fills the window, footer at the bottom, white
   card on the site grey, full-width button, error line hidden until needed; lede now covers artists and SONACAM staff.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
