@@ -119,8 +119,17 @@ async function load() {
   $("am-hero").classList.toggle("has-cover", !!ownCover);
 
   const days = a.plays_by_day || [];
-  const maxD = Math.max(1, ...days.map((d) => d.plays_counted || 0));
-  $("chart").innerHTML = days.map((d) => `<i title="${esc(d.date)}: ${fmtInt(d.plays_counted)} counted" style="height:${(100 * (d.plays_counted || 0)) / maxD}%"></i>`).join("");
+  // y axis: a round top value and 4 equal steps (e.g. 0, 60, 120, 180, 240), gridlines at each step
+  const peak = Math.max(1, ...days.map((d) => d.plays_counted || 0));
+  const raw = peak / 4, mag = 10 ** Math.floor(Math.log10(raw));
+  const step = [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].map((m) => m * mag).find((s) => s >= raw) || 10 * mag;
+  const top = Math.max(step * 4, 4), ticks = [0, 1, 2, 3, 4].map((k) => Math.round(k * top / 4));
+  $("chart-y").innerHTML = ticks.map((v) => `<span style="bottom:${(100 * v) / top}%">${fmtInt(v)}</span>`).join("");
+  $("chart-grid").innerHTML = ticks.map((v) => `<i style="bottom:${(100 * v) / top}%"></i>`).join("");
+  $("chart").innerHTML = days.map((d) => {
+    const label = `${new Date(d.date + "T12:00:00Z").toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" })}: ${fmtInt(d.plays_counted)} counted`;
+    return `<i data-v="${esc(label)}" aria-label="${esc(label)}" style="height:${(100 * (d.plays_counted || 0)) / top}%"></i>`;
+  }).join("");
   const busiest = days.reduce((b, d) => ((d.plays_counted || 0) > (b ? b.plays_counted || 0 : -1) ? d : b), null);
   const dayLabel = (d, o) => new Date(d.date + "T12:00:00Z").toLocaleDateString("en-GB", o);
   $("chart-range").textContent = days.length ? `${fmtInt(days.reduce((t, d) => t + (d.plays_counted || 0), 0))} counted`

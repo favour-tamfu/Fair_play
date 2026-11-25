@@ -165,3 +165,4 @@ Cut order if late: Sepolia → admin page → calibration UI → artist page pol
 | Wed 04:30 | small web fixes (user) | landing: duplicate 'Numbers' link removed; dashboard greeting → period title (A's file, on A's behalf); hero screenshot retaken |
 | Wed 04:45 | nav + hero (user) | nav icon removed (landing, artist), duplicate 'How it works' removed from the landing local nav, hero screenshot relabelled as a normal month ('This month', 'Live'; numbers unchanged) |
 | Wed 05:00 | artist page analytics first (user) | detail page order: key figures → Analytics (plays by day, wider, date labels, busiest day; map) → top songs → bars → recent plays |
+| Wed 05:15 | plays-by-day axis (user) | y axis with round steps (e.g. 0–240 by 60), gridlines, hover label with date and count, unit line under the chart |
