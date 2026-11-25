@@ -23,12 +23,7 @@ from server.db import connect
 router = APIRouter(prefix="/api/v1", dependencies=[Depends(require_admin)])
 
 
-def key_fingerprint(key_b64: Optional[str]) -> str:
-    """Short, comparable fingerprint of a meter's public key (what the meter printed at setup is the full key)."""
-    if not key_b64:
-        return ""
-    h = hashlib.sha256(key_b64.encode()).hexdigest()[:16]
-    return " ".join(h[i:i + 4] for i in range(0, 16, 4))
+from server.registry import key_fingerprint  # noqa: E402  (kept importable from here)
 
 
 def _meters(include_mock: bool) -> list[dict]:
@@ -72,6 +67,38 @@ def _retire(meter_id: str, who: str) -> dict:
 async def retire_meter(meter_id: str, request: Request):
     u = await run_in_threadpool(current_user, request)
     return await run_in_threadpool(_retire, meter_id, (u or {}).get("name") or "admin")
+
+
+@router.get("/admin/meter-requests")
+async def meter_requests():
+    """New meters waiting for SONACAM's approval (server/joins.py)."""
+    from server import joins
+
+    def _list():
+        with connect() as c:
+            return joins.pending(c)
+    return await run_in_threadpool(_list)
+
+
+def _decide(meter_id: str, approve: bool, who: str) -> dict:
+    from server import joins
+    with connect(autocommit=True) as c:
+        r = joins.decide(c, meter_id, approve, who)
+    if r is None:
+        raise HTTPException(404, detail="no meter waiting with this id")
+    return r
+
+
+@router.post("/admin/meter-requests/{meter_id}/approve")
+async def approve_meter(meter_id: str, request: Request):
+    u = await run_in_threadpool(current_user, request)
+    return await run_in_threadpool(_decide, meter_id, True, (u or {}).get("name") or "admin")
+
+
+@router.post("/admin/meter-requests/{meter_id}/reject")
+async def reject_meter(meter_id: str, request: Request):
+    u = await run_in_threadpool(current_user, request)
+    return await run_in_threadpool(_decide, meter_id, False, (u or {}).get("name") or "admin")
 
 
 class Review(BaseModel):

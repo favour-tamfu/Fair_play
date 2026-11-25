@@ -1,6 +1,7 @@
-# PyInstaller spec for the Windows meter (one folder: dist\FairPlayMeter\FairPlayMeter.exe).
-# Build from the repo root:  .\.venv\Scripts\pyinstaller device\packaging\FairPlayMeter.spec --noconfirm
-# No keys, configs, state or audio are bundled: each meter makes its own key on first run.
+# PyInstaller spec for the Windows meter: ONE file, dist\FairPlayMeter.exe (copy just that file to a bar laptop).
+# Build from the repo root with .\device\packaging\build.ps1 [-Url https://<SONACAM address>]
+# No keys, configs, state or audio are bundled: each meter makes its own key on first run, next to the .exe.
+# The only optional extra is sonacam_url.txt (the default SONACAM address), written by build.ps1 under build\ (not git).
 import os
 import sys
 
@@ -14,12 +15,18 @@ os.environ["PYTHONPATH"] = os.pathsep.join([ROOT, CORE, os.environ.get("PYTHONPA
 hidden = (collect_submodules("device.agent") + collect_submodules("device.tools") + collect_submodules("fairplay_core")
           + ["tomli_w", "nacl.signing"])
 
+datas = []
+url_file = os.environ.get("FAIRPLAY_URL_FILE", "")
+if url_file and os.path.isfile(url_file):
+    datas.append((url_file, "."))
+
 a = Analysis(
     [os.path.join(SPECPATH, "meter_app.py")],
     pathex=[ROOT, CORE],
     hiddenimports=hidden,
+    datas=datas,
     excludes=["fastapi", "uvicorn", "pytest", "jsonschema", "tkinter", "matplotlib", "pandas", "IPython"],
 )
 pyz = PYZ(a.pure)
-exe = EXE(pyz, a.scripts, [], exclude_binaries=True, name="FairPlayMeter", console=True)
-coll = COLLECT(exe, a.binaries, a.datas, name="FairPlayMeter")
+exe = EXE(pyz, a.scripts, a.binaries, a.datas, [], name="FairPlayMeter", console=True, upx=False,
+          runtime_tmpdir=None)

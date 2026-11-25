@@ -352,3 +352,4 @@ body.d2.admin .action.danger { box-shadow: inset 0 0 0 1px rgba(227, 0, 0, .25);
 body.d2.admin .action .note { display: block; margin-top: 2px; }
 body.d2.admin .flags li { background: #fff; border-radius: 12px; border: 0; margin-bottom: 8px; padding: 12px 14px; }
 body.d2.admin .org { background: transparent; box-shadow: none; padding: 4px 6px 10px; }
+body.d2.admin .panel[hidden] { display: none; }

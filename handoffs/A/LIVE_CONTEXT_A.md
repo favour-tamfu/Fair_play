@@ -10,8 +10,15 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   M-07.toml was left as it was (still LAN). New meter **M-21** @ V-BUEA-CIMFEST unzipped to `C:\FairPlayMeter` (outside the repo),
   `setup` done (key + `contract\meters\M-21.pub.json` there), `check` → answers (HTTP 200). Funnel was briefly slow (~23 s
   replies, check timeout 5 s), then ~3 s again.
-  **Open:** user signs in as SONACAM and registers M-21.pub.json (Operations > Meters > Register a meter); then start
-  `C:\FairPlayMeter\FairPlayMeter.exe` (run) and play a catalogue song to see it on the dashboard within ~30 s.
+  M-21 (old folder build) still needs its key registered by hand if it is used.
+- **Join with approval (R-033, user's call: "single file + approve on dash, meters could be smuggled"):** one-file
+  `dist\FairPlayMeter.exe` (`build.ps1 -Url <address>` bakes the address in under build\, not git). Double-click → meter id →
+  it POSTs `/v1/meters/join` signed with its own key, prints the key fingerprint, waits (every 15 s) until SONACAM approves on
+  Operations > "Waiting for approval" (new panel), then listens. A edited B's server files for it (joins.py, migration 012,
+  ops/ingest endpoints, registry.key_fingerprint) — **server tests not run on A (no Docker/psycopg); B must run test_b,
+  merge and restart the api** before it works on the public server (live server answers 405 now → meter starts anyway).
+  Exe tested: setup in an empty folder, address baked in, check HTTP 200. test_a 95 passed. Copy for the user:
+  `Downloads\FairPlayMeter_one_file\FairPlayMeter.exe`; for B: `Downloads\Fair_Play_R-033_for_B.bundle`.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look
