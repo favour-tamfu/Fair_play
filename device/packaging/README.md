@@ -1,34 +1,37 @@
 # Fair Play meter for Windows (FairPlayMeter.exe)
 
-The listener packaged as ONE file, `FairPlayMeter.exe`. Python is not needed on the bar's laptop.
+The listener packaged as ONE file, `FairPlayMeter.exe`. Python is not needed on the bar's laptop. No questions are asked.
 
 ## Build (Laptop A, repo root)
 ```
 .\device\packaging\build.ps1 -Url https://<SONACAM address>
 ```
-Makes `dist\FairPlayMeter.exe` (one file). `-Url` sets the default SONACAM address inside the exe (written under `build\`,
-never into git); without it the default is the LAN server. The build holds no key, config, state or audio.
+Makes `dist\FairPlayMeter.exe`. `-Url` builds the SONACAM address into the exe (written under `build\`, never into git);
+without it the default is the LAN server. The build holds no key, config, state or audio.
 
 ## Use on a bar laptop
-1. Copy `FairPlayMeter.exe` into its own folder (e.g. `C:\FairPlay`). Everything it makes stays next to it.
-2. Double-click it. Enter the meter id SONACAM gave (e.g. `M-22`), the bar id and the address (Enter keeps the defaults).
-   It makes this meter's private key, asks SONACAM to join and shows the key fingerprint, e.g. `3f2a 91c0 7b4e d215`.
-3. SONACAM opens the operations page: **Meters > Waiting for approval** shows the meter, its bar, the computer name and
-   the same fingerprint. Approve (or Reject) it. Until it is approved the meter does not count: its reports are refused.
-4. The meter checks every 15 s and starts listening as soon as it is approved. Next time, double-click starts it directly.
-   Ctrl+C stops it; anything not yet sent stays in `device\state\` and goes out on the next start.
+1. Copy `FairPlayMeter.exe` into its own folder (e.g. `C:\FairPlay`) and double-click it.
+2. First start: it sets itself up (its own key, a free meter id such as `M-4821`, the bar and the address built in)
+   and shows **Waiting for approval from SONACAM** with the meter id and a key fingerprint (e.g. `84f9 2b00 1b6a d4ce`).
+3. SONACAM opens the operations page: **Meters > Waiting for approval** lists the meter, the computer name and the same
+   fingerprint. Approve (click twice) or Reject. Until it is approved its reports are refused.
+4. Once approved the meter starts listening in the background and shows a menu:
+   `1 Status` · `2 Pause/Resume listening` · `3 Check the connection to SONACAM` · `4 Meter details` · `5 Stop and close`.
+   Next time, double-click goes straight to listening (approval is remembered; works offline, samples wait and are sent later).
 
-`FairPlayMeter.exe check` lists the microphones, checks that SONACAM answers and shows the approval status.
-Options: `FairPlayMeter.exe run --input file:C:\path\song.wav` (needs ffmpeg for mp3), `--mode field` (one 10-second
-window per minute instead of continuous demo mode), `setup --force` (new key, or another meter id).
-The manual way still works: register `contract\meters\<id>.pub.json` under Operations > Register a meter.
+If the id is already used by another meter, the meter takes another id by itself. With an older SONACAM server (no
+join step) it waits the same way and says to register `contract\meters\<id>.pub.json` under Operations > Register a meter.
+Options: `FairPlayMeter.exe check` (microphones, connection, approval), `run --input file:C:\path\song.wav` (needs ffmpeg
+for mp3), `run --mode field` (one 10-second window per minute), `setup --meter M-xx --force` (by hand, normally not needed).
 
 ## Keep private
 `device\secrets\<meter>.seed` is the meter's signing key. Never copy the meter's folder to another machine: copy only
 the exe, and each laptop makes its own key. A meter that is not needed any more is retired on the operations page.
 
 ## Tested (Laptop A, 2026-11-25)
-- Unit tests `device/tests/test_meter_join.py`: the join request is signed with the meter's own key and carries no
-  secret; the meter waits through "pending", starts on "approved", stops on "rejected" or a taken id, starts anyway
-  when SONACAM is unreachable (reports wait) or has no join step yet.
+- `device/tests/test_meter_join.py` (8): setup asks nothing; the join request is signed with the meter's own key; waits
+  through pending and remembers approval; stops on reject; takes a new id when its id is taken; an older server is asked
+  through the signed heartbeat; the menu listens in the background, pauses, resumes, shows details and stops cleanly.
+- The built exe, double-clicked in an empty folder against the public server: set itself up and showed the waiting
+  screen; the request reached SONACAM's waiting list.
 - Server side `server/tests/test_meter_join.py` needs Postgres (Laptop B).

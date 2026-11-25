@@ -1,11 +1,15 @@
-"""FairPlayMeter asks SONACAM to join (signed with its own key) and waits for approval before listening."""
+"""FairPlayMeter: zero-question setup, asks SONACAM to join (signed with its own key), waits for approval, then listens
+in the background behind a small menu."""
+import builtins
 import json
 import os
+import re
+import time
 
+import numpy as np
 import pytest
 
 from device.packaging import meter_app
-from device.tools.provision import provision
 from fairplay_core.signing import verify_dict
 
 
@@ -18,68 +22,105 @@ class Resp:
 
 
 @pytest.fixture
-def meter(tmp_path, monkeypatch):
+def here(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    provision("M-41", "V-BUEA-CIMFEST", force=True)
-    return {"meter_id": "M-41", "venue_id": "V-BUEA-CIMFEST", "sonacam_url": "https://sonacam.example"}
+    monkeypatch.setattr(meter_app, "DEFAULT_SONACAM", "https://sonacam.example")
+    monkeypatch.setattr(meter_app.time, "sleep", lambda s: None)
+    return tmp_path
 
 
-def fake_server(monkeypatch, answers):
-    """answers: list of (code, body) returned in turn; records what the meter sent."""
+def fake_server(monkeypatch, join, heartbeat=((404, {"error": "unknown_meter"}),)):
+    """join / heartbeat: answers in turn (the last one repeats). Records what the meter sent."""
     import httpx
-    sent = []
+    join, heartbeat, sent = list(join), list(heartbeat), []
 
     def post(url, json=None, timeout=None):
         sent.append((url, json))
-        code, body = answers.pop(0) if len(answers) > 1 else answers[0]
+        q = join if url.endswith("/v1/meters/join") else heartbeat
+        code, body = q.pop(0) if len(q) > 1 else q[0]
         if isinstance(body, Exception):
             raise body
         return Resp(code, body)
     monkeypatch.setattr(httpx, "post", post)
-    monkeypatch.setattr(meter_app.time, "sleep", lambda s: None)
     return sent
 
 
-def test_request_is_signed_by_the_meters_own_key(meter, monkeypatch):
+def test_setup_asks_nothing(here, monkeypatch):
+    monkeypatch.setattr(builtins, "input", lambda *a: pytest.fail("setup must not ask anything"))
+    cfg = meter_app.setup(quiet=True)
+    assert re.fullmatch(r"M-\d{4}", cfg["meter_id"]) and cfg["venue_id"] == meter_app.DEFAULT_VENUE
+    assert cfg["sonacam_url"] == "https://sonacam.example"
+    assert os.path.exists(os.path.join("device", "secrets", f"{cfg['meter_id']}.seed"))
+
+
+def test_join_request_is_signed_by_the_meters_own_key(here, monkeypatch):
+    cfg = meter_app.setup(quiet=True)
     sent = fake_server(monkeypatch, [(202, {"status": "pending"})])
-    assert meter_app.ask_to_join(meter) == ("pending", "HTTP 202")
+    assert meter_app.ask_to_join(cfg) == ("pending", "HTTP 202")
     url, body = sent[0]
-    assert url == "https://sonacam.example/v1/meters/join"
-    with open(os.path.join("contract", "meters", "M-41.pub.json"), encoding="utf-8") as fh:
-        pub = json.load(fh)
-    assert body["public_key_b64"] == pub["public_key_b64"] and body["computer"]
-    assert verify_dict(pub["public_key_b64"], body)
-    assert not os.path.exists(os.path.join("contract", "meters", "M-41.seed"))
-    assert "seed" not in json.dumps(body)
+    assert url == "https://sonacam.example/v1/meters/join" and body["computer"]
+    assert verify_dict(meter_app._pub_key(cfg["meter_id"]), body)
 
 
-def test_waits_until_approved(meter, monkeypatch, capsys):
-    sent = fake_server(monkeypatch, [(202, {"status": "pending"}), (202, {"status": "pending"}),
-                                     (200, {"status": "approved"})])
-    assert meter_app.wait_for_approval(meter) is True
-    assert len(sent) == 3
+def test_waits_until_approved_then_remembers(here, monkeypatch, capsys):
+    cfg = meter_app.setup(quiet=True)
+    sent = fake_server(monkeypatch, [(202, {"status": "pending"})] * 2 + [(200, {"status": "approved"})])
+    assert meter_app.wait_for_approval(cfg) == cfg
     out = capsys.readouterr().out
-    assert meter_app.key_fingerprint(sent[0][1]["public_key_b64"]) in out and "Approved" in out
+    assert "Waiting for approval from SONACAM" in out and meter_app.key_fingerprint(sent[0][1]["public_key_b64"]) in out
+    assert len(sent) == 3
+    sent.clear()
+    assert meter_app.wait_for_approval(cfg) == cfg and sent == []      # approved before: starts even offline
 
 
-def test_rejected_or_taken_does_not_listen(meter, monkeypatch):
+def test_rejected_does_not_listen(here, monkeypatch):
+    cfg = meter_app.setup(quiet=True)
     fake_server(monkeypatch, [(403, {"status": "rejected"})])
-    assert meter_app.wait_for_approval(meter) is False
-    fake_server(monkeypatch, [(409, {"error": "meter_id_taken", "detail": "M-41 belongs to another meter"})])
-    assert meter_app.wait_for_approval(meter) is False
+    assert meter_app.wait_for_approval(cfg) is None
 
 
-def test_unreachable_or_old_server_still_starts(meter, monkeypatch):
-    fake_server(monkeypatch, [(0, ConnectionError("down"))])
-    assert meter_app.wait_for_approval(meter) is True                 # reports wait in the outbox
-    fake_server(monkeypatch, [(404, {"detail": "Not Found"})])
-    assert meter_app.ask_to_join(meter)[0] == "old_server"
-    fake_server(monkeypatch, [(405, {"detail": "Method Not Allowed"})])    # seen live on a server without the join step
-    assert meter_app.ask_to_join(meter)[0] == "old_server"
+def test_taken_id_picks_another_by_itself(here, monkeypatch):
+    cfg = meter_app.setup(meter="M-2000", quiet=True)
+    fake_server(monkeypatch, [(409, {"error": "meter_id_taken", "detail": "x"}), (200, {"status": "approved"})])
+    new = meter_app.wait_for_approval(cfg)
+    assert new["meter_id"] != "M-2000" and new["venue_id"] == cfg["venue_id"]
+    assert not os.path.exists(meter_app._cfg_path("M-2000")) and os.path.exists(meter_app._cfg_path(new["meter_id"]))
+
+
+def test_older_server_is_asked_through_the_heartbeat(here, monkeypatch, capsys):
+    cfg = meter_app.setup(quiet=True)
+    sent = fake_server(monkeypatch, [(405, {"detail": "Method Not Allowed"})],
+                       [(404, {"error": "unknown_meter"}), (200, {"ok": True})])
+    assert meter_app.wait_for_approval(cfg) == cfg
+    hb = [b for u, b in sent if u.endswith("/v1/heartbeat")]
+    assert len(hb) == 2 and verify_dict(meter_app._pub_key(cfg["meter_id"]), hb[0])
+    assert "Register a meter" in capsys.readouterr().out                 # says how to register by hand
+
+
+def test_menu_listens_in_background_pauses_and_stops(here, monkeypatch, capsys):
+    import device.agent.__main__ as agent
+    cfg = meter_app.setup(url="http://127.0.0.1:9", quiet=True)          # closed port: sending just fails and waits
+
+    def blocks(spec):                                                     # a quiet fake microphone, 0.1 s blocks
+        while True:
+            time.sleep(0.005)
+            yield time.time(), np.zeros(4800, dtype=np.float32)
+    monkeypatch.setattr(agent, "_blocks", blocks)
+    lst = meter_app.Listener(cfg).start()
+    deadline = time.time() + 10
+    while lst.screen is None and time.time() < deadline:
+        time.sleep(0.05)
+    answers = iter(["1", "2", "1", "2", "4", "9", "5"])
+    monkeypatch.setattr(builtins, "input", lambda *a: next(answers))
+    meter_app.menu(cfg, lst)
+    out = capsys.readouterr().out
+    assert "Listening in the background" in out and "State            listening" in out
+    assert "State            paused" in out and "Listening again" in out
+    assert cfg["meter_id"] in out and "Type a number" in out and "Stopped" in out
+    assert not lst.thread.is_alive() and lst.error is None
 
 
 def test_fingerprint_matches_the_server():
-    # same as server/registry.key_fingerprint (copied here: the exe does not ship the server)
     import hashlib
     k = "rXGnqC6huyGes3lZJHbKObxbP+/zC027Osd5RorRQsw="
     h = hashlib.sha256(k.encode()).hexdigest()[:16]

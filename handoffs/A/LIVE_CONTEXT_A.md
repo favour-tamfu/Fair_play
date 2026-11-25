@@ -21,6 +21,13 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   `Downloads\FairPlayMeter_one_file\FairPlayMeter.exe`; for B: `Downloads\Fair_Play_R-033_for_B.bundle`.
   **Pushed a/work (037bcff) at the user's request** so B can pull: B runs `git pull origin a/work` (or merges it into main),
   `scripts\test_b.ps1`, then restarts the api. Waiting on B's answer in REQUESTS R-033.
+  **B has deployed it**: the public server answers /v1/meters/join (checked 2026-11-25 ~10:10).
+- **Zero-question meter (user):** double-click → sets itself up (random free id M-2000..9999, bar V-BUEA-CIMFEST, built-in
+  address) → "Waiting for approval from SONACAM" → once approved, listens in a background thread with a menu (status,
+  pause/resume, check connection, details, stop). Approval remembered in `device\state\<id>.approved`; taken id → new id by
+  itself; older server → checks approval via signed heartbeat. Meter-only change (`meter_app.py`, `run_pipeline(on_ready=)`),
+  B needs nothing. test_a **98 passed**. New exe copied to `Downloads\FairPlayMeter_one_file\`. A trial run left test meter
+  **M-8862** (fp 84f9 2b00 1b6a d4ce, key deleted) in SONACAM's waiting list → user should Reject it.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look
