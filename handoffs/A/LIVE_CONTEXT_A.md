@@ -1,5 +1,19 @@
 # LIVE CONTEXT — Person A / Laptop A (read this first in any new session)
-Last updated: 2026-11-25 00:55 (Cameroon time). This file is overwritten after every message so a new account/session
+Last updated: 2026-11-25 01:05 (Cameroon time).
+
+## 0. Latest events (newest first)
+- 01:05 **a/work pushed to GitHub** (user's explicit OK for this push): origin/a/work = 5ed3504. Push URL switched back to
+  `DISABLED-no-push-from-this-clone` afterwards; re-enable only on the user's say-so (`git config remote.origin.pushurl https://github.com/favour-tamfu/Fair_play.git`).
+- **B's server answers again** (192.168.1.51:8000, checked 01:00). B's main is at dd42d2c: B loaded catalogue v3 (S-000073..S-000195, 549/549
+  recognised), regenerated the mock month on 183 songs (D-021), added admin token + safe meter registration (D-020).
+- Dry-run merge of a/work into origin/main: **only REQUESTS.md conflicts** (both sides appended). Request numbers collide:
+  B's R-019 (catalogue 183, D-021) and R-020 (M-07 clock lag) vs A's R-019 (real names) and R-020 (meter exe). Renumber A's to R-021/R-022.
+- **Bug reported by B (their R-020), not fixed yet:** M-07 window_start drifts hours behind real time after pauses/sleep
+  (3 h 54 min). Cause: `device/agent/scheduler.py` windows = `t0 + samples/48000`, re-anchors only on a `None` gap. Fix: compare each
+  block's wall time to `t0 + pos/CAPTURE_RATE`; if off by > ~1 s, re-anchor; add a test with a 60 s wall-clock jump. The packaged exe has
+  the same bug (rebuild after the fix). Also keep Laptop A from sleeping during the demo.
+- Next suggested steps: (1) fix the scheduler drift + test, (2) merge origin/main into a/work resolving REQUESTS.md (renumber), re-run
+  tests, (3) test the pages live against B, (4) rebuild exe + bundle. This file is overwritten after every message so a new account/session
 knows exactly where we are. Older dated handoffs in this folder are history; this file is the current truth.
 
 ## 1. Who and where
@@ -67,4 +81,5 @@ R-017 page addresses changed (`/` = landing, dashboard `/sonacam-x7k2q9.html`) �
 1. Rebuild dashboard like a reference image in "our colours", then Apple CSS → done.
 2. Real songs instead of mock artists → done. Shorten landing → done. Apple accuracy for cards/figures/comparison/live tile, cooler gradient, circles → done.
 3. Handoff + package everything for B (art included) → done. Package the listener → exe done.
-4. **Now:** keep this live context file updated after every message (account switch coming).
+4. Keep this live context file updated after every message (account switch coming) → done, and ongoing.
+5. **"commit to b"** → pushed a/work to GitHub (5ed3504) after the user chose "Push to GitHub a/work".
