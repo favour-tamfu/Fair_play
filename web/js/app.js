@@ -49,65 +49,36 @@ function greet() {   // the page title says which view and which period are on s
 // Dot-matrix chart: one group of square columns per artist; light squares = plays heard, dark = plays counted.
 // Square size is a fixed number of plays (shown in the y labels). A table view sits under the chart.
 function compact(n) { return n >= 1e6 ? (n / 1e6).toFixed(1).replace(".0", "") + "M" : n >= 1e3 ? (n / 1e3).toFixed(1).replace(".0", "") + "k" : String(Math.round(n)); }
-function renderDots(e) {
+function renderDots(e) {   // D-031: ranked horizontal bars (was a dot matrix that was hard to read)
   const box = $("dots");
   if (!box) return;
   $("t-total").textContent = e.frozen ? "–" : fmtInt(e.rows.reduce((t, r) => t + (r.counted_plays || 0), 0));
-  const rows = e.frozen ? [] : [...e.rows].filter((r) => r.raw_plays > 0).sort((a, b) => b.raw_plays - a.raw_plays).slice(0, 24);
-  $("dots-tbody").innerHTML = rows.map((r) => `<tr><td>${esc(r.artist_name)}</td><td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.counted_plays)}</td></tr>`).join("");
-  if (!rows.length) { box.innerHTML = `<p class="dots-empty">${e.frozen ? "Withheld until the log is restored." : "No plays in this period yet."}</p>`; $("dots-x").innerHTML = ""; return; }
-  // One column per song (up to 64 columns), grouped by artist; each square is a fixed number of plays.
-  const H = 22, groupsData = [];
-  let ncols = 0;
-  for (const r of rows) {
-    const songs = (r.songs && r.songs.length ? [...r.songs] : [{ title: r.artist_name, raw_plays: r.raw_plays, counted_plays: r.counted_plays }])
-      .sort((a, b) => (b.raw_plays || 0) - (a.raw_plays || 0));
-    if (ncols && ncols + songs.length > 64) break;
-    groupsData.push({ r, songs }); ncols += songs.length;
-  }
-  const max = Math.max(...groupsData.flatMap((g) => g.songs.map((s) => s.raw_plays || 0)), 1);
-  const unit = max / H;
-  const ticks = [0, 1, 2, 3, 4, 5, 6].map((k) => compact((max * (6 - k)) / 6));
-  const groups = groupsData.map(({ r, songs }, gi) => {
-    const cols = songs.map((s) => {
-      const nh = s.raw_plays > 0 ? Math.max(1, Math.round(s.raw_plays / unit)) : 0, nc = Math.min(nh, Math.round((s.counted_plays || 0) / unit));
-      return `<div class="dcol" title="${esc(s.title)}: heard ${fmtInt(s.raw_plays)}, counted ${fmtInt(s.counted_plays)}">${Array.from({ length: H }, (_, k) => { const fb = H - k; return `<i class="${fb <= nc ? "c" : fb <= nh ? "h" : ""}"></i>`; }).join("")}</div>`;
-    }).join("");
-    const label = groupsData.length > 10 && songs.length < 3 ? initialsOf(r.artist_name) : r.artist_name;
-    return `<div class="dgroup" data-g="${gi}"><div class="dcols">${cols}</div><span class="dlabel" title="${esc(r.artist_name)}">${esc(label)}</span></div>`;
-  });
-  // Fill the whole width with a lattice of empty squares, spreading the artist groups evenly across it.
-  const avail = Math.max(200, box.clientWidth - 54);
-  const sq = Math.max(7, Math.min(14, Math.floor(avail / (ncols + groupsData.length + 1) - 3)));
-  const capacity = Math.floor((avail + 3) / (sq + 3));
-  const spare = Math.max(0, capacity - ncols), slots = groupsData.length + 1;
-  const emptyCol = `<div class="dcol">${"<i></i>".repeat(H)}</div>`;
-  const filler = (k) => `<div class="dfill"><div class="dcols">${emptyCol.repeat(k)}</div></div>`;
-  const parts = [];
-  groups.forEach((g, i) => { const k = Math.floor(spare / slots) + (i < spare % slots ? 1 : 0); if (k) parts.push(filler(k)); parts.push(g); });
-  const last = Math.floor(spare / slots);
-  if (last) parts.push(filler(last));
-  box.innerHTML = `<div class="dots-y">${ticks.map((t) => `<span>${t}</span>`).join("")}</div><div class="dots-grid">${parts.join("")}</div>`;
-  box.style.setProperty("--sq", `${sq}px`);
-  $("dots-x").innerHTML = "";
+  const all = e.frozen ? [] : [...e.rows].filter((r) => r.raw_plays > 0 && r.artist_name !== TEST_ARTIST)
+    .sort((a, b) => (b.counted_plays - a.counted_plays) || (b.raw_plays - a.raw_plays));
+  const rows = all.slice(0, 12);
+  $("dots-tbody").innerHTML = all.map((r) => `<tr><td>${esc(r.artist_name)}</td><td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.counted_plays)}</td></tr>`).join("");
+  if (!rows.length) { box.innerHTML = `<p class="dots-empty">${e.frozen ? "Withheld until the log is restored." : "No plays in this period yet."}</p>`; $("dots-x").textContent = ""; return; }
+  const max = Math.max(...rows.map((r) => r.raw_plays || 0), 1);
+  box.innerHTML = rows.map((r, i) => `<div class="rbar" role="listitem" tabindex="0" data-i="${i}"
+      aria-label="${esc(r.artist_name)}: ${fmtInt(r.counted_plays)} plays counted of ${fmtInt(r.raw_plays)} heard, ${fmtPct(r.share)}">
+      <span class="rk">${i + 1}</span><span class="nm" title="${esc(r.artist_name)}">${esc(r.artist_name)}</span>
+      <span class="trk"><i class="h" style="width:${(100 * r.raw_plays / max).toFixed(2)}%"></i><i class="c" style="width:${(100 * (r.counted_plays || 0) / max).toFixed(2)}%"></i></span>
+      <span class="vals">${fmtInt(r.counted_plays)}<small>${fmtPct(r.share)}</small></span></div>`).join("");
+  $("dots-x").textContent = all.length > rows.length ? `+ ${all.length - rows.length} more artists in Who earned what below.` : "";
   const tip = $("dot-tip"), card = box.closest(".card-i");
-  box.querySelectorAll(".dgroup").forEach((g) => {
-    const r = groupsData[+g.dataset.g].r;
+  box.querySelectorAll(".rbar").forEach((el) => {
+    const r = rows[+el.dataset.i];
     const show = () => {
-      box.querySelectorAll(".dgroup.hover").forEach((x) => x.classList.remove("hover"));
-      g.classList.add("hover");
-      tip.innerHTML = `<p>${esc(r.artist_name)}</p><p><i style="background:var(--heard)"></i>Heard<b>${fmtInt(r.raw_plays)}</b></p><p><i style="background:var(--counted)"></i>Counted<b>${fmtInt(r.counted_plays)}</b></p><p>Share<b>${fmtPct(r.share)}</b></p>`;
-      const gb = g.getBoundingClientRect(), cb = card.getBoundingClientRect();
-      const left = gb.right - cb.left + 12 + 200 > cb.width ? gb.left - cb.left - 212 : gb.right - cb.left + 12;
-      tip.style.left = `${Math.max(8, left)}px`;
-      tip.style.top = `${Math.max(8, gb.top - cb.top + 20)}px`;
+      tip.innerHTML = `<p>${esc(r.artist_name)}</p><p><i style="background:var(--heard)"></i>Heard<b>${fmtInt(r.raw_plays)}</b></p><p><i style="background:var(--counted)"></i>Counted<b>${fmtInt(r.counted_plays)}</b></p><p>Share<b>${fmtPct(r.share)}</b></p><p>Songs<b>${fmtInt(r.n_songs)}</b></p>`;
+      const eb = el.getBoundingClientRect(), cb = card.getBoundingClientRect();
+      tip.style.left = `${Math.min(cb.width - 220, Math.max(8, eb.left - cb.left + eb.width * 0.55))}px`;
+      tip.style.top = `${eb.bottom - cb.top + 6}px`;
       tip.classList.add("show");
     };
-    g.addEventListener("mouseenter", show);
-    g.addEventListener("focus", show);
-    g.tabIndex = 0;
+    el.addEventListener("mouseenter", show);
+    el.addEventListener("focus", show);
   });
-  box.onmouseleave = () => { tip.classList.remove("show"); box.querySelectorAll(".dgroup.hover").forEach((x) => x.classList.remove("hover")); };
+  box.onmouseleave = () => tip.classList.remove("show");
 }
 const initialsOf = (n) => String(n).split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase();
 
@@ -339,6 +310,47 @@ function feedLine(event, data) {
   }
 }
 
+// ---------- live activity: history on load (D-031), then the live feed ----------
+const songArtist = new Map();   // song_id -> artist, for the "Hearing now" card
+get("songs").then((ss) => ss.forEach((s) => songArtist.set(s.song_id, s.artist_name))).catch(() => {});
+const HIST_TAG = { play: "play", heard: "heard", flag: "flag", meter: "meter", ledger: "ledger" };
+async function loadFeedHistory() {
+  if (MOCK) return;
+  try {
+    const r = await fetch("/api/v1/admin/activity?kind=play,heard,flag,meter,ledger&limit=40", { cache: "no-store" });
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    const rows = (await r.json()).rows;
+    const hist = rows.map((x) => ({
+      tag: x.kind === "ledger" && x.level === "error" ? "ledger bad" : HIST_TAG[x.kind] || x.kind,
+      text: esc(x.message.replace(/^Play logged: /, "").replace(/ \(S-\d+\)$/, "")), sub: "", time: fmtTime(x.at), at: x.at }));
+    feedItems.push(...hist.filter((h) => !feedItems.some((f) => f.text === h.text && f.time === h.time)));
+    feedItems.length = Math.min(feedItems.length, 40);
+    drawFeed(false);
+    const last = hist.find((h) => h.tag === "heard" || h.tag === "play");
+    if (last && $("now-card").hidden) {
+      const c = $("now-card"); c.hidden = false; c.classList.remove("live");
+      $("now-label").textContent = "Last heard";
+      $("now-title").innerHTML = last.text; $("now-sub").textContent = `at ${last.time}`;
+    }
+  } catch (_) { if (!feedItems.length) $("feed").innerHTML = `<li class="feed-empty">Waiting for activity…</li>`; }
+}
+function drawFeed(flashFirst) {
+  const label = { play: "Play", heard: "Heard", late: "Late", flag: "Flag", ledger: "Log", meter: "Meter", stats: "Shares", reset: "Reset" };
+  $("feed").innerHTML = feedItems.map((i, k) => `<li${k === 0 && flashFirst ? ' class="new flash"' : ""}><span class="tag ${i.tag}">${label[i.tag.split(" ")[0]] || i.tag}</span>
+    <span>${i.text}${i.sub ? `<span class="sub">${i.sub}</span>` : ""}</span><span class="t">${i.time}</span></li>`).join("")
+    || `<li class="feed-empty">No activity yet. It appears here the moment a meter hears a song.</li>`;
+}
+let nowTimer = null;
+function showNow(label, title, sub) {
+  const c = $("now-card");
+  c.hidden = false; c.classList.add("live");
+  $("now-label").textContent = label; $("now-title").textContent = title; $("now-sub").textContent = sub;
+  clearTimeout(nowTimer);
+  nowTimer = setTimeout(() => { c.classList.remove("live"); $("now-label").textContent = "Last heard"; }, 120000);
+}
+let figTimer = null;
+function refreshFiguresSoon() { clearTimeout(figTimer); figTimer = setTimeout(() => { loadOverview(); loadEarnings(); loadShares(); }, 700); }
+
 function addFeed({ event, data }) {
   $("feed-state").className = "live-dot ok";
   $("feed-state").textContent = MOCK ? "replaying sample" : "live";
@@ -346,11 +358,18 @@ function addFeed({ event, data }) {
   if (line) {
     feedItems.unshift({ ...line, time: fmtTime(data.window_start || data.started_at || data.last_seen || data.created_at) || fmtTime(new Date().toISOString()) });
     feedItems.length = Math.min(feedItems.length, 40);
-    const label = { play: "Play", heard: "Heard", late: "Late", flag: "Flag", ledger: "Log", meter: "Meter", stats: "Shares", reset: "Reset" };
-    $("feed").innerHTML = feedItems.map((i, k) => `<li${k === 0 ? ' class="new"' : ""}><span class="tag ${i.tag}">${label[i.tag.split(" ")[0]] || i.tag}</span>
-      <span>${i.text}${i.sub ? `<span class="sub">${i.sub}</span>` : ""}</span><span class="t">${i.time}</span></li>`).join("");
+    drawFeed(true);
   }
-  if (event === "play") showPlayOnMap(data.venue_id, `▶ ${data.title}`);
+  const v = venuesById.get(data.venue_id), where = v ? `${barName(v.name)}, ${v.city}` : "";
+  if (event === "match" && data.accepted) {   // instant: the moment a meter recognises a song
+    showNow("Hearing now", data.title || data.song_id, [songArtist.get(data.song_id), where].filter(Boolean).join(" · "));
+    showPlayOnMap(data.venue_id, `♪ ${data.title || data.song_id}`);
+  }
+  if (event === "play") {
+    showNow("Play counted", data.title, [data.artist_name, where].filter(Boolean).join(" · "));
+    showPlayOnMap(data.venue_id, `▶ ${data.title}`);
+    if (state.period === "live") refreshFiguresSoon();   // figures move now, not at the next recompute
+  }
   if (event === "stats") { loadOverview(); loadShares(); loadEarnings(); }
   if (event === "ledger") { loadLedger(); loadEarnings(); }
   if (event === "meter" && state.period === "live") loadVenuesSoon();
@@ -429,4 +448,4 @@ greet();
 setInterval(tickClock, 1000);
 loadAll();
 setInterval(() => { if (state.period === "live") { loadOverview(); loadVenues(); } }, 30000);
-feed(addFeed);
+loadFeedHistory().finally(() => feed(addFeed));

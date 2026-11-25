@@ -324,3 +324,35 @@ body.d2 .card-o-head .note { min-width: 0; flex: 1 1 auto; text-align: right; }
 body.d2 .status, body.d2 .status.bad { background: none; color: #1d1d1f; padding: 0; border-radius: 0; margin: 0 0 14px; }
 body.d2 .status.bad { color: #bf4800; }
 @media (max-width: 900px) { body.d2 .trust2 { grid-template-columns: minmax(0, 1fr); } }
+/* D-031 overview: "Right now" row on top (live activity + map), ranked bars for plays by artist */
+.ov-live { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; margin: 0 0 16px; align-items: stretch; }
+.ov-live .feed-panel .card-i { display: flex; flex-direction: column; gap: 10px; }
+.ov-live .feed { max-height: 330px; overflow: auto; margin: 0; }
+.feed-empty { color: #86868b; font-size: 13px; padding: 8px 0; list-style: none; }
+.now-card { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; row-gap: 2px; align-items: baseline; padding: 12px 14px; border-radius: 12px;
+  background: linear-gradient(90deg, rgba(0,113,227,.10), rgba(0,113,227,.03)); border: 1px solid rgba(0,113,227,.22); }
+.now-card[hidden] { display: none; }
+.now-card .now-label { grid-row: span 2; align-self: center; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: #0058b9;
+  background: #fff; border-radius: 980px; padding: 3px 9px; border: 1px solid rgba(0,113,227,.25); }
+.now-card.live .now-label::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #0071e3; margin-right: 6px; vertical-align: 1px; animation: nowpulse 1.4s ease-in-out infinite; }
+@keyframes nowpulse { 50% { opacity: .25; } }
+.now-card b { font-size: 16px; color: #1d1d1f; }
+.now-card .now-sub { font-size: 12.5px; color: #6e6e73; }
+.feed li.flash { animation: feedflash 2.2s ease-out; }
+@keyframes feedflash { from { background: rgba(0,113,227,.14); } to { background: transparent; } }
+.earn-panel.wide { margin-top: 16px; }
+
+.rbars { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.rbar { display: grid; grid-template-columns: 26px minmax(110px, 190px) minmax(0, 1fr) 150px; gap: 12px; align-items: center; padding: 5px 6px; border-radius: 8px; cursor: default; }
+.rbar:hover, .rbar:focus-visible { background: #f5f5f7; outline: none; }
+.rbar .rk { font-size: 12px; color: #86868b; text-align: right; font-variant-numeric: tabular-nums; }
+.rbar .nm { font-size: 14px; font-weight: 500; color: #1d1d1f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rbar .trk { position: relative; height: 14px; }
+.rbar .trk i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; }
+.rbar .trk i.h { background: var(--heard, #9cc5f5); }
+.rbar .trk i.c { background: var(--counted, #0071e3); box-shadow: 2px 0 0 #fff; }
+.rbar .vals { font-size: 13px; color: #1d1d1f; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rbar .vals small { color: #86868b; font-size: 12px; margin-left: 6px; }
+.rbars-more { margin: 8px 0 0; font-size: 12.5px; color: #86868b; }
+@media (max-width: 1100px) { .ov-live { grid-template-columns: 1fr; } }
+@media (max-width: 720px) { .rbar { grid-template-columns: 22px minmax(0, 1fr) 96px; } .rbar .trk { grid-column: 2 / -1; grid-row: 2; } }

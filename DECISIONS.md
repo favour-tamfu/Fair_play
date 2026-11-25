@@ -178,3 +178,9 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Portal: "When your songs were played" (chart by day with a scale, latest plays) and "How your share is computed" (heard → counted → compared → share, with the artist's own numbers).
 - Play extents are written only when they change: the scheduler no longer recomputes live shares every 15 s with nothing new.
 
+
+## D-031 (B, 2026-11-25) Overview: live activity on top, ranked bars, activity kept across refresh
+- Overview order: key figures → "Right now" row (Live activity + map) → Plays by artist → Who earned what.
+- Plays by artist is a ranked horizontal bar list (top 12; light = heard, dark = counted; count and share at the end; hover for details; table view kept). The dot matrix was hard to read.
+- Live activity loads its last 40 entries from the activity log on page load (plays, heard, meters, flags, log), so a refresh keeps it; then the live feed continues.
+- A "Hearing now" card updates the instant a meter recognises a song (match event); a counted play also refreshes the figures at once instead of waiting for the next recompute.

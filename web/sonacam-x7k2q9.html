@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Fair Play · SONACAM view</title>
 <link rel="stylesheet" href="css/app.css?v=1125c">
-<link rel="stylesheet" href="css/dash.css?v=1125c">
+<link rel="stylesheet" href="css/dash.css?v=1125e">
 <link rel="stylesheet" href="css/type.css?v=1125c">
 </head>
 <body class="d2">
@@ -74,24 +74,50 @@
         <div class="kpi"><div class="kpi-in"><span>Meters online</span><div class="kv"><b id="k-meters">–</b><em>meters</em></div></div><p class="kpi-foot"><i aria-hidden="true"></i><span id="kf-meters"></span></p></div>
         <div class="kpi"><div class="kpi-in"><span>Songs ready</span><div class="kv"><b id="k-songs">–</b><em>songs</em></div></div><p class="kpi-foot"><i aria-hidden="true"></i><span id="kf-songs">in the catalogue, can be matched</span></p></div>
       </section>
-      <!-- Dot-matrix chart: per artist, plays heard and plays counted as stacks of squares -->
+      <!-- Right now: what the meters are hearing (top of the page, D-031) -->
+      <div class="ov-live">
+        <section class="card-o feed-panel">
+          <div class="card-o-head"><h2>Live activity</h2><span class="live-dot" id="feed-state">connecting</span></div>
+          <div class="card-i">
+            <div class="now-card" id="now-card" hidden>
+              <span class="now-label" id="now-label">Hearing now</span>
+              <b id="now-title"></b><span class="now-sub" id="now-sub"></span>
+            </div>
+            <ol id="feed" class="feed"><li class="feed-empty">Loading the latest activity…</li></ol>
+          </div>
+        </section>
+        <section class="card-o map-panel">
+            <div class="card-o-head"><h2>Where music plays</h2><span class="note" id="map-note"></span></div>
+            <div class="card-i">
+              <div class="map-wrap">
+                <svg id="map" viewBox="0 0 400 560" role="img" aria-label="Map of Cameroon with the metered bars"></svg>
+                <div class="map-toast" id="map-toast"></div>
+              </div>
+              <div class="legend">
+                <span><i class="dot live"></i>Live meter</span>
+                <span><i class="dot on"></i>Online</span>
+                <span><i class="dot off"></i>Offline or simulated</span>
+              </div>
+            </div>
+        </section>
+      </div>
+
+      <!-- Plays by artist: ranked horizontal bars (light = heard, dark = counted after the repeat rule) -->
       <section class="card-o">
-        <div class="card-o-head"><h2>Plays by artist</h2><span class="info" title="Each square is a fixed number of plays. Dark squares were counted; light ones were heard but counted less (repeats, loops).">i</span>
-          <span class="more" aria-hidden="true">···</span></div>
+        <div class="card-o-head"><h2>Plays by artist</h2><span class="info" title="Light bar: every play heard. Dark bar: plays counted after the repeat rule (repeats close together count less).">i</span></div>
         <div class="card-i">
           <div class="trend-top">
             <p class="tot">Plays counted : <b id="t-total">–</b></p>
             <p class="lg"><span><i class="lg-heard"></i>Heard</span><span><i class="lg-counted"></i>Counted</span></p>
           </div>
-          <div class="dots" id="dots" role="img" aria-label="Plays heard and counted per artist"></div>
-          <div class="dots-x" id="dots-x"></div>
+          <div class="rbars" id="dots" role="list" aria-label="Plays heard and counted per artist, most played first"></div>
+          <p class="rbars-more" id="dots-x"></p>
           <div class="dot-tip" id="dot-tip" role="status"></div>
           <details class="dots-table" hidden><summary>Show as a table</summary><table><thead><tr><th>Artist</th><th class="n">Heard</th><th class="n">Counted</th></tr></thead><tbody id="dots-tbody"></tbody></table></details>
         </div>
       </section>
 
-      <div class="ov2">
-        <section class="card-o earn-panel">
+        <section class="card-o earn-panel wide">
           <div class="card-o-head"><h2>Who earned what</h2><a class="dl" id="usage-dl" href="#" download>Usage report (CSV)</a></div>
           <div class="card-i">
             <p class="hero-line" id="earn-hero"></p>
@@ -106,29 +132,6 @@
             <p class="note" id="earn-note">An artist earns for all their songs together: their songs' shares are added up. Click an artist to see the songs.</p>
           </div>
         </section>
-
-        <div class="ov2-side">
-          <section class="card-o map-panel">
-            <div class="card-o-head"><h2>Where music plays</h2><span class="note" id="map-note"></span></div>
-            <div class="card-i">
-              <div class="map-wrap">
-                <svg id="map" viewBox="0 0 400 560" role="img" aria-label="Map of Cameroon with the metered bars"></svg>
-                <div class="map-toast" id="map-toast"></div>
-              </div>
-              <div class="legend">
-                <span><i class="dot live"></i>Live meter</span>
-                <span><i class="dot on"></i>Online</span>
-                <span><i class="dot off"></i>Offline or simulated</span>
-              </div>
-            </div>
-          </section>
-
-          <section class="card-o feed-panel">
-            <div class="card-o-head"><h2>Live activity</h2><span class="live-dot" id="feed-state">connecting</span></div>
-            <div class="card-i"><ol id="feed" class="feed"></ol></div>
-          </section>
-        </div>
-      </div>
     </section>
 
     <!-- Songs -->
@@ -188,6 +191,6 @@
   </main>
 </div>
 
-<script type="module" src="js/app.js?v=1125c"></script>
+<script type="module" src="js/app.js?v=1125e"></script>
 </body>
 </html>
