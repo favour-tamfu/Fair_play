@@ -30,3 +30,6 @@ node_modules/
 
 # Release bundles (scripts/make_release.ps1)
 /release/
+
+# SF Pro web fonts (Apple licence: served locally, never committed; originals in ..onts_sfpro)
+web/fonts/

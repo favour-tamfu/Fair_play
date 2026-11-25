@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import mimetypes
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 
@@ -96,6 +97,9 @@ async def db_unavailable(request, exc):
                                      str(exc).splitlines()[0][:120])
     return JSONResponse({"error": "db_unavailable", "detail": "database restarting, please retry"}, status_code=503,
                         headers={"Retry-After": "2"})
+
+
+mimetypes.add_type("font/woff2", ".woff2")   # web fonts (web/fonts, not in git): the container's table lacks it
 
 
 class FreshStaticFiles(StaticFiles):

@@ -306,5 +306,5 @@ All code in this repository was written during the hackathon (Mon 23 Nov – Wed
 | Album covers | Looked up through the public iTunes Search API (`tools/covers/`) and stored in `web/assets/covers/`. They belong to their artists and labels and are shown only next to those artists' own songs. |
 | Photos | Pexels and Unsplash photos under their licences (credits in the landing page footer). |
 | Map tiles | OpenStreetMap standard tiles, loaded from the internet when it is available (© OpenStreetMap contributors, ODbL; credited on each map). Without internet the pages show our drawn outline map. Add `?map=outline` to a page address to force it. |
-| Fonts and icons | None bundled: the pages ask for SF Pro and fall back to the system font. |
+| Fonts and icons | SF Pro (Apple) is not in this repo: Apple's licence does not allow redistributing it. To show it, put the `.woff2` files in `web/fonts/` (git-ignored; `web/css/fonts.css` lists the 10 names: SF Pro Display and Text, Regular to Heavy). Without them the pages use the system font. |
 | Test signals | Synthetic tones made by our code (`core/tests/data`). |
