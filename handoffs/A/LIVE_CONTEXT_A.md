@@ -2,6 +2,9 @@
 Last updated: 2026-11-25 01:05 (Cameroon time).
 
 ## 0. Latest events (newest first)
+- 01:55 User wants the system on the internet: pick a FREE host for B's SONACAM server (API + Postgres + web pages), point the
+  listener (FairPlayMeter.exe) at it over HTTPS instead of the LAN, and write ONE shared plan for A's and B's machines with as little
+  manual configuration as possible. I restated my understanding and asked the user to confirm before writing the plan (no files yet).
 - 01:45 User wants the film built on the SONACAM leader's "the best is yet to come" and to end with "Here it is." Added
   **Direction 2 ("The Promise")** at the top of `pitch/DEMO_FILM_TREATMENT.md`. Context found: Ateh Bazore re-elected SONACAM Board Chair
   30 Apr 2026 (733 votes, >94 %); promises quarterly payments, 12 FCFA/crate, digital cards, WIPO Connect (105,000 works); Oct 2025
