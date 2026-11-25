@@ -46,8 +46,11 @@ function busy(btn, on) { btn.disabled = on; btn.classList.toggle("busy", on); }
 async function loadMeters() {
   try {
     const venues = await get("venues");
-    const rows = venues.flatMap((v) => (v.meters || []).map((m) => ({ ...m, venue: v })))
+    const all = venues.flatMap((v) => (v.meters || []).map((m) => ({ ...m, venue: v })))
       .sort((a, b) => (b.online - a.online) || a.meter_id.localeCompare(b.meter_id));
+    // the mock month's simulated bars are not real meters: hidden unless asked for
+    const showMock = $("show-mock") && $("show-mock").checked;
+    const rows = all.filter((m) => showMock || m.venue.source !== "mock");
     const online = rows.filter((m) => m.online).length;
     $("meters").innerHTML = rows.map((m) => `<tr>
       <td><b>${esc(m.meter_id)}</b></td><td>${esc(m.venue.name)}</td><td>${esc(m.venue.city)}</td>
@@ -56,7 +59,8 @@ async function loadMeters() {
       <td class="n${m.queued ? " amber" : ""}">${fmtInt(m.queued)}</td>
       <td class="n">${m.catch_rate == null ? "–" : Math.round(100 * m.catch_rate) + " %"}</td></tr>`).join("")
       || `<tr><td colspan="7" class="note">No meters registered.</td></tr>`;
-    $("meters-note").textContent = `${online} of ${rows.length} online · ${venues.length} bars`;
+    const real = all.filter((m) => m.venue.source !== "mock").length;
+    $("meters-note").textContent = `${online} of ${rows.length} online · ${real} real or test meters` + (showMock ? `, ${all.length - real} mock-month bars` : "");
   } catch (e) { $("meters-note").textContent = `could not load: ${e.message}`; }
 }
 
@@ -194,8 +198,16 @@ async function loadFlags() {
   try {
     const period = $("flags-period").value;
     const flags = MOCK ? await getJson(FIX + "flags.json") : await getJson(`/api/v1/flags?period=${period}`);
-    $("flags").innerHTML = flags.map((f) => `<li><span class="chip">${esc(f.type)}</span> <b>${esc(f.song_id || "")}</b>
-      ${f.venue_id ? `<span class="note">${esc(f.venue_id)}</span>` : ""}<div class="note">${esc(f.detail)} · ${fmtDateTime(f.created_at)}</div></li>`).join("")
+    // group repeats of the same flag (same type, song, bar and text without numbers), newest first
+    const groups = new Map();
+    for (const f of flags.filter((x) => x.type !== "cooldown")) {
+      const key = [f.type, f.song_id, f.venue_id, String(f.detail || "").replace(/[0-9]+/g, "#")].join("|");
+      const g = groups.get(key);
+      if (g) { g.n += 1; if (f.created_at > g.f.created_at) g.f = f; } else groups.set(key, { f, n: 1 });
+    }
+    $("flags").innerHTML = [...groups.values()].sort((a, b) => String(b.f.created_at).localeCompare(String(a.f.created_at)))
+      .map(({ f, n }) => `<li><span class="chip">${esc(f.type)}</span>${n > 1 ? ` <span class="chip">×${n}</span>` : ""} <b>${esc(f.song_id || "")}</b>
+      ${f.venue_id ? `<span class="note">${esc(f.venue_id)}</span>` : ""}<div class="note">${esc(f.detail)} · ${n > 1 ? "latest " : ""}${fmtDateTime(f.created_at)}</div></li>`).join("")
       || `<li class="note">No flags for this period.</li>`;
   } catch (e) { $("flags").innerHTML = `<li class="note">could not load: ${esc(e.message)}</li>`; }
 }
@@ -219,7 +231,7 @@ log(MOCK ? "Admin page opened with mock data: actions are not sent" : "Admin pag
 
 // ---------- activity log (D-024): GET /api/v1/admin/activity, polled every 3 s while "Live" is on ----------
 const ACT_KINDS = [["", "All"], ["play", "Plays"], ["heard", "Songs heard"], ["report", "Meter reports"], ["meter", "Meters on/off"],
-  ["flag", "Flags"], ["rejected", "Refused requests"], ["admin", "Admin actions"], ["catalogue", "Catalogue"], ["ledger", "Play log"], ["stats", "Shares"]];
+  ["flag", "Flags"], ["rejected", "Refused requests"], ["admin", "Admin actions"], ["catalogue", "Catalogue"], ["ledger", "Play log"]];
 const ACT_LABEL = Object.fromEntries(ACT_KINDS.filter(([k]) => k));
 const act = { kind: "", rows: [], newest: null, oldest: null, live: true, timer: null, busy: false };
 const actHeaders = () => ({});
@@ -315,3 +327,15 @@ get("venues").then((vs) => {
 }).catch(() => {});
 actReload();
 setInterval(actPoll, 3000);
+
+// ---------- shared sidebar (D-028): section links, breadcrumb, mock-bar toggle ----------
+const SECTION = { meters: "Meters", activity: "Activity log", flags: "Review flags", catalogue: "Catalogue", actions: "Actions" };
+function markSection(id) {
+  const key = SECTION[id] ? id : id === "meters-panel" || id === "flags-panel" ? id.replace("-panel", "") : "meters";
+  $("crumb").textContent = SECTION[key];
+  document.querySelectorAll("[data-op]").forEach((a) => a.classList.toggle("on", a.dataset.op === key));
+}
+document.querySelectorAll("[data-op]").forEach((a) => a.addEventListener("click", () => markSection(a.dataset.op)));
+markSection(location.hash.slice(1));
+if (location.hash) { const el = document.getElementById(location.hash.slice(1)); if (el) setTimeout(() => el.scrollIntoView(), 300); }
+if ($("show-mock")) $("show-mock").addEventListener("change", loadMeters);

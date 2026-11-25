@@ -8,6 +8,7 @@ import { VIEW, project, outlinePath } from "./cameroon.js";
 import { requireRole, showUser } from "./session.js";
 
 const USER = await requireRole("sonacam");   // D-028: SONACAM only (signed in)
+showUser(USER, document.getElementById("who"));
 
 const LIVE_VENUE = "V-BUEA-CIMFEST";
 const state = { period: "live", mode: "standardised", tab: "overview" };
@@ -37,8 +38,10 @@ function renderKpis(o) {
 }
 
 // Page title: says which period is on screen (B for Person B, 2026-11-25: plain title instead of a greeting).
-function greet() {
-  if ($("greet")) $("greet").textContent = state.period === "mock_month" ? "Mock month: plays and shares" : "Live plays and shares";
+function greet() {   // the page title says which view and which period are on screen
+  const p = state.period === "mock_month" ? "Mock month" : "Live";
+  const t = { overview: `${p}: plays and shares`, songs: `${p}: every song`, trust: "Play log and proof" }[state.tab] || `${p}: plays and shares`;
+  if ($("greet")) $("greet").textContent = t;
 }
 
 // Dot-matrix chart: one group of square columns per artist; light squares = plays heard, dark = plays counted.
@@ -280,7 +283,8 @@ function renderCompare(c) {
 function renderShares(s) {
   const max = Math.max(...s.rows.map((r) => r.share), 0.0001);
   $("shares").innerHTML = s.rows.map((r, i) => {
-    const flags = (r.flags || []).map((f) => `<span class="chip">${esc(f)}</span>`).join("");
+    // "cooldown" is the normal repeat rule (repeats count less), not something to review
+    const flags = (r.flags || []).filter((f) => f !== "cooldown").map((f) => `<span class="chip">${esc(f)}</span>`).join("");
     return `<tr><td>${i + 1}</td><td>${esc(r.title)}</td><td>${esc(r.artist_name)}</td>
       <td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.weighted_plays)}</td><td class="n share">${fmtPct(r.share)}</td>
       <td><div class="bar"><i style="width:${(100 * r.share / max).toFixed(1)}%"></i></div></td><td>${flags}</td></tr>`;
@@ -383,6 +387,7 @@ function setOn(attr, value) {
   document.querySelectorAll(`[data-${attr}]`).forEach((b) => b.classList.toggle("on", b.dataset[attr] === value));
 }
 function showTab(tab) {
+  setTimeout(greet, 0);
   state.tab = tab;
   setOn("tab", tab);
   document.querySelectorAll(".view").forEach((v) => v.classList.toggle("on", v.id === `view-${tab}`));
