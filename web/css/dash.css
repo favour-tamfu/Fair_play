@@ -297,3 +297,7 @@ body.d2.admin .adm > section { scroll-margin-top: 70px; }
 /* D-029: the small bars in the key-figure cards repeated the Plays by artist chart: not shown */
 .kpi .spark { display: none; }
 .chip.test { background: #eef1f6; color: #3a4a63; }
+
+/* SONACAM logo in the sidebar (assets/brand/sonacam-logo.svg, redrawn as vector) */
+.org { background: #fff; padding: 14px 14px 12px; }
+.org-logo { display: block; width: 100%; height: auto; }
