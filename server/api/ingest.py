@@ -24,7 +24,7 @@ async def _json_body(request: Request) -> Any:
 
 
 ENDPOINT = {"ingest_batch": "report", "ingest_bulk": "report", "ingest_heartbeat": "heartbeat",
-            "ingest_calibration": "calibration", "<lambda>": "meter registration"}   # register is wrapped in a lambda
+            "ingest_calibration": "calibration", "<lambda>": "meter registration", "request_join": "meter join request"}   # register is wrapped in a lambda
 
 
 def _with_conn(fn: Callable, body: Any, *extra) -> ingest.Result:
@@ -84,6 +84,14 @@ def _register(conn, body, admin: bool = False) -> ingest.Result:
     except (ValueError, KeyError) as e:
         return ingest.Result(422, {"error": "invalid", "detail": str(e)})
     return ingest.Result(200, {"ok": True, **r})
+
+
+@router.post("/meters/join")
+async def join_meter(request: Request):
+    """A new meter asks to join, signed with its own key; SONACAM approves it on the operations page (server/joins.py).
+    The meter re-sends the same request to learn its status: 202 pending, 200 approved, 403 rejected/retired."""
+    from server.joins import request_join
+    return await _handle(request_join, request)
 
 
 @router.post("/meters/register")

@@ -83,6 +83,40 @@ $("meters").addEventListener("click", async (e) => {
   loadMeters();
 });
 
+// ---------- new meters waiting for approval (server/joins.py) ----------
+async function loadJoins() {
+  if (MOCK) return;
+  try {
+    const rows = await getJson("/api/v1/admin/meter-requests");
+    $("joins-panel").hidden = rows.length === 0;
+    $("joins-note").textContent = rows.length ? `${rows.length} waiting` : "";
+    $("joins").innerHTML = rows.map((r) => `<tr>
+      <td><b>${esc(r.meter_id)}</b></td><td>${esc(r.bar)}${r.city ? ` · ${esc(r.city)}` : ""}</td><td>${esc(r.computer || "")}</td>
+      <td>${fmtDateTime(r.requested_at)}</td>
+      <td class="mono">${esc(r.key_fingerprint)}</td>
+      <td><button class="small" data-join="${esc(r.meter_id)}" data-to="approve">Approve</button>
+          <button class="small" data-join="${esc(r.meter_id)}" data-to="reject">Reject</button></td></tr>`).join("");
+  } catch (e) { $("joins-panel").hidden = true; }
+}
+// Approve or reject: a second click within 5 s confirms.
+$("joins").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-join]");
+  if (!b) return;
+  const id = b.dataset.join, to = b.dataset.to, label = to === "approve" ? "Approve" : "Reject";
+  if (!b.classList.contains("confirm")) {
+    b.classList.add("confirm"); b.textContent = `Click again to ${to}`;
+    setTimeout(() => { b.classList.remove("confirm"); b.textContent = label; }, 5000);
+    return;
+  }
+  b.disabled = true;
+  try {
+    await post(`/api/v1/admin/meter-requests/${encodeURIComponent(id)}/${to}`);
+    log(to === "approve" ? `Meter <b>${esc(id)}</b> approved: its reports are accepted from now on`
+                         : `Meter <b>${esc(id)}</b> rejected: its reports stay refused`, to === "approve" ? "ok" : "warn");
+  } catch (err) { log(`Could not ${to} ${esc(id)}: ${esc(err.message)}`, "err"); }
+  loadJoins(); loadMeters();
+});
+
 // ---------- ledger ----------
 async function loadLedger() {
   try {
@@ -248,8 +282,8 @@ feed(({ event, data }) => {
 function tick() { $("clock").textContent = new Date().toLocaleString("fr-FR", { timeZone: "Africa/Douala", weekday: "short", hour: "2-digit", minute: "2-digit", second: "2-digit" }); }
 tick(); setInterval(tick, 1000);
 $("mode-note").textContent = MOCK ? " · mock data (?mock=1): actions are not sent" : "";
-loadMeters(); loadLedger(); loadSongs(); loadFlags();
-setInterval(() => { loadMeters(); if (songs.some((s) => s.status === "processing" || s.status === "uploaded")) loadSongs(); }, 15000);
+loadMeters(); loadJoins(); loadLedger(); loadSongs(); loadFlags();
+setInterval(() => { loadMeters(); loadJoins();if (songs.some((s) => s.status === "processing" || s.status === "uploaded")) loadSongs(); }, 15000);
 log(MOCK ? "Admin page opened with mock data: actions are not sent" : "Admin page opened", "mock");
 
 // ---------- activity log (D-024): GET /api/v1/admin/activity, polled every 3 s while "Live" is on ----------

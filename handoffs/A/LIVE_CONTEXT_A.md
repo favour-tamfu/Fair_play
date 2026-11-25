@@ -1,130 +1,111 @@
-# LIVE CONTEXT — Person A / Laptop A (read this first in any new session)
-Last updated: 2026-11-25 01:05 (Cameroon time).
+# LIVE CONTEXT — Person A / Laptop A — read this first, then continue from §1
+Last updated: 2026-11-25 ~02:45 (Laptop A clock, Cameroon time; B's notes run ~6 h ahead).
+**Process rule (user): update this file BEFORE starting each task (what you are about to do) and AFTER it (what happened),
+and commit it locally each time** (`[A-HO] Live context: …`). It is the single source of truth for a new account/session.
 
-## 0. Latest events (newest first)
-- **Decision (user): tunnelling, demo only** — "it's for a government program, they'll have their own computers" (SONACAM would host
-  the stack itself). User had answered "cloudflare". deploy/PLAN.md updated: **Tailscale Funnel = main** (stable address, live feed),
-  **Cloudflare quick tunnel = backup 1** (no SSE, new address each start), ngrok = backup 2. Cloudflare Pages+Workers relay idea parked.
-- User: **"we can't rely on tunneling"** → Tailscale/ngrok plan rejected too (deploy/PLAN.md still says Funnel; to be rewritten).
-  Research: no-card + no-tunnel options: **Azure for Students** ($100 credit, no card, needs a full-time student school email;
-  VM runs B's compose unchanged, free DNS name `<label>.<region>.cloudapp.azure.com`, Caddy HTTPS) — best fit if eligible;
-  else 512 MB free containers (Render web service — card need unclear; SnapDeploy 4×512 MB, sleeps) which need B's 5 processes merged
-  into one and the in-memory index to fit 512 MB (risky). Koyeb now needs a card; Fly/Railway trials too short. Asked the user which.
-- (A's clock ~02:20; B's clock/notes run ~6 h ahead) **Merged B's main into a/work** (5fb5af7; only REQUESTS.md conflicted;
-  `scripts\test_a.ps1` → 90 passed). B's changes now on a/work — **§4 below is partly outdated, these win**:
-  sign-in with roles (`login.html`, `js/session.js`, `js/login.js`; SONACAM user `sonacam` + ADMIN_TOKEN; artists = name + `SONACAM`),
-  new artist portal (`portal.html`, `js/portal.js`; old me.js removed), public `artist.html` ranking removed → artist detail only in the
-  SONACAM app (`sonacam-x7k2q9-artist.html`), operations page rebuilt (`sonacam-x7k2q9-admin.html`: meters with key fingerprint/retire,
-  activity log, review flags, catalogue, actions), OpenStreetMap (`js/osm.js`, `vendor/leaflet`), landing aimed at SONACAM with a
-  Live / Last 30 days switch and a "Meet the meter" section (`assets/meter/`), hero screenshot now `assets/img/shot-dashboard.png`.
-  B fixed the meter clock-drift bug and tested FairPlayMeter.exe against a real server (6/6 windows matched) — see REQUESTS R-029.
-  REQUESTS renumbered by B: A's old R-017..R-020 are R-021..R-024; B's R-025..R-031; A's deploy plan is **R-032**.
-- **Operations page restyled** (user: "put SF fonts on B's new admin dash"): SF Pro on every element incl. buttons, inputs, selects,
-  IDs (no monospace), panels #f5f5f7 r18, white tables, Apple pill buttons (blue main, red danger), filter pills — appended to
-  `web/css/dash.css` under `body.d2.admin`. Checked in mock mode at 1440×900 (all elements SF Pro).
-- **Hosting plan revised — the team has no bank cards** → no Oracle/Google/AWS. `deploy/PLAN.md` now: **Tailscale Funnel on Laptop B**
-  (free, no card, stable `https://<laptop>.<tailnet>.ts.net`), backup **ngrok** free static domain; Laptop B must stay on/awake/online.
-  VM files (cloud-init, cloud compose override, Caddyfile) deleted. Nothing published yet.
-- 02:05 User confirmed → wrote **`deploy/PLAN.md`** (shared A+B plan) + `deploy/docker-compose.cloud.yml`, `deploy/Caddyfile`,
-  `deploy/cloud-init.yaml`; request **R-023** to B. Choice: **Oracle Cloud Always Free ARM VM** running B's compose unchanged + Caddy HTTPS on
-  `<ip>.sslip.io`; **fallback first: Tailscale Funnel from B's laptop**. Rejected: Render/Koyeb (512 MB, no free workers; matcher keeps
-  the fingerprint index in memory), HF Spaces (Docker now paid), Cloudflare quick tunnel (no SSE), Fly/Railway. Override validated with
-  `docker compose config` (Docker is installed on Laptop A); **nothing deployed yet**. Not pushed (needs the user's OK each time).
-  Listener change later: set `DEFAULT_SONACAM` in device/packaging/meter_app.py to the HTTPS address and rebuild.
-- 01:55 User wants the system on the internet: pick a FREE host for B's SONACAM server (API + Postgres + web pages), point the
-  listener (FairPlayMeter.exe) at it over HTTPS instead of the LAN, and write ONE shared plan for A's and B's machines with as little
-  manual configuration as possible. I restated my understanding and asked the user to confirm before writing the plan (no files yet).
-- 01:45 User wants the film built on the SONACAM leader's "the best is yet to come" and to end with "Here it is." Added
-  **Direction 2 ("The Promise")** at the top of `pitch/DEMO_FILM_TREATMENT.md`. Context found: Ateh Bazore re-elected SONACAM Board Chair
-  30 Apr 2026 (733 votes, >94 %); promises quarterly payments, 12 FCFA/crate, digital cards, WIPO Connect (105,000 works); Oct 2025
-  communiqué paid a flat 27,000 FCFA from 40M FCFA. **The quote "the best is yet to come" is NOT verified** (Cameroon Tribune paywalled);
-  the user must supply the source before it is attributed on screen.
-- 01:30 User asked to direct the 2-minute motion-graphics demo film like a film-maker. Researched explainer/motion-design practice;
-  wrote **`pitch/DEMO_FILM_TREATMENT.md`** (one-song journey with match cuts, 10-shot list with VO and sound, Apple visual rules,
-  licensed music, animatic-first pipeline, schedule before 12:00). Not produced yet.
-- 01:15 User asked how to make a demo video. Advice given (no files changed): 2–3 min story = problem → meter in a bar → live play
-  on the dashboard → artist sees it → fair split vs flat (7,7×) → tamper check turns red → close. Record with OBS / Win+Alt+R,
-  live against B's server if possible, otherwise mock mode; keep the laptop awake (clock-drift bug).
-- 01:10 User said **"Not now"** to fixing the M-07 clock-drift bug (B's R-020). Leave it unfixed until asked; keep Laptop A awake during the demo.
-  Local commits after the push (not on GitHub): aa8e632 and this update.
-- 01:05 **a/work pushed to GitHub** (user's explicit OK for this push): origin/a/work = 5ed3504. Push URL switched back to
-  `DISABLED-no-push-from-this-clone` afterwards; re-enable only on the user's say-so (`git config remote.origin.pushurl https://github.com/favour-tamfu/Fair_play.git`).
-- **B's server answers again** (192.168.1.51:8000, checked 01:00). B's main is at dd42d2c: B loaded catalogue v3 (S-000073..S-000195, 549/549
-  recognised), regenerated the mock month on 183 songs (D-021), added admin token + safe meter registration (D-020).
-- Dry-run merge of a/work into origin/main: **only REQUESTS.md conflicts** (both sides appended). Request numbers collide:
-  B's R-019 (catalogue 183, D-021) and R-020 (M-07 clock lag) vs A's R-019 (real names) and R-020 (meter exe). Renumber A's to R-021/R-022.
-- **Bug reported by B (their R-020), not fixed yet:** M-07 window_start drifts hours behind real time after pauses/sleep
-  (3 h 54 min). Cause: `device/agent/scheduler.py` windows = `t0 + samples/48000`, re-anchors only on a `None` gap. Fix: compare each
-  block's wall time to `t0 + pos/CAPTURE_RATE`; if off by > ~1 s, re-anchor; add a test with a 60 s wall-clock jump. The packaged exe has
-  the same bug (rebuild after the fix). Also keep Laptop A from sleeping during the demo.
-- Next suggested steps: (1) fix the scheduler drift + test, (2) merge origin/main into a/work resolving REQUESTS.md (renumber), re-run
-  tests, (3) test the pages live against B, (4) rebuild exe + bundle. This file is overwritten after every message so a new account/session
-knows exactly where we are. Older dated handoffs in this folder are history; this file is the current truth.
+---
+## 1. RIGHT NOW (resume here)
+- **2026-11-25 (B's public address live; it is only in `Downloads\for_laptop_A\READ_ME_LAPTOP_A.txt` — never commit it):**
+  merged origin/main (e6d4705) into a/work locally. User chose B's "Way 2" (packaged meter) over repointing M-07, so
+  M-07.toml was left as it was (still LAN). New meter **M-21** @ V-BUEA-CIMFEST unzipped to `C:\FairPlayMeter` (outside the repo),
+  `setup` done (key + `contract\meters\M-21.pub.json` there), `check` → answers (HTTP 200). Funnel was briefly slow (~23 s
+  replies, check timeout 5 s), then ~3 s again.
+  M-21 (old folder build) still needs its key registered by hand if it is used.
+- **Join with approval (R-033, user's call: "single file + approve on dash, meters could be smuggled"):** one-file
+  `dist\FairPlayMeter.exe` (`build.ps1 -Url <address>` bakes the address in under build\, not git). Double-click → meter id →
+  it POSTs `/v1/meters/join` signed with its own key, prints the key fingerprint, waits (every 15 s) until SONACAM approves on
+  Operations > "Waiting for approval" (new panel), then listens. A edited B's server files for it (joins.py, migration 012,
+  ops/ingest endpoints, registry.key_fingerprint) — **server tests not run on A (no Docker/psycopg); B must run test_b,
+  merge and restart the api** before it works on the public server (live server answers 405 now → meter starts anyway).
+  Exe tested: setup in an empty folder, address baked in, check HTTP 200. test_a 95 passed. Copy for the user:
+  `Downloads\FairPlayMeter_one_file\FairPlayMeter.exe`; for B: `Downloads\Fair_Play_R-033_for_B.bundle`.
+  **Pushed a/work (037bcff) at the user's request** so B can pull: B runs `git pull origin a/work` (or merges it into main),
+  `scripts\test_b.ps1`, then restarts the api. Waiting on B's answer in REQUESTS R-033.
+- Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
+- **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
+  `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look
+  before the next web change (`git fetch origin; git log --oneline a/work..origin/main`).
+- **A's next steps once the address exists** (deploy/PLAN.md step 2):
+  1. Set `DEFAULT_SONACAM` in `device/packaging/meter_app.py` to the address; rebuild `.\device\packaging\build.ps1`
+     (B suggested a retry loop around the zip step and a README line that `--input file:*.mp3` needs ffmpeg — R-029).
+  2. Existing meter: edit `sonacam_url` in `device\config\M-07.toml`; `FairPlayMeter.exe check`; register keys on the operations page.
+  3. Test over the internet from a phone on mobile data (deploy/PLAN.md step 3).
+- **Pushing**: push URL is set to `DISABLED-no-push-from-this-clone`. Push only when the user says so, then:
+  `git config remote.origin.pushurl https://github.com/favour-tamfu/Fair_play.git; git push origin a/work; git config remote.origin.pushurl DISABLED-no-push-from-this-clone`.
+  Local commits after 220b117 (live-context updates) are not on GitHub yet.
 
-## 1. Who and where
-- Hackathon: CIMFEST 2026 (Mon 23 Nov 12:00 → **Wed 25 Nov 12:00**). Project: **Fair Play** — audio meters in bars fingerprint the
-  music, SONACAM (Cameroon music rights society) splits the beer/drinks copyright levy by counted plays instead of flat.
-- User = **Person A**, Laptop A (Windows, PowerShell). Repo `C:\Users\DELL\Projects\CIMFEST_HACKATHON\Fair_play`, branch **a/work**.
-- Person B runs the SONACAM server (FastAPI + Postgres in Docker) on Laptop B, `http://192.168.1.51:8000`.
-  **Unreachable since 2026-11-24 12:40** → everything on A is tested in mock mode (`?mock=1`) only.
-- Read CLAUDE.md, docs/01_CONTRACT.md, docs/02_WORKFLOW_HANDOFFS_MERGES.md for rules. Ownership: A owns `web/`, `device/`,
-  `tools/`, `contract/fixtures/mock_month/`; B owns `server/`, `contract/fixtures/api/`, schemas, `.gitignore`.
+## 2. Project, people, places
+- CIMFEST Hackathon 2026, Mon 23 Nov 12:00 → **Wed 25 Nov 12:00** (demo). **Fair Play**: small meters in bars fingerprint the music;
+  SONACAM (Cameroon's music rights society) shares the drinks/beer copyright levy by counted plays instead of a flat split.
+- User = **Person A**, Laptop A (Windows 10, PowerShell, Python 3.11 venv `.venv`, Docker Desktop installed).
+  Repo `C:\Users\DELL\Projects\CIMFEST_HACKATHON\Fair_play`, branch **a/work**; GitHub `favour-tamfu/Fair_play`.
+- Person B = SONACAM server (FastAPI + Postgres + 4 workers in docker compose) on Laptop B (LAN `http://192.168.1.51:8000`, reachable again).
+- Rules files: `CLAUDE.md`, `docs/01_CONTRACT.md`, `docs/02_WORKFLOW_HANDOFFS_MERGES.md`. Ownership: A = `web/`, `device/`, `tools/`,
+  `contract/fixtures/mock_month/`; B = `server/`, `contract/fixtures/api/`, schemas, `.gitignore`, compose. In practice B also edits web/
+  (logged in REQUESTS) and A edited B's fixture generator once with the user's OK (R-023/old R-019).
 
-## 2. Hard rules from the user (follow exactly)
-- **Never push.** pushurl is disabled; "Leave it local". Hand over to B by git bundle / zip (see §6).
-- **Commit messages: no Co-Authored-By, no mention of Claude/Claude Code anywhere in the project.** Format `[A-xxx] …`.
-- Never commit audio, recordings, keys (`*.seed`, `device/secrets/`), `.env`, `data/`, `device/state/`.
-- Only show numbers the code computed. No SONACAM branding on the public landing page.
-- Ask before downloading files. Don't run broad `taskkill`. Use **Haiku** for subagents.
-- Design: Apple style (apple.com / Apple Music page values), no scroll animations, no counting-up numbers, few colours.
-- **Update this file after every message** (user's instruction, 2026-11-25).
+## 3. User's standing instructions (follow exactly)
+- **No Co-Authored-By lines; never mention Claude / Claude Code anywhere** in commits or project files. Commit format `[A-xxx] …`.
+- Push only on the user's explicit OK (see §1). Hand-overs can also go by bundle/zip in `C:\Users\DELL\Downloads`.
+- Never commit audio, keys (`*.seed`, `device/secrets/`), `.env`, `data/`, `device/state/`, `dist/`, `build/`.
+- Only show numbers the code computed; simulated ones labelled. No SONACAM branding on the public landing (B has since aimed the
+  landing at SONACAM — accepted by the user implicitly; ask before reverting).
+- Ask before downloading files. Never broad `taskkill`. Use **Haiku** for subagents. Design = Apple (apple.com / Apple Music values),
+  SF Pro fonts, few colours, no scroll animations, no counting-up numbers.
+- **Update this file before and after every task** (§0 rule above).
 
-## 3. Commits (all local on a/work; never pushed — run `git log --oneline -15` for the newest)
-Latest first: (this context file's own commits) · b3a1edc live context + tools/covers · f3d1c0a packaged meter exe · 56d9e58 handoff · 32273e3 landing Apple restyle · 0a84281 real song names ·
-8d5e000 covers · 2885974 dashboard Apple style · fc5081e music landing/covers · 7950a96 artist page · 6209ad8 portal …
-Tests at f3d1c0a: `scripts\test_a.ps1` → **88 passed**; `pytest --noconftest server/tests/test_api_fixtures.py -q` → **19 passed**.
-
-## 4. What exists (web/ is served by B at `/`)
-| Page | File | State |
+## 4. Current web (after merging B's work; B's latest main may differ — check §1)
+| Address | File(s) | What |
 |---|---|---|
-| Public landing | web/index.html, css/landing.css, css/mbp.css, js/landing.js | dark Apple-Music-style; sections: photo hero + CodePen MacBook (static dashboard screenshot `assets/img/shot-dashboard.webp`) → "Start with Fair Play" cards (#111 band, 345px cards, paddle arrows) → figures (stat callouts) → "Fairer by design" (7,7× flat-vs-Fair-Play + map) → music tiles (stepped frames of top song's cover with sway + pause; catalogue cover wall; live plays in Apple "Sing" layout; "Top this month" streak card with circle covers) → trust chain → how it works → FAQ |
-| Artists (public data pool) | web/artist.html, js/artist.js, css/pages.css | finder + Apple-Music artist page; real covers |
-| Artist portal (private) | web/portal.html, js/me.js, js/portal.js | prototype sign-in by name (no password, R-018); only place to declare a song |
-| SONACAM dashboard (secret URL) | web/sonacam-x7k2q9.html, css/app.css + css/dash.css, js/app.js | sidebar layout, figure cards, dot-matrix "Plays by artist" chart, who earned what, map, feed, Songs, Trust; Apple colours (blue #0071e3) |
-| Admin (secret URL) | web/sonacam-x7k2q9-admin.html, js/admin.js | unchanged this session |
-| Covers | web/assets/covers/*.webp + index.json, js/covers.js | 170/183 songs (163 exact); matched only to own artist |
-- `web/js/api.js`: `get(name, period, mode)`; mock reads `contract/fixtures/api/*`; supports overview, venues, shares, flags, ledger_status, payouts, artist_shares, compare_flat, feed, **plays, songs** (added).
-- Preview: `.claude/launch.json` in the PARENT folder (`CIMFEST_HACKATHON`), server "web-mock" on port 8080 → `http://localhost:8080/web/index.html?mock=1`, dashboard `…/web/sonacam-x7k2q9.html?mock=1&period=mock_month`. (Port 8765 is used by device/tools/monitor.py.)
+| `/` landing | index.html, css/landing.css, css/mbp.css, js/landing.js | dark Apple-Music style; photo hero + CodePen MacBook (screenshot `assets/img/shot-dashboard.png`); starter cards (#111 band, paddle arrows); figures with **Live / Last 30 days** switch (B); comparison 7,7× + OpenStreetMap; catalogue tile; live plays in "Sing" layout (city only, public feed `/api/v1/public/recent-plays`); top-artists streak card; "Meet the meter" (B, `assets/meter/`); trust; how; FAQ |
+| `/login.html` | login.html, js/login.js, js/session.js | sign-in (B, D-028): SONACAM user `sonacam` + ADMIN_TOKEN; artists = artist name + `SONACAM` |
+| `/portal.html` | portal.html, js/portal.js | artist portal (B's new version) |
+| `/sonacam-x7k2q9.html` | css/app.css + css/dash.css, js/app.js | SONACAM dashboard: sidebar, figure cards, dot-matrix "Plays by artist", who earned what, map (OSM), feed, Songs, Trust; Apple colours |
+| `/sonacam-x7k2q9-artist.html` | js/artist.js | artist detail, SONACAM only (B, D-026) |
+| `/sonacam-x7k2q9-admin.html` | js/admin.js | operations (B): meters + key fingerprint/retire, register meter, activity log, review flags, catalogue, actions. **A restyled it**: SF Pro on every element, Apple panels/buttons (`body.d2.admin` block at the end of css/dash.css) |
+- `js/api.js` mock mode (`?mock=1`) reads `contract/fixtures/api/*`; supports plays + songs. `js/covers.js` real album covers
+  (`assets/covers/`, 170/183 songs). Preview: `.claude/launch.json` in the PARENT folder, server "web-mock" port 8080 →
+  `http://localhost:8080/web/index.html?mock=1`. Port 8765 = device/tools/monitor.py (leave it).
 
 ## 5. Data
-- Song catalogue v3: **183 verified Cameroonian songs, 61 artists** — metadata in `tools/covers/catalogue_v3/` (catalogue.csv, not_included.csv, duplicates.csv) and `tools/mockgen/real_songs.csv`; audio only in `Downloads\Fair_Play_song_package_v3.zip` (613 MB). B holds only the 60 v1 songs (S-000013…S-000072).
-- Open catalogue questions for the user: Tayc (3 songs, French-born of Cameroonian parents) and Ines D (1) — keep or not?; FP-003 vs FP-006 (Blanche Bailly) may be the same audio — someone should listen; 86 "unknown" songs not researched further; owners/consent/ISRC/MoMo missing for all songs.
-- Test data: mock month (`tools/mockgen/generate.py --seed 42`) and API fixtures (`python -m server.tools.make_api_fixtures`) use **real titles/artists**; loop/promo scenarios use fictional "Loop/Promo test track" by "Fair Play test artist" (never shown on the landing). Bars still "Mock bar …". Composer/producer "not yet declared".
-- Cover pipeline scripts (were in temp scratchpad, now in repo): `tools/covers/` — cover_lookup.py (iTunes Search, metadata), cover_download.py (alias-aware artist check, WebP 300px), cover_merge.py, cover_missing.py, make_handover.py; covers.json / covers_research.json results.
+- Catalogue v3: **183 verified Cameroonian songs, 61 artists**. Metadata in `tools/covers/catalogue_v3/` and `tools/mockgen/real_songs.csv`;
+  audio only in `Downloads\Fair_Play_song_package_v3.zip`. B has loaded all 183 (S-000073..S-000195; 549/549 recognised).
+- Test data uses real titles/artists; loop/promo scenarios use fictional "Loop/Promo test track" by "Fair Play test artist" (hidden on public pages).
+- Open questions for the user: Tayc (3 songs) / Ines D (1) keep?; FP-003 vs FP-006 (Blanche Bailly) same audio?; 13 songs without covers.
 
-## 6. Packages for B (in `C:\Users\DELL\Downloads`)
-- `Fair_Play_handover_for_B.zip` (723.9 MB): README_HANDOVER.md, code/Fair_Play_a-work.bundle (a/work @ f3d1c0a), songs/v3 zip, meter/FairPlayMeter_windows.zip, covers/FP-xxx.webp + covers.csv, docs/.
-- Note: the bundle inside the handover zip is at f3d1c0a; the standalone `Downloads\Fair_Play_a-work.bundle` is newer (rebuilt after each commit). Give B the standalone bundle too.
-- `Fair_Play_a-work.bundle` (code only). B: `git fetch <bundle> a/work:refs/remotes/laptopA/a-work` then `git merge laptopA/a-work`.
-- `FairPlayMeter_windows.zip` (63.9 MB): the listener as an exe (see §7).
-- **If you commit again, rebuild the bundle and the handover zip** (`git bundle create …\Downloads\Fair_Play_a-work.bundle a/work`; `python -I tools\covers\make_handover.py <repo> <Downloads>`).
+## 6. Listener (meter)
+- `device/agent` (Python) and the packaged **FairPlayMeter.exe** (`device/packaging/`: meter_app.py setup/check/run, spec, build.ps1, README).
+  Each copy makes its own key on `setup`; register the public key on the operations page. B tested the exe against a real server
+  (6/6 windows matched) and **fixed the clock-drift bug** (R-029/R-020).
+- Packages in Downloads: `FairPlayMeter_windows.zip`, `Fair_Play_a-work.bundle`, `Fair_Play_handover_for_B.zip` (older; rebuild with
+  `python -I tools\covers\make_handover.py <repo> <Downloads>` if needed).
 
-## 7. Packaged listener (device/packaging/)
-- `FairPlayMeter.exe` = PyInstaller 6.11.1 build of `device/packaging/meter_app.py` (spec `FairPlayMeter.spec`, `build.ps1` → `dist\`, ignored).
-- Commands: no args / `run` (listen to default mic; `--input file:<wav>`, `--mode field`), `setup` (makes the meter's own key in `device\secrets\`, prints public key to register on the admin page), `check` (lists mics, pings SONACAM `/api/v1/overview`).
-- Tested from a clean folder against the fake SONACAM (`uvicorn device.tools.fake_sonacam:app --port 8777`, run inside the test folder so keys load from its `contract/meters`) → 1 window, signature verified, `acked: stored`. **Not tested with live mic against B.**
+## 7. Going online — `deploy/PLAN.md` (request R-032)
+- Constraints: no bank cards; tunnelling accepted **for the demo only** (SONACAM would host the same compose stack on its own servers).
+- **Main: Tailscale Funnel on Laptop B** (`tailscale funnel --bg 8000`, stable `https://<laptop>.<tailnet>.ts.net`).
+  Backup 1: Cloudflare quick tunnel (`cloudflared tunnel --url http://localhost:8000`; no live feed, new address each start).
+  Backup 2: ngrok free static domain. Rejected: Oracle/Google/AWS (card), Render/Koyeb/HF (512 MB/no workers/paid), Cloudflare
+  Containers (paid). Laptop B must stay on, plugged in, awake, online. **Nothing published yet.**
 
-## 8. Requests to B (REQUESTS.md) — all unanswered
-R-017 page addresses changed (`/` = landing, dashboard `/sonacam-x7k2q9.html`) · R-018 artist login for portal · R-019 real song names in mock month and B's fixtures (A edited B's `server/tools/make_api_fixtures.py` with the user's OK; B should re-import the mock month, maybe regenerate artist_shares.json) · R-020 packaged meter + `.gitignore` lines.
+## 8. Demo film — `pitch/DEMO_FILM_TREATMENT.md`
+- Direction 2 (preferred): open on SONACAM's promise ("payments every three months"; "The best is yet to come" — **quote not verified**,
+  needs the user's source before attributing), the flat 27,000 FCFA reality (Oct 2025 communiqué), then the Fair Play journey, end on
+  **"Here it is."** Direction 1: follow one song. 2:00 max, motion graphics, licensed music, animatic first.
 
-## 9. Open / next
-- Hand the zip to B; when B is reachable: merge, re-import mock month, load v3 songs, register meter keys, test all pages live (SSE, tamper banner).
-- User decisions pending: Tayc/Ines D, FP-003/006 listen check, the 13 songs without covers, rename "Mock bar" venues?
-- Known gaps: headline font "SF Pro Plus Expanded" not installed (SF Pro Heavy used); frames tile is grey because Locko's top cover is B&W.
+## 9. REQUESTS.md (numbering after B's merge)
+A's: R-021 page addresses, R-022 artist login, R-023 real song names (A edited B's fixture generator), R-024 meter exe, **R-032 deploy plan**.
+B's: R-019 catalogue 183, R-020 clock drift, R-025..R-031 (landing/data edits, portal, activity log, OSM, artist detail SONACAM-only,
+exe tested, roles/sign-in, operations fixes). Most "Answer (A, time)" lines are still empty — answer them when asked.
 
-## 10. Last user requests (most recent last)
-1. Rebuild dashboard like a reference image in "our colours", then Apple CSS → done.
-2. Real songs instead of mock artists → done. Shorten landing → done. Apple accuracy for cards/figures/comparison/live tile, cooler gradient, circles → done.
-3. Handoff + package everything for B (art included) → done. Package the listener → exe done.
-4. Keep this live context file updated after every message (account switch coming) → done, and ongoing.
-5. **"commit to b"** → pushed a/work to GitHub (5ed3504) after the user chose "Push to GitHub a/work".
+## 10. Recent history (newest first)
+- Pushed a/work 220b117. Plan: tunnelling for the demo (Funnel main, Cloudflare quick tunnel/ngrok backups).
+- No-card hosting research; Oracle dropped (no cards); Cloudflare free can't run our Python server.
+- Merged B's main (5fb5af7); restyled B's operations page in SF Pro + Apple style.
+- Deploy plan v1 (Oracle) → v2 (no card) → v3 (tunnel decision).
+- Demo film treatment (two directions). Packaged meter exe (tested vs fake server). Handover zip for B.
+- Landing Apple restyles; real song names in test data; album covers (170/183); dashboard rebuilt (sidebar, dot-matrix).
+- Tests last run: `scripts\test_a.ps1` → **90 passed** (after the merge).
+
+## 11. How to resume in a new session
+Say: *"Read `handoffs/A/LIVE_CONTEXT_A.md` and continue from §1. Update it before and after every task."*
+Then: `git status`, `git log --oneline -5`, `git fetch origin` and compare with §1.

@@ -21,6 +21,15 @@ log = logging.getLogger(__name__)
 PUB_FIELDS = ("meter_id", "venue_id", "public_key_b64", "created_at")
 
 
+def key_fingerprint(key_b64: Optional[str]) -> str:
+    """Short, comparable fingerprint of a meter's public key: the meter prints the same one when it asks to join."""
+    if not key_b64:
+        return ""
+    import hashlib
+    h = hashlib.sha256(key_b64.encode()).hexdigest()[:16]
+    return " ".join(h[i:i + 4] for i in range(0, 16, 4))
+
+
 def meter_source(meter_id: str) -> str:
     """M-07 is the live meter (laptop mic); M-11 and above are virtual (WAV-fed) meters (PLAN_B B-T06)."""
     n = int(re.sub(r"\D", "", meter_id) or 0)

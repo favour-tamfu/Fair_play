@@ -44,6 +44,17 @@
   </header>
 
   <main class="adm">
+  <section class="panel span3" id="joins-panel" hidden>
+    <div class="head"><h2>Waiting for approval</h2><span class="note" id="joins-note"></span></div>
+    <p class="note">New meters that asked to join. Their reports are refused until you approve them. Check that the key fingerprint is the one shown on the meter's screen.</p>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>meter</th><th>bar</th><th>computer</th><th>asked</th><th>key fingerprint</th><th></th></tr></thead>
+        <tbody id="joins"></tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="panel span2" id="meters-panel">
     <div class="head"><h2>Meters</h2><span class="note" id="meters-note"></span><label class="note mock-toggle"><input type="checkbox" id="show-mock"> show the mock-month bars</label></div>
     <div class="scroll">

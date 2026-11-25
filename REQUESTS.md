@@ -232,3 +232,18 @@ Answer (B, 2026-11-25 11:00): agreed — Tailscale Funnel on Laptop B as the mai
 Update (B, 2026-11-25 11:05): step 1 done — Laptop B is published with Tailscale Funnel (stable https address, sent to Person A privately; not written in git because the repo is public). Tested from outside: pages, API, sign-in, live feed. A: set `sonacam_url` on the meters (or rebuild the exe from main, which also brings the clock fix) and restart them; the keys are already registered.
 Update (B, 2026-11-25 11:30, Person B: A is busy): B prepared the meter side. `scripts/point_meter.ps1 -Url <address> [-Meter M-07]` repoints an existing meter (checks the server, edits only sonacam_url in the local config; don't commit it). A meter exe with the public address pre-filled was built and tested on Laptop B (check -> HTTP 200) and handed over with steps outside git. On Laptop A: `git pull origin main` (brings the clock fix), run the script, restart M-07.
 
+
+## R-033 — 2026-11-25 (A's clock) — A → B — New meters ask to join; SONACAM approves on the operations page (Person A's call)
+- Person A wants a quick way to add a bar laptop that a smuggled meter cannot abuse: copy ONE file (FairPlayMeter.exe), double-click,
+  enter a meter id; the meter asks to join and SONACAM approves or rejects it. Until approved its reports are refused (404, kept on the meter).
+- A edited B-owned files for this, with Person A's OK (please review):
+  - `server/db/migrations/012_meter_join.sql` (table meter_requests), `server/joins.py` (logic), `server/registry.py` (key_fingerprint moved here; ops.py re-imports it).
+  - `POST /v1/meters/join` (device, no token): .pub.json record + `computer` + `sig` signed with the meter's own key; 202 pending / 200 approved /
+    403 rejected|retired / 401 bad_signature / 409 meter_id_taken / 429 (over 50 waiting). The meter re-sends it to poll. Logged in the activity log.
+  - `GET /api/v1/admin/meter-requests`, `POST /api/v1/admin/meter-requests/{id}/approve|reject` (SONACAM only). Approve = upsert_meter + source 'live'.
+  - `server/tests/test_meter_join.py` (3 tests). **Not run on Laptop A** (no Docker/psycopg here): please run `scripts\test_b.ps1`.
+- A's side: `device/packaging/meter_app.py` (asks to join at setup, waits for approval before listening, prints the key fingerprint),
+  one-file build (`FairPlayMeter.spec`, `build.ps1 -Url` bakes the address into the exe, not into git), operations page panel "Waiting for approval".
+- Contract: adds one device endpoint; /v1/meters/register is unchanged (the manual way still works).
+Ask: review, run test_b, merge, and restart the api on Laptop B (`docker compose up -d --build api`) so the public server has the join step.
+Answer (B, time):
