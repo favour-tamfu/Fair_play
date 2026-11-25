@@ -22,7 +22,7 @@ from fairplay_core.constants import SAMPLE_RATE, WINDOW_SAMPLES
 from fairplay_core.landmarks import make_hashes, match_window
 from fairplay_core.peaks import extract_peaks
 from fairplay_core.schema import format_utc
-from server import config
+from server import activity, config
 from server.api.songs import resolve_path
 from server.db import notify
 from server.fp.audio import decode_8k
@@ -101,10 +101,15 @@ def process(conn: psycopg.Connection, ref: str, index: DbIndex = INDEX) -> str:
             conn.execute("UPDATE songs SET status = 'ready', n_hashes = %s, duration_s = %s, duplicate_of = NULL "
                          "WHERE song_id = %s", (len(hashes), duration, song_id))
         log.info("%s ready: %.1f s, %d peaks, %d hashes", song_id, duration, len(peaks), len(hashes))
+        s = conn.execute("SELECT title, artist_name FROM songs WHERE song_id = %s", (song_id,)).fetchone() or {}
+        activity.record(conn, "catalogue", f"Song {song_id} “{s.get('title')}” by {s.get('artist_name')} is ready: "
+                        f"the meters can recognise it ({len(hashes):,} fingerprint hashes)", song_id=song_id, actor="cataloguer")
         return "ready"
-    except Exception:
+    except Exception as e:
         with conn.transaction():
             conn.execute("UPDATE songs SET status = 'failed' WHERE song_id = %s", (song_id,))
+        activity.record(conn, "catalogue", f"Song {song_id} could not be fingerprinted: {e}", "error",
+                        song_id=song_id, actor="cataloguer")
         raise
 
 

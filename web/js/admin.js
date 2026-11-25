@@ -216,3 +216,103 @@ $("mode-note").textContent = MOCK ? " · mock data (?mock=1): actions are not se
 loadMeters(); loadLedger(); loadSongs(); loadFlags();
 setInterval(() => { loadMeters(); if (songs.some((s) => s.status === "processing" || s.status === "uploaded")) loadSongs(); }, 15000);
 log(MOCK ? "Admin page opened with mock data: actions are not sent" : "Admin page opened", "mock");
+
+// ---------- activity log (D-024): GET /api/v1/admin/activity, polled every 3 s while "Live" is on ----------
+const ACT_KINDS = [["", "All"], ["play", "Plays"], ["heard", "Songs heard"], ["report", "Meter reports"], ["meter", "Meters on/off"],
+  ["flag", "Flags"], ["rejected", "Refused requests"], ["admin", "Admin actions"], ["catalogue", "Catalogue"], ["ledger", "Play log"], ["stats", "Shares"]];
+const ACT_LABEL = Object.fromEntries(ACT_KINDS.filter(([k]) => k));
+const act = { kind: "", rows: [], newest: null, oldest: null, live: true, timer: null, busy: false };
+const actHeaders = () => ({ "X-Admin-Token": tokenInput.value.trim() });
+function actParams(extra = {}) {
+  const p = new URLSearchParams();
+  if (act.kind) p.set("kind", act.kind);
+  if ($("act-level").value) p.set("level", $("act-level").value);
+  if ($("act-meter").value) p.set("meter_id", $("act-meter").value);
+  if ($("act-q").value.trim()) p.set("q", $("act-q").value.trim());
+  for (const [k, v] of Object.entries(extra)) if (v != null) p.set(k, v);
+  return p;
+}
+async function actFetch(extra) {
+  const r = await fetch(`/api/v1/admin/activity?${actParams(extra)}`, { headers: actHeaders(), cache: "no-store" });
+  if (r.status === 403) throw Object.assign(new Error("password"), { code: 403 });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+function actRow(r) {
+  return `<tr class="lv-${esc(r.level)}"><td class="t">${fmtDateTime(r.at)}</td><td><span class="kind k-${esc(r.kind)}">${esc(ACT_LABEL[r.kind] || r.kind)}</span></td>
+    <td>${esc(r.message)}</td><td>${esc(r.meter_id || "")}</td><td class="soft">${esc(r.actor || "")}</td></tr>`;
+}
+function actDraw() {
+  $("act-rows").innerHTML = act.rows.map(actRow).join("") || `<tr><td colspan="5" class="soft">Nothing matches these filters yet.</td></tr>`;
+}
+async function actReload() {
+  if (MOCK) { $("act-note").textContent = "Not available with mock data."; return; }
+  try {
+    const d = await actFetch({ limit: 200 });
+    act.rows = d.rows;
+    act.newest = d.rows.length ? d.rows[0].id : act.newest;
+    act.oldest = d.rows.length ? d.rows[d.rows.length - 1].id : null;
+    $("act-older").hidden = !d.next_before_id;
+    $("act-note").textContent = `newest first · kept ${d.keep_days} days · times in Cameroon time`;
+    actDraw();
+  } catch (e) {
+    act.rows = []; actDraw();
+    $("act-note").textContent = e.code === 403 ? "Enter the admin password (top right) to see the log." : `Could not load the log (${e.message}).`;
+  }
+}
+async function actPoll() {
+  if (!act.live || act.busy || MOCK || !tokenInput.value.trim() && act.newest == null) return;
+  act.busy = true;
+  try {
+    if (act.newest == null) { await actReload(); return; }
+    const d = await actFetch({ after_id: act.newest, limit: 500 });
+    if (d.rows.length) {
+      act.rows = d.rows.concat(act.rows).slice(0, 1000);
+      act.newest = d.rows[0].id;
+      actDraw();
+    }
+  } catch (_) { /* keep what is shown; the note says why on the next reload */ } finally { act.busy = false; }
+}
+$("act-kinds").innerHTML = ACT_KINDS.map(([k, label]) => `<button type="button" data-kind="${k}" class="${k ? "" : "on"}">${label}</button>`).join("");
+$("act-kinds").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-kind]"); if (!b) return;
+  act.kind = b.dataset.kind;
+  $("act-kinds").querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+  act.newest = null; actReload();
+});
+for (const id of ["act-level", "act-meter"]) $(id).addEventListener("change", () => { act.newest = null; actReload(); });
+let actSearch = null;
+$("act-q").addEventListener("input", () => { clearTimeout(actSearch); actSearch = setTimeout(() => { act.newest = null; actReload(); }, 350); });
+$("act-live").addEventListener("click", () => {
+  act.live = !act.live;
+  $("act-live").setAttribute("aria-pressed", String(act.live));
+  $("act-live").textContent = act.live ? "● Live" : "❚❚ Paused";
+  if (act.live) actPoll();
+});
+$("act-older").addEventListener("click", async () => {
+  try {
+    const d = await actFetch({ before_id: act.oldest, limit: 200 });
+    act.rows = act.rows.concat(d.rows);
+    act.oldest = d.rows.length ? d.rows[d.rows.length - 1].id : act.oldest;
+    $("act-older").hidden = !d.next_before_id;
+    actDraw();
+  } catch (_) { /* keep */ }
+});
+$("act-csv").addEventListener("click", async () => {
+  try {
+    const r = await fetch(`/api/v1/admin/activity.csv?${actParams()}`, { headers: actHeaders() });
+    if (!r.ok) throw new Error(r.status === 403 ? "enter the admin password first" : `HTTP ${r.status}`);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(await r.blob());
+    a.download = "fair_play_activity.csv";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  } catch (e) { log(`CSV export failed: ${esc(e.message)}`, "err"); }
+});
+tokenInput.addEventListener("change", () => { act.newest = null; actReload(); });
+get("venues").then((vs) => {
+  const ids = vs.filter((v) => v.source !== "mock").flatMap((v) => (v.meters || []).map((m) => m.meter_id)).sort();
+  $("act-meter").insertAdjacentHTML("beforeend", ids.map((m) => `<option value="${esc(m)}">${esc(m)}</option>`).join(""));
+}).catch(() => {});
+actReload();
+setInterval(actPoll, 3000);

@@ -42,3 +42,5 @@ def notify(conn: psycopg.Connection, event: str, data: dict[str, Any]) -> None:
     """Publish a live-feed event (delivered when the transaction commits)."""
     payload = json.dumps({"event": event, "data": data}, separators=(",", ":"), default=str)
     conn.execute("SELECT pg_notify(%s, %s)", (EVENTS_CHANNEL, payload))
+    from server import activity   # D-024: the same event, kept for the admins' activity log
+    activity.from_event(conn, event, data)

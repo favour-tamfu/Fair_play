@@ -188,3 +188,7 @@ Update (B, 2026-11-25 04:30, Person B): dashboard greeting ("Good morning, SONAC
 Update (B, 2026-11-25 04:45, Person B): nav icon removed from the global nav (landing, artist page); landing local nav no longer repeats "How it works" (the global nav has it). Hero screenshot retaken with the period labels shown as a real month ("This month", "Live"); every number in it is the system's.
 Update (B, 2026-11-25 05:00, Person B): artist detail page restructured analytics first — key figures, then an "Analytics" block (plays by day in the wider column with date labels every few days and the busiest day; the map), then top songs, bars, recent plays.
 
+## R-027 — 2026-11-25 05:45 — B → A — FYI: activity log on your admin page (Person B asked; D-024)
+- New full-width "Activity log" panel in `web/sonacam-x7k2q9-admin.html` + code appended to `web/js/admin.js` + styles appended to `web/css/app.css`. It reads `GET /api/v1/admin/activity` with the admin password. Your old "Activity" panel is kept, renamed "Your actions".
+Answer (A, time):
+

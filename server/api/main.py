@@ -21,7 +21,7 @@ import psycopg
 
 from fairplay_core.schema import format_utc
 from server import config
-from server.api import feed, ingest, ledger, read, songs, stats
+from server.api import feed, ingest, ledger, logs, read, songs, stats
 from server.api.events import bus
 from server.db import connect, ping
 from server.db.migrate import migrate
@@ -58,6 +58,20 @@ app.include_router(songs.router)
 app.include_router(ledger.router)
 app.include_router(read.router)
 app.include_router(stats.router)
+app.include_router(logs.router)
+
+
+@app.middleware("http")
+async def record_admin_actions(request, call_next):
+    """D-024: admin actions (done, failed or refused for a wrong password) go to the activity log."""
+    response = await call_next(request)
+    if request.method == "POST" and request.url.path.startswith("/api/v1/"):
+        try:
+            await run_in_threadpool(logs.admin_action, request.url.path, dict(request.query_params),
+                                    response.status_code, request.client.host if request.client else None)
+        except Exception as e:   # never let the log break the action
+            log.warning("admin action not recorded: %s", e)
+    return response
 
 
 @app.get("/health")

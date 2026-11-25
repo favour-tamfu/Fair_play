@@ -8,7 +8,7 @@ from fastapi import APIRouter, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
-from server import config, ingest
+from server import activity, config, ingest
 from server.api.admin import HEADER, register_allowed_without_token, token_ok
 from server.db import connect
 from server.registry import upsert_meter
@@ -23,9 +23,21 @@ async def _json_body(request: Request) -> Any:
         return None
 
 
-def _with_conn(fn: Callable, body: Any) -> ingest.Result:
+ENDPOINT = {"ingest_batch": "report", "ingest_bulk": "report", "ingest_heartbeat": "heartbeat",
+            "ingest_calibration": "calibration", "<lambda>": "meter registration"}   # register is wrapped in a lambda
+
+
+def _with_conn(fn: Callable, body: Any, *extra) -> ingest.Result:
     with connect(autocommit=True, retries=3) as conn:   # each check/store runs in its own explicit transaction
-        return fn(conn, body)
+        r = fn(conn, body, *extra)
+        what = ENDPOINT.get(getattr(fn, "__name__", ""), "device request")
+        if r.code >= 400:                                 # D-024: refused requests go to the admins' activity log
+            activity.rejected(conn, what, body, r.code, r.body.get("error", "error"), r.body.get("detail"))
+        elif fn is ingest.ingest_bulk:
+            for item, res in zip(body.get("batches", []) if isinstance(body, dict) else [], r.body.get("results", [])):
+                if res.get("status") == "error":
+                    activity.rejected(conn, what, item, 400, res.get("error", "error"))
+        return r
 
 
 async def _handle(fn: Callable, request: Request) -> JSONResponse:

@@ -139,3 +139,8 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - The public landing page is SONACAM's pitch page: it explains what Fair Play gives SONACAM; artists are one card and a link, not the main audience. Artist-facing content stays on artist.html and portal.html.
 - Numbers come from the API for both periods (switch), never typed in. c-1.4 (venues `source`, `plays` per period) added for the map.
 
+## D-024 — 2026-11-25 05:45 — B (Person B: "admins do not have access to live organised logs") — Activity log for admins
+- New table `activity_log` (migration 009): one readable line per thing the system did. Written automatically for every live-feed event (meter report, song heard, play logged, flag, play-log check, shares recomputed) plus meters going online/offline (scheduler), refused device requests (unknown meter, bad signature, sequence conflict, invalid), admin actions done / failed / refused for a wrong password (middleware), and songs becoming ready or failing to fingerprint. Kept 14 days (pruned hourly).
+- `GET /api/v1/admin/activity` (filters kind, level, meter_id, venue_id, q, after_id for live polling, before_id for paging) and `/activity.csv`, both behind the admin password. Not on the public SSE feed (refused attempts and IPs are admin-only).
+- Admin page: "Activity log" panel — type buttons, level and meter filters, search, Live/Pause (polls every 3 s), Load older, Export CSV. The old "Activity" panel is now "Your actions" (this tab only).
+

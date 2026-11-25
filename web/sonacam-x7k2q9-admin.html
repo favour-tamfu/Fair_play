@@ -55,6 +55,28 @@
     </div>
   </section>
 
+  <!-- Activity log (D-024): everything the system did, organised and live; needs the admin password -->
+  <section class="panel span3 actlog">
+    <div class="head"><h2>Activity log</h2><span class="note" id="act-note">Enter the admin password (top right) to see the log.</span></div>
+    <div class="act-tools">
+      <div class="filters" id="act-kinds" role="group" aria-label="Type"></div>
+      <div class="act-row">
+        <select id="act-level" aria-label="Level"><option value="">All levels</option><option value="warn">Warnings and errors</option><option value="error">Errors only</option></select>
+        <select id="act-meter" aria-label="Meter"><option value="">All meters</option></select>
+        <input id="act-q" type="search" placeholder="Search: song, bar, meter, text" aria-label="Search the log">
+        <button type="button" id="act-live" aria-pressed="true">● Live</button>
+        <button type="button" id="act-csv">Export CSV</button>
+      </div>
+    </div>
+    <div class="scroll act-scroll">
+      <table class="act">
+        <thead><tr><th>time</th><th>type</th><th>what happened</th><th>meter</th><th>by</th></tr></thead>
+        <tbody id="act-rows"></tbody>
+      </table>
+      <div class="row act-more"><button type="button" id="act-older" hidden>Load older</button></div>
+    </div>
+  </section>
+
   <!-- Catalogue -->
   <section class="panel span2">
     <div class="head"><h2>Catalogue</h2><span class="note" id="songs-note"></span></div>
@@ -86,7 +108,7 @@
 
   <!-- Activity -->
   <section class="panel span2">
-    <div class="head"><h2>Activity</h2><span class="note">this session</span></div>
+    <div class="head"><h2>Your actions</h2><span class="note">this tab only; the full record is in the activity log</span></div>
     <div class="scroll"><ol class="log" id="log"></ol></div>
   </section>
 </main>
