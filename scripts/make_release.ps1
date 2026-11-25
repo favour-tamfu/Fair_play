@@ -1,4 +1,4 @@
-# Fair Play — build the release folder: every part of the system, ready to hand over.
+# Fair Play - build the release folder: every part of the system, ready to hand over.
 #
 #   powershell -ExecutionPolicy Bypass -File .\scripts\make_release.ps1 -Version v1.0 [-SkipMeter]
 #

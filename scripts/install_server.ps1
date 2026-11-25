@@ -1,4 +1,4 @@
-# Fair Play — install and start the SONACAM server on one Windows computer, in one command.
+# Fair Play - install and start the SONACAM server on one Windows computer, in one command.
 #
 #   powershell -ExecutionPolicy Bypass -File .\scripts\install_server.ps1 [-SongPackage C:\path\to\package] [-Port 8000]
 #
@@ -21,7 +21,7 @@ Set-Location $root
 function Say($text, $colour = 'Gray') { Write-Host $text -ForegroundColor $colour }
 function Fail($text) { Write-Host "STOPPED: $text" -ForegroundColor Red; exit 1 }
 
-Say "Fair Play SONACAM server — install / start" Cyan
+Say "Fair Play SONACAM server - install / start" Cyan
 
 # 1. Docker
 if (-not (Get-Command docker -ErrorAction SilentlyContinue)) { Fail "Docker is not installed. Install Docker Desktop (https://www.docker.com/products/docker-desktop/) and run this again." }
