@@ -5,10 +5,11 @@ from __future__ import annotations
 import time
 from datetime import datetime, timezone
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.concurrency import run_in_threadpool
 
 from fairplay_core.schema import format_utc
+from server.api.admin import require_admin
 from server.db import connect
 from server.ledger import audit
 from server.ledger.anchor import anchor_hour
@@ -53,6 +54,6 @@ def _anchor_now() -> dict:
             "via": row["via"], "tx_ref": row["tx_ref"]}
 
 
-@router.post("/anchor")
+@router.post("/anchor", dependencies=[Depends(require_admin)])
 async def ledger_anchor_now():
     return await run_in_threadpool(_anchor_now)

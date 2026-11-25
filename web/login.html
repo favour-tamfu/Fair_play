@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Sign in · Fair Play</title>
+<link rel="stylesheet" href="css/landing.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="page login-page">
+<nav class="globalnav" aria-label="Site">
+  <div class="gn-row">
+    <a href="index.html">Overview</a>
+    <a href="index.html#how">How it works</a>
+    <a href="login.html" aria-current="page">Sign in</a>
+  </div>
+</nav>
+
+<main class="login-wrap">
+  <form class="login-card" id="login" autocomplete="on">
+    <p class="eyebrow">Fair Play</p>
+    <h1>Sign in.</h1>
+    <p class="lede">Enter your name and password to open your artist portal.</p>
+    <label>Name <input id="u" name="username" autocomplete="username" required></label>
+    <label>Password <input id="p" name="password" type="password" autocomplete="current-password" required></label>
+    <button type="submit" class="pill big" id="go">Sign in</button>
+    <p class="login-msg" id="msg" role="alert"></p>
+    <p class="fineprint">Use your artist name as registered with SONACAM. Forgotten your password? Contact SONACAM.</p>
+  </form>
+</main>
+
+<footer class="foot"><div class="wrap"><p>Fair Play is a prototype built at the CIMFEST Hackathon 2026.</p></div></footer>
+<script type="module" src="js/login.js"></script>
+</body>
+</html>

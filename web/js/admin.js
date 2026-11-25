@@ -1,6 +1,8 @@
 // SONACAM admin page (A-T17): meters, recalculate, anchor, demo reset (in-page confirm, R-016),
-// register a meter key, approve suspected duplicates, review flags. No login in this prototype.
+// register a meter key, approve suspected duplicates, review flags. Admin actions send the admin password
+// (header X-Admin-Token, D-020), kept in sessionStorage so it is forgotten when the tab closes.
 import { MOCK, get, feed, fmtTime, fmtDateTime } from "./api.js";
+import { requireRole, showUser } from "./session.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -15,14 +17,21 @@ function log(text, kind = "") {
   $("log").prepend(li);
 }
 
+// ---------- admin password (D-020) ----------
+// D-028: the SONACAM session (cookie) authorises every admin call; no password box on the page.
+const USER = await requireRole("sonacam");
+showUser(USER, $("who"));
+
 // POST helper. In mock mode nothing is sent: the page says what it would have done.
 async function post(url, body) {
   if (MOCK) return { mock: true };
-  const opts = { method: "POST" };
-  if (body !== undefined) { opts.headers = { "Content-Type": "application/json" }; opts.body = JSON.stringify(body); }
+  const headers = {};
+  const opts = { method: "POST", headers };
+  if (body !== undefined) { headers["Content-Type"] = "application/json"; opts.body = JSON.stringify(body); }
   const r = await fetch(url, opts);
   let data = null;
   try { data = await r.json(); } catch (_) { /* empty body */ }
+  if (r.status === 403) { location.replace("login.html?next=sonacam-x7k2q9-admin.html"); throw new Error("signed out"); }
   if (!r.ok) throw new Error((data && (data.detail || data.error)) ? `${data.error || ""} ${typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail || "")}`.trim() : `HTTP ${r.status}`);
   return data;
 }
@@ -35,21 +44,44 @@ function busy(btn, on) { btn.disabled = on; btn.classList.toggle("busy", on); }
 
 // ---------- meters ----------
 async function loadMeters() {
+  // D-029: SONACAM's meter list (key fingerprint, retired); the mock month's simulated bars only when asked for
+  const showMock = $("show-mock") && $("show-mock").checked;
   try {
-    const venues = await get("venues");
-    const rows = venues.flatMap((v) => (v.meters || []).map((m) => ({ ...m, venue: v })))
-      .sort((a, b) => (b.online - a.online) || a.meter_id.localeCompare(b.meter_id));
-    const online = rows.filter((m) => m.online).length;
-    $("meters").innerHTML = rows.map((m) => `<tr>
-      <td><b>${esc(m.meter_id)}</b></td><td>${esc(m.venue.name)}</td><td>${esc(m.venue.city)}</td>
-      <td><span class="pill ${m.online ? "ok" : ""}">${m.online ? "online" : "offline"}</span></td>
-      <td>${m.last_seen ? fmtDateTime(m.last_seen) : "never"}</td>
-      <td class="n${m.queued ? " amber" : ""}">${fmtInt(m.queued)}</td>
-      <td class="n">${m.catch_rate == null ? "–" : Math.round(100 * m.catch_rate) + " %"}</td></tr>`).join("")
-      || `<tr><td colspan="7" class="note">No meters registered.</td></tr>`;
-    $("meters-note").textContent = `${online} of ${rows.length} online · ${venues.length} bars`;
+    const rows = MOCK ? [] : await getJson(`/api/v1/admin/meters${showMock ? "?mock=1" : ""}`);
+    rows.sort((x, y) => (!!x.retired_at - !!y.retired_at) || (y.online - x.online) || x.meter_id.localeCompare(y.meter_id));
+    const real = rows.filter((m) => m.source !== "mock");
+    $("meters").innerHTML = rows.map((m) => {
+      const status = m.retired_at ? ["retired", "bad"] : m.source === "mock" ? ["mock month", ""] : m.online ? ["online", "ok"] : ["offline", ""];
+      const canRetire = !m.retired_at && m.source !== "mock";
+      return `<tr class="${m.retired_at ? "retired" : ""}">
+      <td><b>${esc(m.meter_id)}</b></td><td>${esc(String(m.bar || "").replace(/^mock bar\s+/i, "Bar "))}</td><td>${esc(m.city || "")}</td>
+      <td><span class="pill ${status[1]}">${status[0]}</span></td>
+      <td>${m.retired_at ? `retired ${fmtDateTime(m.retired_at)}` : m.last_seen ? fmtDateTime(m.last_seen) : "never"}</td>
+      <td class="mono" title="SHA-256 of the meter's public key, first 16 characters">${esc(m.key_fingerprint)}</td>
+      <td class="n">${m.catch_rate == null ? "–" : Math.round(100 * m.catch_rate) + " %"}</td>
+      <td>${canRetire ? `<button class="small" data-retire="${esc(m.meter_id)}">Retire</button>` : ""}</td></tr>`;
+    }).join("") || `<tr><td colspan="8" class="note">No meters registered.</td></tr>`;
+    const online = real.filter((m) => m.online).length, retired = real.filter((m) => m.retired_at).length;
+    $("meters-note").textContent = `${online} of ${real.length - retired} meters online` + (retired ? ` · ${retired} retired` : "")
+      + (showMock ? ` · ${rows.length - real.length} mock-month bars` : "");
   } catch (e) { $("meters-note").textContent = `could not load: ${e.message}`; }
 }
+// Retire: a second click within 5 s confirms; the meter's reports are refused from then on (re-register to restore).
+$("meters").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-retire]");
+  if (!b) return;
+  if (!b.classList.contains("confirm")) {
+    b.classList.add("confirm"); b.textContent = "Click again to retire";
+    setTimeout(() => { b.classList.remove("confirm"); b.textContent = "Retire"; }, 5000);
+    return;
+  }
+  b.disabled = true;
+  try {
+    await post(`/api/v1/admin/meters/${encodeURIComponent(b.dataset.retire)}/retire`);
+    log(`Meter <b>${esc(b.dataset.retire)}</b> retired: its reports are refused from now on`, "warn");
+  } catch (err) { log(`Could not retire ${esc(b.dataset.retire)}: ${esc(err.message)}`, "err"); }
+  loadMeters();
+});
 
 // ---------- ledger ----------
 async function loadLedger() {
@@ -137,6 +169,8 @@ $("btn-register").addEventListener("click", async (ev) => {
 let songs = [];
 let songFilter = "all";
 const STATUS_ORDER = ["duplicate_suspected", "failed", "processing", "uploaded", "ready"];
+const STATUS_LABEL = { all: "all", duplicate_suspected: "waiting for review", failed: "could not be read", processing: "processing",
+  uploaded: "just uploaded", ready: "ready" };
 async function loadSongs() {
   try {
     songs = await getJson(MOCK ? FIX + "songs.json" : "/api/v1/songs");
@@ -147,12 +181,12 @@ function renderSongs() {
   const counts = {};
   for (const s of songs) counts[s.status] = (counts[s.status] || 0) + 1;
   const keys = ["all", ...STATUS_ORDER.filter((k) => counts[k])];
-  $("song-filters").innerHTML = keys.map((k) => `<button data-f="${k}" class="${k === songFilter ? "on" : ""}">${k.replace("_", " ")} ${k === "all" ? songs.length : counts[k]}</button>`).join("");
+  $("song-filters").innerHTML = keys.map((k) => `<button data-f="${k}" class="${k === songFilter ? "on" : ""}">${STATUS_LABEL[k] || k} ${k === "all" ? songs.length : counts[k]}</button>`).join("");
   const list = songs.filter((s) => songFilter === "all" || s.status === songFilter)
-    .sort((a, b) => STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status) || a.song_id.localeCompare(b.song_id));
+    .sort((a, b) => STATUS_ORDER.indexOf(a.status) - STATUS_ORDER.indexOf(b.status) || String(b.uploaded_at).localeCompare(String(a.uploaded_at)) || b.song_id.localeCompare(a.song_id));
   $("songs").innerHTML = list.map((s) => `<tr>
     <td class="mono">${esc(s.song_id)}</td><td>${esc(s.title)}</td><td>${esc(s.artist_name)}</td>
-    <td><span class="pill st-${esc(s.status)}">${esc(s.status.replace("_", " "))}</span>${s.duplicate_of ? ` <span class="note">of ${esc(s.duplicate_of)}</span>` : ""}</td>
+    <td><span class="pill st-${esc(s.status)}">${esc(STATUS_LABEL[s.status] || s.status)}</span>${s.duplicate_of ? ` <span class="note">of ${esc(s.duplicate_of)}</span>` : ""}</td>
     <td class="n">${fmtInt(s.n_hashes)}</td><td>${s.uploaded_at ? fmtDateTime(s.uploaded_at) : ""}</td>
     <td>${s.status === "duplicate_suspected" ? `<button class="small" data-approve="${esc(s.song_id)}">Not a duplicate: index it</button>` : ""}</td></tr>`).join("")
     || `<tr><td colspan="7" class="note">No songs.</td></tr>`;
@@ -185,9 +219,19 @@ async function loadFlags() {
   try {
     const period = $("flags-period").value;
     const flags = MOCK ? await getJson(FIX + "flags.json") : await getJson(`/api/v1/flags?period=${period}`);
-    $("flags").innerHTML = flags.map((f) => `<li><span class="chip">${esc(f.type)}</span> <b>${esc(f.song_id || "")}</b>
-      ${f.venue_id ? `<span class="note">${esc(f.venue_id)}</span>` : ""}<div class="note">${esc(f.detail)} · ${fmtDateTime(f.created_at)}</div></li>`).join("")
-      || `<li class="note">No flags for this period.</li>`;
+    // group repeats of the same flag (same type, song, bar and text without numbers), newest first
+    const groups = new Map();
+    const showReviewed = $("show-reviewed") && $("show-reviewed").checked;
+    for (const f of flags.filter((x) => x.type !== "cooldown" && (showReviewed || !x.reviewed_at))) {
+      const key = [f.type, f.song_id, f.venue_id, String(f.detail || "").replace(/[0-9]+/g, "#")].join("|");
+      const g = groups.get(key);
+      if (g) { g.n += 1; g.ids.push(f.flag_id); if (f.created_at > g.f.created_at) g.f = f; } else groups.set(key, { f, n: 1, ids: [f.flag_id] });
+    }
+    $("flags").innerHTML = [...groups.values()].sort((a, b) => String(b.f.created_at).localeCompare(String(a.f.created_at)))
+      .map(({ f, n, ids }) => `<li class="${f.reviewed_at ? "reviewed" : ""}"><span class="chip">${esc(f.type)}</span>${n > 1 ? ` <span class="chip">×${n}</span>` : ""} <b>${esc(f.song_id || "")}</b>
+      <button class="small flag-btn" data-review="${ids.join(",")}" data-to="${f.reviewed_at ? "0" : "1"}">${f.reviewed_at ? "Reopen" : "Mark reviewed"}</button>
+      ${f.venue_id ? `<span class="note">${esc(f.venue_id)}</span>` : ""}<div class="note">${esc(f.detail)} · ${n > 1 ? "latest " : ""}${fmtDateTime(f.created_at)}</div></li>`).join("")
+      || `<li class="note">${showReviewed ? "No flags for this period." : "Nothing left to review for this period."}</li>`;
   } catch (e) { $("flags").innerHTML = `<li class="note">could not load: ${esc(e.message)}</li>`; }
 }
 $("flags-period").addEventListener("change", loadFlags);
@@ -207,3 +251,127 @@ $("mode-note").textContent = MOCK ? " · mock data (?mock=1): actions are not se
 loadMeters(); loadLedger(); loadSongs(); loadFlags();
 setInterval(() => { loadMeters(); if (songs.some((s) => s.status === "processing" || s.status === "uploaded")) loadSongs(); }, 15000);
 log(MOCK ? "Admin page opened with mock data: actions are not sent" : "Admin page opened", "mock");
+
+// ---------- activity log (D-024): GET /api/v1/admin/activity, polled every 3 s while "Live" is on ----------
+const ACT_KINDS = [["", "All"], ["play", "Plays"], ["heard", "Songs heard"], ["report", "Meter reports"], ["meter", "Meters on/off"],
+  ["flag", "Flags"], ["rejected", "Refused requests"], ["admin", "Admin actions"], ["catalogue", "Catalogue"], ["ledger", "Play log"]];
+const ACT_LABEL = Object.fromEntries(ACT_KINDS.filter(([k]) => k));
+const act = { kind: "", rows: [], newest: null, oldest: null, live: true, timer: null, busy: false };
+const actHeaders = () => ({});
+function actParams(extra = {}) {
+  const p = new URLSearchParams();
+  if (act.kind) p.set("kind", act.kind);
+  if ($("act-level").value) p.set("level", $("act-level").value);
+  if ($("act-meter").value) p.set("meter_id", $("act-meter").value);
+  if ($("act-q").value.trim()) p.set("q", $("act-q").value.trim());
+  for (const [k, v] of Object.entries(extra)) if (v != null) p.set(k, v);
+  return p;
+}
+async function actFetch(extra) {
+  const r = await fetch(`/api/v1/admin/activity?${actParams(extra)}`, { headers: actHeaders(), cache: "no-store" });
+  if (r.status === 403) throw Object.assign(new Error("password"), { code: 403 });
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+function actRow(r) {
+  return `<tr class="lv-${esc(r.level)}"><td class="t">${fmtDateTime(r.at)}</td><td><span class="kind k-${esc(r.kind)}">${esc(ACT_LABEL[r.kind] || r.kind)}</span></td>
+    <td>${esc(r.message)}</td><td>${esc(r.meter_id || "")}</td><td class="soft">${esc(r.actor || "")}</td></tr>`;
+}
+function actDraw() {
+  $("act-rows").innerHTML = act.rows.map(actRow).join("") || `<tr><td colspan="5" class="soft">Nothing matches these filters yet.</td></tr>`;
+}
+async function actReload() {
+  if (MOCK) { $("act-note").textContent = "Not available with mock data."; return; }
+  try {
+    const d = await actFetch({ limit: 200 });
+    act.rows = d.rows;
+    act.newest = d.rows.length ? d.rows[0].id : act.newest;
+    act.oldest = d.rows.length ? d.rows[d.rows.length - 1].id : null;
+    $("act-older").hidden = !d.next_before_id;
+    $("act-note").textContent = `newest first · kept ${d.keep_days} days · times in Cameroon time`;
+    actDraw();
+  } catch (e) {
+    act.rows = []; actDraw();
+    $("act-note").textContent = `Could not load the log (${e.message}).`;
+  }
+}
+async function actPoll() {
+  if (!act.live || act.busy || MOCK) return;
+  act.busy = true;
+  try {
+    if (act.newest == null) { await actReload(); return; }
+    const d = await actFetch({ after_id: act.newest, limit: 500 });
+    if (d.rows.length) {
+      act.rows = d.rows.concat(act.rows).slice(0, 1000);
+      act.newest = d.rows[0].id;
+      actDraw();
+    }
+  } catch (_) { /* keep what is shown; the note says why on the next reload */ } finally { act.busy = false; }
+}
+$("act-kinds").innerHTML = ACT_KINDS.map(([k, label]) => `<button type="button" data-kind="${k}" class="${k ? "" : "on"}">${label}</button>`).join("");
+$("act-kinds").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-kind]"); if (!b) return;
+  act.kind = b.dataset.kind;
+  $("act-kinds").querySelectorAll("button").forEach((x) => x.classList.toggle("on", x === b));
+  act.newest = null; actReload();
+});
+for (const id of ["act-level", "act-meter"]) $(id).addEventListener("change", () => { act.newest = null; actReload(); });
+let actSearch = null;
+$("act-q").addEventListener("input", () => { clearTimeout(actSearch); actSearch = setTimeout(() => { act.newest = null; actReload(); }, 350); });
+$("act-live").addEventListener("click", () => {
+  act.live = !act.live;
+  $("act-live").setAttribute("aria-pressed", String(act.live));
+  $("act-live").textContent = act.live ? "● Live" : "❚❚ Paused";
+  if (act.live) actPoll();
+});
+$("act-older").addEventListener("click", async () => {
+  try {
+    const d = await actFetch({ before_id: act.oldest, limit: 200 });
+    act.rows = act.rows.concat(d.rows);
+    act.oldest = d.rows.length ? d.rows[d.rows.length - 1].id : act.oldest;
+    $("act-older").hidden = !d.next_before_id;
+    actDraw();
+  } catch (_) { /* keep */ }
+});
+$("act-csv").addEventListener("click", async () => {
+  try {
+    const r = await fetch(`/api/v1/admin/activity.csv?${actParams()}`, { headers: actHeaders() });
+    if (!r.ok) throw new Error(r.status === 403 ? "enter the admin password first" : `HTTP ${r.status}`);
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(await r.blob());
+    a.download = "fair_play_activity.csv";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  } catch (e) { log(`CSV export failed: ${esc(e.message)}`, "err"); }
+});
+get("venues").then((vs) => {
+  const ids = vs.filter((v) => v.source !== "mock").flatMap((v) => (v.meters || []).map((m) => m.meter_id)).sort();
+  $("act-meter").insertAdjacentHTML("beforeend", ids.map((m) => `<option value="${esc(m)}">${esc(m)}</option>`).join(""));
+}).catch(() => {});
+actReload();
+setInterval(actPoll, 3000);
+
+// ---------- shared sidebar (D-028): section links, breadcrumb, mock-bar toggle ----------
+const SECTION = { meters: "Meters", activity: "Activity log", flags: "Review flags", catalogue: "Catalogue", actions: "Actions" };
+function markSection(id) {
+  const key = SECTION[id] ? id : id === "meters-panel" || id === "flags-panel" ? id.replace("-panel", "") : "meters";
+  $("crumb").textContent = SECTION[key];
+  document.querySelectorAll("[data-op]").forEach((a) => a.classList.toggle("on", a.dataset.op === key));
+}
+document.querySelectorAll("[data-op]").forEach((a) => a.addEventListener("click", () => markSection(a.dataset.op)));
+markSection(location.hash.slice(1));
+if (location.hash) { const el = document.getElementById(location.hash.slice(1)); if (el) setTimeout(() => el.scrollIntoView(), 300); }
+if ($("show-mock")) $("show-mock").addEventListener("change", loadMeters);
+
+$("flags").addEventListener("click", async (e) => {
+  const b = e.target.closest("button[data-review]");
+  if (!b) return;
+  b.disabled = true;
+  const to = b.dataset.to === "1";
+  try {
+    for (const id of b.dataset.review.split(",")) await post(`/api/v1/flags/${id}/review`, { reviewed: to });
+    log(`${b.dataset.review.split(",").length} flag(s) marked ${to ? "reviewed" : "not reviewed"}`, "ok");
+  } catch (err) { log(`Could not update the flag: ${esc(err.message)}`, "err"); }
+  loadFlags();
+});
+if ($("show-reviewed")) $("show-reviewed").addEventListener("change", loadFlags);

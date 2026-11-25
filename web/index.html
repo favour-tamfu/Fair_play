@@ -13,11 +13,9 @@
 
 <nav class="globalnav" aria-label="Site">
   <div class="gn-row">
-    <a class="gn-mark" href="index.html" aria-label="Fair Play home"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
     <a href="index.html" aria-current="page">Overview</a>
-    <a href="artist.html">Artists</a>
-    <a href="portal.html">Artist portal</a>
     <a href="#how">How it works</a>
+    <a href="login.html">Sign in</a>
   </div>
 </nav>
 
@@ -25,11 +23,10 @@
   <div class="ln-row">
     <a class="ln-title" href="#top">Fair Play</a>
     <div class="ln-links">
-      <a href="#highlights">Music</a>
-      <a href="#numbers">Numbers</a>
-      <a href="artist.html">For artists</a>
+      <a href="#meter">The meter</a>
+      <a href="#live">Live</a>
       <a href="#trust">Trust</a>
-      <a class="pill" href="artist.html">Find your plays</a>
+      <a class="pill" href="#numbers">See the count</a>
     </div>
   </div>
 </nav>
@@ -41,9 +38,9 @@
     <div class="hero-text">
       <p class="hero-name">Fair Play</p>
       <h1>Every play counts.</h1>
-      <p class="hero-sub">Bars already pay a levy on the drinks they buy.<br>Now it is shared by what they really play.</p>
+      <p class="hero-sub">SONACAM already collects a levy from every bar.<br>Fair Play shows which songs those bars really play,<br>so the money goes to the artists who earned it.</p>
       <div class="hero-cta">
-        <a class="pill big" href="artist.html">Find your plays</a>
+        <a class="pill big" href="#numbers">See the count</a>
         <a class="more on-dark" href="#how">See how it works</a>
       </div>
     </div>
@@ -53,7 +50,7 @@
           <div class="display-edge">
             <div class="bezel">
               <div class="display-camera"></div>
-              <div class="display-frame"><img src="assets/img/shot-dashboard.webp" alt="The Fair Play dashboard: plays by artist, key figures and the sidebar menu" width="1600" height="1000"></div>
+              <div class="display-frame"><img src="assets/img/shot-dashboard.png" alt="The SONACAM dashboard: a month of plays counted and heard, artists, meters, songs, and plays by artist" width="1600" height="1000"></div>
               <div class="below-display"></div>
             </div>
           </div>
@@ -73,13 +70,14 @@
     <!-- Start: four dark cards -->
     <section class="am-start">
       <div class="wrap">
-        <div class="am-start-head"><h2>Start with Fair Play.</h2><a class="more on-dark" href="#how">How it works</a></div>
+        <div class="am-start-head"><h2>What Fair Play gives SONACAM.</h2><a class="more on-dark" href="#how">How it works</a></div>
       </div>
-      <div class="am-cards" tabindex="0" aria-label="Who Fair Play is for">
-        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="3" fill="currentColor"/><path d="M2 15c0-3.3 2.7-5 6-5s6 1.7 6 5" fill="currentColor"/></svg>Artists</p><h3>See your plays</h3><p>Search your name and see every bar that played you.</p><a class="pill white sm" href="artist.html">Find your plays</a></article>
-        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="10" rx="2.5" fill="currentColor"/></svg>Artist portal</p><h3>Declare a song</h3><p>Sign in to your own space and add a song so the meters can recognise it.</p><a class="pill white sm" href="portal.html">Open your portal</a></article>
-        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 14V6l5-4 5 4v8z" fill="currentColor"/></svg>Bars</p><h3>Nothing changes</h3><p>A small meter beside the speaker. No extra fee and no sound kept.</p><a class="pill white sm" href="#how">See the meter</a></article>
-        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1l6 3v4c0 3.5-2.6 6.2-6 7-3.4-.8-6-3.5-6-7V4z" fill="currentColor"/></svg>Rights society</p><h3>Shares you can check</h3><p>Every play is chained to the last and published each hour.</p><a class="pill white sm" href="#trust">See the play log</a></article>
+      <div class="am-cards" tabindex="0" aria-label="What Fair Play gives SONACAM">
+        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 14V6l5-4 5 4v8z" fill="currentColor"/></svg>Usage data</p><h3>Every bar, every song</h3><p>A sealed meter in each licensed bar reports which songs play, hour by hour. Bars pay nothing extra.</p><a class="pill white sm" href="#live">See the live count</a></article>
+        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 13h3V8H2zM6.5 13h3V3h-3zM11 13h3V6h-3z" fill="currentColor"/></svg>Fair shares</p><h3>Shares from real plays</h3><p>Each artist's share comes from counted plays, not from a flat split or a guess.</p><a class="pill white sm" href="#compare">See the difference</a></article>
+        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1l6 3v4c0 3.5-2.6 6.2-6 7-3.4-.8-6-3.5-6-7V4z" fill="currentColor"/></svg>Trust</p><h3>A log nobody can rewrite</h3><p>Every play is chained to the one before it and anchored every hour.</p><a class="pill white sm" href="#trust">See the play log</a></article>
+        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4.5v4l2.5 1.5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>Review</p><h3>Gaming is flagged</h3><p>A song on repeat, an empty room at 4 am or a moved meter is flagged for SONACAM to review.</p><a class="pill white sm" href="#numbers">See this month's flags</a></article>
+        <article><p class="am-eye"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="5" r="3" fill="currentColor"/><path d="M2 15c0-3.3 2.7-5 6-5s6 1.7 6 5" fill="currentColor"/></svg>Artists</p><h3>Artists upload their songs</h3><p>Artists sign in to upload their songs and follow their own plays and share. Who played what, where, stays with SONACAM.</p><a class="pill white sm" href="login.html">Sign in</a></article>
       </div>
       <div class="wrap paddlenav" aria-label="Scroll the cards">
         <button type="button" class="paddle" data-dir="-1" aria-label="Previous"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M20.5 11.5L14 18l6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -87,26 +85,48 @@
       </div>
     </section>
 
+  <!-- The meter box (3D model): video + three views -->
+  <section class="meter-box" id="meter">
+    <div class="wrap">
+      <h2 class="center">Meet the meter.</h2>
+      <p class="intro center">A small sealed box on the bar wall. It listens for music, turns ten seconds of sound into a fingerprint, seals it and sends it to SONACAM. It keeps no sound, and speech cannot be rebuilt from what it sends.</p>
+      <figure class="mb-video">
+        <video src="assets/meter/meter-assembly.mp4" poster="assets/meter/meter-assembly-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="The meter box assembling and coming apart"></video>
+        <figcaption>3D model of the meter: case, circuit board and lid.</figcaption>
+      </figure>
+      <div class="mb-views">
+        <figure><img src="assets/meter/01-closed-hero.jpg" alt="The meter box closed: white case, four screws, status light and label" loading="lazy"><figcaption><b>Sealed box.</b> Four screws, a status light and a label that says what it does.</figcaption></figure>
+        <figure><img src="assets/meter/03-exploded.jpg" alt="The meter box taken apart: lid, circuit board, bottom case" loading="lazy"><figcaption><b>Simple to build.</b> Lid, one circuit board, bottom case. Powered over USB-C.</figcaption></figure>
+        <figure><img src="assets/meter/05-board-top.jpg" alt="The circuit board: microphone, main module, power supply, USB-C" loading="lazy"><figcaption><b>One small board.</b> 64 × 44 mm: microphone, main module with antenna, power supply.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
   <!-- Numbers: one row, right under the starter cards -->
   <section class="numbers" id="numbers">
     <div class="wrap">
       <h2 class="center">Counted, not estimated.</h2>
       <p class="intro center">Every number on this page is computed by Fair Play from the meters' plays.</p>
-      <div class="stats">
-        <div class="stat"><em>Plays counted</em><b id="n-counted">–</b><span>in the live demo</span></div>
-        <div class="stat"><em>Meters online</em><b id="n-meters">–</b><span>right now</span></div>
-        <div class="stat"><em>Bars metered</em><b id="n-bars">–</b><span>on the map</span></div>
-        <div class="stat"><em>Artists earning</em><b id="n-artists">–</b><span>in the mock month</span></div>
+      <div class="period-switch" role="tablist" aria-label="Period">
+        <button type="button" role="tab" data-period="live" aria-selected="true">Live now</button>
+        <button type="button" role="tab" data-period="mock_month" aria-selected="false">Last 30 days (mock month)</button>
       </div>
+      <div class="stats" id="stats" aria-live="polite">
+        <div class="stat"><em id="s1-k">Plays counted</em><b id="s1">–</b><span id="s1-n"></span></div>
+        <div class="stat"><em id="s2-k">Meters online</em><b id="s2">–</b><span id="s2-n"></span></div>
+        <div class="stat"><em id="s3-k">Songs heard</em><b id="s3">–</b><span id="s3-n"></span></div>
+        <div class="stat"><em id="s4-k">Play log</em><b id="s4">–</b><span id="s4-n"></span></div>
+      </div>
+      <p class="period-note center" id="period-note"></p>
     </div>
   </section>
 
   <!-- Bento of squares -->
   <section class="bento-wrap grey">
     <div class="wrap">
-      <h2>Fairer by design.</h2>
+      <h2>Fairer than a flat split.</h2>
       <div class="bento">
-        <article class="b b-compare">
+        <article class="b b-compare" id="compare">
           <p class="b-eye">Flat split vs Fair Play</p>
           <h3>Less money to the wrong artists.</h3>
           <p class="cmp-big"><b id="cmp-ratio">–</b><span>less of the pot paid to the wrong artists than a flat equal split</span></p>
@@ -120,33 +140,22 @@
           <p class="b-eye">Across Cameroon</p>
           <h3 id="map-title">Every metered bar.</h3>
           <svg id="mini-map" viewBox="0 0 400 560" role="img" aria-label="Map of Cameroon with the metered bars"></svg>
+          <p class="b-note" id="map-note"></p>
         </article>
       </div>
     </div>
   </section>
 
-    <!-- Tile: the song most played, framed by its own cover -->
     <section class="wrap mt-tiles">
-      <article class="mt-tile am-frames" id="tile-frames">
-        <div class="frames" id="frames" aria-hidden="true"><div class="frame-cover" id="frame-cover"></div></div>
-        <button class="tile-btn sway-btn" id="sway-btn" type="button" aria-label="Pause the animation"><svg viewBox="0 0 18 18" aria-hidden="true"><path class="i-pause" d="M6 4v10M12 4v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path class="i-play" d="M6 3.8l8.2 5.2L6 14.2z" fill="currentColor"/></svg></button>
-        <p class="am-who" id="frame-who"></p>
-        <a class="tile-btn" href="#how" aria-label="How the meter recognises a song"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
-        <div class="mt-tile-text">
-          <p class="am-eye-l">Bar metering</p>
-          <h2 class="heavy">Music counted<br>where it plays.</h2>
-          <p class="tile-copy">A meter beside the speaker recognises each song from short fingerprints. No sound leaves the bar, and bars pay nothing extra.</p>
-        </div>
-      </article>
-
-      <!-- Tile: a wall of album covers around the headline -->
+      <!-- Tile: the catalogue the meters recognise, with a wall of album covers around the headline -->
       <article class="mt-tile am-wall light" id="tile-wall">
         <div class="wall" id="wall" aria-hidden="true"></div>
-        <a class="tile-btn" href="artist.html" aria-label="Explore artists"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <a class="tile-btn" href="#mix" aria-label="See who earned the most"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
         <div class="mt-tile-text mid">
           <p class="am-eye-l">The catalogue</p>
-          <h2 class="heavy">Where every song<br>finds its share.</h2>
+          <h2 class="heavy" id="cat-h">Every song<br>the meters know.</h2>
           <p class="wall-note" id="wall-note"></p>
+          <p class="wall-note" id="frame-who"></p>
         </div>
       </article>
 
@@ -174,8 +183,8 @@
         </div>
         <div class="am-split-text">
           <p class="am-eye-l">Shared by plays</p>
-          <h2 class="heavy">Every artist<br>in the mix.</h2>
-          <p>An artist's share is the sum of their songs' shares: counted plays divided by all counted plays.</p>
+          <h2 class="heavy">Who earned<br>the most.</h2>
+          <p id="mix-intro">Each artist's share of the month: the sum of their songs' counted plays, divided by all counted plays.</p>
           <ol class="mix-list" id="mix-list"></ol>
         <a class="tile-btn" href="#numbers" aria-label="See the numbers"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
         </div>
@@ -191,6 +200,7 @@
       <h2 class="center">A play log nobody<br>can quietly change.</h2>
       <p class="intro center">Each play is sealed to the one before it and published every hour. Change one past play and the chain breaks, the dashboard turns red and the results are withheld.</p>
       <div class="chain" id="chain" aria-hidden="true"></div>
+      <p class="trust-note center" id="trust-note"></p>
     </div>
   </section>
 
@@ -200,9 +210,9 @@
       <h2 class="center">From a song in a bar<br>to a fair share.</h2>
       <ol class="steps">
         <li><div class="step-img"><img src="assets/img/outdoor-bar.webp" alt="" loading="lazy"></div><span class="num">1</span><h4>A song plays.</h4><p>Music plays in the bar as it always does.</p></li>
-        <li><div class="step-img meter"><svg viewBox="0 0 120 120" aria-hidden="true"><rect x="24" y="32" width="72" height="56" rx="14" fill="#fff"/><path d="M48 52v16M56 46v28M64 50v20M72 56v8" stroke="#1d1d1f" stroke-width="4" stroke-linecap="round"/></svg></div><span class="num">2</span><h4>The meter recognises it.</h4><p>Short fingerprints are matched against the song catalogue. The sound is thrown away.</p></li>
-        <li><div class="step-img"><img src="assets/img/yaounde.webp" alt="" loading="lazy"></div><span class="num">3</span><h4>The play is counted.</h4><p>Repeats of the same song in a short time count less, so looping a song does not inflate it.</p></li>
-        <li><div class="step-img"><img src="assets/img/mic.webp" alt="" loading="lazy"></div><span class="num">4</span><h4>The levy is shared.</h4><p>Each artist's share follows their plays, and the rights society pays its members.</p></li>
+        <li><div class="step-img"><img src="assets/meter/02-usb-c-side.jpg" alt="The Fair Play meter box" loading="lazy"></div><span class="num">2</span><h4>The meter recognises it.</h4><p>Short fingerprints are matched against the song catalogue. The sound is thrown away.</p></li>
+        <li><div class="step-img"><img src="assets/img/yaounde.webp" alt="" loading="lazy"></div><span class="num">3</span><h4>The play is counted.</h4><p>Repeats of the same song in a short time count less, so looping a song does not inflate it. Anything unusual is flagged for review.</p></li>
+        <li><div class="step-img"><img src="assets/img/mic.webp" alt="" loading="lazy"></div><span class="num">4</span><h4>SONACAM shares the levy.</h4><p>SONACAM gets each artist's share and a usage report per song, and pays its members under its own rules.</p></li>
       </ol>
     </div>
   </section>
@@ -212,11 +222,14 @@
     <div class="wrap">
       <h2 class="center">Questions? Answers.</h2>
       <div class="faq-list">
-        <details><summary>Does the meter record what people say?</summary><p>No. The meter turns short slices of sound into fingerprints of the music's strongest peaks and throws the sound away. Speech is not kept, and no audio is sent.</p></details>
-        <details><summary>Do bars pay more?</summary><p>No. The levy is already in the price of the drinks a bar buys. Fair Play only changes how that money is shared between artists.</p></details>
+        <details><summary>What does SONACAM need to run it?</summary><p>A small sealed meter in each licensed bar (a microphone, a low-cost chip and a 4G modem) and the Fair Play server, which SONACAM runs. The meter needs no Wi-Fi and nothing from the bar except a power socket.</p></details>
+        <details><summary>What does SONACAM receive each month?</summary><p>Each artist's share of the month's plays, the detail per song and per bar, and a usage report file per song that SONACAM can use in its own distribution.</p></details>
         <details><summary>How is an artist's share calculated?</summary><p>A song's share is its counted plays divided by all counted plays in the period. An artist's share is the sum of their songs' shares. Repeats of the same song in a short time count less.</p></details>
+        <details><summary>Can a bar or an artist game the count?</summary><p>Repeats count less, so a song on loop gains little. A song on repeat, a song played to an empty room and a meter that moves are flagged for SONACAM to review. Each meter seals its reports with its own key, so they cannot be faked or changed on the way.</p></details>
         <details><summary>What if someone changes a play after it is logged?</summary><p>Every play is chained to the one before it, and each hour's chain is published. A changed play breaks the chain, the dashboard turns red and the results are withheld until the log is restored.</p></details>
-        <details><summary>Which songs can the meter recognise?</summary><p>Songs declared in the catalogue. Once a song is declared, its fingerprint is added and bars playing it are counted from then on.</p></details>
+        <details><summary>Does the meter record what people say?</summary><p>No. The meter turns short slices of sound into fingerprints of the music's strongest peaks and throws the sound away. Speech is not kept, and no audio is sent.</p></details>
+        <details><summary>Do bars pay more?</summary><p>No. The levy is already in the price of the drinks a bar buys. Fair Play only changes how SONACAM shares that money between artists.</p></details>
+        <details><summary>Which songs can the meter recognise?</summary><p>Songs in SONACAM's catalogue. When an artist or label declares a song, its fingerprint is added and bars playing it are counted from then on.</p></details>
       </div>
     </div>
   </section>

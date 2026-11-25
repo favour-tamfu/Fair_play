@@ -64,8 +64,9 @@ def _insert_play(conn: psycopg.Connection, c: Candidate, meter: dict, d: date) -
                     VALUES (%s,%s,%s,%s,%s,%s)""",
                  (play["play_id"], c.ended_at, c.n_windows, round(c.duration_s, 1), c.mean_loudness_db, d))
     song = conn.execute("SELECT title, artist_name FROM songs WHERE song_id = %s", (c.song_id,)).fetchone() or {}
+    city = (conn.execute("SELECT city FROM venues WHERE venue_id = %s", (play["venue_id"],)).fetchone() or {}).get("city")
     notify(conn, "play", {"play_id": play["play_id"], "venue_id": play["venue_id"], "song_id": c.song_id,
-                          "title": song.get("title"), "artist_name": song.get("artist_name"),
+                          "title": song.get("title"), "artist_name": song.get("artist_name"), "city": city,
                           "started_at": format_utc(c.started_at), "source": meter["source"]})
     log.info("PLAY %s %s %s started %s (%d windows)", play["play_id"], meter["meter_id"], c.song_id,
              format_utc(c.started_at), c.n_windows)
@@ -99,9 +100,13 @@ def rebuild_day(conn: psycopg.Connection, meter: dict, d: date) -> dict:
             inserted += 1
             continue
         used.add(ex["play_id"])
+        # only when the extent really changed: an unchanged rewrite would move updated_at and make the scheduler
+        # recompute the shares after every 10-s report although nothing changed
         conn.execute("""UPDATE play_extents SET ended_at = %s, n_windows = %s, duration_s = %s, loudness_db = %s,
-                        updated_at = now() WHERE play_id = %s""",
-                     (c.ended_at, c.n_windows, round(c.duration_s, 1), c.mean_loudness_db, ex["play_id"]))
+                        updated_at = now() WHERE play_id = %s
+                        AND (ended_at, n_windows, duration_s, loudness_db) IS DISTINCT FROM (%s, %s, %s, %s)""",
+                     (c.ended_at, c.n_windows, round(c.duration_s, 1), c.mean_loudness_db, ex["play_id"],
+                      c.ended_at, c.n_windows, round(c.duration_s, 1), c.mean_loudness_db))
         updated += 1
         if abs((c.started_at - ex["started_at"]).total_seconds()) > config.SAME_PLAY_TOL_S:
             corrected += _correct_once(conn, ex["play_id"], START_MOVED, {"started_at": format_utc(c.started_at)})

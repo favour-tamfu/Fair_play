@@ -99,3 +99,77 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - The live chain restarts from genesis in a new epoch (`ledger_epochs`, migration 007). Anchors of the previous epoch move to `anchors_archive` (their plays are gone, so they can no longer be re-checked) and an `{"event":"epoch",…}` line is appended to the public anchors file, so a reset is always on record, never silent.
 - Auditor caches per chain: a chain is re-walked only when its SQL fingerprint changes. Measured on the demo DB (65 659 plays): tamper → SSE `ledger` broken in 0.88 s, restore → intact in 1.08 s; API status correct within 0.5 s.
 - Fix: `anchor_closed_hours` counted plays of all chains per hour while anchors cover the live chain only (re-anchored the same hour every minute after the mock import, no new line published); now live only.
+
+## D-018 — 2026-11-24 12:35 — B — Meter health: calibration catch rate, clock_skew and meter_moved flags (B-T14)
+- Calibration (`POST /v1/calibration`, contract §4): an expected play is caught if the meter has an accepted match of that song whose back-computed song start (window_start − offset_s), or a live play whose started_at, is within **±60 s** (contract; the plan's ±90 s is superseded) of `played_at`. catch_rate = caught / expected → `meters.catch_rate` (used by the share estimate) only if ≥ 1 play was caught; a run with 0 caught is stored but not applied. Matching lags, so runs received in the last 10 min are re-evaluated every 15 s by the scheduler; re-posting a run_id re-evaluates it.
+- `clock_skew` flag: |server − meter clock| > 5 s, from heartbeats (sent_at) or a batch whose window ends > 5 s in the future; at most one per meter per hour.
+- `meter_moved` flag: a batch reports a cell_id different from the meter's registered one (first seen); once per (meter, new cell). The registered cell is not changed.
+- Both are review flags only (no weight change), stats_run_id NULL, SSE `flag`; removed by the demo reset.
+
+## D-019 — 2026-11-24 12:55 — B — Robustness results; API-only switch (B-T16)
+- `SERVE_WEB` (compose env, from `.env`; default 1): 0 = the api serves the API only, dashboard pages off. Person B set `SERVE_WEB=0` at 12:40 (dashboard off, meters keep reporting). Set 1 + `docker compose up -d api` to show the pages again.
+- Restart test = `python -m server.tools.chaos run` (Python instead of the planned scripts/chaos_b.ps1: it needs signed batches and DB checks). Measured: baseline 30/30 batches, 3/3 plays; chaos (worker_match, api, worker_play, scheduler, db restarted during the send, 4 meter retries) 36/36 stored once, 3 plays in order, 0 job errors, ledger intact. Laptop A's live M-07 kept sending through all restarts: seq 5–2505, 0 missing, 0 duplicates.
+- Matcher latency (66 indexed songs, 1 385 989 hashes): median 13 ms, p95 49 ms per window; first window after a matcher restart waits for the index load (≈ 6.6 s).
+- `python -m server.tools.demo_seed [--reset-live] [--reimport]`: one-command readiness check before rehearsals (≈ 5 s).
+
+## D-020 — 2026-11-24 14:20 — B (Person B approved fixes 1, 2, 3, 10) — Admin token, safe meter registration, test songs retired
+- `ADMIN_TOKEN` (in `.env`, never in git; empty = open, for developer laptops and tests): header `X-Admin-Token` required for POST demo/reset, stats/run, ledger/anchor, songs/{id}/approve. demo_seed reports FAIL if it is not set.
+- `POST /v1/meters/register` without the token only accepts a record that changes nothing that matters (same key as stored, or a new meter whose key equals contract/meters/<id>.pub.json); anything else → 403 `admin_token_required`. A meter can no longer be re-keyed by someone else on the network.
+- Database unreachable/restarting → HTTP 503 `{"error":"db_unavailable"}` with `Retry-After: 2` (was a 500 traceback).
+- Test and commercial uploads S-000001…S-000012 (11 songs) retired with `server/tools/retire_songs.py`: demo reset first (live epoch 1, 32 live test plays removed, 7 anchors archived, recorded in the anchors file), then songs, fingerprints, owners, flags, shares and audio files removed. Test meters M-90, M-97, M-98 removed from the demo database. Catalogue = the 60 package songs only.
+- Bug found and fixed while doing it: the demo reset deleted raw_batches before match_events (foreign key) — it only worked on test data without links; the test now links them like real data.
+- Container logs capped at 3 × 10 MB per service (disk).
+- README: new section "2. The real product" (meter box, server, dashboard, artist page); laptops described as the hackathon stand-ins.
+
+## D-021 — 2026-11-24 16:40 — B (Person B: "process them and add") — Song package v3: catalogue 183 songs
+- The team's package v3 (`partner_package_v3`, FP-001…FP-183) imported: FP-001…FP-060 already in (unchanged), FP-061…FP-183 → **S-000073…S-000195** (song_map.csv in the package). Catalogue = **183 songs, 61 artists**, all `ready`, 3 740 365 hashes; no duplicate suspected, 0 job errors.
+- Package fixed before import: "Krys M" (FP-057 featured; second artist row in the SQLite) merged into **KRYS M** (same person, as in v1); MANIFEST updated. Songs in not_included.csv (incl. Tayc ×3, Ines D ×1 marked "needs team decision") are NOT imported.
+- Recognition check: 3 clips (25/50/75 %) of each of the 183 songs → **549/549 right song**; weakest best/2nd ratio 2.4.
+- Mock month regenerated on all 183 songs (same seed 20261124; D-014): 90 063 true / **71 957 observed plays**, 61 artists, shares sum 1.0; flags cooldown 73, loop 51, low_audience 28. New scenario songs: loop S-000083 (Zambe, Cysoul) at V-DLA-AKWA01; quiet hours V-DLA-DLA02 / S-000052; power cut M-20 (19–21 Nov).
+- Mock ownership (D-015): the 123 new songs registered with their artist as 100 % owner.
+- The catalogue range lives in `config.CATALOGUE_RANGE` / `CATALOGUE_SIZE` (demo_seed, artist_owners, catalogue_month defaults).
+
+## D-022 — 2026-11-25 02:00 — B (Person B: "fix the issues") — Meter window clock, lag flag, fictional scenario tracks
+- Meter (A's file, Person B approved): `Scheduler.windows` re-anchors window times to the wall clock when the counted time and a block's wall time differ by more than 1 s (sleep, stalled stream). Before, M-07 ran 3 h 54 min behind after Laptop A slept (R-020).
+- Server: on a heartbeat from a live meter with queue 0, if its newest window started more than 180 s ago → `clock_skew` flag ("window times behind the real time, or it stopped listening"), at most once per hour (`WINDOW_LAG_MAX_S`).
+- Mock month: the loop, promo and quiet-hours scenarios use fictional tracks S-M0901/02/03 by "Fair Play test artist" (A's idea, R-023), so no real artist is shown gaming the system. 69 834 observed plays; loop flags only on the test tracks.
+- A's merge (886c003): new landing page at `/`, dashboard and admin at unlisted addresses (R-021); README updated (pages, album covers via iTunes Search, Pexels/Unsplash photos).
+
+## D-023 — 2026-11-25 03:30 — B (Person B) — Landing page speaks to SONACAM and shows live + monthly data
+- The public landing page is SONACAM's pitch page: it explains what Fair Play gives SONACAM; artists are one card and a link, not the main audience. Artist-facing content stays on artist.html and portal.html.
+- Numbers come from the API for both periods (switch), never typed in. c-1.4 (venues `source`, `plays` per period) added for the map.
+
+## D-024 — 2026-11-25 05:45 — B (Person B: "admins do not have access to live organised logs") — Activity log for admins
+- New table `activity_log` (migration 009): one readable line per thing the system did. Written automatically for every live-feed event (meter report, song heard, play logged, flag, play-log check, shares recomputed) plus meters going online/offline (scheduler), refused device requests (unknown meter, bad signature, sequence conflict, invalid), admin actions done / failed / refused for a wrong password (middleware), and songs becoming ready or failing to fingerprint. Kept 14 days (pruned hourly).
+- `GET /api/v1/admin/activity` (filters kind, level, meter_id, venue_id, q, after_id for live polling, before_id for paging) and `/activity.csv`, both behind the admin password. Not on the public SSE feed (refused attempts and IPs are admin-only).
+- Admin page: "Activity log" panel — type buttons, level and meter filters, search, Live/Pause (polls every 3 s), Load older, Export CSV. The old "Activity" panel is now "Your actions" (this tab only).
+
+## D-025 — 2026-11-25 06:00 — B (Person B: "OSM, fallback offline") — Street maps with OpenStreetMap
+- `web/js/osm.js`: Leaflet 1.9.4 (stored in `web/vendor/leaflet`, BSD-2, hashes match the official SRI) + OpenStreetMap standard tiles. Used by the landing map tile, the artist page map and the dashboard map: each bar as a dot sized by its plays, popup with bar, city and plays; the dashboard pulses a bar when a play is logged.
+- No internet (tile test fails within 4 s) or `?map=outline` → the pages keep the drawn outline map (cameroon.js), so the demo works offline.
+
+## D-026 — 2026-11-25 06:45 — Person B — Artist listening detail is SONACAM-only; the public sees the ranking
+- Public `artist.html`: the ranking (top 4 + full list with shares) only; rows are not links. Reason (Person B): detailed listening data per artist (which bars played which songs, when) could be mined by competing artists and exposes what each bar plays.
+- New SONACAM page `sonacam-x7k2q9-artist.html?name=` (noindex, linked from the dashboard's "Who earned what"): the full analytics (key figures, plays by day, map, top songs, bars, recent plays), asking for the admin password.
+- `GET /api/v1/artists/{name}` needs the admin password (contract c-1.5). `/api/v1/artists` (names, songs) and `/api/v1/artist-shares` (the ranking) stay public. The public anchors only carry hashes, never plays.
+
+## D-027 — 2026-11-25 07:00 — B (Person B: build the release now, including A's executable) — Fair Play v1.0 packaging
+- One system, three parts: SONACAM server (`FairPlay_Server_<v>.zip`: code, pages, `scripts\install_server.ps1`), meter (`FairPlayMeter_windows_<v>.zip`: A's PyInstaller build, device\packaging), documents (`FairPlay_Docs_<v>.zip`); `START_HERE.md` (docs\RELEASE_START_HERE.md) and `SHA256SUMS.txt`. Built by `scripts\make_release.ps1` into release\ (not committed). Not included on purpose: song package (audio and rights), .env, keys, database.
+- `install_server.ps1`: checks Docker, creates .env with random passwords (never printed), builds and starts every part, imports and fingerprints a song package (`wait_fingerprints`), runs demo_seed, prints the addresses (local + LAN, WSL address skipped). The catalogue works with any song ids (CATALOGUE_SIZE optional); API and DB ports configurable (API_PORT, DB_PORT).
+- Fresh-clone test (separate stack on port 8100, removed afterwards): all demo_seed checks OK, 183/183 songs, the same mock month (69 834 plays). It found 3 installer bugs (ANSI parsing of BOM-less scripts, inline Python quoting, writing song_map into the package) and 1 server bug (a job abandoned by a worker restarted mid-job was never retried; workers now requeue abandoned jobs every minute) — all fixed.
+- Packaged meter tested against the fresh server: setup (own key), registration refused without / accepted with the admin password, 60 s of a catalogue song → 6/6 windows recognised as the right song (scores 392–495), 1 play logged, activity log lines. File input of MP3 needs ffmpeg on the laptop (microphone use does not).
+
+## D-028 — 2026-11-25 07:30 — Person B — Role-based access: SONACAM (one role) and artists
+- Roles: `sonacam` (staff and admins fused: the SONACAM app and every SONACAM-only API) and `artist` (upload songs with metadata; see their own songs only: status, plays counted, share; never other artists or bars). Meters keep their own keys.
+- Sign-in page `login.html`; sessions in an HttpOnly SameSite=Lax cookie (12 h; only the SHA-256 of the token is stored); passwords hashed with scrypt (migration 010: users, sessions). Account `sonacam` = ADMIN_TOKEN; artists (prototype rule, Person B): user name = their artist name, password `SONACAM` (ARTIST_DEFAULT_PASSWORD); an artist account is created on first sign-in if the name has songs in the catalogue (artists are verified on SONACAM's site). The X-Admin-Token header still works for scripts.
+- SONACAM-only: /plays, /flags, /payouts, /export/usage_report.csv, /artists/{name}, /admin/*, all admin actions; the live feed gives everyone else plays as song, artist and city only (no bar, meter, reports, matches, flags). Public: overview, artist-shares (ranking), compare-flat, venues, ledger status/anchors, songs list, /public/recent-plays (song, artist, city).
+- Artists: `portal.html` (own songs, totals per period, upload with owners and shares; MoMo optional; the artist name is forced to their own). SONACAM pages (dashboard, admin, artist analytics) redirect to sign-in. Public ranking page `artist.html` removed (D-026 superseded for the public part); the landing page stays as the product page.
+- Routine 15-s share recomputes are no longer written to the activity log or the dashboard's live list (they flooded both).
+
+## D-029 — 2026-11-25 08:45 — B (Person B: fix the issues) — Review flags, retire meters, clearer SONACAM pages
+- Flags can be marked reviewed (who, when, note) and reopened; the operations page hides reviewed flags by default and reviews a whole group of repeats at once (migration 011, c-1.6).
+- A meter can be retired (Retire, confirmed by a second click): its reports and heartbeats are refused (403 meter_retired, in the activity log); a re-registration with the admin password restores it. The meters list shows each key's fingerprint (SHA-256, 16 characters); mock-month bars only on request.
+- Catalogue: uploads waiting for SONACAM first (waiting for review, could not be read, processing, just uploaded), newest first, in plain words.
+- Dashboard: the fictional test artist is not counted as an artist and is labelled "fictional test"; simulated bars shown as "Bar <City> 01"; jargon replaced (counting rules, fingerprint of each hour, public anchors file; no run ids); the small bars in the key-figure cards (a repeat of the chart) removed.
+- Meter 3D model: renders and assembly video on the landing page ("Meet the meter.") and in the README; the renders still carry the old working name on the labels.
+

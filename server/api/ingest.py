@@ -1,4 +1,4 @@
-"""Device endpoints (contract §4): POST /v1/batches, /v1/batches/bulk, /v1/heartbeat, /v1/meters/register."""
+"""Device endpoints (contract §4): POST /v1/batches, /v1/batches/bulk, /v1/heartbeat, /v1/calibration, /v1/meters/register."""
 from __future__ import annotations
 
 import json
@@ -8,7 +8,8 @@ from fastapi import APIRouter, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
-from server import ingest
+from server import activity, config, ingest
+from server.api.admin import HEADER, register_allowed_without_token, token_ok
 from server.db import connect
 from server.registry import upsert_meter
 
@@ -22,9 +23,21 @@ async def _json_body(request: Request) -> Any:
         return None
 
 
-def _with_conn(fn: Callable, body: Any) -> ingest.Result:
+ENDPOINT = {"ingest_batch": "report", "ingest_bulk": "report", "ingest_heartbeat": "heartbeat",
+            "ingest_calibration": "calibration", "<lambda>": "meter registration"}   # register is wrapped in a lambda
+
+
+def _with_conn(fn: Callable, body: Any, *extra) -> ingest.Result:
     with connect(autocommit=True, retries=3) as conn:   # each check/store runs in its own explicit transaction
-        return fn(conn, body)
+        r = fn(conn, body, *extra)
+        what = ENDPOINT.get(getattr(fn, "__name__", ""), "device request")
+        if r.code >= 400:                                 # D-024: refused requests go to the admins' activity log
+            activity.rejected(conn, what, body, r.code, r.body.get("error", "error"), r.body.get("detail"))
+        elif fn is ingest.ingest_bulk:
+            for item, res in zip(body.get("batches", []) if isinstance(body, dict) else [], r.body.get("results", [])):
+                if res.get("status") == "error":
+                    activity.rejected(conn, what, item, 400, res.get("error", "error"))
+        return r
 
 
 async def _handle(fn: Callable, request: Request) -> JSONResponse:
@@ -50,12 +63,24 @@ async def post_heartbeat(request: Request):
     return await _handle(ingest.ingest_heartbeat, request)
 
 
-def _register(conn, body) -> ingest.Result:
+@router.post("/calibration")
+async def post_calibration(request: Request):
+    """Contract §4: {"ok":true} (+ run_id, matched, total, catch_rate, applied, pending_windows — B-T14)."""
+    from server.calibration import ingest_calibration
+    return await _handle(ingest_calibration, request)
+
+
+def _register(conn, body, admin: bool = False) -> ingest.Result:
     if not isinstance(body, dict):
         return ingest.Result(422, {"error": "invalid", "detail": "body must be a .pub.json object"})
+    if not admin and not register_allowed_without_token(conn, body):
+        return ingest.Result(403, {"error": "admin_token_required",
+                                   "detail": f"adding a meter or changing its key needs the {HEADER} header"})
     try:
         with conn.transaction():
             r = upsert_meter(conn, body)
+            if admin:                                   # D-029: re-registered by SONACAM: no longer retired
+                conn.execute("UPDATE meters SET retired_at = NULL WHERE meter_id = %s", (r["meter_id"],))
     except (ValueError, KeyError) as e:
         return ingest.Result(422, {"error": "invalid", "detail": str(e)})
     return ingest.Result(200, {"ok": True, **r})
@@ -63,5 +88,11 @@ def _register(conn, body) -> ingest.Result:
 
 @router.post("/meters/register")
 async def register_meter(request: Request):
-    """Admin convenience (demo: no auth). Same as dropping a .pub.json into contract/meters and restarting."""
-    return await _handle(_register, request)
+    """Same as dropping a .pub.json into contract/meters and restarting. Adding a meter or changing a key needs the
+    admin token (D-020); re-sending a meter's current key, or a key that matches contract/meters, is always fine."""
+    admin = bool(config.ADMIN_TOKEN) and token_ok(request.headers.get(HEADER))
+    body = await _json_body(request)
+    if body is None:
+        return JSONResponse({"error": "invalid", "detail": "body is not valid JSON"}, status_code=422)
+    r = await run_in_threadpool(_with_conn, lambda conn, b: _register(conn, b, admin or not config.ADMIN_TOKEN), body)
+    return JSONResponse(r.body, status_code=r.code)

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<title>Artist analytics · SONACAM · Fair Play</title>
+<link rel="stylesheet" href="css/landing.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="page" data-view="sonacam">
+<!-- SONACAM only (D-026): one artist's full listening data (bars, days, songs, recent plays). Not linked from the
+     public site; the data comes from GET /api/v1/artists/{name}, which needs the admin password. -->
+<nav class="localnav sc-bar" aria-label="SONACAM">
+  <div class="ln-row">
+    <a class="ln-title" href="sonacam-x7k2q9.html">&larr; SONACAM dashboard</a>
+    <div class="ln-links">
+      <span class="sc-tag">SONACAM only · artist analytics</span>
+      <span class="who" id="who"></span>
+    </div>
+  </div>
+</nav>
+<div class="wrap sc-locked" id="locked" hidden>
+  <h1>SONACAM only.</h1>
+  <p class="lede">An artist's detailed listening data (which bars played which song, and when) is for SONACAM. <a href="login.html">Sign in as SONACAM</a> to see it.</p>
+</div>
+
+<!-- Profile: shown with ?name= (artist page in the style of a music app's artist page) -->
+<main id="profile">
+  <section class="am-hero" id="am-hero">
+    <div class="am-hero-in wrap">
+      <div class="am-id">
+        <button class="am-round" id="share-link" aria-label="Copy the link to this artist"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V4M8 8l4-4 4 4M5 13v6h14v-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div>
+          <h1 id="name">–</h1>
+          <p id="songs-line"></p>
+        </div>
+      </div>
+      <div class="seg dark" role="group" aria-label="period">
+        <button data-period="live" class="on">Live</button>
+        <button data-period="mock_month">Month</button>
+      </div>
+    </div>
+    <span id="avatar" hidden></span><span id="watermark" hidden></span>
+  </section>
+
+  <section class="wrap am-block">
+    <div class="tiles">
+      <div class="tile"><span>Share of bar plays</span><div><b id="share">–</b><small id="share-sub"></small></div></div>
+      <div class="tile"><span>Rank</span><div><b id="rank">–</b><small id="rank-label"></small></div></div>
+      <div class="tile"><span>Plays counted</span><div><b id="counted">–</b><small id="counted-sub"></small></div></div>
+      <div class="tile dark now" id="now">
+        <span><i class="pulse" id="now-dot"></i><em id="now-label" style="font-style:normal">Last heard</em></span>
+        <div>
+          <b id="now-title">–</b>
+          <small id="now-where"></small>
+          <div class="track"><i id="now-progress"></i></div>
+          <div class="times"><span id="now-start"></span><span id="now-ago"></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analytics first (Person B): when and where the plays happened, then the songs and bars behind them -->
+  <section class="wrap am-block">
+    <h2 class="am-h">Analytics</h2>
+    <div class="cols2 analytics">
+      <div class="card"><h3>Plays by day <span class="soft" id="chart-range"></span></h3>
+        <div class="chart-box">
+          <div class="chart-y" id="chart-y" aria-hidden="true"></div>
+          <div class="chart-plot"><div class="chart-grid" id="chart-grid" aria-hidden="true"></div><div class="chart tall" id="chart"></div><div class="chart-x" id="chart-x"></div></div>
+        </div>
+        <p class="chart-unit">Plays counted per day (Cameroon time). Hover a bar for its exact count.</p></div>
+      <div class="card map-card"><h3>Where they were played <span class="soft" id="map-sub"></span></h3><svg id="pmap" viewBox="0 0 400 560" role="img" aria-label="Map of the bars that played this artist"></svg></div>
+    </div>
+  </section>
+
+  <section class="wrap am-block">
+    <h2 class="am-h">Top songs <span>›</span></h2>
+    <div class="am-grid" id="songs"></div>
+  </section>
+
+  <section class="wrap am-block">
+    <h2 class="am-h">Bars that played this artist <span class="soft" id="venues-sub"></span></h2>
+    <ol class="ranking bar-list" id="venues"></ol>
+    <button type="button" class="more-btn" id="venues-more" hidden></button>
+  </section>
+
+  <section class="wrap am-block last">
+    <h2 class="am-h">Recent plays <span>›</span></h2>
+    <div class="am-grid" id="recent"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p id="foot">Fair Play · SONACAM artist analytics.</p>
+    <p>Times are Cameroon time.</p>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status"></div>
+<script type="module" src="js/artist.js"></script>
+</body>
+</html>

@@ -282,3 +282,22 @@ body.d2 .kv b { font-size: clamp(28px, 2.6vw, 38px); }
 body.d2 .spark { right: 18px; top: 22px; height: 40px; }
 body.d2 .side-foot { font-weight: 400; color: var(--soft); }
 body.d2 .kv b { white-space: nowrap; } body.d2 .kv { flex-wrap: wrap; row-gap: 0; }
+
+/* D-028: one SONACAM app — sidebar links can be "on" too; who is signed in; operations page inside the shell */
+.menu a.on { background: #fff; color: var(--ink); border-color: var(--edge); box-shadow: 0 1px 2px rgba(0,0,0,.06); font-weight: 500; }
+.menu a.on svg { color: var(--navy); }
+.side-user { margin-top: auto; padding: 12px 4px 6px; border-top: 1px solid var(--edge); display: flex; gap: 10px; align-items: center; justify-content: space-between; font-size: 13px; }
+.side-user .signout { font: inherit; font-size: 12px; border: 1px solid var(--edge); background: #fff; border-radius: 980px; padding: 3px 10px; cursor: pointer; }
+.side-foot { margin-top: 8px !important; }
+body.d2.admin .page { min-width: 0; }
+body.d2.admin .adm { padding: 16px 24px 40px; scroll-padding-top: 70px; }
+body.d2.admin .adm > section { scroll-margin-top: 70px; }
+.mock-toggle { display: inline-flex; gap: 6px; align-items: center; margin-left: 12px; }
+
+/* D-029: the small bars in the key-figure cards repeated the Plays by artist chart: not shown */
+.kpi .spark { display: none; }
+.chip.test { background: #eef1f6; color: #3a4a63; }
+
+/* SONACAM logo in the sidebar (assets/brand/sonacam-logo.svg, redrawn as vector) */
+.org { background: #fff; padding: 14px 14px 12px; }
+.org-logo { display: block; width: 100%; height: auto; }

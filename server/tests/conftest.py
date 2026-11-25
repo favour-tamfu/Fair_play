@@ -37,3 +37,12 @@ def migrated_db(test_db_url):
     from server.db.migrate import migrate
     migrate(test_db_url)
     return test_db_url
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _no_admin_token():
+    """Tests run with admin actions open (also module-scoped fixtures); test_admin.py sets a token itself (D-020)."""
+    mp = pytest.MonkeyPatch()
+    mp.setattr(config, "ADMIN_TOKEN", "")
+    yield
+    mp.undo()

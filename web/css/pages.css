@@ -278,3 +278,135 @@ input[readonly] { background: var(--grey); color: var(--ink-2); }
 /* real album covers */
 .l-av.img { background-size: cover; background-position: center; color: transparent; }
 .am-hero.has-cover { background-size: cover; background-position: center 30%; }
+
+/* --- ranking of all artists (artist.html without ?name=), B 2026-11-25 --- */
+.rk-switch { margin: 34px 0 0; }
+.rk-section { margin-top: 70px; }
+.rk-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 18px; }
+.rk-head .small-h { margin-bottom: 6px !important; }
+.rk-sum { margin: 0; font-size: 15px; color: var(--ink-2); }
+.rk-search { flex: 0 1 340px; }
+.rk-search input { font-size: 17px; padding: 12px 16px 12px 46px; border-radius: 12px; background: #fff; }
+.rk-search svg { left: 16px; width: 18px; height: 18px; }
+.rk-cols, .rk-row { display: grid; grid-template-columns: 44px minmax(0, 1.25fr) minmax(0, 1fr) 84px 16px; align-items: center; gap: 16px; }
+.rk-cols { padding: 0 20px 8px; font-size: 12px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
+.rk-cols span:first-child { padding-left: 4px; }
+.rk-cols span:nth-child(4) { text-align: right; }
+.ranking { list-style: none; margin: 0; padding: 0; background: #fff; border-radius: var(--r-s, 18px); overflow: hidden; }
+.ranking > li + li { border-top: 1px solid #e8e8ed; }
+.rk-row { padding: 14px 20px; color: var(--ink) !important; }
+.rk-row:hover { text-decoration: none; background: #f5f5f7; }
+.rk-row:focus-visible { outline: 2px solid var(--button); outline-offset: -2px; }
+.rk-n { font-family: var(--display); font-size: 20px; font-weight: 600; color: var(--ink-3); text-align: center; font-variant-numeric: tabular-nums; }
+.rk-row.top .rk-n { color: var(--button); }
+.rk-who b { font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rk-who > span { display: block; font-size: 13px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rk-who { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 2px; padding-left: 58px; position: relative; min-height: 46px; justify-content: center; }
+.rk-row .rk-av { display: block; position: absolute; }
+.rk-row { position: relative; }
+.rk-av { width: 46px; height: 46px; border-radius: 50%; background: #e8e8ed center / cover; color: var(--ink-2); font-size: 15px; font-weight: 600;
+  display: flex !important; align-items: center; justify-content: center; left: 80px; top: 50%; transform: translateY(-50%); }
+.rk-bar { height: 8px; border-radius: 4px; background: #e8e8ed; overflow: hidden; }
+.rk-bar i { display: block; height: 100%; border-radius: 4px; background: var(--button); }
+.rk-row.top .rk-bar i { background: linear-gradient(90deg, #0071e3, #42a1ff); }
+.rk-share { text-align: right; font-family: var(--display); font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.rk-go { width: 9px; height: 15px; color: #c7c7cc; }
+.rk-row.none .rk-who b, .rk-row.none .rk-share { color: var(--ink-3); }
+.rk-row.none .rk-bar { background: transparent; }
+.rk-sep { padding: 18px 20px 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-3); background: #fafafc; }
+.ranking .empty { padding: 22px 20px; }
+.rk-note { margin-top: 18px; }
+@media (max-width: 734px) {
+  .rk-cols { display: none; }
+  .rk-row { grid-template-columns: 30px minmax(0, 1fr) 70px 10px; gap: 10px; padding: 12px 14px; }
+  .rk-row .rk-bar { display: none; }
+  .rk-av { width: 38px; height: 38px; left: 54px; }
+  .rk-who { padding-left: 48px; }
+  .rk-share { font-size: 16px; }
+}
+
+/* artist page: analytics first (B 2026-11-25) — the day chart gets the wider column */
+.cols2.analytics { grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); align-items: stretch; }
+.cols2.analytics .chart-x span { white-space: nowrap; overflow: visible; }
+@media (max-width: 1068px) { .cols2.analytics { grid-template-columns: 1fr; } }
+
+/* plays by day: y axis, gridlines and a value on hover (B 2026-11-25) */
+.chart-box { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; margin-top: 14px; }
+.chart-y { position: relative; height: 300px; min-width: 34px; }
+.chart-y span { position: absolute; right: 0; transform: translateY(50%); font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; line-height: 1; }
+.chart-plot { position: relative; min-width: 0; }
+.chart-grid { position: absolute; left: 0; right: 0; top: 0; height: 300px; pointer-events: none; }
+.chart-grid i { position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid #e8e8ed; }
+.chart-grid i:first-child { border-top-color: #c7c7cc; }
+.chart-plot .chart { position: relative; z-index: 1; }
+.chart-plot .chart i { position: relative; cursor: default; }
+.chart-plot .chart i:hover { background: var(--button); }
+.chart-plot .chart i:hover::after { content: attr(data-v); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  background: #1d1d1f; color: #fff; font-size: 12px; padding: 5px 8px; border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 2; }
+.chart-unit { margin: 10px 0 0; font-size: 12px; color: var(--ink-3); }
+
+/* artist page: bars as a ranked list (B 2026-11-25), same look as the artist ranking */
+.bar-list { margin-top: 6px; background: var(--grey); }
+.bar-list > li + li { border-top-color: #e0e0e5; }
+.bar-row { grid-template-columns: 44px minmax(0, 1.2fr) minmax(0, 1fr) 70px 64px; }
+.bar-row .rk-who { padding-left: 0; min-height: 40px; }
+.bar-row .rk-bar { background: #e0e0e5; }
+.bar-pct { text-align: right; font-size: 13px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.am-h .soft { font-size: 15px; font-weight: 400; color: var(--ink-3); margin-left: 8px; }
+.more-btn { margin-top: 14px; font: inherit; font-size: 15px; border: 0; background: none; color: var(--link, #0066cc); cursor: pointer; padding: 6px 0; }
+.more-btn:hover { text-decoration: underline; }
+@media (max-width: 734px) { .bar-row { grid-template-columns: 30px minmax(0, 1fr) 60px; } .bar-row .rk-bar, .bar-row .bar-pct { display: none; } }
+
+/* OpenStreetMap on the artist page (D-025) */
+.map-card .osm-map { width: 100%; border-radius: 12px; overflow: hidden; margin-top: 8px; }
+.leaflet-container { font: inherit; font-size: 13px; }
+
+/* D-026: the public ranking is not clickable; SONACAM's artist page has its own top bar */
+.rk-row.static, .rk-row.static:hover { background: none; cursor: default; grid-template-columns: 44px minmax(0, 1.25fr) minmax(0, 1fr) 84px; }
+.rk-cols { grid-template-columns: 44px minmax(0, 1.25fr) minmax(0, 1fr) 84px; }
+div.leader { position: relative; aspect-ratio: 1 / 1; background: #000; color: #f5f5f7; border-radius: var(--r); padding: 24px; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; }
+div.leader .l-av { position: absolute; top: 22px; left: 24px; background: #1d1d1f; color: #f5f5f7; }
+div.leader b { font-family: var(--display); font-size: 24px; font-weight: 600; }
+.sc-bar .ln-links { gap: 18px; align-items: center; }
+.sc-tag { font-size: 12px; color: var(--ink-3); }
+.sc-tok { font-size: 12px; display: flex; gap: 6px; align-items: center; }
+.sc-tok input { font: inherit; padding: 3px 8px; border: 1px solid #d2d2d7; border-radius: 6px; }
+.sc-locked { padding: 90px 22px; }
+@media (max-width: 734px) { .rk-row.static { grid-template-columns: 30px minmax(0, 1fr) 70px; } }
+@media (max-width: 734px) { div.leader { padding: 16px; } div.leader b { font-size: 18px; } }
+
+/* D-028: sign-in page and artist portal */
+.login-wrap { min-height: calc(100vh - 200px); display: grid; place-items: center; padding: 60px 22px; }
+.login-card { width: min(440px, 100%); display: flex; flex-direction: column; gap: 14px; }
+.login-card h1 { margin: 0; }
+.login-card .lede { margin: 0 0 8px; font-size: 17px; }
+.login-card label, .pt-form label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--ink-2); }
+.login-card input, .pt-form input, .pt-form select { font: inherit; font-size: 17px; padding: 12px 14px; border: 1px solid #d2d2d7; border-radius: 12px; background: #fff; color: var(--ink); }
+.login-card input:focus, .pt-form input:focus, .pt-form select:focus { outline: 2px solid var(--button); outline-offset: 0; }
+.login-card button { align-self: flex-start; border: 0; cursor: pointer; }
+.login-msg { color: #d70015; min-height: 1.3em; margin: 0; }
+.who { display: flex; gap: 10px; align-items: center; font-size: 13px; }
+.who .signout { font: inherit; font-size: 12px; border: 1px solid #d2d2d7; background: #fff; border-radius: 980px; padding: 3px 10px; cursor: pointer; }
+.pt-tiles { grid-template-columns: repeat(3, 1fr); margin-top: 18px; }
+.pt-table-wrap { overflow-x: auto; }
+.pt-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.pt-table th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-3); font-weight: 500; padding: 8px 10px; border-bottom: 1px solid #d2d2d7; }
+.pt-table td { padding: 12px 10px; border-bottom: 1px solid #e8e8ed; vertical-align: top; }
+.pt-table td b { display: block; font-weight: 600; }
+.pt-table .n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pt-table .soft, .soft { color: var(--ink-3); font-size: 13px; }
+.st { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 980px; white-space: nowrap; }
+.st-ready { background: #e3f5e8; color: #16753a; } .st-wait { background: #eef1f6; color: #3a4a63; }
+.st-warn { background: #fff3e0; color: #a35200; } .st-bad { background: #fde8ec; color: #b0002a; }
+.pt-lede { font-size: 17px; margin: 0 0 24px; max-width: 720px; }
+.pt-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; max-width: 900px; }
+.pt-form .wide { grid-column: 1 / -1; }
+.pt-form fieldset { border: 1px solid #d2d2d7; border-radius: 14px; padding: 14px 16px; }
+.pt-form legend { font-size: 14px; color: var(--ink-2); padding: 0 6px; }
+.pt-form .owner { display: grid; grid-template-columns: 1fr 160px 110px 36px; gap: 10px; margin-bottom: 10px; }
+.pt-form .o-del { border: 0; background: none; font-size: 22px; color: var(--ink-3); cursor: pointer; }
+.pt-form .check { flex-direction: row; align-items: flex-start; gap: 10px; }
+.pt-form .check input { margin-top: 3px; }
+.pt-form button.pill { border: 0; cursor: pointer; }
+@media (max-width: 734px) { .pt-tiles { grid-template-columns: 1fr; } .pt-form { grid-template-columns: 1fr; } .pt-form .owner { grid-template-columns: 1fr 1fr; } }
+.pt-tiles .tile { aspect-ratio: auto; min-height: 150px; }

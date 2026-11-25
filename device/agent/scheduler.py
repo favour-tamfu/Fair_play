@@ -4,7 +4,13 @@ demo  = a 10 s window every 10 s (continuous)
 field = a 10 s window every 60 s (the other 50 s are skipped)
 
 Input is an iterable of (wall_time_of_first_sample, float32 block) pairs from
-device.agent.capture. Blocks must be contiguous (no gaps).
+device.agent.capture. Blocks should be contiguous; a None item marks a gap.
+
+Window times come from the sample count since the first block (exact spacing), but they are
+re-anchored to the wall clock whenever a block's wall time differs from the counted time by more
+than CLOCK_JUMP_S: after the laptop slept or the audio stream stalled, the stream resumes without
+a gap marker, and without this check every later window would keep the lost time (R-020: M-07 was
+3 h 54 min behind after a sleep). The re-anchor is handled like a gap (the partial window is dropped).
 
 Each emitted Window carries what the batcher needs: 48 kHz samples, 8 kHz samples,
 RMS loudness (from the 48 kHz window) and the peaks extracted from the 8 kHz window.
@@ -19,6 +25,7 @@ from fairplay_core.peaks import extract_peaks, resample_to_8k, rms_dbfs
 
 WINDOW_SAMPLES_48 = WINDOW_S * CAPTURE_RATE
 PERIOD_S = {"demo": 10, "field": 60}
+CLOCK_JUMP_S = 1.0   # counted time vs wall time difference that forces a re-anchor (R-020)
 
 
 @dataclass
@@ -36,6 +43,7 @@ class Scheduler:
             raise ValueError(f"mode must be one of {sorted(PERIOD_S)}, got {mode!r}")
         self.mode = mode
         self.period_s = PERIOD_S[mode]
+        self.reanchors = 0   # times the window clock was re-set from the wall clock (sleep, stalled stream)
 
     def windows(self, blocks: Iterable[Tuple[float, np.ndarray]]) -> Iterator[Window]:
         """Yield one Window per period, as soon as enough audio has arrived.
@@ -56,6 +64,10 @@ class Scheduler:
                 continue
             wall, block = item
             block = np.asarray(block, dtype=np.float32).reshape(-1)
+            if t0 is not None and abs(float(wall) - (t0 + pos / CAPTURE_RATE)) > CLOCK_JUMP_S:
+                # the counted time no longer matches the clock (sleep, stalled stream): start over from this block
+                t0, buf, buf_start, pos, next_start = None, np.empty(0, dtype=np.float32), 0, 0, 0
+                self.reanchors += 1
             if t0 is None:
                 t0 = float(wall)
             buf = np.concatenate([buf, block])

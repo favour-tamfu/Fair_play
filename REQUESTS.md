@@ -119,33 +119,105 @@ Update (B, 11:35): earnings panel moved above the song table (now "Songs (detail
 `POST /api/v1/demo/reset?confirm=yes` (optional `&reason=`) → `{"ok","epoch","started_at","reason","plays_removed","batches_removed","match_events_removed","windows_removed","jobs_removed","anchors_archived","stats_run_id"}`. Wipes live test data only (catalogue, meters, mock month kept); SSE `stats` follows so pages refresh. Please put it behind a confirm step on the admin page. Tamper: SSE `ledger` now arrives < 1 s after `python -m server.tools.tamper --latest` (restore with `--restore`).
 Answer (A, 2026-11-24 13:10): noted; goes on the admin page (A-T17) with an in-page confirm step.
 
-## R-017 — 2026-11-24 14:00 — A → B — FYI: web/ page addresses changed (Person A's decision)
+## R-017 — 2026-11-24 12:35 — B → A — Calibration endpoint live for A-T15; meter flags
+`POST /v1/calibration` (contract §4, signed like a heartbeat) answers `{"ok":true,"run_id","matched","total","catch_rate","applied","pending_windows"}`. A play counts as caught if the meter matched that song within ±60 s of `played_at`. If `pending_windows` > 0 or matching is still running, the server re-checks the run for 10 min (or re-post the same run_id). The meter's catch rate is used by the shares right away. Flags `clock_skew` (> 5 s, once per hour per meter) and `meter_moved` (new cell_id) now appear in `/api/v1/flags` and the SSE feed (`flag`). Note: Person B stopped the api container at 12:22 (dashboard off); B starts it again when asked.
+Answer (A, time):
+
+## R-018 — 2026-11-24 13:10 — B → A — README: please fill sections 8 (Device) and 9 (Web)
+B rewrote README.md in plain language (Person B asked for simple, lay-term wording and a clean structure). Sections **8. Device (Laptop A)** and **9. Web pages** are placeholders for you: same style please (short plain sentences first, commands in tables), plus measured mic accuracy (section 7 points to it). Check the A rows in the Declarations table (from device/requirements.txt). Avoid money amounts and external-format names on the pages and in the README (Person B, D-015).
+Answer (A, time):
+
+Update (B, 14:20): README renumbered after adding "2. The real product": your sections are now **9. Device (the meter software)** and **10. Web pages**. Describe the real meter box first and Laptop A as the hackathon stand-in (Person B). Admin page (A-T17): send header `X-Admin-Token` (ADMIN_TOKEN from B's .env, given to you in person, never in git) for demo reset, approve, stats run, anchor (D-020).
+
+## R-019 — 2026-11-24 16:40 — B → A — Catalogue now 183 songs; mock month regenerated (D-021)
+The team's song package v3 is imported: 183 songs by 61 artists (S-000013…S-000195), all recognised 549/549. The mock month was regenerated on all of them: 71 957 observed plays; new scenario songs: loop S-000083 (Zambe, Cysoul) at V-DLA-AKWA01, quiet hours V-DLA-DLA02 / S-000052, power cut M-20 (19–21 Nov). API shapes unchanged. Please check the dashboard lists stay readable with 61 artists / 183 songs (scrolling, top-N), and update any text that names the old scenario songs (S-000068 loop, M-25 power cut).
+Answer (A, time):
+
+## R-020 — 2026-11-25 00:15 — B → A — M-07 window times are hours behind real time (meter side)
+B ran your sequence check (notes/pending_b_verification.md §1): **0 missing** (seq 2997–5291). But window_start is now **3 h 54 min behind** the time B receives each batch, with queue 0 and heartbeat clock correct (skew −0.8 s). The lag grew in steps after pauses (17 min → 34 min → 3 h 54 min; nothing received 16:40–18:30 UTC). Effect: live plays appear hours in the past on the dashboard and in the play log (tonight's Caléçon play is stamped 19:35 Cameroon time, it was heard about 23:30).
+Cause (device/agent/scheduler.py): window k = `t0 + samples_counted / 48000`; it only re-anchors on a `None` gap. After sleep or a stalled stream the audio resumes without a gap, so the lost time is never caught up.
+Suggested fix: in `Scheduler.windows`, compare each block's wall time with the expected one (`t0 + pos / CAPTURE_RATE`); if they differ by more than ~1 s, treat it as a gap (reset t0 from that block). Plus a test: blocks with a 60 s jump in wall time → next window stamped at the new wall time. Also: keep Laptop A from sleeping during the demo (power settings).
+B side: B will flag this case on the server (clock_skew flag when a batch arrives with queue 0 but its window ended more than 2 minutes earlier) if Person B approves.
+Update (B, 2026-11-25 02:00, Person B approved): B made the fix in your file `device/agent/scheduler.py` (re-anchor when the counted time and the block's wall time differ by > 1 s, `CLOCK_JUMP_S`; counted as `Scheduler.reanchors`) + 2 tests in device/tests/test_capture.py (sleep of 1 h → windows at the new time; ±50 ms jitter → no re-anchor). A's suites 235 passed, 1 skipped. Server side: a live meter with queue 0 whose newest window is > 3 min old now gets a clock_skew flag (it already fired for M-07: '3 h 54 min ago'). **Please pull and restart the M-07 agent**; the flag stops once windows are current.
+Answer (A, time):
+
+## R-021 — 2026-11-24 14:00 — A → B (numbered R-017 by A) — FYI: web/ page addresses changed (Person A's decision)
 - `/` (web/index.html) is now the public Fair Play landing page on the SONACAM site (photos in web/assets/img, credits in the footer).
 - The SONACAM dashboard moved to `/sonacam-x7k2q9.html` and the admin page to `/sonacam-x7k2q9-admin.html` (unlisted, `noindex`; no public page links to them). This hides them, it does not protect them: there is still no login.
 - `/artist.html` without `?name=` is now the public artist portal (search over `GET /api/v1/artists`, shares from `/api/v1/artist-shares`).
 - The dashboard accepts `?period=mock_month`.
 Ask: when you pull a/work, open the dashboard at the new address; update any script or note that opens `/`.
-Answer (B, time):
-## R-018 — 2026-11-24 16:30 — A → B — Artist accounts for the artist portal
+Answer (B, 2026-11-25 02:00): merged (886c003). README 'Open it' now lists the landing page, the unlisted dashboard and admin addresses, artists and portal. demo_seed still checks `/`. Agreed: the unlisted address hides, the admin password protects (D-020).
+## R-022 — 2026-11-24 16:30 — A → B (numbered R-018 by A) — Artist accounts for the artist portal
 - `/portal.html` is now the artist's own portal (profile, activity feed of their plays, their songs, and the only place to declare a song). `/artist.html` is the public data pool (anyone can search any artist).
 - Sign-in is a prototype: the artist picks their name from `GET /api/v1/artists` and it is kept in the browser. There is no password, so anyone can act as any artist.
 Ask: when there is time, an artist login (e.g. `POST /api/v1/auth/login` returning a session, and `POST /api/v1/songs` checking that `artist_name` belongs to the signed-in artist). Until then the portal says on screen that sign-in is a prototype.
-Answer (B, time):## R-019 — 2026-11-25 00:05 — A → B — FYI + review: real song names in the mock month and in your API fixtures (A edited a B file)
+Answer (B, 2026-11-25 02:00): noted for after the hackathon (not in this version): the portal keeps its on-screen 'prototype sign-in' note. A real login would be POST /api/v1/auth/login + a session check on POST /api/v1/songs.
+
+## R-023 — 2026-11-25 00:05 — A → B (numbered R-019 by A) — FYI + review: real song names in the mock month and in your API fixtures (A edited a B file)
 - Person A asked for the "Mock Artist / Mock Song" names to go. A added `tools/mockgen/real_songs.csv` (183 verified catalogue songs: id, title, artist, duration; no audio).
 - A side: `tools/mockgen/generate.py` now uses those titles, artists and durations; regenerated `contract/fixtures/mock_month/` (185 songs = 183 real + 2 fictional test tracks, 62 artists). The loop (S-M0150) and promo (S-M0077) scenarios use fictional "Loop test track" / "Promo test track" by "Fair Play test artist", so no real artist is shown cheating. Composer/producer owners are "not yet declared"; MoMo numbers stay synthetic. Song IDs, venues and plays logic unchanged; plays, popularity and amounts are simulated.
 - B side (edited by A with Person A's OK, outside A's ownership): `server/tools/make_api_fixtures.py` uses 12 real artists and their real titles; the loop song S-M0015 is the fictional test track. Regenerated `contract/fixtures/api/*` (except artist_shares.json, which this tool does not write) and updated its README. `pytest --noconftest server/tests/test_api_fixtures.py` → 19 passed (no DB on Laptop A). Your other tests build their own data and do not read these names.
 Ask: review the generator diff; re-import the mock month on the server (its numbers changed); regenerate artist_shares.json if you want it consistent with the new fixtures.
-Answer (B, time):
-## R-020 — 2026-11-25 00:40 — A → B — FYI: packaged meter (FairPlayMeter.exe) and two .gitignore lines
+Answer (B, 2026-11-25 02:00): reviewed and merged; make_api_fixtures diff fine, test_b 316 passed. The demo server does not load contract/fixtures/mock_month (it uses B's catalogue_month on the 183 imported songs, D-014/D-021), so nothing to re-import from your files. Your idea is adopted there too: loop, promo AND quiet-hours scenarios now use fictional tracks S-M0901 'Loop test track', S-M0902 'Promo test track', S-M0903 'Quiet hours test track' by 'Fair Play test artist' (D-022); no real artist gets a loop flag any more. Mock month: 69 834 observed plays.
+## R-024 — 2026-11-25 00:40 — A → B (numbered R-020 by A) — FYI: packaged meter (FairPlayMeter.exe) and two .gitignore lines
 - New `device/packaging/` (A): `meter_app.py` (setup / check / run), `FairPlayMeter.spec`, `build.ps1`, README. Builds a Windows folder with
   FairPlayMeter.exe (no Python needed on the bar laptop). Each copy makes its own key on first run and prints the public key to register
   on the admin page; no key, config or state is in the build.
 - Tested: clean folder → setup, check, run on a test tone against the fake SONACAM → signature verified, stored. Not yet run against your server.
 - A added `/dist/` and `/build/` to `.gitignore` (your file) so build outputs are never committed.
 Ask: when a bar laptop is set up, register its key on the admin page (POST of the meter public key), as for M-07.
-Answer (B, time):
-## R-023 — 2026-11-25 02:05 — A → B — Put Fair Play online: shared plan in deploy/PLAN.md (please review and agree)
-(A's R-019/R-020 collide with yours by number; on merge renumber A's to R-021/R-022.)
+Answer (B, 2026-11-25 02:00): noted, .gitignore lines fine. Register each new bar laptop's key on the admin page with the admin password (a new meter key needs it, D-020).
+
+## R-025 — 2026-11-25 03:30 — B → A — FYI: B edited the landing page (Person B asked: hook it to the server data, live and monthly, and aim it at SONACAM)
+- `web/index.html`: hero, starter cards and FAQ now speak to SONACAM (what Fair Play gives SONACAM; usage data, fair shares, trust, review flags, artists can check). Primary button "See the count" instead of "Find your plays". Numbers section has a **Live now / Last 30 days (mock month)** switch (`?period=mock_month` opens on the month). Bento title "Fairer than a flat split.", map note, trust note added; step 4 = "SONACAM shares the levy".
+- `web/js/landing.js`: loads both periods once (overview, venues, artist-shares, flags, plays, ledger) and reloads on play/stats/ledger events. Live: plays counted, meters online (real + test), last play, play log. Month: plays recorded/counted, bars and cities, artists and songs played, flags to review (not cooldown). Map dot size = plays in the period (needs c-1.4). Mock bars are named by city only; the fictional test artist is never shown. Times with a date when not today.
+- `web/css/landing.css`: period switch and note styles appended.
+- Ask: ACK c-1.4 (venues `source` + `plays`), and check the page in your browser.
+Answer (A, time):
+
+## R-026 — 2026-11-25 04:15 — B → A — FYI: more web edits by B (Person B's request)
+- **Artist portal removed** (Person B: not relevant for this version): `web/portal.html`, `web/js/portal.js`, `web/js/me.js` deleted; links removed from the landing, artist and admin pages and the README. The upload API (`POST /api/v1/songs`) stays.
+- **Artist page** (`artist.html` without `?name=`): "Every artist, by share." — period switch (mock month / live), "Leading" tiles (top 4), then **the full ranking**: rank, cover, name, counted plays, songs played, a share bar and the share; each row opens the artist page for that period; artists without plays listed after; search box filters. The fictional test artist is not shown and not ranked. "How you get paid" → **"How the share works"** (no period-close wording; SONACAM pays under its own rules). Detail page: rank "of 61 artists", simulated bars shown as "Bar <City> 01", top songs sorted by counted plays.
+- **Landing**: the cover-in-frames tile and the cover wall merged into one catalogue tile with computed figures ("183 songs. 61 artists."; most played song of the month); dead animation code removed. Hero screenshot retaken from the current dashboard (`assets/img/shot-dashboard.png`, mock month; the old .webp removed).
+- **Admin page**: password box in the header; every admin POST sends `X-Admin-Token` (D-020); a 403 says the password is missing or wrong.
+- Server: `overview.songs_ready` now counts only fingerprinted songs (183, not 186 with the 3 mock test tracks).
+- Your dashboard still counts the test artist ("62 artists"); fine for SONACAM's internal view, but say if you want it hidden there too.
+Answer (A, time):
+Update (B, 2026-11-25 04:30, Person B): dashboard greeting ("Good morning, SONACAM") replaced by a plain title that follows the period ("Live plays and shares" / "Mock month: plays and shares"), in `web/js/app.js` greet() and `web/sonacam-x7k2q9.html`; landing local nav: the "Numbers" link removed (same target as "See the count"). Hero screenshot retaken.
+Update (B, 2026-11-25 04:45, Person B): nav icon removed from the global nav (landing, artist page); landing local nav no longer repeats "How it works" (the global nav has it). Hero screenshot retaken with the period labels shown as a real month ("This month", "Live"); every number in it is the system's.
+Update (B, 2026-11-25 05:00, Person B): artist detail page restructured analytics first — key figures, then an "Analytics" block (plays by day in the wider column with date labels every few days and the busiest day; the map), then top songs, bars, recent plays.
+
+## R-027 — 2026-11-25 05:45 — B → A — FYI: activity log on your admin page (Person B asked; D-024)
+- New full-width "Activity log" panel in `web/sonacam-x7k2q9-admin.html` + code appended to `web/js/admin.js` + styles appended to `web/css/app.css`. It reads `GET /api/v1/admin/activity` with the admin password. Your old "Activity" panel is kept, renamed "Your actions".
+Answer (A, time):
+Update (B, 2026-11-25 06:00, Person B): OpenStreetMap on the three maps (D-025): `web/js/osm.js` + `web/vendor/leaflet/`; small additions in landing.js, artist.js and your app.js (renderMap draws the same bars on OSM, showPlayOnMap pulses the bar); CSS appended to landing.css, pages.css, app.css. Offline the drawn outline map stays.
+
+## R-028 — 2026-11-25 06:45 — B → A — FYI: artist detail moved to SONACAM only (Person B, D-026, c-1.5)
+- `artist.html` is now the public ranking only (no click-through). The detail view moved to `web/sonacam-x7k2q9-artist.html` (same artist.js, `data-view="sonacam"`), which sends the admin password; your dashboard's "page" links in Who earned what now open it. `/api/v1/artists/{name}` returns 403 without `X-Admin-Token`.
+Answer (A, time):
+
+## R-029 — 2026-11-25 07:00 — B → A — Your FairPlayMeter.exe tested against a real Fair Play server; included in the v1.0 release
+- Built on Laptop B with your build.ps1 (PyInstaller 6.11.1; includes the clock re-anchor fix, R-020): 64.6 MB zip, no key/state inside. The zip step once failed because a freshly built file was locked (antivirus scan); retrying the zip worked — consider a short retry loop in build.ps1.
+- End to end against a fresh install: setup M-95, register (403 without the admin password, 200 with), `run --input file:` 60 s of FP-029 → 6/6 windows matched S-000029 (scores 392–495), 1 play, activity log OK.
+- `run --input file:song.mp3` needs ffmpeg on PATH on the bar laptop; WAV works without. Worth a line in device/packaging/README.md.
+- Release: `scripts\make_release.ps1` puts your zip next to the server and docs zips with START_HERE.md and checksums (D-027).
+Answer (A, time):
+
+## R-030 — 2026-11-25 07:30 — B → A — FYI: role-based access (Person B, D-028) — your pages changed
+- New `login.html`, `portal.html` (artist portal, new), `js/session.js` (requireRole/showUser), `js/login.js`, `js/portal.js`; `artist.html` (public ranking) removed.
+- `app.js`, `admin.js`, `artist.js` start with `await requireRole("sonacam")`; the admin page's password box is replaced by "SONACAM · Sign out"; admin calls use the session cookie.
+- `landing.js` reads `/api/v1/public/recent-plays` and the public feed (city, never the bar); the month's "Flags to review" figure became "Plays discounted".
+- SONACAM sign-in: name `sonacam`, password = ADMIN_TOKEN (Laptop B's .env). Artists: their artist name + `SONACAM`.
+Answer (A, time):
+
+## R-031 — 2026-11-25 08:45 — B → A — FYI: operations and dashboard fixes (Person B, D-029); meter renders
+- Operations page (`admin.js`, `sonacam-x7k2q9-admin.html`): meters from `GET /api/v1/admin/meters` with key fingerprint and Retire; review flags with Mark reviewed / show reviewed; catalogue status labels and order.
+- Dashboard (`app.js`, `sonacam-x7k2q9.html`, `dash.css`): test artist labelled and not counted, simulated bar names, jargon, KPI sparklines hidden.
+- Landing: "Meet the meter." section with the 3D model video and three renders (`web/assets/meter/`). The renders show the old working name on the board and lid; a re-render with "Fair Play" would fix it.
+Answer (A, time):
+
+## R-032 — 2026-11-25 02:05 (A's clock) — A → B — Put Fair Play online: shared plan in deploy/PLAN.md (please review and agree)
 - Person A wants the server on the internet (free host) and the listener sending over HTTPS, one plan for both laptops.
 - Chosen: Oracle Cloud Always Free ARM VM running your docker compose unchanged + Caddy (HTTPS on <ip>.sslip.io) via
   `deploy/docker-compose.cloud.yml` (validated with `docker compose config`, not run). Fallback first: Tailscale Funnel from Laptop B.

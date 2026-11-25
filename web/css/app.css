@@ -257,3 +257,41 @@ thead th { font-size: 12px; font-weight: 600; }
 /* quality floor */
 :focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; border-radius: 4px; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+.admintok { font-size: 12px; opacity: .8; display: flex; gap: 6px; align-items: center; }
+.admintok input { font: inherit; padding: 3px 8px; border: 1px solid var(--line, #ccc); border-radius: 6px; }
+
+/* Activity log panel on the admin page (D-024) */
+.adm .span3 { grid-column: 1 / -1; }
+.adm .actlog { max-height: none; }
+.act-tools { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 10px; }
+#act-kinds { display: flex; flex-wrap: wrap; gap: 6px; }
+#act-kinds button { font: inherit; font-size: 12px; padding: 4px 10px; border-radius: 14px; border: 1px solid var(--line); background: transparent; cursor: pointer; }
+#act-kinds button.on { background: #1d1d1f; color: #fff; border-color: #1d1d1f; }
+.act-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.act-row select, .act-row input { font: inherit; font-size: 13px; padding: 5px 8px; border: 1px solid var(--line); border-radius: 6px; }
+.act-row input { flex: 1 1 220px; }
+#act-live[aria-pressed="true"] { color: #0a8a3a; }
+.act-scroll { max-height: 460px; overflow: auto; }
+table.act th { position: sticky; top: 0; background: var(--panel, #fff); z-index: 1; }
+table.act td.t { white-space: nowrap; font-variant-numeric: tabular-nums; color: #555; }
+table.act td.soft, td.soft { color: #888; white-space: nowrap; }
+table.act .kind { display: inline-block; font-size: 11px; padding: 1px 8px; border-radius: 10px; background: #eef1f6; white-space: nowrap; }
+table.act .k-play { background: #e3f0ff; color: #0058b9; }
+table.act .k-heard { background: #eaf6ee; color: #187a3c; }
+table.act .k-flag, table.act .k-meter { background: #fff3e6; color: var(--amber); }
+table.act .k-rejected, table.act .k-ledger { background: #fde8ec; color: #b0002a; }
+table.act .k-admin { background: #efe9fb; color: #5b2fb3; }
+table.act tr.lv-warn td:nth-child(3) { color: var(--amber); }
+table.act tr.lv-error td:nth-child(3) { color: var(--red); font-weight: 600; }
+.act-more { margin-top: 8px; }
+
+/* OpenStreetMap in the dashboard map card (D-025) */
+.map-wrap .osm-map { width: 100%; border-radius: 10px; overflow: hidden; }
+.leaflet-container { font: inherit; font-size: 12px; }
+
+/* D-029: retire a meter, review flags */
+tr.retired td { color: #999; }
+button.small.confirm { background: var(--red); color: #fff; border-color: var(--red); }
+.flags li.reviewed { opacity: .55; }
+.flags .flag-btn { float: right; }
+td.mono, .mono { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 12px; }

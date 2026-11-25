@@ -55,9 +55,17 @@ def run_jobs(name: str, kind: str, handler: Callable[[psycopg.Connection, dict],
                 if n:
                     log.warning("put back %d stale %s job(s)", n, kind)
                 log.info("worker ready: taking '%s' jobs", kind)
+                next_check = time.monotonic() + 60
                 while True:
                     if not run_one(conn, kind, handler, log):
                         time.sleep(config.JOB_POLL_S)
+                        # While idle, put back jobs another worker (or this one before a restart) left 'running'.
+                        # Every job takes seconds, so one still 'running' after JOB_STALE_S was abandoned.
+                        if time.monotonic() >= next_check:
+                            n = jobs.requeue_stale(conn, kind, config.JOB_STALE_S)
+                            if n:
+                                log.warning("put back %d abandoned %s job(s)", n, kind)
+                            next_check = time.monotonic() + 60
         except psycopg.OperationalError as e:
             log.warning("lost the db (%s); reconnecting in 2 s", e)
             time.sleep(2)

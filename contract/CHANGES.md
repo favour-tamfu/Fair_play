@@ -36,3 +36,18 @@
 - Additive: `GET /api/v1/export/usage_report.csv?period=&mode=` — usage report (prototype), shares only (columns `song_id,isrc,iswc,title,artist_name,period_start,period_end,raw_plays,counted_plays,share,artist_share,rule_version,stats_run_id`).
 - Deprecated (kept so no page breaks; pages should stop showing them): `amount_fcfa` in `shares.rows`, `artist`, and the `payouts` endpoint. This version ends at what each artist truly earned (the share); paying it out is not modelled.
 - Status: waiting for A's ACK (R-011). Web pages updated by B with Person B's approval while A was offline (R-015).
+- 2026-11-24 12:35 — B — Additive (with c-1.3): `POST /v1/calibration` answers `{"ok":true,"run_id","matched","total","catch_rate","applied","pending_windows"}` (window ±60 s as in §4). Flags `clock_skew` and `meter_moved` are now produced (types already in §6): `detail` is plain text for people, `venue_id` set, `song_id` null.
+
+## c-1.4 — 2026-11-25 03:00 — PROPOSED (B, Person B asked for the landing page to show live and monthly data) — plays per bar
+- Additive, optional for readers: each `GET /api/v1/venues` item gets `source` (`live` | `virtual` | `mock`) and `plays` = `{"live": int, "mock_month": int}` (recorded plays at that bar per period). `venues.schema.json` updated (both fields optional, so old fixtures stay valid).
+- Used by the landing page map (bar size = plays in the selected period). No existing field changes.
+- Status: waiting for A's ACK.
+
+## c-1.5 — 2026-11-25 06:45 — B (Person B, D-026) — artist detail behind the admin password
+- `GET /api/v1/artists/{artist_name}` now requires header `X-Admin-Token` (403 without it). Shape unchanged. Public pages use `/api/v1/artist-shares` (ranking) and `/api/v1/artists` (names) only.
+- Status: applied (privacy decision by Person B); A informed in R-028.
+
+
+## c-1.6 — 2026-11-25 08:30 — B (Person B: fix the open issues, D-029) — review flags, retire meters
+- Additive: `GET /api/v1/flags` items get `reviewed_at` (UTC or null) and `reviewed_by`. `POST /api/v1/flags/{flag_id}/review` `{"reviewed": bool, "note"?}` (SONACAM).
+- New (SONACAM): `GET /api/v1/admin/meters[?mock=1]` (meters with key fingerprint, retired), `POST /api/v1/admin/meters/{id}/retire`. A retired meter's batches and heartbeats get 403 `{"error":"meter_retired"}`; an admin re-registration restores it.

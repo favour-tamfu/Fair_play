@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 import psycopg
 
 from fairplay_core.schema import format_utc
-from server import config
+from server import activity, config
 from server.db import connect, notify
 from server.ledger import audit
 from server.ledger.anchor import anchor_closed_hours
@@ -27,7 +27,7 @@ class Scheduler:
     def __init__(self) -> None:
         self.ledger_state = None              # (intact, broken_at) last announced
         self.online: dict[str, bool] = {}
-        self.due = {"ledger": 0.0, "meters": 0.0, "anchors": 0.0, "stats": 0.0}
+        self.due = {"ledger": 0.0, "meters": 0.0, "anchors": 0.0, "stats": 0.0, "calibration": 0.0, "prune": 0.0}
         self.stats_seen: dict[str, tuple] = {}   # period -> plays fingerprint of the last run
 
     def check_ledger(self, conn: psycopg.Connection) -> dict:
@@ -50,6 +50,10 @@ class Scheduler:
                                        "last_seen": format_utc(m["last_seen"]) if m["last_seen"] else None})
                 flipped.append(m["meter_id"])
                 log.info("meter %s is now %s", m["meter_id"], "ONLINE" if online else "OFFLINE")
+                activity.record(conn, "meter", f"{m['meter_id']} is " + ("back online" if online else
+                                f"offline (no report or heartbeat for {config.METER_OFFLINE_S} s)"),
+                                "info" if online else "warn", meter_id=m["meter_id"], actor="scheduler",
+                                detail={"queued": m["queued"] or 0})
             self.online[m["meter_id"]] = online
         return flipped
 
@@ -84,6 +88,15 @@ class Scheduler:
         if t >= self.due["stats"]:
             self.check_stats(conn)
             self.due["stats"] = t + config.STATS_EVERY_S
+        if t >= self.due["prune"]:
+            n = activity.prune(conn)
+            if n:
+                log.info("activity log: %d lines older than %d days removed", n, activity.KEEP_DAYS)
+            self.due["prune"] = t + 3600
+        if t >= self.due["calibration"]:
+            from server.calibration import recheck_recent
+            recheck_recent(conn)
+            self.due["calibration"] = t + config.CALIB_EVERY_S
 
 
 def main() -> None:

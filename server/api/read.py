@@ -12,7 +12,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import PlainTextResponse
 from fastapi.concurrency import run_in_threadpool
 
@@ -23,6 +23,7 @@ from server.ledger import audit
 from server.money import largest_remainder
 from server.stats import artists as artist_stats
 from server.stats import compare
+from server.api.admin import require_admin
 from server.stats.periods import ACTIVE, period_sql
 
 router = APIRouter(prefix="/api/v1")
@@ -97,7 +98,8 @@ def _overview(period: str) -> dict:
             counted = float(c.execute(f"""SELECT COALESCE(sum(w.weight), 0) AS s FROM plays p JOIN play_weights w
                                          ON w.play_id = p.play_id AND w.stats_run_id = %s WHERE {ACTIVE} AND {where}""",
                                       [run["stats_run_id"]] + args).fetchone()["s"])
-        ready = c.execute("SELECT count(*) AS n FROM songs WHERE status = 'ready'").fetchone()["n"]
+        # songs the meters can recognise: ready AND fingerprinted (mock-month songs have no hashes)
+        ready = c.execute("SELECT count(*) AS n FROM songs WHERE status = 'ready' AND n_hashes > 0").fetchone()["n"]
         led = audit.status(c)
     return {"meters_online": m["online"], "meters_total": m["total"], "venues": n_venues, "plays_raw": raw,
             "plays_counted": round(counted, 2), "songs_ready": ready, "unidentified_music_min": 0.0,
@@ -114,16 +116,23 @@ def _venues() -> list[dict]:
     with connect() as c:
         vs = c.execute("SELECT * FROM venues ORDER BY venue_id").fetchall()
         ms = c.execute("SELECT * FROM meters ORDER BY meter_id").fetchall()
+        counts = {(r["venue_id"], r["chain"]): r["n"] for r in c.execute(
+            f"SELECT venue_id, chain, count(*) AS n FROM plays p WHERE {ACTIVE} GROUP BY venue_id, chain")}
     out = []
     for v in vs:
         meters = [{"meter_id": m["meter_id"],
-                   "online": m["source"] != "mock" and m["last_seen"] is not None
+                   "online": m["source"] != "mock" and m.get("retired_at") is None and m["last_seen"] is not None
                    and (now - m["last_seen"]).total_seconds() <= config.METER_OFFLINE_S,
                    "last_seen": _ts(m["last_seen"]), "queued": int(m["queued"] or 0),
                    "catch_rate": float(m["catch_rate"] if m["catch_rate"] is not None else 0.8)}
                   for m in ms if m["venue_id"] == v["venue_id"]]
         out.append({"venue_id": v["venue_id"], "name": v["name"] or v["venue_id"], "city": v["city"], "lat": v["lat"],
-                    "lon": v["lon"], "stratum": v["stratum"], "bars_in_stratum": v["bars_in_stratum"], "meters": meters})
+                    "lon": v["lon"], "stratum": v["stratum"], "bars_in_stratum": v["bars_in_stratum"], "meters": meters,
+                    # c-1.4: live | virtual | mock, from the bar's meters (a bar with a real meter is live)
+                    "source": next((s for s in ("live", "virtual") if any(m["source"] == s for m in ms
+                                                                          if m["venue_id"] == v["venue_id"])), "mock"),
+                    "plays": {"live": counts.get((v["venue_id"], "live"), 0),
+                              "mock_month": counts.get((v["venue_id"], "mock"), 0)}})
     return out
 
 
@@ -137,7 +146,7 @@ def _plays(period, mode, venue_id, song_id, limit) -> list[dict]:
         return query_plays(c, period, mode, venue_id, song_id, limit=limit)
 
 
-@router.get("/plays")
+@router.get("/plays", dependencies=[Depends(require_admin)])   # D-028: SONACAM only
 async def plays(period: str = PERIOD, mode: str = MODE, venue_id: Optional[str] = None, song_id: Optional[str] = None,
                 limit: int = Query(50, ge=1, le=1000)):
     return await run_in_threadpool(_plays, period, mode, venue_id, song_id, limit)
@@ -159,17 +168,18 @@ async def shares(period: str = PERIOD, mode: str = MODE):
 
 def _flags(period: str) -> list[dict]:
     # stats flags of this period's runs + flags not from a stats run (e.g. duplicate_suspected from the catalogue)
-    sql = """SELECT flag_id, type, song_id, venue_id, detail, created_at FROM flags
+    sql = """SELECT flag_id, type, song_id, venue_id, detail, created_at, reviewed_at, reviewed_by FROM flags
              WHERE stats_run_id IN (SELECT stats_run_id FROM stats_runs WHERE period = %s)
                 OR (stats_run_id IS NULL AND created_at >= %s)"""
     since = parse_utc(config.LIVE_SINCE) if period == "live" else datetime(1970, 1, 1, tzinfo=timezone.utc)
     args = [period, since]
     with connect() as c:
         rows = c.execute(sql + " ORDER BY created_at DESC, flag_id DESC LIMIT 500", args).fetchall()
-    return [{**r, "detail": r["detail"] or "", "created_at": format_utc(r["created_at"])} for r in rows]
+    return [{**r, "detail": r["detail"] or "", "created_at": format_utc(r["created_at"]),
+             "reviewed_at": format_utc(r["reviewed_at"]) if r["reviewed_at"] else None} for r in rows]
 
 
-@router.get("/flags")
+@router.get("/flags", dependencies=[Depends(require_admin)])   # D-028: SONACAM only
 async def flags(period: str = PERIOD):
     return await run_in_threadpool(_flags, period)
 
@@ -181,7 +191,7 @@ def _payouts(period: str, pot: int) -> dict:
     return {"pot_fcfa": pot, "frozen": frozen, "rows": [], "total_fcfa": 0}
 
 
-@router.get("/payouts")
+@router.get("/payouts", dependencies=[Depends(require_admin)])   # D-028: SONACAM only
 async def payouts(period: str = PERIOD, pot: int = Query(config.POT_DEFAULT_FCFA, ge=0)):
     return await run_in_threadpool(_payouts, period, pot)
 
@@ -227,7 +237,7 @@ def _usage_report(period: str, mode: str) -> str:
     return f.getvalue()
 
 
-@router.get("/export/usage_report.csv", response_class=PlainTextResponse)
+@router.get("/export/usage_report.csv", response_class=PlainTextResponse, dependencies=[Depends(require_admin)])   # D-028
 async def usage_report(period: str = PERIOD, mode: str = MODE):
     text = await run_in_threadpool(_usage_report, period, mode)
     return PlainTextResponse(text, media_type="text/csv",
@@ -289,7 +299,7 @@ def _artist(name: str, period: str, mode: str) -> Optional[dict]:
             "share": sum(r["share"] for r in rows if r["song_id"] in ids), "recent": recent}
 
 
-@router.get("/artists/{artist_name}")
+@router.get("/artists/{artist_name}", dependencies=[Depends(require_admin)])   # D-026: SONACAM only (admin password)
 async def artist(artist_name: str, period: str = PERIOD, mode: str = MODE):
     body = await run_in_threadpool(_artist, artist_name, period, mode)
     if body is None:

@@ -26,7 +26,7 @@ Made on Laptop A, {date}. Branch a/work at commit {commit}.
    git fetch <path>\\code\\Fair_Play_a-work.bundle a/work:refs/remotes/laptopA/a-work
    git merge laptopA/a-work
 2. Re-import the mock month (its numbers changed) and, if you want, regenerate artist_shares.json (R-019).
-3. Restart the server. Pages: / (public landing), /artist.html (Artists), /portal.html (artist portal),
+3. Restart the server. Pages: / (public landing), /artist.html (Artists),
    /sonacam-x7k2q9.html (SONACAM dashboard), /sonacam-x7k2q9-admin.html (admin).
 4. Load the songs: unzip songs/Fair_Play_song_package_v3.zip and upload the 183 songs from catalogue.csv
    (B currently holds only the 60 v1 songs, S-000013..S-000072).

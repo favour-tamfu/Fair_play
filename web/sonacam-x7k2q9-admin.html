@@ -4,59 +4,94 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Fair Play · SONACAM admin</title>
+<title>Fair Play · SONACAM operations</title>
 <link rel="stylesheet" href="css/app.css">
+<link rel="stylesheet" href="css/dash.css">
 </head>
-<body class="admin">
-<header class="top">
-  <div class="brand">Fair Play <span>· SONACAM admin</span></div>
-  <nav class="tabs">
-    <a class="navlink" href="sonacam-x7k2q9.html">Dashboard</a>
-    <a class="navlink" href="portal.html">Upload portal</a>
-  </nav>
-  <div class="clock" id="clock"></div>
-  <span class="ledger" id="ledger">Log —</span>
-</header>
+<body class="d2 admin">
+<!-- SONACAM app, operations side (D-028): same sidebar as the dashboard; SONACAM sign-in required. -->
+<aside class="side" aria-label="Dashboard menu">
+  <div class="org">
+    <img class="org-logo" src="assets/brand/sonacam-logo.svg" alt="SONACAM, Société Nationale Camerounaise de l'Art Musical" width="240" height="70">
+  </div>
 
-<main class="adm">
-  <!-- Meters -->
-  <section class="panel span2">
-    <div class="head"><h2>Meters</h2><span class="note" id="meters-note"></span></div>
+  <p class="side-h">Analytics</p>
+  <nav class="menu" aria-label="Analytics">
+    <a href="sonacam-x7k2q9.html#overview"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 9.5L10 4l7 5.5V16a1 1 0 01-1 1H4a1 1 0 01-1-1z" fill="currentColor"/></svg>Overview</a>
+    <a href="sonacam-x7k2q9.html#songs"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M8 15V5l8-2v10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="6" cy="15" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="14" cy="13" r="2.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>Songs</a>
+    <a href="sonacam-x7k2q9.html#trust"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5l6 2.5v4.5c0 3.8-2.6 6.6-6 8-3.4-1.4-6-4.2-6-8V5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M7.3 10l1.9 1.9 3.6-3.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Trust</a>
+  </nav>
+
+  <hr>
+  <p class="side-h">Operations</p>
+  <nav class="menu">
+    <a href="#meters" data-op="meters"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="3" width="12" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 13V9M10 13V7M12 13v-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Meters</a>
+    <a href="#activity" data-op="activity"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 10h3l2-5 4 10 2-5h3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Activity log</a>
+    <a href="#flags" data-op="flags"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 17V3M5 4h9l-2 3 2 3H5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Review flags</a>
+    <a href="#catalogue" data-op="catalogue"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4" width="14" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6 8h8M6 11h8M6 14h5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Catalogue</a>
+    <a href="#actions" data-op="actions"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="2.6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 2.5v2.2M10 15.3v2.2M2.5 10h2.2M15.3 10h2.2M4.7 4.7l1.6 1.6M13.7 13.7l1.6 1.6M4.7 15.3l1.6-1.6M13.7 6.3l1.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Actions</a>
+  </nav>
+
+  <div class="side-user who" id="who"></div>
+  <p class="side-foot">Times are Cameroon time.<span id="mode-note"></span></p>
+</aside>
+
+<div class="page">
+  <header class="topbar">
+    <p class="crumb">Operations <span aria-hidden="true">›</span> <b id="crumb">Meters</b></p>
+    <span class="clock" id="clock"></span>
+    <span class="ledger" id="ledger">Log —</span>
+  </header>
+
+  <main class="adm">
+  <section class="panel span2" id="meters-panel">
+    <div class="head"><h2>Meters</h2><span class="note" id="meters-note"></span><label class="note mock-toggle"><input type="checkbox" id="show-mock"> show the mock-month bars</label></div>
     <div class="scroll">
       <table>
-        <thead><tr><th>meter</th><th>bar</th><th>city</th><th>status</th><th>last seen</th><th class="n">queued</th><th class="n">catch rate</th></tr></thead>
+        <thead><tr><th>meter</th><th>bar</th><th>city</th><th>status</th><th>last seen</th><th>key fingerprint</th><th class="n">catch rate</th><th></th></tr></thead>
         <tbody id="meters"></tbody>
       </table>
     </div>
   </section>
 
-  <!-- Actions -->
-  <section class="panel">
-    <div class="head"><h2>Actions</h2></div>
-    <div class="action">
-      <div><b>Recalculate shares now</b><span class="note">Runs the fair-play rules (standardised and raw) for a period.</span></div>
-      <div class="row">
-        <select id="stats-period"><option value="live">Live</option><option value="mock_month">Mock month</option></select>
-        <button id="btn-stats">Run stats</button>
+  <section class="panel" id="register">
+    <div class="head"><h2>Register a meter</h2></div>
+    <p class="note">Choose the meter's public key file (<code>M-xx.pub.json</code>, made by the device setup). The server trusts samples signed with this key.</p>
+    <input type="file" id="pub-file" accept=".json,application/json">
+    <pre class="preview" id="pub-preview"></pre>
+    <div class="row"><button id="btn-register" disabled>Register meter</button></div>
+  </section>
+
+  <section class="panel span3 actlog" id="activity">
+    <div class="head"><h2>Activity log</h2><span class="note" id="act-note"></span></div>
+    <div class="act-tools">
+      <div class="filters" id="act-kinds" role="group" aria-label="Type"></div>
+      <div class="act-row">
+        <select id="act-level" aria-label="Level"><option value="">All levels</option><option value="warn">Warnings and errors</option><option value="error">Errors only</option></select>
+        <select id="act-meter" aria-label="Meter"><option value="">All meters</option></select>
+        <input id="act-q" type="search" placeholder="Search: song, bar, meter, text" aria-label="Search the log">
+        <button type="button" id="act-live" aria-pressed="true">● Live</button>
+        <button type="button" id="act-csv">Export CSV</button>
       </div>
     </div>
-    <div class="action">
-      <div><b>Anchor this hour</b><span class="note">Publishes the current hour's Merkle root to the public anchors file.</span></div>
-      <div class="row"><button id="btn-anchor">Anchor now</button></div>
-    </div>
-    <div class="action danger">
-      <div><b>Reset live demo data</b><span class="note">Deletes live plays, samples, matches and live stats, and starts a new log epoch. Keeps the catalogue, meters and the mock month. The reset is recorded in the public anchors file.</span></div>
-      <div class="row"><button id="btn-reset" class="warn">Reset…</button></div>
-      <div class="confirm" id="reset-confirm">
-        <label>Reason <input id="reset-reason" value="demo reset" maxlength="200"></label>
-        <label>Type <b>RESET</b> to confirm <input id="reset-word" autocomplete="off"></label>
-        <div class="row"><button id="btn-reset-go" class="danger-btn" disabled>Delete live data</button><button id="btn-reset-cancel">Cancel</button></div>
-      </div>
+    <div class="scroll act-scroll">
+      <table class="act">
+        <thead><tr><th>time</th><th>type</th><th>what happened</th><th>meter</th><th>by</th></tr></thead>
+        <tbody id="act-rows"></tbody>
+      </table>
+      <div class="row act-more"><button type="button" id="act-older" hidden>Load older</button></div>
     </div>
   </section>
 
-  <!-- Catalogue -->
-  <section class="panel span2">
+  <section class="panel" id="flags-panel">
+    <div class="head"><h2>Review flags</h2>
+      <select id="flags-period"><option value="live">Live</option><option value="mock_month">Mock month</option></select></div>
+    <p class="note">Flags never change a count; they tell SONACAM what to look at. Repeats of the same flag are grouped.
+      <label class="mock-toggle"><input type="checkbox" id="show-reviewed"> show reviewed</label></p>
+    <div class="scroll"><ul class="flags" id="flags"></ul></div>
+  </section>
+
+  <section class="panel span2" id="catalogue">
     <div class="head"><h2>Catalogue</h2><span class="note" id="songs-note"></span></div>
     <div class="filters" id="song-filters"></div>
     <div class="scroll">
@@ -67,31 +102,33 @@
     </div>
   </section>
 
-  <!-- Register a meter -->
-  <section class="panel">
-    <div class="head"><h2>Register a meter</h2></div>
-    <p class="note">Choose the meter's public key file (<code>M-xx.pub.json</code>, made by the device setup). The server trusts samples signed with this key.</p>
-    <input type="file" id="pub-file" accept=".json,application/json">
-    <pre class="preview" id="pub-preview"></pre>
-    <div class="row"><button id="btn-register" disabled>Register meter</button></div>
+  <section class="panel" id="actions">
+    <div class="head"><h2>Actions</h2></div>
+    <div class="action">
+      <div><b>Recalculate shares now</b><span class="note">Runs the fair-play rules (standardised and raw) for a period.</span></div>
+      <div class="row">
+        <select id="stats-period"><option value="live">Live</option><option value="mock_month">Mock month</option></select>
+        <button id="btn-stats">Run stats</button>
+      </div>
+    </div>
+    <div class="action">
+      <div><b>Anchor this hour</b> <span class="chip">demo tool</span><span class="note">Publishes the current hour's Merkle root to the public anchors file.</span></div>
+      <div class="row"><button id="btn-anchor">Anchor now</button></div>
+    </div>
+    <div class="action danger">
+      <div><b>Reset live demo data</b> <span class="chip">demo tool</span><span class="note">Deletes live plays, samples, matches and live stats, and starts a new log epoch. Keeps the catalogue, meters and the mock month. The reset is recorded in the public anchors file.</span></div>
+      <div class="row"><button id="btn-reset" class="warn">Reset…</button></div>
+      <div class="confirm" id="reset-confirm">
+        <label>Reason <input id="reset-reason" value="demo reset" maxlength="200"></label>
+        <label>Type <b>RESET</b> to confirm <input id="reset-word" autocomplete="off"></label>
+        <div class="row"><button id="btn-reset-go" class="danger-btn" disabled>Delete live data</button><button id="btn-reset-cancel">Cancel</button></div>
+      </div>
+    </div>
+    <div class="action"><div><b>Last actions in this tab</b><span class="note">The full record is in the activity log.</span></div>
+      <ol class="log" id="log"></ol></div>
   </section>
-
-  <!-- Flags -->
-  <section class="panel">
-    <div class="head"><h2>Review flags</h2>
-      <select id="flags-period"><option value="live">Live</option><option value="mock_month">Mock month</option></select></div>
-    <p class="note">Flags never change a count (D-009); they tell SONACAM what to look at.</p>
-    <div class="scroll"><ul class="flags" id="flags"></ul></div>
-  </section>
-
-  <!-- Activity -->
-  <section class="panel span2">
-    <div class="head"><h2>Activity</h2><span class="note">this session</span></div>
-    <div class="scroll"><ol class="log" id="log"></ol></div>
-  </section>
-</main>
-
-<footer class="foot">Admin actions have no login in this prototype: keep this page on the SONACAM laptop. Times in Cameroon time<span id="mode-note"></span></footer>
+  </main>
+</div>
 
 <script type="module" src="js/admin.js"></script>
 </body>

@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 import psycopg
@@ -20,6 +20,7 @@ from pydantic import ValidationError
 
 from fairplay_core.schema import Batch, Heartbeat, format_utc, parse_utc
 from fairplay_core.signing import verify_dict
+from server import calibration, config
 from server.db import jobs, notify
 from server.registry import get_meter
 
@@ -56,6 +57,8 @@ def ingest_batch(conn: psycopg.Connection, raw: Any) -> Result:
         meter = get_meter(conn, batch.meter_id)
         if meter is None:
             return Result(404, {"error": "unknown_meter"})
+        if meter.get("retired_at") is not None:       # D-029: retired by SONACAM
+            return Result(403, {"error": "meter_retired"})
         if not verify_dict(meter["public_key_b64"], raw):
             log.warning("bad signature from %s seq %s", batch.meter_id, batch.seq)
             return Result(401, {"error": "bad_signature"})
@@ -77,6 +80,10 @@ def ingest_batch(conn: psycopg.Connection, raw: Any) -> Result:
             log.warning("seq conflict %s seq %s", batch.meter_id, batch.seq)
             return Result(409, {"error": "seq_conflict"})
 
+        calibration.check_cell(conn, meter, batch.cell_id)
+        ahead = (batch.window_start_dt + timedelta(seconds=10) - datetime.now(timezone.utc)).total_seconds()
+        if ahead > config.CLOCK_SKEW_MAX_S:             # a window that ends in the future: meter clock ahead
+            calibration.check_clock(conn, meter, -ahead, f"batch seq {batch.seq} ends in the future")
         if batch.venue_id != meter["venue_id"]:
             log.warning("%s sent venue %s but is registered at %s", batch.meter_id, batch.venue_id, meter["venue_id"])
         conn.execute("""INSERT INTO windows (meter_id, window_start, loudness_db, received, source)
@@ -125,11 +132,15 @@ def ingest_heartbeat(conn: psycopg.Connection, raw: Any) -> Result:
         meter = get_meter(conn, hb.meter_id)
         if meter is None:
             return Result(404, {"error": "unknown_meter"})
+        if meter.get("retired_at") is not None:       # D-029: retired by SONACAM
+            return Result(403, {"error": "meter_retired"})
         if not verify_dict(meter["public_key_b64"], raw):
             return Result(401, {"error": "bad_signature"})
         skew = (now - parse_utc(hb.sent_at)).total_seconds()
         conn.execute("UPDATE meters SET last_seen = %s, queued = %s, clock_skew_s = %s WHERE meter_id = %s",
                      (now, hb.queued, skew, hb.meter_id))
+        if calibration.check_clock(conn, meter, skew, "heartbeat") is None:
+            calibration.check_window_lag(conn, meter, hb.queued, now)
         notify(conn, "meter", {"meter_id": hb.meter_id, "online": True, "queued": hb.queued,
                                "last_seen": format_utc(now)})
     return Result(200, {"ok": True, "server_time": format_utc(now)})

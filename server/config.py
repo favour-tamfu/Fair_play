@@ -14,6 +14,7 @@ CONTRACT_DIR = ROOT / "contract"
 METERS_DIR = CONTRACT_DIR / "meters"
 SCHEMAS_DIR = CONTRACT_DIR / "schemas"
 WEB_DIR = ROOT / "web"
+SERVE_WEB = os.environ.get("SERVE_WEB", "1") != "0"   # 0: the api serves the API only (dashboard pages off)
 MEDIA_DIR = ROOT / "media"
 SONGS_DIR = MEDIA_DIR / "songs"
 ANCHORS_DIR = ROOT / "server" / "anchors"
@@ -32,11 +33,16 @@ def _from_dotenv(key: str) -> str | None:
 
 
 # Inside docker compose DATABASE_URL points at host "db"; on the host it comes from .env (published port 55432).
+# D-020: admin actions need the header X-Admin-Token: <ADMIN_TOKEN>; empty = open (dev laptops, tests)
+ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN") or _from_dotenv("ADMIN_TOKEN") or ""
+# D-028: artists sign in with their artist name and this password (prototype rule, Person B)
+ARTIST_DEFAULT_PASSWORD = os.environ.get("ARTIST_DEFAULT_PASSWORD") or _from_dotenv("ARTIST_DEFAULT_PASSWORD") or "SONACAM"
 DATABASE_URL = (os.environ.get("DATABASE_URL") or _from_dotenv("DATABASE_URL")
                 or "postgresql://fairplay:fairplay@127.0.0.1:55432/fairplay")
 
 # Workers
 JOB_POLL_S = 0.5                 # how often an idle worker checks the job board
+JOB_STALE_S = 300                # a job still 'running' after 5 min was abandoned (worker restarted mid-job): requeued
 
 # Catalogue (B-T04, contract §5)
 UPLOAD_MAX_BYTES = 50 * 1024 * 1024   # c-1.1 (PROPOSED 2026-11-24): was 30 MB in c-1.0
@@ -100,6 +106,19 @@ MODIFIERS_ADJUST_WEIGHTS = False
 
 # Estimation + stats runs (brief §7.3 as amended by D-011: a meter in every bar, no scaling, no unidentified)
 DEFAULT_CATCH_RATE = 0.8         # until the meter is calibrated (B-T14)
-STATS_EVERY_S = 300              # scheduler: live period, both modes, every 5 min (only if plays changed)
+STATS_EVERY_S = 15               # scheduler: live period, both modes, every 15 s when plays changed (pages update fast)
 STATS_AUTO_PERIODS = ("live",)   # mock_month / all: run after the mock import (B-T11) or POST /api/v1/stats/run
 STATS_KEEP_RUNS = 3              # older runs (and their play_weights/shares) are pruned per (period, mode)
+
+# Meter health (B-T14): calibration, clock skew, moved meter
+CALIB_TOL_S = 60                 # contract §4: an expected play is caught if matched within ±60 s of played_at
+CALIB_RECHECK_S = 600            # runs received in the last 10 min are re-evaluated (matching lags a little)
+CALIB_EVERY_S = 15               # scheduler re-check interval
+CLOCK_SKEW_MAX_S = 5.0           # brief §12: |meter clock − server clock| > 5 s → clock_skew flag
+CLOCK_SKEW_EVERY_S = 3600        # at most one clock_skew flag per meter per hour
+WINDOW_LAG_MAX_S = 180           # R-020: live meter says queue 0 but its newest window started > 3 min ago → clock_skew flag
+
+# The demo catalogue = every uploaded song (any id). On Laptop B the team's package v3 is S-000013…S-000195 (183 songs);
+# a fresh install numbers it from S-000001. CATALOGUE_SIZE > 0 makes demo_seed also check the count (0 = any, at least 1).
+CATALOGUE_RANGE = (os.environ.get("CATALOGUE_FIRST") or "S-000000", os.environ.get("CATALOGUE_LAST") or "S-999999")
+CATALOGUE_SIZE = int(os.environ.get("CATALOGUE_SIZE") or _from_dotenv("CATALOGUE_SIZE") or 0)

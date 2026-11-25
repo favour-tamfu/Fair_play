@@ -1,130 +1,104 @@
-// Upload portal (A-T12): validate, send POST /api/v1/songs (multipart), show the catalogue status.
-import { MOCK } from "./api.js";
+// Artist portal (D-028): the signed-in artist's own songs (GET /api/v1/me/songs) and the song upload (POST /api/v1/songs).
+import { fmtDateTime } from "./api.js";
+import { requireRole, showUser } from "./session.js";
 
-const MAX_BYTES = 50 * 1024 * 1024; // contract c-1.1: 50 MB (was 30 MB)
-const ROLES = ["singer", "composer", "producer", "publisher"];
 const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmtInt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("fr-FR"));
+const fmtPct = (x) => (x == null ? "–" : (100 * x).toFixed(x < 0.1 ? 2 : 1) + " %");
+const STATUS = { ready: ["ready", "Recognisable"], uploaded: ["wait", "Processing"], processing: ["wait", "Processing"],
+  duplicate_suspected: ["warn", "Being checked by SONACAM"], failed: ["bad", "Could not be read"] };
+const ROLES = [["singer", "Singer"], ["composer", "Composer"], ["producer", "Producer"], ["publisher", "Publisher"]];
 
-function ownerRow(o = {}) {
-  const row = document.createElement("div");
-  row.className = "owner";
-  row.innerHTML = `
-    <label>Name <input data-k="name" value="${o.name || ""}" required></label>
-    <label>Role <select data-k="role">${ROLES.map((r) => `<option ${r === (o.role || "singer") ? "selected" : ""}>${r}</option>`).join("")}</select></label>
-    <label>Share % <input data-k="share_pct" type="number" min="0" max="100" step="0.01" value="${o.share_pct ?? ""}" required></label>
-    <label>MoMo (+2376…) <input data-k="momo" pattern="\\+2376[0-9]{8}" value="${o.momo || ""}"></label>
-    <button type="button" class="rm">remove</button>`;
-  row.querySelector(".rm").addEventListener("click", () => { row.remove(); sumShares(); });
-  row.querySelector('[data-k="share_pct"]').addEventListener("input", sumShares);
-  return row;
+const user = await requireRole("artist");
+showUser(user, $("who"));
+$("hello").textContent = `Welcome, ${user.name}.`;
+$("f-artist").value = user.artist_name;
+let period = "mock_month", data = null;
+
+async function load() {
+  const r = await fetch("/api/v1/me/songs", { cache: "no-store" });
+  if (r.status === 403) { location.replace("login.html?next=portal.html"); return; }
+  data = await r.json();
+  draw();
 }
+function draw() {
+  if (!data) return;
+  const t = data.totals[period];
+  $("t-share").textContent = t.frozen ? "Held" : fmtPct(t.share);
+  $("t-share-sub").textContent = t.frozen ? "Withheld until SONACAM's play log is restored." : period === "live" ? "of plays counted live" : "of all plays counted in the month";
+  $("t-counted").textContent = fmtInt(t.counted_plays);
+  $("t-counted-sub").textContent = `${fmtInt(t.raw_plays)} heard; repeats close together count less`;
+  const ready = data.songs.filter((s) => s.status === "ready").length;
+  $("t-songs").textContent = fmtInt(data.songs.length);
+  $("t-songs-sub").textContent = `${ready} recognisable by the meters`;
+  $("songs-sub").textContent = period === "live" ? "live" : "last 30 days (mock month)";
+  $("song-rows").innerHTML = data.songs.map((s) => {
+    const [cls, label] = STATUS[s.status] || ["wait", s.status];
+    const p = s.periods[period] || {};
+    return `<tr><td><b>${esc(s.title)}</b><span class="soft">${esc([s.isrc, s.iswc].filter(Boolean).join(" · ") || s.song_id)}</span></td>
+      <td><span class="st st-${cls}">${label}</span></td><td class="n">${fmtInt(p.counted_plays)}</td><td class="n">${fmtPct(p.share)}</td>
+      <td class="soft">${fmtDateTime(s.uploaded_at)}</td></tr>`;
+  }).join("") || `<tr><td colspan="5" class="soft">No song yet. Upload your first song below.</td></tr>`;
+}
+document.querySelectorAll("[data-p]").forEach((b) => b.addEventListener("click", () => {
+  period = b.dataset.p;
+  document.querySelectorAll("[data-p]").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
+  draw();
+}));
 
+// ---------- owners ----------
+function ownerRow(name = "", role = "singer", share = "") {
+  const d = document.createElement("div");
+  d.className = "owner";
+  d.innerHTML = `<input class="o-name" placeholder="Name" value="${esc(name)}" required>
+    <select class="o-role">${ROLES.map(([v, l]) => `<option value="${v}"${v === role ? " selected" : ""}>${l}</option>`).join("")}</select>
+    <input class="o-share" type="number" min="0.01" max="100" step="0.01" placeholder="%" value="${esc(share)}" required>
+    <button type="button" class="o-del" aria-label="Remove this owner">×</button>`;
+  d.querySelector(".o-del").addEventListener("click", () => { if ($("owners").children.length > 1) { d.remove(); sum(); } });
+  d.querySelector(".o-share").addEventListener("input", sum);
+  $("owners").appendChild(d);
+}
 function owners() {
-  return [...document.querySelectorAll("#owners .owner")].map((row) => {
-    const g = (k) => row.querySelector(`[data-k="${k}"]`).value.trim();
-    return { name: g("name"), role: g("role"), share_pct: Number(g("share_pct")), momo: g("momo") || null };
-  });
+  return [...$("owners").children].map((d) => ({ name: d.querySelector(".o-name").value.trim(), role: d.querySelector(".o-role").value,
+    share_pct: Number(d.querySelector(".o-share").value) }));
 }
-
-function sumShares() {
-  const total = owners().reduce((a, o) => a + (Number.isFinite(o.share_pct) ? o.share_pct : 0), 0);
-  $("share-sum").textContent = `total ${total.toFixed(2)} %`;
-  $("share-sum").style.color = Math.abs(total - 100) < 0.005 ? "var(--teal)" : "var(--red)";
+function sum() {
+  const total = owners().reduce((t, o) => t + (o.share_pct || 0), 0);
+  $("owner-sum").textContent = `Total: ${total.toLocaleString("fr-FR")} %${Math.abs(total - 100) > 0.01 ? " (must be 100 %)" : ""}`;
   return total;
 }
+ownerRow(user.artist_name, "singer", 100);
+sum();
+$("add-owner").addEventListener("click", () => { ownerRow(); sum(); });
 
-function validate() {
-  const file = $("file").files[0];
-  if (!file) return "Choose an audio file.";
-  if (file.size > MAX_BYTES) return `The file is ${(file.size / 1048576).toFixed(1)} MB. The limit is 50 MB.`;
-  const list = owners();
-  if (!list.length) return "Add at least one owner.";
-  if (Math.abs(sumShares() - 100) > 0.005) return "Owner shares must add up to 100.";
-  if (!$("consent").checked) return "Please confirm the consent.";
-  return "";
-}
-
-function uploadWithProgress(form) {
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/v1/songs");
-    xhr.upload.onprogress = (e) => {
-      if (e.lengthComputable) $("progress").textContent = `uploading ${Math.round((100 * e.loaded) / e.total)} %`;
-    };
-    xhr.onload = () => {
-      let body = {};
-      try { body = JSON.parse(xhr.responseText); } catch (_) { /* not JSON */ }
-      if (xhr.status === 201) resolve(body);
-      else reject(new Error(body.detail || body.error || `HTTP ${xhr.status}`));
-    };
-    xhr.onerror = () => reject(new Error("network error: is the server reachable?"));
-    xhr.send(form);
-  });
-}
-
-async function submit(ev) {
-  ev.preventDefault();
-  $("err").textContent = ""; $("ok").textContent = "";
-  const problem = validate();
-  if (problem) { $("err").textContent = problem; return; }
-  const form = new FormData();
-  form.append("file", $("file").files[0]);
-  form.append("title", $("title").value.trim());
-  form.append("artist_name", $("artist").value.trim());
-  if ($("isrc").value.trim()) form.append("isrc", $("isrc").value.trim());
-  if ($("iswc").value.trim()) form.append("iswc", $("iswc").value.trim());
-  form.append("owners", JSON.stringify(owners()));
-  form.append("consent", "true");
-  if (MOCK) { $("progress").textContent = ""; $("ok").textContent = "Mock mode: the upload is not sent."; return; }
-  $("submit").disabled = true;
+// ---------- upload ----------
+$("up").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const msg = $("f-msg");
+  if (Math.abs(sum() - 100) > 0.01) { msg.textContent = "The owners' shares must add up to 100 %."; return; }
+  const f = $("f-file").files[0];
+  if (!f) return;
+  if (f.size > 50 * 1024 * 1024) { msg.textContent = "The file is larger than 50 MB."; return; }
+  const fd = new FormData();
+  fd.append("file", f);
+  fd.append("title", $("f-title").value.trim());
+  fd.append("artist_name", user.artist_name);
+  if ($("f-isrc").value.trim()) fd.append("isrc", $("f-isrc").value.trim());
+  if ($("f-iswc").value.trim()) fd.append("iswc", $("f-iswc").value.trim());
+  fd.append("owners", JSON.stringify(owners()));
+  fd.append("consent", $("f-consent").checked ? "true" : "false");
+  $("f-go").disabled = true; msg.textContent = "Uploading…";
   try {
-    const res = await uploadWithProgress(form);
-    $("ok").textContent = `Uploaded as ${res.song_id}. It will show as ready once fingerprinted.`;
-    const me = $("artist").value;
-    $("form").reset();
-    $("artist").value = me;
-    document.getElementById("owners").innerHTML = "";
-    document.getElementById("owners").appendChild(ownerRow({ share_pct: 100 }));
-    sumShares();
-    loadCatalogue();
-  } catch (e) {
-    $("err").textContent = `Upload failed: ${e.message}`;
-  } finally {
-    $("submit").disabled = false;
-    $("progress").textContent = "";
-  }
-}
+    const r = await fetch("/api/v1/songs", { method: "POST", body: fd });
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(typeof d.detail === "string" ? d.detail : d.error || `HTTP ${r.status}`);
+    msg.textContent = `Uploaded (${d.song_id}). SONACAM is fingerprinting it; it shows as Recognisable in about a minute.`;
+    $("up").reset(); $("owners").innerHTML = ""; ownerRow(user.artist_name, "singer", 100); sum();
+    $("f-artist").value = user.artist_name;
+    load();
+    let n = 0; const t = setInterval(() => { load(); if (++n > 12) clearInterval(t); }, 10000);   // follow the processing
+  } catch (err) { msg.textContent = `Upload refused: ${err.message}`; } finally { $("f-go").disabled = false; }
+});
 
-const STATUS_TEXT = {
-  uploaded: "Uploaded", processing: "Processing", ready: "Ready",
-  duplicate_suspected: "Possible duplicate", failed: "Failed",
-};
-const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-
-// Only the signed-in artist's songs (the artist field is filled by me.js and read-only).
-async function loadCatalogue() {
-  let songs = [];
-  try {
-    const url = MOCK ? "../contract/fixtures/api/songs.json" : "/api/v1/songs";
-    songs = await (await fetch(url, { cache: "no-store" })).json();
-  } catch (_) { songs = []; }
-  const me = $("artist").value.trim();
-  const mine = me ? songs.filter((s) => s.artist_name === me) : songs;
-  $("cat").innerHTML = mine.map((s) => `<tr>
-      <td><b>${esc(s.title)}</b></td>
-      <td><span class="chip2 s-${s.status}">${STATUS_TEXT[s.status] || esc(s.status)}</span></td>
-      <td>${s.duplicate_of ? `Same audio as ${esc(s.duplicate_of)}, waiting for review` : s.status === "ready" ? "Recognised in every metered bar" : ""}</td></tr>`).join("")
-    || `<tr><td colspan="3" class="empty">No songs declared yet.</td></tr>`;
-  return mine.some((s) => s.status === "processing" || s.status === "uploaded");
-}
-
-async function pollWhileProcessing() {
-  if (await loadCatalogue()) setTimeout(pollWhileProcessing, 2000);
-}
-
-$("add-owner").addEventListener("click", () => { $("owners").appendChild(ownerRow()); sumShares(); });
-$("form").addEventListener("submit", submit);
-$("owners").appendChild(ownerRow({ share_pct: 100 }));
-sumShares();
-// wait a moment so me.js has set the signed-in artist before the catalogue is filtered
-setTimeout(pollWhileProcessing, 300);
+load();

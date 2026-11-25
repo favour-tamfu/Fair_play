@@ -11,6 +11,7 @@ x-app: &app
   environment:
     DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     TZ: Africa/Douala                # log timestamps in Cameroon time (data and API stay UTC, contract)
+    SERVE_WEB: ${SERVE_WEB:-1}       # 0 = API only, dashboard pages off (set SERVE_WEB=0 in .env)
   volumes:
     - ./server:/app/server            # live code (no rebuild needed for server changes)
     - ./core/fairplay_core:/app/core/fairplay_core:ro
@@ -21,6 +22,9 @@ x-app: &app
     db:
       condition: service_healthy
   restart: unless-stopped
+  logging: &logging                  # cap container logs (disk is tight): 3 files × 10 MB per service
+    driver: json-file
+    options: {max-size: "10m", max-file: "3"}
 
 services:
   db:
@@ -29,7 +33,7 @@ services:
     environment:
       TZ: UTC
     ports:
-      - "127.0.0.1:55432:5432"        # host tools/tests only; not reachable from the hotspot
+      - "127.0.0.1:${DB_PORT:-55432}:5432"   # host tools/tests only; not reachable from the hotspot
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -38,12 +42,13 @@ services:
       timeout: 3s
       retries: 20
     restart: unless-stopped
+    logging: *logging
 
   api:
     <<: *app
     command: uvicorn server.api.main:app --host 0.0.0.0 --port 8000
     ports:
-      - "8000:8000"                   # the meter (Laptop A) and the browser connect here
+      - "${API_PORT:-8000}:8000"      # the meters and the browsers connect here
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health', timeout=3).status == 200 else 1)"]
       interval: 5s

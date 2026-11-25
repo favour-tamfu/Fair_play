@@ -30,14 +30,14 @@ def world(db, tmp_path, monkeypatch):                                          #
     monkeypatch.setattr(config, "ANCHORS_DIR", tmp_path / "anchors")
     audit._cache.clear()
     with connect(db, autocommit=True) as c:
-        c.execute("TRUNCATE raw_batches, match_events, jobs, playlogger_state, ledger_epochs, anchors_archive")
+        c.execute("TRUNCATE raw_batches, match_events, jobs, playlogger_state, ledger_epochs, anchors_archive RESTART IDENTITY")
         import_mock(c, write_month(tmp_path / "mm"))
         for i in range(2, 5):
             add_live_play(c, i)
-        c.execute("INSERT INTO raw_batches (meter_id, venue_id, seq, window_start, body) VALUES "
-                  "('M-07','V-BUEA-CIMFEST',5,%s,'{}')", (T,))
-        c.execute("INSERT INTO match_events (meter_id, venue_id, window_start, song_id, accepted) VALUES "
-                  "('M-07','V-BUEA-CIMFEST',%s,'S-M0001',true)", (T,))
+        rb = c.execute("INSERT INTO raw_batches (meter_id, venue_id, seq, window_start, body) VALUES "
+                       "('M-07','V-BUEA-CIMFEST',5,%s,'{}') RETURNING id", (T,)).fetchone()["id"]
+        c.execute("INSERT INTO match_events (raw_batch_id, meter_id, venue_id, window_start, song_id, accepted) VALUES "
+                  "(%s,'M-07','V-BUEA-CIMFEST',%s,'S-M0001',true)", (rb, T))      # linked like real data (FK)
         c.execute("INSERT INTO windows (meter_id, window_start, loudness_db, received, source) VALUES ('M-07',%s,-20,true,'live')", (T,))
         c.execute("INSERT INTO jobs (kind, ref, status) VALUES ('match','1','done'), ('fingerprint','S-000001','done')")
         run_both(c, "live")
