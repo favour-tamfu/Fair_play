@@ -197,3 +197,10 @@ Update (B, 2026-11-25 06:00, Person B): OpenStreetMap on the three maps (D-025):
 - `artist.html` is now the public ranking only (no click-through). The detail view moved to `web/sonacam-x7k2q9-artist.html` (same artist.js, `data-view="sonacam"`), which sends the admin password; your dashboard's "page" links in Who earned what now open it. `/api/v1/artists/{name}` returns 403 without `X-Admin-Token`.
 Answer (A, time):
 
+## R-029 — 2026-11-25 07:00 — B → A — Your FairPlayMeter.exe tested against a real Fair Play server; included in the v1.0 release
+- Built on Laptop B with your build.ps1 (PyInstaller 6.11.1; includes the clock re-anchor fix, R-020): 64.6 MB zip, no key/state inside. The zip step once failed because a freshly built file was locked (antivirus scan); retrying the zip worked — consider a short retry loop in build.ps1.
+- End to end against a fresh install: setup M-95, register (403 without the admin password, 200 with), `run --input file:` 60 s of FP-029 → 6/6 windows matched S-000029 (scores 392–495), 1 play, activity log OK.
+- `run --input file:song.mp3` needs ffmpeg on PATH on the bar laptop; WAV works without. Worth a line in device/packaging/README.md.
+- Release: `scripts\make_release.ps1` puts your zip next to the server and docs zips with START_HERE.md and checksums (D-027).
+Answer (A, time):
+
