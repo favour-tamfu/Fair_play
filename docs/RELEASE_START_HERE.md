@@ -4,7 +4,7 @@ Fair Play is one system in three parts. This release has all of them (built from
 
 | Part | File | Runs on | What it does |
 |---|---|---|---|
-| **1. SONACAM server** | `FairPlay_Server_{VERSION}.zip` | One Windows computer with Docker Desktop (SONACAM's office or a cloud server) | Receives the meters' reports, recognises the songs, keeps the tamper-proof play log, computes each artist's share, and serves the web pages (public site, artist pages, SONACAM dashboard and admin page). |
+| **1. SONACAM server** | `FairPlay_Server_{VERSION}.zip` | One Windows computer with Docker Desktop (SONACAM's office or a cloud server) | Receives the meters' reports, recognises the songs, keeps the tamper-proof play log, computes each artist's share, and serves the web pages: the public product page, the sign-in page, SONACAM's app (dashboard and operations) and the artist portal. |
 | **2. Meter** | `FairPlayMeter_windows_{VERSION}.zip` | Each bar's meter. During the hackathon: a laptop with a microphone. In the real product: a small sealed box (see the README, "The real product"). | Listens, turns sound into fingerprints (never keeps the sound), seals them with its own key and sends them to the server. |
 | **3. Documents** | `FairPlay_Docs_{VERSION}.zip` | — | README (plain-language guide), decisions, the contract between meter and server, plans. |
 
@@ -19,21 +19,23 @@ Not in this release on purpose: the **song package** (audio files and their righ
    ```
    It creates `.env` with new random passwords, starts every part, imports and fingerprints the songs, runs the readiness check, and prints the addresses.
 4. Once, in an **administrator** PowerShell, let meters on the network reach the server: `.\scripts\firewall_b.ps1`.
-5. The **admin password** is `ADMIN_TOKEN` in `.env`. Give it only to SONACAM admins; the admin page asks for it.
+5. **Sign in** at `http://localhost:8000/login.html`:
+   - **SONACAM:** name `sonacam`, password = `ADMIN_TOKEN` in `.env`. Give it only to SONACAM staff. It opens SONACAM's app: the dashboard (analytics) and the operations page (meters, activity log, review flags, catalogue, actions).
+   - **Artists:** their artist name as in the catalogue. In this prototype every artist's password is `SONACAM`. It opens the artist portal: upload songs with their owners and shares, and see their own songs only.
 
-Addresses (on the server computer): public site `http://localhost:8000/`, SONACAM dashboard `/sonacam-x7k2q9.html`, admin `/sonacam-x7k2q9-admin.html`.
+Addresses (on the server computer): public page `http://localhost:8000/`, sign-in `/login.html`. Other computers on the network use the address the installer prints.
 
 ## 2. Install a meter (each bar laptop, about 5 minutes)
 1. Unzip `FairPlayMeter_windows_{VERSION}.zip` (for example to `C:\FairPlayMeter`). Python is not needed.
 2. Double-click `FairPlayMeter.exe`. Enter the meter id and bar id SONACAM gave, and the server address printed by the installer (`http://<server-ip>:8000`). It makes this meter's own private key and shows its public key file (`contract\meters\<meter>.pub.json`).
-3. On the SONACAM **admin page**, enter the admin password, then **Register a meter** with that public key file.
+3. Sign in as SONACAM, open **Operations › Meters**, and use **Register a meter** with that public key file. (A meter can be retired there too: its reports are then refused.)
 4. `FairPlayMeter.exe check` lists the microphones and checks that the server answers.
 5. Double-click `FairPlayMeter.exe` again: it starts listening. Keep the laptop plugged in and set it to **never sleep**.
 The meter's private key (`device\secrets\`) never leaves that laptop. Details: `README.md` inside the meter zip.
 
 ## 3. Check that it all works
-- On the admin page, the **Activity log** shows each meter report, every song heard and every play logged, live.
-- Play a catalogue song near a meter: within about a minute it appears as a play on the dashboard and on the artist's page.
+- In SONACAM's app, **Operations › Activity log** shows each meter report, every song heard, every play logged, sign-ins and admin actions, live.
+- Play a catalogue song near a meter: within about a minute it appears as a play on the dashboard, and in that artist's portal.
 - The dashboard's top bar says **Log intact**: the play log has not been changed.
 
 ## Verify the files
