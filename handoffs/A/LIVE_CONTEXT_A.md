@@ -47,7 +47,9 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   32/28/21/17/14/12 px, weights 400/600 only, Display >= 20 px, Text below, no monospace (tabular digits). Dashboard went
   from 25 text styles to 9. Header "Section › Page" 14 px on both pages, log status plain text. Overview: "Who earned
   what" full width, map + live activity side by side (no blank area, no sideways scroll); empty live list explains itself.
-  Stylesheet links carry `?v=1125b` (browsers kept an old dash.css). Main site untouched.
+  Stylesheet links carry `?v=1125c` (browsers kept an old dash.css). Main site untouched.
+  Balanced cards (user): cards in a row stretch to one height and their white panel fills it (overview + Trust); card
+  titles never wrap; play-log status is plain words ("Play log intact.") instead of a green box.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look

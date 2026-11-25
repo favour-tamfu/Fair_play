@@ -301,7 +301,7 @@ function renderTrustStatus() {
   if (!l) return;
   const st = $("trust-status");
   st.className = "status" + (l.intact ? "" : " bad");
-  st.textContent = l.intact ? "✓ Play log intact" : `⚠ Play log changed${l.broken_at_play_id ? ` at play ${l.broken_at_play_id}` : ""}. Results are withheld.`;
+  st.textContent = l.intact ? "Play log intact." : `Play log changed${l.broken_at_play_id ? ` at play ${l.broken_at_play_id}` : ""}. Results are withheld.`;
   if (l.plays_checked != null) $("t-checked").textContent = fmtInt(l.plays_checked);
   if (l.last_root) $("t-root").textContent = l.last_root;
   $("t-anchor").textContent = l.last_anchor ? `${fmtDateTime(l.last_anchor.hour)}, published in the ${l.last_anchor.via}${l.last_anchor.tx_ref ? ` (${l.last_anchor.tx_ref})` : ""}` : "None yet";

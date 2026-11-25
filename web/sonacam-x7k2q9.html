@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Fair Play · SONACAM view</title>
-<link rel="stylesheet" href="css/app.css?v=1125b">
-<link rel="stylesheet" href="css/dash.css?v=1125b">
-<link rel="stylesheet" href="css/type.css?v=1125b">
+<link rel="stylesheet" href="css/app.css?v=1125c">
+<link rel="stylesheet" href="css/dash.css?v=1125c">
+<link rel="stylesheet" href="css/type.css?v=1125c">
 </head>
 <body class="d2">
 <!-- Sidebar: who is signed in, the three views, period and counting, management links -->
@@ -179,7 +179,7 @@
               <li>Each bar's meter signs every 10-second sample with its own key, so the server cannot invent samples.</li>
               <li>Every confirmed play is chained to the one before it: its hash covers the previous hash and the play (meter, bar, song, time, length).</li>
               <li>Every hour the server publishes one Merkle root of that hour's plays in the public anchors file.</li>
-              <li>Changing or deleting any past play breaks the chain and no longer matches the published root. The banner turns red and the results are withheld until the log is restored.</li>
+              <li>Changing or deleting any past play breaks the chain and no longer matches the published root. The play log then says so, and the results are withheld until the log is restored.</li>
             </ol>
           </div>
         </section>
