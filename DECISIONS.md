@@ -148,3 +148,8 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - `web/js/osm.js`: Leaflet 1.9.4 (stored in `web/vendor/leaflet`, BSD-2, hashes match the official SRI) + OpenStreetMap standard tiles. Used by the landing map tile, the artist page map and the dashboard map: each bar as a dot sized by its plays, popup with bar, city and plays; the dashboard pulses a bar when a play is logged.
 - No internet (tile test fails within 4 s) or `?map=outline` → the pages keep the drawn outline map (cameroon.js), so the demo works offline.
 
+## D-026 — 2026-11-25 06:45 — Person B — Artist listening detail is SONACAM-only; the public sees the ranking
+- Public `artist.html`: the ranking (top 4 + full list with shares) only; rows are not links. Reason (Person B): detailed listening data per artist (which bars played which songs, when) could be mined by competing artists and exposes what each bar plays.
+- New SONACAM page `sonacam-x7k2q9-artist.html?name=` (noindex, linked from the dashboard's "Who earned what"): the full analytics (key figures, plays by day, map, top songs, bars, recent plays), asking for the admin password.
+- `GET /api/v1/artists/{name}` needs the admin password (contract c-1.5). `/api/v1/artists` (names, songs) and `/api/v1/artist-shares` (the ranking) stay public. The public anchors only carry hashes, never plays.
+

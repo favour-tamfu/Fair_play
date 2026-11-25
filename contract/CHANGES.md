@@ -43,3 +43,7 @@
 - Used by the landing page map (bar size = plays in the selected period). No existing field changes.
 - Status: waiting for A's ACK.
 
+## c-1.5 — 2026-11-25 06:45 — B (Person B, D-026) — artist detail behind the admin password
+- `GET /api/v1/artists/{artist_name}` now requires header `X-Admin-Token` (403 without it). Shape unchanged. Public pages use `/api/v1/artist-shares` (ranking) and `/api/v1/artists` (names) only.
+- Status: applied (privacy decision by Person B); A informed in R-028.
+

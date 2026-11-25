@@ -229,7 +229,7 @@ function renderEarnings(e) {
   const max = Math.max(...e.rows.map((r) => r.share), 0.0001);
   $("earn").innerHTML = e.rows.map((r) => {
     const w = (100 * r.share / max).toFixed(1);
-    const link = `artist.html?name=${encodeURIComponent(r.artist_name)}&period=${state.period}`;
+    const link = `sonacam-x7k2q9-artist.html?name=${encodeURIComponent(r.artist_name)}&period=${state.period}`;   // SONACAM only (D-026)
     const open = openArtists.has(r.artist_name);
     const songs = open ? r.songs.map((s) => `<tr class="sub"><td></td><td class="name">${esc(s.title)}</td><td></td>
       <td class="n">${fmtInt(s.raw_plays)}</td><td class="n">${fmtInt(s.counted_plays)}</td><td class="n">${fmtPct(s.share)}</td>

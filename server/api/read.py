@@ -12,7 +12,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import Any, Optional
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import PlainTextResponse
 from fastapi.concurrency import run_in_threadpool
 
@@ -23,6 +23,7 @@ from server.ledger import audit
 from server.money import largest_remainder
 from server.stats import artists as artist_stats
 from server.stats import compare
+from server.api.admin import require_admin
 from server.stats.periods import ACTIVE, period_sql
 
 router = APIRouter(prefix="/api/v1")
@@ -297,7 +298,7 @@ def _artist(name: str, period: str, mode: str) -> Optional[dict]:
             "share": sum(r["share"] for r in rows if r["song_id"] in ids), "recent": recent}
 
 
-@router.get("/artists/{artist_name}")
+@router.get("/artists/{artist_name}", dependencies=[Depends(require_admin)])   # D-026: SONACAM only (admin password)
 async def artist(artist_name: str, period: str = PERIOD, mode: str = MODE):
     body = await run_in_threadpool(_artist, artist_name, period, mode)
     if body is None:

@@ -8,7 +8,13 @@ import { osmMap } from "./osm.js";
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
-const name = params.get("name");   // no name: show the ranking of all artists
+// Two pages share this file (D-026): artist.html = the PUBLIC ranking only (no per-artist detail);
+// sonacam-x7k2q9-artist.html = SONACAM's per-artist analytics, read with the admin password.
+const PAGE = document.body.dataset.view === "sonacam" ? "sonacam" : "public";
+const name = PAGE === "sonacam" ? params.get("name") : null;
+const TOKEN_KEY = "fp-admin-token";
+const tokenInput = document.getElementById("admin-token");
+const adminHeaders = () => ({ "X-Admin-Token": (tokenInput ? tokenInput.value : sessionStorage.getItem(TOKEN_KEY) || "").trim() });
 let period = params.get("period") === "mock_month" ? "mock_month" : "live";
 const fmtInt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("fr-FR"));
 const fmtPct = (x) => (x == null ? "–" : (100 * x).toFixed(x < 0.1 ? 2 : 1) + "%");
@@ -56,9 +62,15 @@ async function load() {
   const url = MOCK ? "../contract/fixtures/api/artist.json" : `/api/v1/artists/${encodeURIComponent(name)}?period=${period}`;
   let a, shares = null;
   try {
-    const r = await fetch(url, { cache: "no-store" });
+    const r = await fetch(url, { cache: "no-store", headers: adminHeaders() });
+    if (r.status === 403) {   // SONACAM only: ask for the admin password
+      $("profile").hidden = true; $("locked").hidden = false;
+      if (tokenInput) tokenInput.focus();
+      return;
+    }
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
     a = await r.json();
+    $("profile").hidden = false; $("locked").hidden = true;
   } catch (e) {
     $("name").textContent = name;
     $("songs-line").textContent = "Could not load this artist.";
@@ -211,7 +223,7 @@ function toast(text) {
 // ---------- ranking of all artists (no ?name=) ----------
 const TEST_ARTIST = "Fair Play test artist";      // fictional scenario tracks: never shown on the public pages
 async function finder() {
-  $("profile").hidden = true;
+  if ($("profile")) $("profile").hidden = true;
   $("finder").hidden = false;
   document.title = "Artists · Fair Play";
   let rkPeriod = params.get("period") === "live" ? "live" : "mock_month";
@@ -223,7 +235,7 @@ async function finder() {
   } catch (e) { $("ranking").innerHTML = `<li class="empty">Could not load the artists. Try again in a moment.</li>`; return; }
   const cv = await loadCovers();
   const av = (n, cls = "l-av") => { const c = cv.artist(n); return c ? `<span class="${cls} img" style="background-image:url('${c.src}')"></span>` : `<span class="${cls}">${esc(initials(n))}</span>`; };
-  const link = (n) => `artist.html?name=${encodeURIComponent(n)}&period=${rkPeriod}${MOCK ? "&mock=1" : ""}`;
+  // Public ranking only (D-026): no link into an artist's detailed listening data, which is SONACAM's.
   const songsIn = new Map(artists.map((a) => [a.artist_name, a.songs.length]));
   let rows = [], frozen = false;
 
@@ -234,16 +246,14 @@ async function finder() {
     const playedNames = new Set(rows.map((r) => r.artist_name));
     const rest = artists.filter((a) => !playedNames.has(a.artist_name) && (!q || a.artist_name.toLowerCase().includes(q)))
       .sort((a, b) => a.artist_name.localeCompare(b.artist_name, "fr"));
-    const row = (r) => `<li><a class="rk-row${r.rank <= 3 ? " top" : ""}" href="${link(r.artist_name)}">
+    const row = (r) => `<li><div class="rk-row static${r.rank <= 3 ? " top" : ""}">
         <span class="rk-n">${r.rank}</span>${av(r.artist_name, "rk-av")}
         <span class="rk-who"><b>${esc(r.artist_name)}</b><span>${fmtInt(r.counted_plays)} plays counted · ${r.n_songs} song${r.n_songs === 1 ? "" : "s"} played</span></span>
         <span class="rk-bar" aria-hidden="true"><i style="width:${(100 * r.share / max).toFixed(1)}%"></i></span>
-        <b class="rk-share">${fmtPct(r.share)}</b>
-        <svg class="rk-go" viewBox="0 0 12 20" aria-hidden="true"><path d="M2 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>`;
-    const none = (a) => `<li><a class="rk-row none" href="${link(a.artist_name)}"><span class="rk-n">–</span>${av(a.artist_name, "rk-av")}
+        <b class="rk-share">${fmtPct(r.share)}</b></div></li>`;
+    const none = (a) => `<li><div class="rk-row static none"><span class="rk-n">–</span>${av(a.artist_name, "rk-av")}
         <span class="rk-who"><b>${esc(a.artist_name)}</b><span>${a.songs.length} song${a.songs.length === 1 ? "" : "s"} in the catalogue · no counted play in this period</span></span>
-        <span class="rk-bar" aria-hidden="true"></span><b class="rk-share">–</b>
-        <svg class="rk-go" viewBox="0 0 12 20" aria-hidden="true"><path d="M2 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>`;
+        <span class="rk-bar" aria-hidden="true"></span><b class="rk-share">–</b></div></li>`;
     $("ranking").innerHTML = frozen ? `<li class="empty">Results are withheld until the play log is restored.</li>`
       : (played.map(row).join("") + (rest.length ? `<li class="rk-sep">Not played in this period</li>` + rest.map(none).join("") : ""))
         || `<li class="empty">No artist matches "${esc(q)}".</li>`;
@@ -261,9 +271,9 @@ async function finder() {
     $("leaders-h").textContent = month ? "Leading this month." : "Leading right now.";
     $("leaders").style.setProperty("--n", Math.max(1, Math.min(4, rows.length)));
     $("leaders").innerHTML = frozen ? `<div class="empty">Results are withheld until the play log is restored.</div>`
-      : rows.slice(0, 4).map((r) => `<a class="leader" href="${link(r.artist_name)}"><span class="l-rank">${r.rank}</span>
+      : rows.slice(0, 4).map((r) => `<div class="leader"><span class="l-rank">${r.rank}</span>
         ${av(r.artist_name)}<b>${esc(r.artist_name)}</b>
-        <span class="l-share">${fmtPct(r.share)}</span><span class="l-sub">${fmtInt(r.counted_plays)} plays counted, ${r.n_songs} song${r.n_songs === 1 ? "" : "s"}</span></a>`).join("")
+        <span class="l-share">${fmtPct(r.share)}</span><span class="l-sub">${fmtInt(r.counted_plays)} plays counted, ${r.n_songs} song${r.n_songs === 1 ? "" : "s"}</span></div>`).join("")
         || `<div class="empty">No counted play yet in this period.</div>`;
     const total = rows.reduce((n, r) => n + r.counted_plays, 0);
     $("rk-sum").textContent = rows.length
@@ -279,8 +289,14 @@ async function finder() {
   await loadPeriod();
   void songsIn;
 }
-if (!name) { finder(); }
+if (PAGE === "public") { finder(); }
+else if (!name) { location.replace("sonacam-x7k2q9.html"); }
 else {
+// admin password for this SONACAM page: kept in this tab only (same key as the admin page)
+if (tokenInput) {
+  tokenInput.value = sessionStorage.getItem(TOKEN_KEY) || "";
+  tokenInput.addEventListener("change", () => { sessionStorage.setItem(TOKEN_KEY, tokenInput.value.trim()); load(); });
+}
 
 // Period switch (keeps it in the URL so the link can be shared).
 document.querySelectorAll("[data-period]").forEach((b) => b.addEventListener("click", () => {

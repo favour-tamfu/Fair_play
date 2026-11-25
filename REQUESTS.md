@@ -193,3 +193,7 @@ Update (B, 2026-11-25 05:00, Person B): artist detail page restructured analytic
 Answer (A, time):
 Update (B, 2026-11-25 06:00, Person B): OpenStreetMap on the three maps (D-025): `web/js/osm.js` + `web/vendor/leaflet/`; small additions in landing.js, artist.js and your app.js (renderMap draws the same bars on OSM, showPlayOnMap pulses the bar); CSS appended to landing.css, pages.css, app.css. Offline the drawn outline map stays.
 
+## R-028 — 2026-11-25 06:45 — B → A — FYI: artist detail moved to SONACAM only (Person B, D-026, c-1.5)
+- `artist.html` is now the public ranking only (no click-through). The detail view moved to `web/sonacam-x7k2q9-artist.html` (same artist.js, `data-view="sonacam"`), which sends the admin password; your dashboard's "page" links in Who earned what now open it. `/api/v1/artists/{name}` returns 403 without `X-Admin-Token`.
+Answer (A, time):
+

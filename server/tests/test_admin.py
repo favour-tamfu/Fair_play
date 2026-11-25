@@ -65,3 +65,12 @@ def test_db_down_answers_503(cl, monkeypatch):
     monkeypatch.setattr(read, "_overview", boom)
     r = cl.get("/api/v1/overview")
     assert r.status_code == 503 and r.json()["error"] == "db_unavailable" and r.headers["retry-after"] == "2"
+
+
+def test_artist_detail_is_sonacam_only(cl):
+    """D-026: one artist's listening data (bars, days, recent plays) needs the admin password; the ranking stays public."""
+    assert cl.get("/api/v1/artists/Locko").status_code == 403
+    assert cl.get("/api/v1/artists/Locko", headers={"X-Admin-Token": "wrong"}).status_code == 403
+    assert cl.get("/api/v1/artists/Locko", headers=H).status_code in (200, 404)
+    assert cl.get("/api/v1/artists").status_code == 200                       # names and songs: public
+    assert cl.get("/api/v1/artist-shares", params={"period": "live"}).status_code == 200   # the ranking: public
