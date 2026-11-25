@@ -5,10 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Fair Play · SONACAM operations</title>
+<link rel="stylesheet" href="css/fonts.css?v=1">
 <link rel="stylesheet" href="css/app.css?v=1125c">
 <link rel="stylesheet" href="css/dash.css?v=1125c">
 <link rel="stylesheet" href="css/ops.css?v=1125c">
 <link rel="stylesheet" href="css/type.css?v=1125c">
+<link rel="stylesheet" href="css/tables.css?v=2">
 </head>
 <body class="d2 ops">
 <!-- SONACAM app, operations side (D-028): same sidebar as the dashboard; SONACAM sign-in required. -->
@@ -118,10 +120,10 @@
   <section class="panel" id="actions">
     <div class="head"><h2>Actions</h2></div>
     <div class="action">
-      <div><b>Recalculate shares now</b><span class="note">Runs the fair-play rules (standardised and raw) for a period.</span></div>
+      <div><b>Recalculate shares now</b><span class="note">Reruns the fair-play rules for a period. The server already does this by itself within 15 s of every new play, so you only need it after a reset or an import. The results (shares per song and artist) are on the <a href="sonacam-x7k2q9.html#overview">dashboard</a>.</span></div>
       <div class="row">
         <select id="stats-period"><option value="live">Live</option><option value="mock_month">Mock month</option></select>
-        <button id="btn-stats">Run stats</button>
+        <button id="btn-stats">Recalculate now</button>
       </div>
     </div>
     <div class="action">

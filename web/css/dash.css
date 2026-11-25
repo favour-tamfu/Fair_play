@@ -324,3 +324,71 @@ body.d2 .card-o-head .note { min-width: 0; flex: 1 1 auto; text-align: right; }
 body.d2 .status, body.d2 .status.bad { background: none; color: #1d1d1f; padding: 0; border-radius: 0; margin: 0 0 14px; }
 body.d2 .status.bad { color: #bf4800; }
 @media (max-width: 900px) { body.d2 .trust2 { grid-template-columns: minmax(0, 1fr); } }
+/* D-031 overview: "Right now" row on top (live activity + map), ranked bars for plays by artist */
+.ov-live { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; margin: 0 0 16px; align-items: stretch; }
+.ov-live .feed-panel .card-i { display: flex; flex-direction: column; gap: 10px; }
+.ov-live .feed { max-height: 330px; overflow: auto; margin: 0; }
+.feed-empty { color: #86868b; font-size: 13px; padding: 8px 0; list-style: none; }
+.now-card { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; row-gap: 2px; align-items: baseline; padding: 12px 14px; border-radius: 12px;
+  background: linear-gradient(90deg, rgba(0,113,227,.10), rgba(0,113,227,.03)); border: 1px solid rgba(0,113,227,.22); }
+.now-card[hidden] { display: none; }
+.now-card .now-label { grid-row: span 2; align-self: center; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: #0058b9;
+  background: #fff; border-radius: 980px; padding: 3px 9px; border: 1px solid rgba(0,113,227,.25); }
+.now-card.live .now-label::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #0071e3; margin-right: 6px; vertical-align: 1px; animation: nowpulse 1.4s ease-in-out infinite; }
+@keyframes nowpulse { 50% { opacity: .25; } }
+.now-card b { font-size: 16px; color: #1d1d1f; }
+.now-card .now-sub { font-size: 12.5px; color: #6e6e73; }
+.feed li.flash { animation: feedflash 2.2s ease-out; }
+@keyframes feedflash { from { background: rgba(0,113,227,.14); } to { background: transparent; } }
+.earn-panel.wide { margin-top: 16px; }
+
+.rbars { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+.rbar { display: grid; grid-template-columns: 26px minmax(110px, 190px) minmax(0, 1fr) 150px; gap: 12px; align-items: center; padding: 5px 6px; border-radius: 8px; cursor: default; }
+.rbar:hover, .rbar:focus-visible { background: #f5f5f7; outline: none; }
+.rbar .rk { font-size: 12px; color: #86868b; text-align: right; font-variant-numeric: tabular-nums; }
+.rbar .nm { font-size: 14px; font-weight: 500; color: #1d1d1f; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rbar .trk { position: relative; height: 14px; }
+.rbar .trk i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; }
+.rbar .trk i.h { background: var(--heard, #9cc5f5); }
+.rbar .trk i.c { background: var(--counted, #0071e3); box-shadow: 2px 0 0 #fff; }
+.rbar .vals { font-size: 13px; color: #1d1d1f; text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rbar .vals small { color: #86868b; font-size: 12px; margin-left: 6px; }
+.rbars-more { margin: 8px 0 0; font-size: 12.5px; color: #86868b; }
+@media (max-width: 1100px) { .ov-live { grid-template-columns: 1fr; } }
+@media (max-width: 720px) { .rbar { grid-template-columns: 22px minmax(0, 1fr) 96px; } .rbar .trk { grid-column: 2 / -1; grid-row: 2; } }
+
+/* D-032 one surface per card (no card inside a card), no pill shapes, quiet feed, balanced top row */
+body.d2 .card-o { background: #fff; border: 1px solid #e8e8ed; border-radius: 14px; padding: 0 22px 20px; box-shadow: none; }
+body.d2 .card-o-head { padding: 18px 0 10px; }
+body.d2 .card-i { background: transparent; border: 0; box-shadow: none; border-radius: 0; padding: 0; }
+body.d2 :is(.search, .signout, .chip, .pill-seg, .pill-seg button, .topbar .ledger, .now-label, .live-dot, button, .btn) { border-radius: 8px !important; }
+
+.now-card { background: #f5f8fd; border: 0; border-left: 3px solid #0071e3; border-radius: 4px 10px 10px 4px; padding: 12px 16px; display: block; }
+.now-card .now-label { display: block; background: none; border: 0; padding: 0; margin: 0 0 3px; font-size: 11px; color: #6e6e73; letter-spacing: .06em; }
+.now-card.live .now-label { color: #0058b9; }
+.now-card.live .now-label::before { width: 6px; height: 6px; margin-right: 6px; }
+.now-card b { display: block; font-size: 16px; }
+.now-card .now-sub { display: block; margin-top: 2px; }
+
+body.d2 .feed li { border-bottom: 0; padding: 7px 4px; border-radius: 6px; }
+body.d2 .feed li:nth-child(even) { background: #fafafc; }
+body.d2 .feed .tag::before { content: none; display: none; }
+body.d2 .feed .tag { color: #86868b; font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; }
+
+/* top row: both cards the same height, whatever the feed holds */
+.ov-live { align-items: stretch; }
+.ov-live > .card-o { height: 500px; display: flex; flex-direction: column; margin: 0; }
+.ov-live > .card-o > .card-i { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; }
+.ov-live .feed { flex: 1; min-height: 0; max-height: none; overflow: auto; }
+.ov-live .map-panel .map-wrap { flex: 1; min-height: 0; height: auto; }
+.ov-live .map-panel .osm-map { height: 100% !important; }
+@media (max-width: 1100px) { .ov-live > .card-o { height: 460px; } }
+.ov-live .map-panel .map-wrap { flex: none; height: 372px; }
+body.d2 .kpi { background: #fff; border: 1px solid #e8e8ed; box-shadow: none; }
+body.d2 .kpi-in { background: transparent; border: 0; margin: 0; }
+body.d2 #shares tr.group td { padding: 18px 8px 8px; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: #86868b; background: none; }
+body.d2 #shares tr.unplayed td { color: #86868b; }
+/* plain "Hearing now / Last heard": no tinted box, no accent line, no glowing dot */
+.now-card, .now-card.live { background: none; border: 0; border-radius: 0; padding: 4px 4px 12px; box-shadow: none; border-bottom: 0; }
+.now-card .now-label, .now-card.live .now-label { color: #86868b; }
+.now-card.live .now-label::before, .now-card .now-label::before { content: none; display: none; animation: none; }

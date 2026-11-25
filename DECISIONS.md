@@ -178,3 +178,19 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Portal: "When your songs were played" (chart by day with a scale, latest plays) and "How your share is computed" (heard → counted → compared → share, with the artist's own numbers).
 - Play extents are written only when they change: the scheduler no longer recomputes live shares every 15 s with nothing new.
 
+
+## D-031 (B, 2026-11-25) Overview: live activity on top, ranked bars, activity kept across refresh
+- Overview order: key figures → "Right now" row (Live activity + map) → Plays by artist → Who earned what.
+- Plays by artist is a ranked horizontal bar list (top 12; light = heard, dark = counted; count and share at the end; hover for details; table view kept). The dot matrix was hard to read.
+- Live activity loads its last 40 entries from the activity log on page load (plays, heard, meters, flags, log), so a refresh keeps it; then the live feed continues.
+- A "Hearing now" card updates the instant a meter recognises a song (match event); a counted play also refreshes the figures at once instead of waiting for the next recompute.
+
+## D-032 (B, 2026-11-25) SONACAM dashboard: flat cards, no pills, bars out of 100 %, full song list
+- One white surface per card (no grey card around a white card); no pill-shaped buttons or labels (8 px corners).
+- Live activity: no coloured dots or row lines (alternate row tint instead); "Last heard / Hearing now" is a plain block with a left accent; top row cards share one fixed height.
+- Share bars in Who earned what and Songs are out of 100 % of counted plays, no longer relative to the leader.
+- Songs lists the whole catalogue: played songs ranked first, then "Not played in this period" (0 plays).
+
+## D-033 (B, 2026-11-25) One table look on every page
+- web/css/tables.css carries the overview's "Who earned what" table look (12 px grey semibold headers over a light line, 14 px rows, faint separators, 6 px cells, tabular figures) and is linked last on the overview, operations and artist portal pages.
+- Desktop widths only (from 761 px): the phone layouts of operations and the portal keep their own rules.

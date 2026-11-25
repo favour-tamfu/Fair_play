@@ -1,0 +1,33 @@
+/* SF Pro (Display for headings and big numbers, Text for the rest), the faces A's CSS asks for.
+   The .woff2 files in web/fonts are NOT in git (Apple licence): copy them in on each laptop (see README).
+   Without them the pages fall back to the system font. Installed copies are used first. */
+@font-face { font-family: "SF Pro Display"; font-style: normal; font-weight: 400; font-display: swap;
+  src: local("SF Pro Display Regular"), local("SFProDisplay-Regular"), url("../fonts/SF-Pro-Display-Regular.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro Display"; font-style: normal; font-weight: 500; font-display: swap;
+  src: local("SF Pro Display Medium"), local("SFProDisplay-Medium"), url("../fonts/SF-Pro-Display-Medium.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro Display"; font-style: normal; font-weight: 600; font-display: swap;
+  src: local("SF Pro Display Semibold"), local("SFProDisplay-Semibold"), url("../fonts/SF-Pro-Display-Semibold.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro Display"; font-style: normal; font-weight: 700; font-display: swap;
+  src: local("SF Pro Display Bold"), local("SFProDisplay-Bold"), url("../fonts/SF-Pro-Display-Bold.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro Display"; font-style: normal; font-weight: 800; font-display: swap;
+  src: local("SF Pro Display Heavy"), local("SFProDisplay-Heavy"), url("../fonts/SF-Pro-Display-Heavy.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro Text"; font-style: normal; font-weight: 400; font-display: swap;
+  src: local("SF Pro Text Regular"), local("SFProText-Regular"), url("../fonts/SF-Pro-Text-Regular.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro"; font-style: normal; font-weight: 400; font-display: swap;
+  src: local("SF Pro Text Regular"), local("SFProText-Regular"), url("../fonts/SF-Pro-Text-Regular.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro Text"; font-style: normal; font-weight: 500; font-display: swap;
+  src: local("SF Pro Text Medium"), local("SFProText-Medium"), url("../fonts/SF-Pro-Text-Medium.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro"; font-style: normal; font-weight: 500; font-display: swap;
+  src: local("SF Pro Text Medium"), local("SFProText-Medium"), url("../fonts/SF-Pro-Text-Medium.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro Text"; font-style: normal; font-weight: 600; font-display: swap;
+  src: local("SF Pro Text Semibold"), local("SFProText-Semibold"), url("../fonts/SF-Pro-Text-Semibold.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro"; font-style: normal; font-weight: 600; font-display: swap;
+  src: local("SF Pro Text Semibold"), local("SFProText-Semibold"), url("../fonts/SF-Pro-Text-Semibold.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro Text"; font-style: normal; font-weight: 700; font-display: swap;
+  src: local("SF Pro Text Bold"), local("SFProText-Bold"), url("../fonts/SF-Pro-Text-Bold.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro"; font-style: normal; font-weight: 700; font-display: swap;
+  src: local("SF Pro Text Bold"), local("SFProText-Bold"), url("../fonts/SF-Pro-Text-Bold.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro Text"; font-style: normal; font-weight: 800; font-display: swap;
+  src: local("SF Pro Text Heavy"), local("SFProText-Heavy"), url("../fonts/SF-Pro-Text-Heavy.woff2") format("woff2"); }
+@font-face { font-family: "SF Pro"; font-style: normal; font-weight: 800; font-display: swap;
+  src: local("SF Pro Text Heavy"), local("SFProText-Heavy"), url("../fonts/SF-Pro-Text-Heavy.woff2") format("woff2"); }
