@@ -1,0 +1,310 @@
+[
+ {
+  "song_id": "FP-006",
+  "artist": "Blanche Bailly",
+  "title": "Mimbayeur",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-007",
+  "artist": "Charlotte Dipanda",
+  "title": "Coucou (live au Grand Rex, Paris)",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-010",
+  "artist": "Kocee",
+  "title": "Balance",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-011",
+  "artist": "Kocee",
+  "title": "Bollo c'est bollo",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-012",
+  "artist": "Kocee",
+  "title": "Sango",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-022",
+  "artist": "Magasco",
+  "title": "Power (#DonnerDonner)",
+  "reason": "artist_only",
+  "current_found": "Magasco, Minks, Mimie, Locko & Tenor - Donner Donner (Power 2)"
+ },
+ {
+  "song_id": "FP-041",
+  "artist": "X-Maleya",
+  "title": "Carnaval (ADNA)",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-050",
+  "artist": "Kameni",
+  "title": "Back to sender",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-051",
+  "artist": "Kameni",
+  "title": "Jalous",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-052",
+  "artist": "Kocee",
+  "title": "Deux Œufs Spaghetti",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-053",
+  "artist": "Kocee",
+  "title": "PAOLO",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-057",
+  "artist": "PhillBill",
+  "title": "MALOVA",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-070",
+  "artist": "Cysoul",
+  "title": "Koulos",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-071",
+  "artist": "Cysoul",
+  "title": "Zambe",
+  "reason": "artist_only",
+  "current_found": "Cysoul - Ma route"
+ },
+ {
+  "song_id": "FP-072",
+  "artist": "Daphne",
+  "title": "Money (Remix)",
+  "reason": "artist_only",
+  "current_found": "Daphne - Money (feat. Cysoul) [Remix]"
+ },
+ {
+  "song_id": "FP-074",
+  "artist": "Darina Victry",
+  "title": "Ma raison",
+  "reason": "download_failed_or_rejected",
+  "current_found": "Darina Victry - Ma raison"
+ },
+ {
+  "song_id": "FP-076",
+  "artist": "Kameni",
+  "title": "My Baby",
+  "reason": "artist_only",
+  "current_found": "Kameni - Touch Me"
+ },
+ {
+  "song_id": "FP-080",
+  "artist": "Kocee",
+  "title": "Mademoiselle",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-081",
+  "artist": "Kocee",
+  "title": "Obili Bandit",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-086",
+  "artist": "Kotto Boy",
+  "title": "Lumière Remix",
+  "reason": "artist_only",
+  "current_found": "Kotto Boy - Lumière (feat. Mr Leo & Magasco) [Remix]"
+ },
+ {
+  "song_id": "FP-096",
+  "artist": "Magasco",
+  "title": "I Want 4",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-097",
+  "artist": "Magasco",
+  "title": "Culture & Money",
+  "reason": "artist_only",
+  "current_found": "Magasco - Culture and Money (feat. Louis Alga, Eziko, T-son, Vinhora, Witty Minstral, Master Roboster, Mr Leo, AKEMS, DONSHELL, Ezbiyeh & Kitchen Boy)"
+ },
+ {
+  "song_id": "FP-098",
+  "artist": "Maahlox",
+  "title": "La Kocinette 2",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-100",
+  "artist": "Magasco",
+  "title": "Dirty Whine",
+  "reason": "download_failed_or_rejected",
+  "current_found": "Magasco & Mimie - Dirty Whine"
+ },
+ {
+  "song_id": "FP-101",
+  "artist": "Magasco",
+  "title": "Friday",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-103",
+  "artist": "Mic Monsta",
+  "title": "Drowning / Last Tribute",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-104",
+  "artist": "Mic Monsta",
+  "title": "Work Dey",
+  "reason": "artist_only",
+  "current_found": "Mic Monsta - Johnny"
+ },
+ {
+  "song_id": "FP-109",
+  "artist": "PhillBill",
+  "title": "Condiment",
+  "reason": "download_failed_or_rejected",
+  "current_found": "PhillBill - Condiment"
+ },
+ {
+  "song_id": "FP-112",
+  "artist": "Sabrina",
+  "title": "Alone",
+  "reason": "download_failed_or_rejected",
+  "current_found": "Sabrina Claudio - Confidently Lost"
+ },
+ {
+  "song_id": "FP-121",
+  "artist": "Taku Joel",
+  "title": "Be Free",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-122",
+  "artist": "Tenor",
+  "title": "Dion Céline",
+  "reason": "artist_only",
+  "current_found": "Tenor - Bad Things"
+ },
+ {
+  "song_id": "FP-124",
+  "artist": "Trois Officiel",
+  "title": "Zoh",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-125",
+  "artist": "Trois Officiel",
+  "title": "Goat",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-126",
+  "artist": "Trois Officiel",
+  "title": "Gangbang 4",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-133",
+  "artist": "Aveiro Djess",
+  "title": "Nyama Trap",
+  "reason": "artist_only",
+  "current_found": "Aveiro DJess - Nyama (feat. Kareyce Fotso) [Acoutisque]"
+ },
+ {
+  "song_id": "FP-144",
+  "artist": "Fhish",
+  "title": "Kak Kak",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-145",
+  "artist": "Fhish",
+  "title": "Patience",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-146",
+  "artist": "Happy d'Efoulan",
+  "title": "Tchapeu Tchapeu",
+  "reason": "download_failed_or_rejected",
+  "current_found": "Happy D'efoulan - Tchapeu Tchapeu (Les pleurs du mbolé)"
+ },
+ {
+  "song_id": "FP-154",
+  "artist": "Magasco",
+  "title": "Nyang Nyang Remix",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-164",
+  "artist": "Vernyuy Tina",
+  "title": "Música",
+  "reason": "artist_only",
+  "current_found": "Vernyuy Tina - Weh Weh"
+ },
+ {
+  "song_id": "FP-172",
+  "artist": "Prince Aime",
+  "title": "Viviane (Assiko Remix)",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-181",
+  "artist": "Kocee",
+  "title": "Caléçon",
+  "reason": "no_match",
+  "current_found": null
+ },
+ {
+  "song_id": "FP-182",
+  "artist": "Kocee",
+  "title": "La Galère",
+  "reason": "artist_only",
+  "current_found": "Kocee - JIGI"
+ },
+ {
+  "song_id": "FP-183",
+  "artist": "Tim Kayzer",
+  "title": "Comment ne pas te louer (Remix)",
+  "reason": "artist_only",
+  "current_found": "Tim Kayzer - Comment ne pas te louer (feat. Tenor) [Remix]"
+ }
+]

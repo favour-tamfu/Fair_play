@@ -1,4 +1,6 @@
-# STATUS A — updated 2026-11-25 00:10
+# STATUS A — updated 2026-11-25 00:55
+**New session? Read `handoffs/A/LIVE_CONTEXT_A.md` first: the full current state, updated after every message.**
+Packaged listener done (FairPlayMeter.exe, device/packaging/, R-020).
 Current task: A-WEB site done in mock mode, real song names in all test data (handoff 2026-11-25_0010_A-WEB-real-songs-landing); handing to B
 Done: A-T00..A-T03, A-T05, A-T06, A-T08, A-T10 mock month (real song names), A-T11 dashboard (Apple style), A-T12 artist portal, A-T13 (D-015: shares only), A-T14 Artists page, A-T17 admin page, public landing, album covers, SONACAM research report, MC0, MC1 (A side)
 Next up: test all pages against B live; A-T15/A-T16

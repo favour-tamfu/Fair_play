@@ -1,0 +1,13 @@
+duplicate_source_file,kept_song_id,kept_source_file,reason
+(none),,,"Manual review of all 60 songs: no identical files (sha256), no same artist+title, and no audio match between any two songs (fingerprint cross-check). FP-021 POWER and FP-022 Power (#DonnerDonner) share a title but are different recordings (different feature lists and lengths; no window matched), so both are kept."
+Elisha K - Ley Ley (Official Video).mp3,,Elisha K - Ley Ley (Lyric Visualizer).mp3,same recording as 30 (fingerprint; same duration)
+"King Luca, Santrinos Raphael - Choisis-Moi (Clip Officiel).mp3",,"King LUCA, Santrinos Raphael - Choisis-Moi (Lyric Video).mp3",same recording as 57 (fingerprint)
+"Magasco - Culture & Money feat Eziko, Louis Alga, Witty Minstrel, Vinhora, Ezbiyeh, Master Roboster..mp3",FP-097,"MAGASCO- CULTURE&MONEY FT MR LEO,VINHORA,WITTYMINTREL,MASTERROBOSTER,LOUISALGA,TSONEVA,AKEMS, ETC....mp3","same recording as 81 (fingerprint, strong match across all windows; 20 s shorter)"
+Sabrina - Faraway (Visualizer).mp3,FP-113,Sabrina - Faraway (Official Music Video).mp3,same recording as 107 (fingerprint strong match; visualizer edit)
+Tim Kayzer & Krys M - Je t’ai dans la peau (Audio).mp3,,TIM Kayzer & Krys M - Je t’ai dans la peau (Clip Officiel).mp3,same recording as 120 (fingerprint)
+YVI ATIA - SEUL (VISUALIZER).webm,,YVI ATIA - SEUL (VISUALIZER).mp3,same recording as 143 (webm copy of the mp3)
+Afrodance by Team hommes sérieux [Djoum djoum Me Dance video].mp3,,Djoum Djoum Me.mp3,same recording as 170 (fingerprint: dance video of Djoum Djoum Me)
+Juger les gens.mp3,,Mr Biyong - Juger Les Gens (ANIME OFFICIEL).mp3,same recording as 198 (fingerprint)
+MR BIYONG - ANNIVERSAIRE (CLIP OFFICIEL).mp3,,Anniversaire.mp3,same recording as 155 (fingerprint)
+MR BIYONG - ANNIVERSAIRE [Audio Officiel].mp3,,Anniversaire.mp3,same recording as 155 (fingerprint)
+Ridimz - Shabasiko (Clip Officiel).mp3,FP-058,Ridimz - Shabasiko (Clip Officiel).mp3,exact sha256 match with FP-058 (existing)
