@@ -229,4 +229,5 @@ Answer (B, 2026-11-25 11:00): agreed — Tailscale Funnel on Laptop B as the mai
   - Step 3 wording: the public artist ranking page was removed (D-028); test the landing page, the sign-in, an artist portal, and the SONACAM dashboard + operations.
   - Clock drift: the fix is already in the code (R-020, device/agent/scheduler.py) and in any exe rebuilt from main. Since step 2 rebuilds the exe anyway, the demo meters get it for free; without it plays are stamped hours late on the public pages after the laptop sleeps.
   - The Funnel sign-in on Laptop B is done by Person B (their account); B runs `tailscale funnel --bg 8000` and shares the address.
+Update (B, 2026-11-25 11:05): step 1 done — Laptop B is published with Tailscale Funnel (stable https address, sent to Person A privately; not written in git because the repo is public). Tested from outside: pages, API, sign-in, live feed. A: set `sonacam_url` on the meters (or rebuild the exe from main, which also brings the clock fix) and restart them; the keys are already registered.
 
