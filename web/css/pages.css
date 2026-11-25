@@ -278,3 +278,50 @@ input[readonly] { background: var(--grey); color: var(--ink-2); }
 /* real album covers */
 .l-av.img { background-size: cover; background-position: center; color: transparent; }
 .am-hero.has-cover { background-size: cover; background-position: center 30%; }
+
+/* --- ranking of all artists (artist.html without ?name=), B 2026-11-25 --- */
+.rk-switch { margin: 34px 0 0; }
+.rk-section { margin-top: 70px; }
+.rk-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-bottom: 18px; }
+.rk-head .small-h { margin-bottom: 6px !important; }
+.rk-sum { margin: 0; font-size: 15px; color: var(--ink-2); }
+.rk-search { flex: 0 1 340px; }
+.rk-search input { font-size: 17px; padding: 12px 16px 12px 46px; border-radius: 12px; background: #fff; }
+.rk-search svg { left: 16px; width: 18px; height: 18px; }
+.rk-cols, .rk-row { display: grid; grid-template-columns: 44px minmax(0, 1.25fr) minmax(0, 1fr) 84px 16px; align-items: center; gap: 16px; }
+.rk-cols { padding: 0 20px 8px; font-size: 12px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
+.rk-cols span:first-child { padding-left: 4px; }
+.rk-cols span:nth-child(4) { text-align: right; }
+.ranking { list-style: none; margin: 0; padding: 0; background: #fff; border-radius: var(--r-s, 18px); overflow: hidden; }
+.ranking > li + li { border-top: 1px solid #e8e8ed; }
+.rk-row { padding: 14px 20px; color: var(--ink) !important; }
+.rk-row:hover { text-decoration: none; background: #f5f5f7; }
+.rk-row:focus-visible { outline: 2px solid var(--button); outline-offset: -2px; }
+.rk-n { font-family: var(--display); font-size: 20px; font-weight: 600; color: var(--ink-3); text-align: center; font-variant-numeric: tabular-nums; }
+.rk-row.top .rk-n { color: var(--button); }
+.rk-who b { font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rk-who > span { display: block; font-size: 13px; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rk-who { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 2px; padding-left: 58px; position: relative; min-height: 46px; justify-content: center; }
+.rk-row .rk-av { display: block; position: absolute; }
+.rk-row { position: relative; }
+.rk-av { width: 46px; height: 46px; border-radius: 50%; background: #e8e8ed center / cover; color: var(--ink-2); font-size: 15px; font-weight: 600;
+  display: flex !important; align-items: center; justify-content: center; left: 80px; top: 50%; transform: translateY(-50%); }
+.rk-bar { height: 8px; border-radius: 4px; background: #e8e8ed; overflow: hidden; }
+.rk-bar i { display: block; height: 100%; border-radius: 4px; background: var(--button); }
+.rk-row.top .rk-bar i { background: linear-gradient(90deg, #0071e3, #42a1ff); }
+.rk-share { text-align: right; font-family: var(--display); font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.rk-go { width: 9px; height: 15px; color: #c7c7cc; }
+.rk-row.none .rk-who b, .rk-row.none .rk-share { color: var(--ink-3); }
+.rk-row.none .rk-bar { background: transparent; }
+.rk-sep { padding: 18px 20px 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-3); background: #fafafc; }
+.ranking .empty { padding: 22px 20px; }
+.rk-note { margin-top: 18px; }
+@media (max-width: 734px) {
+  .rk-cols { display: none; }
+  .rk-row { grid-template-columns: 30px minmax(0, 1fr) 70px 10px; gap: 10px; padding: 12px 14px; }
+  .rk-row .rk-bar { display: none; }
+  .rk-av { width: 38px; height: 38px; left: 54px; }
+  .rk-who { padding-left: 48px; }
+  .rk-share { font-size: 16px; }
+}
+

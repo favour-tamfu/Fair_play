@@ -1,5 +1,6 @@
 // SONACAM admin page (A-T17): meters, recalculate, anchor, demo reset (in-page confirm, R-016),
-// register a meter key, approve suspected duplicates, review flags. No login in this prototype.
+// register a meter key, approve suspected duplicates, review flags. Admin actions send the admin password
+// (header X-Admin-Token, D-020), kept in sessionStorage so it is forgotten when the tab closes.
 import { MOCK, get, feed, fmtTime, fmtDateTime } from "./api.js";
 
 const $ = (id) => document.getElementById(id);
@@ -15,14 +16,22 @@ function log(text, kind = "") {
   $("log").prepend(li);
 }
 
+// ---------- admin password (D-020) ----------
+const TOKEN_KEY = "fp-admin-token";
+const tokenInput = $("admin-token");
+tokenInput.value = sessionStorage.getItem(TOKEN_KEY) || "";
+tokenInput.addEventListener("input", () => sessionStorage.setItem(TOKEN_KEY, tokenInput.value.trim()));
+
 // POST helper. In mock mode nothing is sent: the page says what it would have done.
 async function post(url, body) {
   if (MOCK) return { mock: true };
-  const opts = { method: "POST" };
-  if (body !== undefined) { opts.headers = { "Content-Type": "application/json" }; opts.body = JSON.stringify(body); }
+  const headers = { "X-Admin-Token": tokenInput.value.trim() };
+  const opts = { method: "POST", headers };
+  if (body !== undefined) { headers["Content-Type"] = "application/json"; opts.body = JSON.stringify(body); }
   const r = await fetch(url, opts);
   let data = null;
   try { data = await r.json(); } catch (_) { /* empty body */ }
+  if (r.status === 403) { tokenInput.focus(); throw new Error("refused: the admin password is missing or wrong (top right)"); }
   if (!r.ok) throw new Error((data && (data.detail || data.error)) ? `${data.error || ""} ${typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail || "")}`.trim() : `HTTP ${r.status}`);
   return data;
 }

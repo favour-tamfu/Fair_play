@@ -7,7 +7,7 @@ import { loadCovers } from "./covers.js";
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
-const name = params.get("name");   // no name: show the artist finder (public artist portal)
+const name = params.get("name");   // no name: show the ranking of all artists
 let period = params.get("period") === "mock_month" ? "mock_month" : "live";
 const fmtInt = (n) => (n == null ? "–" : Math.round(n).toLocaleString("fr-FR"));
 const fmtPct = (x) => (x == null ? "–" : (100 * x).toFixed(x < 0.1 ? 2 : 1) + "%");
@@ -18,6 +18,7 @@ const ART = ["bottles", "dj", "mic", "outdoor-bar", "yaounde", "party"];
 const artFor = (s) => `assets/img/${ART[[...String(s)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % ART.length]}.webp`;
 
 const venueNames = new Map();     // venue_id -> "Name, City"
+const barLabel = (n) => String(n || "").replace(/^mock bar\s+/i, "Bar ");   // simulated bars: no "Mock" label on the page
 let mySongs = new Set();
 let lastPlay = null;              // {title, venue_id, started_at, duration_s}
 
@@ -33,7 +34,7 @@ function renderNow(live) {
   const card = $("now");
   if (!lastPlay) {
     $("now-title").textContent = "Not heard yet";
-    $("now-where").textContent = period === "live" ? "Your songs will show here the moment a bar plays them." : "No plays in this period.";
+    $("now-where").textContent = period === "live" ? "Songs show here the moment a bar plays them." : "No plays in this period.";
     $("now-start").textContent = ""; $("now-ago").textContent = "";
     $("now-progress").style.width = "0";
     return;
@@ -67,7 +68,9 @@ async function load() {
   // Real album cover for this artist's song when there is one, otherwise a site photo.
   const coverFor = (title) => { const c = cv.song(artistName, title) || cv.artist(artistName); return c ? c.src : artFor(title); };
   const ownCover = cv.artist(artistName);
-  const row = shares && !shares.frozen ? shares.rows.find((r) => r.artist_name === artistName) : null;
+  const ranked = shares && !shares.frozen ? shares.rows.filter((r) => r.artist_name !== "Fair Play test artist" && r.counted_plays > 0) : [];
+  const ri = ranked.findIndex((r) => r.artist_name === artistName);
+  const row = ri >= 0 ? { ...ranked[ri], rank: ri + 1 } : null;
 
   document.title = `${artistName} · Fair Play`;
   $("name").textContent = artistName;
@@ -75,7 +78,7 @@ async function load() {
   $("watermark").textContent = artistName;
   $("songs-line").textContent = `${(a.songs || []).length} song${(a.songs || []).length === 1 ? "" : "s"} in the catalogue`;
   mySongs = new Set((a.songs || []).map((s) => s.song_id));
-  for (const v of a.plays_by_venue || []) venueNames.set(v.venue_id, `${v.name}, ${v.city}`);
+  for (const v of a.plays_by_venue || []) venueNames.set(v.venue_id, `${barLabel(v.name)}, ${v.city}`);
 
   // Tiles: share, rank, counted plays, each with a line saying what the number is made of.
   const counted = (a.plays_by_venue || []).reduce((t, v) => t + (v.plays_counted || 0), 0);
@@ -87,7 +90,7 @@ async function load() {
   $("share-sub").textContent = shares && shares.frozen ? "Withheld until the play log is restored."
     : total ? `of ${fmtInt(total)} plays counted in this period` : "";
   $("rank").textContent = row ? `#${row.rank}` : "–";
-  $("rank-label").textContent = row && shares ? `of ${shares.rows.length} artists` : "Ranked after the next stats run";
+  $("rank-label").textContent = row ? `of ${ranked.length} artists` : "No counted play in this period";
   $("counted").textContent = fmtInt(counted);
   $("counted-sub").textContent = `${fmtInt(heard)} heard, in ${(a.plays_by_venue || []).length} bars`;
   drawMap(a.plays_by_venue || []);
@@ -98,7 +101,9 @@ async function load() {
   // Top songs: rows with square artwork (song plays counted from the recent list when there is no stats row).
   const recentCount = new Map();
   for (const p of a.recent || []) recentCount.set(p.song_id, (recentCount.get(p.song_id) || 0) + 1);
-  $("songs").innerHTML = (a.songs || []).map((s, i) => {
+  const ordered = [...(a.songs || [])].sort((x, y) => ((songShare.get(y.song_id) || {}).counted_plays || 0) - ((songShare.get(x.song_id) || {}).counted_plays || 0)
+    || (recentCount.get(y.song_id) || 0) - (recentCount.get(x.song_id) || 0));
+  $("songs").innerHTML = ordered.map((s, i) => {
     const st = songShare.get(s.song_id);
     const line = st ? `${fmtPct(st.share)} · ${fmtInt(st.counted_plays)} counted`
       : recentCount.get(s.song_id) ? `${recentCount.get(s.song_id)} of the last ${(a.recent || []).length} plays` : "No counted plays yet";
@@ -108,7 +113,7 @@ async function load() {
   // Bars: a shelf of square tiles, most counted first.
   const venues = [...(a.plays_by_venue || [])].sort((x, y) => (y.plays_counted || 0) - (x.plays_counted || 0));
   $("venues").innerHTML = venues.map((v) => `<figure class="am-tile"><div class="am-art" style="background-image:url('${artFor(v.venue_id)}')"><span>${fmtInt(v.plays_counted)}</span></div>
-    <figcaption><b>${esc(v.name)}</b><span>${esc(v.city)} · ${fmtInt(v.plays_counted)} counted</span></figcaption></figure>`).join("")
+    <figcaption><b>${esc(barLabel(v.name))}</b><span>${esc(v.city)} · ${fmtInt(v.plays_counted)} counted</span></figcaption></figure>`).join("")
     || `<div class="empty wrap">No bar has played this artist in this period yet.</div>`;
   $("am-hero").style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.72) 100%), url('${ownCover ? ownCover.src : artFor(artistName)}')`;
   $("am-hero").classList.toggle("has-cover", !!ownCover);
@@ -148,7 +153,7 @@ async function drawMap(byVenue) {
     const v = coords.get(b.venue_id);
     if (!v) continue;
     const [x, y] = project(v.lat, v.lon);
-    parts.push(`<circle class="hit" cx="${x}" cy="${y}" r="${(7 + 11 * Math.sqrt((b.plays_counted || 0) / max)).toFixed(1)}"><title>${esc(b.name)}, ${esc(b.city)}: ${fmtInt(b.plays_counted)} counted</title></circle>`);
+    parts.push(`<circle class="hit" cx="${x}" cy="${y}" r="${(7 + 11 * Math.sqrt((b.plays_counted || 0) / max)).toFixed(1)}"><title>${esc(barLabel(b.name))}, ${esc(b.city)}: ${fmtInt(b.plays_counted)} counted</title></circle>`);
     shown += 1;
   }
   svg.setAttribute("viewBox", `0 0 ${VIEW.w} ${VIEW.h}`);
@@ -164,46 +169,76 @@ function toast(text) {
   setTimeout(() => t.classList.remove("show"), 6000);
 }
 
-// ---------- artist finder (no ?name=) ----------
+// ---------- ranking of all artists (no ?name=) ----------
+const TEST_ARTIST = "Fair Play test artist";      // fictional scenario tracks: never shown on the public pages
 async function finder() {
   $("profile").hidden = true;
   $("finder").hidden = false;
   document.title = "Artists · Fair Play";
-  $("foot").textContent = `Shares are indicative until the period is closed.${MOCK ? " Mock data." : ""}`;
-  let artists = [], shares = null;
+  let rkPeriod = params.get("period") === "live" ? "live" : "mock_month";
+  let artists = [];
   try {
     const r = await fetch(MOCK ? "../contract/fixtures/api/artists.json" : "/api/v1/artists", { cache: "no-store" });
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    artists = await r.json();
-  } catch (e) { $("artist-list").innerHTML = `<div class="empty">Could not load the artists. Try again in a moment.</div>`; return; }
-  try { shares = await get("artist_shares", "live", "standardised"); } catch (_) { /* list without shares */ }
-  const byName = new Map(((shares && !shares.frozen && shares.rows) || []).map((r) => [r.artist_name, r]));
+    artists = (await r.json()).filter((a) => a.artist_name !== TEST_ARTIST);
+  } catch (e) { $("ranking").innerHTML = `<li class="empty">Could not load the artists. Try again in a moment.</li>`; return; }
   const cv = await loadCovers();
-  const av = (n) => { const c = cv.artist(n); return c ? `<span class="l-av img" style="background-image:url('${c.src}')"></span>` : `<span class="l-av">${esc(initials(n))}</span>`; };
-  const link = (n) => `artist.html?name=${encodeURIComponent(n)}${MOCK ? "&mock=1" : ""}`;
-  // Leaders of the month (computed shares of the closed mock month).
-  try {
-    const m = await get("artist_shares", "mock_month", "standardised");
-    $("leaders").style.setProperty("--n", Math.max(1, Math.min(4, m.rows.length)));
-    $("leaders").innerHTML = m.frozen ? `<div class="empty">Results are withheld until the play log is restored.</div>`
-      : m.rows.slice(0, 4).map((r) => `<a class="leader" href="${link(r.artist_name)}"><span class="l-rank">${r.rank}</span>
-        ${av(r.artist_name)}<b>${esc(r.artist_name)}</b>
-        <span class="l-share">${fmtPct(r.share)}</span><span class="l-sub">${fmtInt(r.counted_plays)} plays counted, ${r.n_songs} song${r.n_songs === 1 ? "" : "s"}</span></a>`).join("");
-  } catch (_) { $("leaders").closest("section").hidden = true; }
-  const render = () => {
+  const av = (n, cls = "l-av") => { const c = cv.artist(n); return c ? `<span class="${cls} img" style="background-image:url('${c.src}')"></span>` : `<span class="${cls}">${esc(initials(n))}</span>`; };
+  const link = (n) => `artist.html?name=${encodeURIComponent(n)}&period=${rkPeriod}${MOCK ? "&mock=1" : ""}`;
+  const songsIn = new Map(artists.map((a) => [a.artist_name, a.songs.length]));
+  let rows = [], frozen = false;
+
+  const draw = () => {
     const q = $("q").value.trim().toLowerCase();
-    const list = artists.filter((a) => !q || a.artist_name.toLowerCase().includes(q))
+    const max = Math.max(0.0001, ...rows.map((r) => r.share));
+    const played = rows.filter((r) => !q || r.artist_name.toLowerCase().includes(q));
+    const playedNames = new Set(rows.map((r) => r.artist_name));
+    const rest = artists.filter((a) => !playedNames.has(a.artist_name) && (!q || a.artist_name.toLowerCase().includes(q)))
       .sort((a, b) => a.artist_name.localeCompare(b.artist_name, "fr"));
-    $("artist-list").innerHTML = list.map((a) => {
-      const s = byName.get(a.artist_name);
-      return `<a class="artist-link" href="${link(a.artist_name)}">${av(a.artist_name)}
-        <div><span class="a-name">${esc(a.artist_name)}</span>
-        <span class="sub">${a.songs.length} song${a.songs.length === 1 ? "" : "s"}${s ? `, ${fmtPct(s.share)} live, rank #${s.rank}` : ""}</span></div></a>`;
-    }).join("") || `<div class="empty">No artist matches "${esc(q)}". Check the spelling, or declare your songs with SONACAM first.</div>`;
+    const row = (r) => `<li><a class="rk-row${r.rank <= 3 ? " top" : ""}" href="${link(r.artist_name)}">
+        <span class="rk-n">${r.rank}</span>${av(r.artist_name, "rk-av")}
+        <span class="rk-who"><b>${esc(r.artist_name)}</b><span>${fmtInt(r.counted_plays)} plays counted · ${r.n_songs} song${r.n_songs === 1 ? "" : "s"} played</span></span>
+        <span class="rk-bar" aria-hidden="true"><i style="width:${(100 * r.share / max).toFixed(1)}%"></i></span>
+        <b class="rk-share">${fmtPct(r.share)}</b>
+        <svg class="rk-go" viewBox="0 0 12 20" aria-hidden="true"><path d="M2 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>`;
+    const none = (a) => `<li><a class="rk-row none" href="${link(a.artist_name)}"><span class="rk-n">–</span>${av(a.artist_name, "rk-av")}
+        <span class="rk-who"><b>${esc(a.artist_name)}</b><span>${a.songs.length} song${a.songs.length === 1 ? "" : "s"} in the catalogue · no counted play in this period</span></span>
+        <span class="rk-bar" aria-hidden="true"></span><b class="rk-share">–</b>
+        <svg class="rk-go" viewBox="0 0 12 20" aria-hidden="true"><path d="M2 2l8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>`;
+    $("ranking").innerHTML = frozen ? `<li class="empty">Results are withheld until the play log is restored.</li>`
+      : (played.map(row).join("") + (rest.length ? `<li class="rk-sep">Not played in this period</li>` + rest.map(none).join("") : ""))
+        || `<li class="empty">No artist matches "${esc(q)}".</li>`;
   };
-  $("q").addEventListener("input", render);
-  render();
-  $("q").focus();
+
+  const loadPeriod = async () => {
+    document.querySelectorAll("[data-rk]").forEach((b) => b.setAttribute("aria-selected", String(b.dataset.rk === rkPeriod)));
+    params.set("period", rkPeriod); history.replaceState(null, "", `?${params}`);
+    let s = null;
+    try { s = await get("artist_shares", rkPeriod, "standardised"); } catch (_) { /* below */ }
+    frozen = !!(s && s.frozen);
+    rows = ((s && s.rows) || []).filter((r) => r.artist_name !== TEST_ARTIST && r.counted_plays > 0)
+      .map((r, i) => ({ ...r, rank: i + 1 }));
+    const month = rkPeriod === "mock_month";
+    $("leaders-h").textContent = month ? "Leading this month." : "Leading right now.";
+    $("leaders").style.setProperty("--n", Math.max(1, Math.min(4, rows.length)));
+    $("leaders").innerHTML = frozen ? `<div class="empty">Results are withheld until the play log is restored.</div>`
+      : rows.slice(0, 4).map((r) => `<a class="leader" href="${link(r.artist_name)}"><span class="l-rank">${r.rank}</span>
+        ${av(r.artist_name)}<b>${esc(r.artist_name)}</b>
+        <span class="l-share">${fmtPct(r.share)}</span><span class="l-sub">${fmtInt(r.counted_plays)} plays counted, ${r.n_songs} song${r.n_songs === 1 ? "" : "s"}</span></a>`).join("")
+        || `<div class="empty">No counted play yet in this period.</div>`;
+    const total = rows.reduce((n, r) => n + r.counted_plays, 0);
+    $("rk-sum").textContent = rows.length
+      ? `${rows.length} artists with counted plays, ${fmtInt(total)} plays counted${month ? " in the mock month" : " live"}.` : "";
+    $("rk-note").textContent = (month ? "Mock month: 30 simulated days in the bars on the map, built on the real catalogue. The plays are generated, not heard. " : "Live: plays heard by the meter at the CIMFEST stand. ")
+      + `${s && s.rule_version ? `Rules ${s.rule_version}` : ""}${s && s.stats_run_id ? `, computed in run ${s.stats_run_id}.` : ""}`;
+    draw();
+  };
+  document.querySelectorAll("[data-rk]").forEach((b) => b.addEventListener("click", () => { rkPeriod = b.dataset.rk; loadPeriod(); }));
+  $("q").addEventListener("input", draw);
+  $("foot").textContent = `Fair Play is a prototype built at the CIMFEST Hackathon 2026.${MOCK ? " Mock data." : ""}`;
+  feed(({ event, data }) => { if (event === "stats" && data && data.period === rkPeriod) loadPeriod(); });
+  await loadPeriod();
+  void songsIn;
 }
 if (!name) { finder(); }
 else {

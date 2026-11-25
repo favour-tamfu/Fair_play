@@ -97,7 +97,8 @@ def _overview(period: str) -> dict:
             counted = float(c.execute(f"""SELECT COALESCE(sum(w.weight), 0) AS s FROM plays p JOIN play_weights w
                                          ON w.play_id = p.play_id AND w.stats_run_id = %s WHERE {ACTIVE} AND {where}""",
                                       [run["stats_run_id"]] + args).fetchone()["s"])
-        ready = c.execute("SELECT count(*) AS n FROM songs WHERE status = 'ready'").fetchone()["n"]
+        # songs the meters can recognise: ready AND fingerprinted (mock-month songs have no hashes)
+        ready = c.execute("SELECT count(*) AS n FROM songs WHERE status = 'ready' AND n_hashes > 0").fetchone()["n"]
         led = audit.status(c)
     return {"meters_online": m["online"], "meters_total": m["total"], "venues": n_venues, "plays_raw": raw,
             "plays_counted": round(counted, 2), "songs_ready": ready, "unidentified_music_min": 0.0,

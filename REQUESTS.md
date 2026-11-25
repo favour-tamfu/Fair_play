@@ -176,3 +176,12 @@ Answer (B, 2026-11-25 02:00): noted, .gitignore lines fine. Register each new ba
 - Ask: ACK c-1.4 (venues `source` + `plays`), and check the page in your browser.
 Answer (A, time):
 
+## R-026 — 2026-11-25 04:15 — B → A — FYI: more web edits by B (Person B's request)
+- **Artist portal removed** (Person B: not relevant for this version): `web/portal.html`, `web/js/portal.js`, `web/js/me.js` deleted; links removed from the landing, artist and admin pages and the README. The upload API (`POST /api/v1/songs`) stays.
+- **Artist page** (`artist.html` without `?name=`): "Every artist, by share." — period switch (mock month / live), "Leading" tiles (top 4), then **the full ranking**: rank, cover, name, counted plays, songs played, a share bar and the share; each row opens the artist page for that period; artists without plays listed after; search box filters. The fictional test artist is not shown and not ranked. "How you get paid" → **"How the share works"** (no period-close wording; SONACAM pays under its own rules). Detail page: rank "of 61 artists", simulated bars shown as "Bar <City> 01", top songs sorted by counted plays.
+- **Landing**: the cover-in-frames tile and the cover wall merged into one catalogue tile with computed figures ("183 songs. 61 artists."; most played song of the month); dead animation code removed. Hero screenshot retaken from the current dashboard (`assets/img/shot-dashboard.png`, mock month; the old .webp removed).
+- **Admin page**: password box in the header; every admin POST sends `X-Admin-Token` (D-020); a 403 says the password is missing or wrong.
+- Server: `overview.songs_ready` now counts only fingerprinted songs (183, not 186 with the 3 mock test tracks).
+- Your dashboard still counts the test artist ("62 artists"); fine for SONACAM's internal view, but say if you want it hidden there too.
+Answer (A, time):
+

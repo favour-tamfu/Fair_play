@@ -15,7 +15,6 @@
     <a class="gn-mark" href="index.html" aria-label="Fair Play home"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
     <a href="index.html">Overview</a>
     <a href="artist.html" aria-current="page">Artists</a>
-    <a href="portal.html">Artist portal</a>
     <a href="index.html#how">How it works</a>
   </div>
 </nav>
@@ -24,9 +23,9 @@
   <div class="ln-row">
     <a class="ln-title" href="artist.html">Artists</a>
     <div class="ln-links">
-      <a href="artist.html">Find an artist</a>
-      <a href="#paid">How you get paid</a>
-      <a class="pill" href="portal.html">Artist portal</a>
+      <a href="artist.html">Ranking</a>
+      <a href="#paid">How the share works</a>
+      <a class="pill" href="index.html#numbers">See the count</a>
     </div>
   </div>
 </nav>
@@ -35,21 +34,32 @@
 <main id="finder" hidden>
   <section class="wrap p-head">
     <p class="eyebrow">Public data</p>
-    <h1>Find your plays.</h1>
-    <p class="lede">Search your name to see your share of bar plays, the bars that played you and your recent plays.</p>
+    <h1>Every artist, by share.</h1>
+    <p class="lede">Each artist's share of the plays counted in bars. Open an artist to see their songs, the bars that played them and when.</p>
   </section>
   <section class="wrap">
-    <label class="search"><span class="sr">Search for an artist</span>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-      <input id="q" type="search" placeholder="Search by artist name" autocomplete="off">
-    </label>
+    <div class="period-switch rk-switch" role="tablist" aria-label="Period">
+      <button type="button" role="tab" data-rk="mock_month" aria-selected="true">Last 30 days (mock month)</button>
+      <button type="button" role="tab" data-rk="live" aria-selected="false">Live now</button>
+    </div>
   </section>
   <section class="wrap leaders-wrap">
-    <h2 class="small-h">Leading this month.</h2>
+    <h2 class="small-h" id="leaders-h">Leading this month.</h2>
     <div class="leaders" id="leaders"></div>
   </section>
-  <section class="grey p-section" style="margin-top:60px">
-    <div class="wrap"><h2 class="small-h">All artists.</h2><div id="artist-list"><div class="empty">Loading artists…</div></div></div>
+  <section class="grey p-section rk-section">
+    <div class="wrap">
+      <div class="rk-head">
+        <div><h2 class="small-h">The full ranking.</h2><p class="rk-sum" id="rk-sum"></p></div>
+        <label class="search rk-search"><span class="sr">Search for an artist</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input id="q" type="search" placeholder="Search an artist" autocomplete="off">
+        </label>
+      </div>
+      <div class="rk-cols" aria-hidden="true"><span>#</span><span>Artist</span><span>Share of counted plays</span><span>Share</span></div>
+      <ol class="ranking" id="ranking"><li class="empty">Loading the ranking…</li></ol>
+      <p class="fineprint rk-note" id="rk-note"></p>
+    </div>
   </section>
 </main>
 
@@ -114,14 +124,14 @@
 
 <section class="p-section" id="paid">
   <div class="wrap">
-    <h2>How you get paid.</h2>
+    <h2>How the share works.</h2>
     <div class="paid">
-      <div><b>1</b><p>Bars pay a copyright levy on the drinks they buy.</p></div>
+      <div><b>1</b><p>Bars pay SONACAM a copyright levy on the drinks they buy.</p></div>
       <div><b>2</b><p>A meter in each bar recognises the songs. No sound leaves the bar.</p></div>
-      <div><b>3</b><p>Your share is your counted plays divided by all counted plays.</p></div>
-      <div><b>4</b><p>Your rights society applies its rules and pays you.</p></div>
+      <div><b>3</b><p>A song's share is its counted plays divided by all counted plays. An artist's share is the sum of their songs' shares.</p></div>
+      <div><b>4</b><p>SONACAM shares the levy by these shares and pays its members under its own rules.</p></div>
     </div>
-    <p class="fineprint">Shares are indicative until the period is closed. Repeats of the same song in a short time count less, so looping a song in one bar does not inflate it.</p>
+    <p class="fineprint">Repeats of the same song in a short time count less, so looping a song in one bar does not inflate it. Unusual patterns are flagged for SONACAM to review.</p>
   </div>
 </section>
 

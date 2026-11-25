@@ -107,7 +107,6 @@ The song package is a folder with `catalogue.csv` and `audio/`. The server finge
 - SONACAM dashboard (unlisted address): **http://localhost:8000/sonacam-x7k2q9.html** (add `?period=mock_month` for the mock month)
 - SONACAM admin page (unlisted; asks for the admin password): http://localhost:8000/sonacam-x7k2q9-admin.html
 - Artists (public search) and one artist: http://localhost:8000/artist.html, **http://localhost:8000/artist.html?name=Locko&period=mock_month**
-- Artist portal (upload a song): http://localhost:8000/portal.html
 - Server health: http://localhost:8000/health
 
 The unlisted addresses hide the SONACAM pages from the public site; they do not protect them. Admin actions are protected by the admin password (`ADMIN_TOKEN`).

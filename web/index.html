@@ -16,7 +16,6 @@
     <a class="gn-mark" href="index.html" aria-label="Fair Play home"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 13V7M8.5 15V5M12 12V8M15.5 14V6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
     <a href="index.html" aria-current="page">Overview</a>
     <a href="artist.html">Artists</a>
-    <a href="portal.html">Artist portal</a>
     <a href="#how">How it works</a>
   </div>
 </nav>
@@ -53,7 +52,7 @@
           <div class="display-edge">
             <div class="bezel">
               <div class="display-camera"></div>
-              <div class="display-frame"><img src="assets/img/shot-dashboard.webp" alt="The Fair Play dashboard: plays by artist, key figures and the sidebar menu" width="1600" height="1000"></div>
+              <div class="display-frame"><img src="assets/img/shot-dashboard.png" alt="The SONACAM dashboard for the mock month: plays counted and heard, artists, meters, songs, and plays by artist" width="1600" height="1000"></div>
               <div class="below-display"></div>
             </div>
           </div>
@@ -132,28 +131,16 @@
     </div>
   </section>
 
-    <!-- Tile: the song most played, framed by its own cover -->
     <section class="wrap mt-tiles">
-      <article class="mt-tile am-frames" id="tile-frames">
-        <div class="frames" id="frames" aria-hidden="true"><div class="frame-cover" id="frame-cover"></div></div>
-        <button class="tile-btn sway-btn" id="sway-btn" type="button" aria-label="Pause the animation"><svg viewBox="0 0 18 18" aria-hidden="true"><path class="i-pause" d="M6 4v10M12 4v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path class="i-play" d="M6 3.8l8.2 5.2L6 14.2z" fill="currentColor"/></svg></button>
-        <p class="am-who" id="frame-who"></p>
-        <a class="tile-btn" href="#how" aria-label="How the meter recognises a song"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
-        <div class="mt-tile-text">
-          <p class="am-eye-l">Bar metering</p>
-          <h2 class="heavy">Music counted<br>where it plays.</h2>
-          <p class="tile-copy">A meter beside the speaker recognises each song from short fingerprints. No sound leaves the bar, and bars pay nothing extra.</p>
-        </div>
-      </article>
-
-      <!-- Tile: a wall of album covers around the headline -->
+      <!-- Tile: the catalogue the meters recognise, with a wall of album covers around the headline -->
       <article class="mt-tile am-wall light" id="tile-wall">
         <div class="wall" id="wall" aria-hidden="true"></div>
-        <a class="tile-btn" href="artist.html" aria-label="Explore artists"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+        <a class="tile-btn" href="artist.html" aria-label="See every artist's share"><svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
         <div class="mt-tile-text mid">
           <p class="am-eye-l">The catalogue</p>
-          <h2 class="heavy">Where every song<br>finds its share.</h2>
+          <h2 class="heavy" id="cat-h">Every song<br>the meters know.</h2>
           <p class="wall-note" id="wall-note"></p>
+          <p class="wall-note" id="frame-who"></p>
         </div>
       </article>
 
