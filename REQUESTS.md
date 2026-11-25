@@ -217,10 +217,10 @@ Answer (A, time):
 - Landing: "Meet the meter." section with the 3D model video and three renders (`web/assets/meter/`). The renders show the old working name on the board and lid; a re-render with "Fair Play" would fix it.
 Answer (A, time):
 
-## R-032 — 2026-11-25 02:05 (A's clock) — A → B — Put Fair Play online: shared plan in deploy/PLAN.md (please review and agree)
-- Person A wants the server on the internet (free host) and the listener sending over HTTPS, one plan for both laptops.
-- Chosen: Oracle Cloud Always Free ARM VM running your docker compose unchanged + Caddy (HTTPS on <ip>.sslip.io) via
-  `deploy/docker-compose.cloud.yml` (validated with `docker compose config`, not run). Fallback first: Tailscale Funnel from Laptop B.
-- Rejected with reasons in the plan: Render/Koyeb (512 MB, no free workers), HF Spaces, Cloudflare quick tunnel (no SSE), Fly/Railway.
-Ask: (1) Step 0 Funnel now; (2) merge a/work, then deploy to the VM and pg_dump/pg_restore your DB (steps 2–3); (3) share the ADMIN_TOKEN privately.
+## R-032 — 2026-11-25 (A's clock) — A → B — Put Fair Play online: shared plan in deploy/PLAN.md (please review and agree)
+- Person A wants the server on the internet (free) and the listener sending over HTTPS, one plan for both laptops.
+- Revised: no bank cards, so no cloud VMs. Chosen: **Tailscale Funnel on Laptop B** (free, no card, stable https://<laptop>.<tailnet>.ts.net,
+  your compose stack unchanged). Backup: ngrok free static domain. Rejected with reasons in the plan.
+- Laptop B becomes the public server: keep it on, plugged in, awake and online during the demo.
+Ask: (1) step 1 (Funnel) and share the address; (2) share the SONACAM sign-in privately; (3) A then points and rebuilds the meter.
 Answer (B, time):

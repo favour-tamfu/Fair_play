@@ -2,6 +2,21 @@
 Last updated: 2026-11-25 01:05 (Cameroon time).
 
 ## 0. Latest events (newest first)
+- (A's clock ~02:20; B's clock/notes run ~6 h ahead) **Merged B's main into a/work** (5fb5af7; only REQUESTS.md conflicted;
+  `scripts\test_a.ps1` → 90 passed). B's changes now on a/work — **§4 below is partly outdated, these win**:
+  sign-in with roles (`login.html`, `js/session.js`, `js/login.js`; SONACAM user `sonacam` + ADMIN_TOKEN; artists = name + `SONACAM`),
+  new artist portal (`portal.html`, `js/portal.js`; old me.js removed), public `artist.html` ranking removed → artist detail only in the
+  SONACAM app (`sonacam-x7k2q9-artist.html`), operations page rebuilt (`sonacam-x7k2q9-admin.html`: meters with key fingerprint/retire,
+  activity log, review flags, catalogue, actions), OpenStreetMap (`js/osm.js`, `vendor/leaflet`), landing aimed at SONACAM with a
+  Live / Last 30 days switch and a "Meet the meter" section (`assets/meter/`), hero screenshot now `assets/img/shot-dashboard.png`.
+  B fixed the meter clock-drift bug and tested FairPlayMeter.exe against a real server (6/6 windows matched) — see REQUESTS R-029.
+  REQUESTS renumbered by B: A's old R-017..R-020 are R-021..R-024; B's R-025..R-031; A's deploy plan is **R-032**.
+- **Operations page restyled** (user: "put SF fonts on B's new admin dash"): SF Pro on every element incl. buttons, inputs, selects,
+  IDs (no monospace), panels #f5f5f7 r18, white tables, Apple pill buttons (blue main, red danger), filter pills — appended to
+  `web/css/dash.css` under `body.d2.admin`. Checked in mock mode at 1440×900 (all elements SF Pro).
+- **Hosting plan revised — the team has no bank cards** → no Oracle/Google/AWS. `deploy/PLAN.md` now: **Tailscale Funnel on Laptop B**
+  (free, no card, stable `https://<laptop>.<tailnet>.ts.net`), backup **ngrok** free static domain; Laptop B must stay on/awake/online.
+  VM files (cloud-init, cloud compose override, Caddyfile) deleted. Nothing published yet.
 - 02:05 User confirmed → wrote **`deploy/PLAN.md`** (shared A+B plan) + `deploy/docker-compose.cloud.yml`, `deploy/Caddyfile`,
   `deploy/cloud-init.yaml`; request **R-023** to B. Choice: **Oracle Cloud Always Free ARM VM** running B's compose unchanged + Caddy HTTPS on
   `<ip>.sslip.io`; **fallback first: Tailscale Funnel from B's laptop**. Rejected: Render/Koyeb (512 MB, no free workers; matcher keeps
