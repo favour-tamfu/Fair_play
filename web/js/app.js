@@ -207,16 +207,16 @@ function renderEarnings(e) {
   setKpi("k-artists", e.frozen ? "–" : fmtInt(e.rows.filter((r) => r.counted_plays > 0 && r.artist_name !== TEST_ARTIST).length));
   const max = Math.max(...e.rows.map((r) => r.share), 0.0001);
   $("earn").innerHTML = e.rows.map((r) => {
-    const w = (100 * r.share / max).toFixed(1);
+    const w = (100 * r.share).toFixed(1);   // out of 100 %, not relative to the leader
     const link = `sonacam-x7k2q9-artist.html?name=${encodeURIComponent(r.artist_name)}&period=${state.period}`;   // SONACAM only (D-026)
     const open = openArtists.has(r.artist_name);
     const songs = open ? r.songs.map((s) => `<tr class="sub"><td></td><td class="name">${esc(s.title)}</td><td></td>
       <td class="n">${fmtInt(s.raw_plays)}</td><td class="n">${fmtInt(s.counted_plays)}</td><td class="n">${fmtPct(s.share)}</td>
-      <td><div class="bar" title="${esc(s.title)}: ${fmtPct(s.share)} of counted plays"><i style="width:${(100 * s.share / max).toFixed(1)}%"></i></div></td></tr>`).join("") : "";
+      <td><div class="bar" title="${esc(s.title)}: ${fmtPct(s.share)} of counted plays"><i style="width:${(100 * s.share).toFixed(1)}%"></i></div></td></tr>`).join("") : "";
     return `<tr class="artist${r.rank <= 3 ? " top3" : ""}" data-artist="${esc(r.artist_name)}">
       <td>${r.rank}</td><td class="name"><span class="caret">${open ? "▾" : "▸"}</span>${esc(r.artist_name)}${r.artist_name === TEST_ARTIST ? ' <span class="chip test" title="Fictional tracks used in the mock month gaming scenarios">fictional test</span>' : `<a href="${link}">page</a>`}</td>
       <td class="n">${r.n_songs}</td><td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.counted_plays)}</td>
-      <td class="n share">${fmtPct(r.share)}</td><td><div class="bar" title="${esc(r.artist_name)}: ${fmtPct(r.share)} of counted plays"><i style="width:${w}%"></i></div></td></tr>${songs}`;
+      <td class="n share">${fmtPct(r.share)}</td><td><div class="bar" title="${esc(r.artist_name)}: ${fmtPct(r.share)} of all counted plays (the bar is out of 100 %)"><i style="width:${w}%"></i></div></td></tr>${songs}`;
   }).join("") || `<tr><td colspan="7" class="note">${e.frozen ? "Withheld until the log is restored." : "No plays counted in this period yet. Shares appear after the first counted play."}</td></tr>`;
   $("usage-dl").href = `/api/v1/export/usage_report.csv?period=${state.period}&mode=${state.mode}`;
   // Hero sentence: the answer to "who earned what", computed from the rows shown.
@@ -254,15 +254,20 @@ function renderCompare(c) {
 
 // ---------- songs ----------
 function renderShares(s) {
-  const max = Math.max(...s.rows.map((r) => r.share), 0.0001);
-  $("shares").innerHTML = s.rows.map((r, i) => {
+  const body = s.rows.map((r, i) => {
     // "cooldown" is the normal repeat rule (repeats count less), not something to review
     const flags = (r.flags || []).filter((f) => f !== "cooldown").map((f) => `<span class="chip">${esc(f)}</span>`).join("");
     return `<tr><td>${i + 1}</td><td>${esc(r.title)}</td><td>${esc(r.artist_name)}</td>
       <td class="n">${fmtInt(r.raw_plays)}</td><td class="n">${fmtInt(r.weighted_plays)}</td><td class="n share">${fmtPct(r.share)}</td>
-      <td><div class="bar"><i style="width:${(100 * r.share / max).toFixed(1)}%"></i></div></td><td>${flags}</td></tr>`;
-  }).join("") || `<tr><td colspan="8" class="note">No plays counted in this period yet.</td></tr>`;
-  $("shares-note").textContent = "A song's share is its counted plays divided by all counted plays.";
+      <td><div class="bar" title="${fmtPct(r.share)} of all counted plays"><i style="width:${(100 * r.share).toFixed(1)}%"></i></div></td><td>${flags}</td></tr>`;
+  }).join("");
+  // D-032: the whole catalogue, not only the songs played in this period
+  const played = new Set(s.rows.map((r) => r.song_id));
+  const rest = catalogue.filter((c) => !played.has(c.song_id)).sort((a, b) => a.artist_name.localeCompare(b.artist_name) || a.title.localeCompare(b.title));
+  const sep = rest.length ? `<tr class="group"><td colspan="8">Not played in this period · ${fmtInt(rest.length)} ${rest.length === 1 ? "song" : "songs"}</td></tr>` : "";
+  $("shares").innerHTML = (body || (rest.length ? "" : `<tr><td colspan="8" class="note">No plays counted in this period yet.</td></tr>`)) + sep
+    + rest.map((c) => `<tr class="unplayed"><td></td><td>${esc(c.title)}</td><td>${esc(c.artist_name)}</td><td class="n">0</td><td class="n">0</td><td class="n share">0 %</td><td><div class="bar"></div></td><td>${c.status === "ready" ? "" : `<span class="chip">${esc(c.status)}</span>`}</td></tr>`).join("");
+  $("shares-note").textContent = `${fmtInt(s.rows.length)} of ${fmtInt(s.rows.length + rest.length)} songs played in this period. A song's share is its counted plays divided by all counted plays.`;
   applyFilter();
 }
 
@@ -392,8 +397,13 @@ async function loadEarnings() {
     renderCompare(c);
   } catch (err) { $("earn-note").textContent = String(err); }
 }
+let catalogue = [];
 async function loadShares() {
-  try { renderShares(await get("shares", state.period, state.mode)); } catch (e) { $("shares-note").textContent = String(e); }
+  try {
+    const [s, cat] = await Promise.all([get("shares", state.period, state.mode), get("songs").catch(() => catalogue)]);
+    catalogue = cat || [];
+    renderShares(s);
+  } catch (e) { $("shares-note").textContent = String(e); }
 }
 async function loadLedger() {
   try { renderLedger(await get("ledger_status", state.period)); } catch (_) { /* keep the old banner */ }

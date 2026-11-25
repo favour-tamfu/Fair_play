@@ -184,3 +184,9 @@ Affects A: `git fetch; git merge origin/main` into a/work.
 - Plays by artist is a ranked horizontal bar list (top 12; light = heard, dark = counted; count and share at the end; hover for details; table view kept). The dot matrix was hard to read.
 - Live activity loads its last 40 entries from the activity log on page load (plays, heard, meters, flags, log), so a refresh keeps it; then the live feed continues.
 - A "Hearing now" card updates the instant a meter recognises a song (match event); a counted play also refreshes the figures at once instead of waiting for the next recompute.
+
+## D-032 (B, 2026-11-25) SONACAM dashboard: flat cards, no pills, bars out of 100 %, full song list
+- One white surface per card (no grey card around a white card); no pill-shaped buttons or labels (8 px corners).
+- Live activity: no coloured dots or row lines (alternate row tint instead); "Last heard / Hearing now" is a plain block with a left accent; top row cards share one fixed height.
+- Share bars in Who earned what and Songs are out of 100 % of counted plays, no longer relative to the leader.
+- Songs lists the whole catalogue: played songs ranked first, then "Not played in this period" (0 plays).
