@@ -66,9 +66,8 @@ def from_event(conn: psycopg.Connection, event: str, d: dict[str, Any]) -> None:
         else:
             record(conn, "ledger", f"Play log BROKEN at play {d.get('broken_at_play_id')}: results are withheld until it is restored",
                    "error", actor="scheduler", detail={"broken_at_play_id": d.get("broken_at_play_id")})
-    elif event == "stats":
-        record(conn, "stats", f"Shares recomputed: {d.get('period')}, {d.get('mode')} (run {d.get('stats_run_id')})",
-               actor="stats", detail=d)
+    # "stats" events: routine recomputes (every 15 s after new plays) are not logged; an admin's recompute is
+    # logged by the admin-action middleware ("Admin recomputed the shares").
     # "meter" events: the ingest sends one with every report (online=true); the scheduler records real changes itself
 
 

@@ -5,6 +5,9 @@
 import { MOCK, get, feed, fmtTime, fmtHm, fmtDateTime } from "./api.js";
 import { osmMap } from "./osm.js";
 import { VIEW, project, outlinePath } from "./cameroon.js";
+import { requireRole, showUser } from "./session.js";
+
+const USER = await requireRole("sonacam");   // D-028: SONACAM only (signed in)
 
 const LIVE_VENUE = "V-BUEA-CIMFEST";
 const state = { period: "live", mode: "standardised", tab: "overview" };
@@ -324,7 +327,7 @@ function feedLine(event, data) {
       if (was === data.online) return null;
       return { tag: "meter", text: `${esc(data.meter_id)} ${data.online ? "online" : "offline"}`, sub: data.queued ? `${data.queued} samples queued` : "" };
     }
-    case "stats": return { tag: "stats", text: "shares recalculated", sub: `run ${esc(data.stats_run_id)}` };
+    case "stats": return null;   // routine recompute (every 15 s after new plays): refreshes the figures, not listed
     case "epoch": return { tag: "reset", text: "live demo data reset", sub: "" };
     default: return null;
   }

@@ -374,3 +374,39 @@ div.leader b { font-family: var(--display); font-size: 24px; font-weight: 600; }
 .sc-locked { padding: 90px 22px; }
 @media (max-width: 734px) { .rk-row.static { grid-template-columns: 30px minmax(0, 1fr) 70px; } }
 @media (max-width: 734px) { div.leader { padding: 16px; } div.leader b { font-size: 18px; } }
+
+/* D-028: sign-in page and artist portal */
+.login-wrap { min-height: calc(100vh - 200px); display: grid; place-items: center; padding: 60px 22px; }
+.login-card { width: min(440px, 100%); display: flex; flex-direction: column; gap: 14px; }
+.login-card h1 { margin: 0; }
+.login-card .lede { margin: 0 0 8px; font-size: 17px; }
+.login-card label, .pt-form label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--ink-2); }
+.login-card input, .pt-form input, .pt-form select { font: inherit; font-size: 17px; padding: 12px 14px; border: 1px solid #d2d2d7; border-radius: 12px; background: #fff; color: var(--ink); }
+.login-card input:focus, .pt-form input:focus, .pt-form select:focus { outline: 2px solid var(--button); outline-offset: 0; }
+.login-card button { align-self: flex-start; border: 0; cursor: pointer; }
+.login-msg { color: #d70015; min-height: 1.3em; margin: 0; }
+.who { display: flex; gap: 10px; align-items: center; font-size: 13px; }
+.who .signout { font: inherit; font-size: 12px; border: 1px solid #d2d2d7; background: #fff; border-radius: 980px; padding: 3px 10px; cursor: pointer; }
+.pt-tiles { grid-template-columns: repeat(3, 1fr); margin-top: 18px; }
+.pt-table-wrap { overflow-x: auto; }
+.pt-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.pt-table th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-3); font-weight: 500; padding: 8px 10px; border-bottom: 1px solid #d2d2d7; }
+.pt-table td { padding: 12px 10px; border-bottom: 1px solid #e8e8ed; vertical-align: top; }
+.pt-table td b { display: block; font-weight: 600; }
+.pt-table .n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pt-table .soft, .soft { color: var(--ink-3); font-size: 13px; }
+.st { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 980px; white-space: nowrap; }
+.st-ready { background: #e3f5e8; color: #16753a; } .st-wait { background: #eef1f6; color: #3a4a63; }
+.st-warn { background: #fff3e0; color: #a35200; } .st-bad { background: #fde8ec; color: #b0002a; }
+.pt-lede { font-size: 17px; margin: 0 0 24px; max-width: 720px; }
+.pt-form { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; max-width: 900px; }
+.pt-form .wide { grid-column: 1 / -1; }
+.pt-form fieldset { border: 1px solid #d2d2d7; border-radius: 14px; padding: 14px 16px; }
+.pt-form legend { font-size: 14px; color: var(--ink-2); padding: 0 6px; }
+.pt-form .owner { display: grid; grid-template-columns: 1fr 160px 110px 36px; gap: 10px; margin-bottom: 10px; }
+.pt-form .o-del { border: 0; background: none; font-size: 22px; color: var(--ink-3); cursor: pointer; }
+.pt-form .check { flex-direction: row; align-items: flex-start; gap: 10px; }
+.pt-form .check input { margin-top: 3px; }
+.pt-form button.pill { border: 0; cursor: pointer; }
+@media (max-width: 734px) { .pt-tiles { grid-template-columns: 1fr; } .pt-form { grid-template-columns: 1fr; } .pt-form .owner { grid-template-columns: 1fr 1fr; } }
+.pt-tiles .tile { aspect-ratio: auto; min-height: 150px; }

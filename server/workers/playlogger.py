@@ -64,8 +64,9 @@ def _insert_play(conn: psycopg.Connection, c: Candidate, meter: dict, d: date) -
                     VALUES (%s,%s,%s,%s,%s,%s)""",
                  (play["play_id"], c.ended_at, c.n_windows, round(c.duration_s, 1), c.mean_loudness_db, d))
     song = conn.execute("SELECT title, artist_name FROM songs WHERE song_id = %s", (c.song_id,)).fetchone() or {}
+    city = (conn.execute("SELECT city FROM venues WHERE venue_id = %s", (play["venue_id"],)).fetchone() or {}).get("city")
     notify(conn, "play", {"play_id": play["play_id"], "venue_id": play["venue_id"], "song_id": c.song_id,
-                          "title": song.get("title"), "artist_name": song.get("artist_name"),
+                          "title": song.get("title"), "artist_name": song.get("artist_name"), "city": city,
                           "started_at": format_utc(c.started_at), "source": meter["source"]})
     log.info("PLAY %s %s %s started %s (%d windows)", play["play_id"], meter["meter_id"], c.song_id,
              format_utc(c.started_at), c.n_windows)

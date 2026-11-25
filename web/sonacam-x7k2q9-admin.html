@@ -15,7 +15,7 @@
   </nav>
   <div class="clock" id="clock"></div>
   <span class="ledger" id="ledger">Log —</span>
-  <label class="admintok">Admin password <input type="password" id="admin-token" autocomplete="off" size="14"></label>
+  <span class="who" id="who"></span>
 </header>
 
 <main class="adm">
@@ -57,7 +57,7 @@
 
   <!-- Activity log (D-024): everything the system did, organised and live; needs the admin password -->
   <section class="panel span3 actlog">
-    <div class="head"><h2>Activity log</h2><span class="note" id="act-note">Enter the admin password (top right) to see the log.</span></div>
+    <div class="head"><h2>Activity log</h2><span class="note" id="act-note"></span></div>
     <div class="act-tools">
       <div class="filters" id="act-kinds" role="group" aria-label="Type"></div>
       <div class="act-row">
@@ -113,7 +113,7 @@
   </section>
 </main>
 
-<footer class="foot">Admin actions need the admin password (ADMIN_TOKEN on the SONACAM server); this tab keeps it until it is closed. Times in Cameroon time<span id="mode-note"></span></footer>
+<footer class="foot">Signed in as SONACAM: admin actions are recorded in the activity log. Times in Cameroon time<span id="mode-note"></span></footer>
 
 <script type="module" src="js/admin.js"></script>
 </body>

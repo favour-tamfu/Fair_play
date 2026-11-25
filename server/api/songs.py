@@ -18,7 +18,7 @@ from fastapi.responses import JSONResponse
 
 from fairplay_core.schema import format_utc
 from server import config
-from server.api.admin import require_admin
+from server.api.admin import require_admin, require_uploader
 from server.db import connect, jobs
 
 router = APIRouter(prefix="/api/v1")
@@ -53,9 +53,9 @@ def parse_owners(raw: str) -> list[dict[str, Any]]:
             raise BadUpload(f"owners[{i}].role must be one of {sorted(ROLES)}")
         if isinstance(share, bool) or not isinstance(share, (int, float)) or not 0 < share <= 100:
             raise BadUpload(f"owners[{i}].share_pct must be a number in (0, 100]")
-        if not MOMO_RE.match(momo):
+        if momo and not MOMO_RE.match(momo):   # optional (D-028): SONACAM keeps payment details on its own site
             raise BadUpload(f"owners[{i}].momo must be a phone number like +2376XXXXXXXX")
-        out.append({"name": name, "role": role, "share_pct": float(share), "momo": momo})
+        out.append({"name": name, "role": role, "share_pct": float(share), "momo": momo or None})
     total = sum(o["share_pct"] for o in out)
     if abs(total - 100) > 0.01:
         raise BadUpload(f"owner shares must sum to 100 (got {total:g})")
@@ -127,8 +127,10 @@ def _create(file: UploadFile, title: str, artist_name: str, isrc: Optional[str],
 async def upload_song(file: UploadFile = File(...), title: str = Form(...), artist_name: str = Form(...),
                       isrc: Optional[str] = Form(None), iswc: Optional[str] = Form(None),
                       duration_s: Optional[float] = Form(None), owners: str = Form(...),
-                      consent: str = Form(...)):
+                      consent: str = Form(...), who: dict = Depends(require_uploader)):
     try:
+        if who.get("role") == "artist":               # D-028: an artist uploads under their own name only
+            artist_name = who["artist_name"]
         if consent.strip().lower() != "true":
             raise BadUpload('consent must be "true" (rights holder agreed to royalty monitoring)')
         if Path(file.filename or "").suffix.lower() not in config.UPLOAD_EXTENSIONS:

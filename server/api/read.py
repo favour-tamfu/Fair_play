@@ -146,7 +146,7 @@ def _plays(period, mode, venue_id, song_id, limit) -> list[dict]:
         return query_plays(c, period, mode, venue_id, song_id, limit=limit)
 
 
-@router.get("/plays")
+@router.get("/plays", dependencies=[Depends(require_admin)])   # D-028: SONACAM only
 async def plays(period: str = PERIOD, mode: str = MODE, venue_id: Optional[str] = None, song_id: Optional[str] = None,
                 limit: int = Query(50, ge=1, le=1000)):
     return await run_in_threadpool(_plays, period, mode, venue_id, song_id, limit)
@@ -178,7 +178,7 @@ def _flags(period: str) -> list[dict]:
     return [{**r, "detail": r["detail"] or "", "created_at": format_utc(r["created_at"])} for r in rows]
 
 
-@router.get("/flags")
+@router.get("/flags", dependencies=[Depends(require_admin)])   # D-028: SONACAM only
 async def flags(period: str = PERIOD):
     return await run_in_threadpool(_flags, period)
 
@@ -190,7 +190,7 @@ def _payouts(period: str, pot: int) -> dict:
     return {"pot_fcfa": pot, "frozen": frozen, "rows": [], "total_fcfa": 0}
 
 
-@router.get("/payouts")
+@router.get("/payouts", dependencies=[Depends(require_admin)])   # D-028: SONACAM only
 async def payouts(period: str = PERIOD, pot: int = Query(config.POT_DEFAULT_FCFA, ge=0)):
     return await run_in_threadpool(_payouts, period, pot)
 
@@ -236,7 +236,7 @@ def _usage_report(period: str, mode: str) -> str:
     return f.getvalue()
 
 
-@router.get("/export/usage_report.csv", response_class=PlainTextResponse)
+@router.get("/export/usage_report.csv", response_class=PlainTextResponse, dependencies=[Depends(require_admin)])   # D-028
 async def usage_report(period: str = PERIOD, mode: str = MODE):
     text = await run_in_threadpool(_usage_report, period, mode)
     return PlainTextResponse(text, media_type="text/csv",

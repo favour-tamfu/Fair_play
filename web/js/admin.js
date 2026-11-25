@@ -2,6 +2,7 @@
 // register a meter key, approve suspected duplicates, review flags. Admin actions send the admin password
 // (header X-Admin-Token, D-020), kept in sessionStorage so it is forgotten when the tab closes.
 import { MOCK, get, feed, fmtTime, fmtDateTime } from "./api.js";
+import { requireRole, showUser } from "./session.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -17,21 +18,20 @@ function log(text, kind = "") {
 }
 
 // ---------- admin password (D-020) ----------
-const TOKEN_KEY = "fp-admin-token";
-const tokenInput = $("admin-token");
-tokenInput.value = sessionStorage.getItem(TOKEN_KEY) || "";
-tokenInput.addEventListener("input", () => sessionStorage.setItem(TOKEN_KEY, tokenInput.value.trim()));
+// D-028: the SONACAM session (cookie) authorises every admin call; no password box on the page.
+const USER = await requireRole("sonacam");
+showUser(USER, $("who"));
 
 // POST helper. In mock mode nothing is sent: the page says what it would have done.
 async function post(url, body) {
   if (MOCK) return { mock: true };
-  const headers = { "X-Admin-Token": tokenInput.value.trim() };
+  const headers = {};
   const opts = { method: "POST", headers };
   if (body !== undefined) { headers["Content-Type"] = "application/json"; opts.body = JSON.stringify(body); }
   const r = await fetch(url, opts);
   let data = null;
   try { data = await r.json(); } catch (_) { /* empty body */ }
-  if (r.status === 403) { tokenInput.focus(); throw new Error("refused: the admin password is missing or wrong (top right)"); }
+  if (r.status === 403) { location.replace("login.html?next=sonacam-x7k2q9-admin.html"); throw new Error("signed out"); }
   if (!r.ok) throw new Error((data && (data.detail || data.error)) ? `${data.error || ""} ${typeof data.detail === "string" ? data.detail : JSON.stringify(data.detail || "")}`.trim() : `HTTP ${r.status}`);
   return data;
 }
@@ -222,7 +222,7 @@ const ACT_KINDS = [["", "All"], ["play", "Plays"], ["heard", "Songs heard"], ["r
   ["flag", "Flags"], ["rejected", "Refused requests"], ["admin", "Admin actions"], ["catalogue", "Catalogue"], ["ledger", "Play log"], ["stats", "Shares"]];
 const ACT_LABEL = Object.fromEntries(ACT_KINDS.filter(([k]) => k));
 const act = { kind: "", rows: [], newest: null, oldest: null, live: true, timer: null, busy: false };
-const actHeaders = () => ({ "X-Admin-Token": tokenInput.value.trim() });
+const actHeaders = () => ({});
 function actParams(extra = {}) {
   const p = new URLSearchParams();
   if (act.kind) p.set("kind", act.kind);
@@ -257,11 +257,11 @@ async function actReload() {
     actDraw();
   } catch (e) {
     act.rows = []; actDraw();
-    $("act-note").textContent = e.code === 403 ? "Enter the admin password (top right) to see the log." : `Could not load the log (${e.message}).`;
+    $("act-note").textContent = `Could not load the log (${e.message}).`;
   }
 }
 async function actPoll() {
-  if (!act.live || act.busy || MOCK || !tokenInput.value.trim() && act.newest == null) return;
+  if (!act.live || act.busy || MOCK) return;
   act.busy = true;
   try {
     if (act.newest == null) { await actReload(); return; }
@@ -309,7 +309,6 @@ $("act-csv").addEventListener("click", async () => {
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   } catch (e) { log(`CSV export failed: ${esc(e.message)}`, "err"); }
 });
-tokenInput.addEventListener("change", () => { act.newest = null; actReload(); });
 get("venues").then((vs) => {
   const ids = vs.filter((v) => v.source !== "mock").flatMap((v) => (v.meters || []).map((m) => m.meter_id)).sort();
   $("act-meter").insertAdjacentHTML("beforeend", ids.map((m) => `<option value="${esc(m)}">${esc(m)}</option>`).join(""));

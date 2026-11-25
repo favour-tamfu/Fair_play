@@ -21,7 +21,7 @@ import psycopg
 
 from fairplay_core.schema import format_utc
 from server import config
-from server.api import feed, ingest, ledger, logs, read, songs, stats
+from server.api import auth_api, feed, ingest, ledger, logs, read, songs, stats
 from server.api.events import bus
 from server.db import connect, ping
 from server.db.migrate import migrate
@@ -37,6 +37,8 @@ def _startup() -> None:
     with connect(autocommit=True) as conn, conn.transaction():
         meters = load_meter_keys(conn)
         venues = fill_known_venues(conn)
+        from server.auth import ensure_sonacam_user
+        ensure_sonacam_user(conn)            # D-028: the 'sonacam' account follows ADMIN_TOKEN
     log.info("startup: meter keys loaded: %s; known venues filled: %s", ", ".join(meters) or "none", ", ".join(venues))
 
 
@@ -59,6 +61,7 @@ app.include_router(ledger.router)
 app.include_router(read.router)
 app.include_router(stats.router)
 app.include_router(logs.router)
+app.include_router(auth_api.router)
 
 
 @app.middleware("http")

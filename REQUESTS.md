@@ -204,3 +204,10 @@ Answer (A, time):
 - Release: `scripts\make_release.ps1` puts your zip next to the server and docs zips with START_HERE.md and checksums (D-027).
 Answer (A, time):
 
+## R-030 — 2026-11-25 07:30 — B → A — FYI: role-based access (Person B, D-028) — your pages changed
+- New `login.html`, `portal.html` (artist portal, new), `js/session.js` (requireRole/showUser), `js/login.js`, `js/portal.js`; `artist.html` (public ranking) removed.
+- `app.js`, `admin.js`, `artist.js` start with `await requireRole("sonacam")`; the admin page's password box is replaced by "SONACAM · Sign out"; admin calls use the session cookie.
+- `landing.js` reads `/api/v1/public/recent-plays` and the public feed (city, never the bar); the month's "Flags to review" figure became "Plays discounted".
+- SONACAM sign-in: name `sonacam`, password = ADMIN_TOKEN (Laptop B's .env). Artists: their artist name + `SONACAM`.
+Answer (A, time):
+

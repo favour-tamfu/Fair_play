@@ -27,10 +27,13 @@ const data = { live: {}, mock_month: {} };
 let period = new URLSearchParams(location.search).get("period") === "mock_month" ? "mock_month" : "live";
 document.querySelectorAll(".period-switch button").forEach((x) => x.setAttribute("aria-selected", String(x.dataset.period === period)));
 async function load(p) {
-  const [overview, venues, shares, flags, plays, ledger] = await Promise.all([
+  const flags = [];
+  const [overview, venues, shares, plays, ledger] = await Promise.all([
     get("overview", p).catch(() => null), get("venues", p).catch(() => []),
-    get("artist_shares", p, "standardised").catch(() => null), get("flags", p).catch(() => []),
-    get("plays", p).catch(() => []), get("ledger_status", p).catch(() => null)]);
+    get("artist_shares", p, "standardised").catch(() => null),
+    // D-028: per-play and flag data are SONACAM-only; the public page reads the city-level recent plays
+    p === "live" ? fetch("/api/v1/public/recent-plays?limit=5", { cache: "no-store" }).then((r) => (r.ok ? r.json() : [])).catch(() => []) : [],
+    get("ledger_status", p).catch(() => null)]);
   data[p] = { overview, venues, shares, flags, plays, ledger };
   return data[p];
 }
@@ -55,11 +58,11 @@ function renderNumbers() {
     const bars = vs.filter((v) => v.plays && v.plays.mock_month > 0);
     const rows = ((d.shares && d.shares.rows) || []).filter((r) => r.artist_name !== TEST_ARTIST && r.counted_plays > 0);
     const songs = rows.reduce((n, r) => n + r.songs.filter((s) => s.counted_plays > 0).length, 0);
-    const review = (d.flags || []).filter((f) => !["duplicate_suspected", "cooldown"].includes(f.type));
+
     setStat("s1", "Plays recorded", fmtInt(o && o.plays_raw), `${fmtInt(o && o.plays_counted)} counted after the repeat rule`);
     setStat("s2", "Bars", fmtInt(bars.length), `in ${new Set(bars.map((v) => v.city)).size} cities`);
     setStat("s3", "Artists", fmtInt(rows.length), `${fmtInt(songs)} songs played`);
-    setStat("s4", "Flags to review", fmtInt(review.length), "songs on repeat, empty rooms, odd meters; they do not change shares");
+    setStat("s4", "Plays discounted", fmtInt(o ? o.plays_raw - o.plays_counted : null), "repeats of a song close together count less");
     $("period-note").textContent = d.shares && d.shares.frozen
       ? "Results withheld: the play log failed its integrity check."
       : "Mock month: 30 simulated days in the bars on the map, built on the real catalogue to show a full month. These plays are generated, not heard.";
@@ -214,13 +217,13 @@ function refresh(p) {                               // a new play or stats run: 
 function onFeed({ event, data }) {
   if (event !== "play" && !(event === "match" && data.accepted)) return;
   const item = { kind: event === "play" ? "Played" : "Heard", title: data.title || data.song_id, artist: data.artist_name || songArtist.get(data.song_id) || "",
-    where: venueName.get(data.venue_id) || data.venue_id || "", time: fmtDayTime(data.started_at || data.window_start) };
+    where: data.city ? `a bar in ${data.city}` : "a bar", time: fmtDayTime(data.started_at || data.window_start) };
   if (item.artist === TEST_ARTIST) return;
   // One line per song: a song heard and then confirmed as a play stays on one line.
   if (liveItems[0] && liveItems[0].title === item.title && liveItems[0].where === item.where) liveItems[0] = item;
   else liveItems.unshift(item);
   liveItems.length = Math.min(liveItems.length, 5);
-  $("live-list").innerHTML = liveItems.map((i) => `<li>${esc(i.title)}<span>${esc(i.artist)} · ${i.kind.toLowerCase()} at ${esc(i.where.split(",")[0])} · ${i.time}</span></li>`).join("");
+  $("live-list").innerHTML = liveItems.map((i) => `<li>${esc(i.title)}<span>${esc(i.artist)} · ${i.kind.toLowerCase()} in ${esc(i.where.replace(/^a bar in /, ""))} · ${i.time}</span></li>`).join("");
   $("lyric-title").textContent = item.title;
   $("lyric-artist").textContent = item.artist;
   loadCovers().then((cv) => setCover($("lyric-art"), cv.song(item.artist, item.title) || cv.artist(item.artist), item.artist || item.title));

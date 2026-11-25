@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Artist portal · Fair Play</title>
+<link rel="stylesheet" href="css/landing.css">
+<link rel="stylesheet" href="css/pages.css">
+</head>
+<body class="page">
+<!-- Artist portal (D-028): signed-in artists only. Upload songs with their metadata; see their own songs only. -->
+<nav class="localnav sc-bar" aria-label="Artist portal">
+  <div class="ln-row">
+    <span class="ln-title">Fair Play · Artist portal</span>
+    <div class="ln-links">
+      <a href="#songs">My songs</a>
+      <a href="#upload">Upload a song</a>
+      <span class="who" id="who"></span>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <section class="wrap p-head">
+    <p class="eyebrow">Your songs</p>
+    <h1 id="hello">Welcome.</h1>
+    <p class="lede">Upload your songs so the meters in bars can recognise them, and follow how they are counted. You see your own songs only.</p>
+  </section>
+
+  <section class="wrap am-block">
+    <div class="period-switch rk-switch" role="tablist" aria-label="Period">
+      <button type="button" role="tab" data-p="mock_month" aria-selected="true">Last 30 days (mock month)</button>
+      <button type="button" role="tab" data-p="live" aria-selected="false">Live now</button>
+    </div>
+    <div class="tiles pt-tiles">
+      <div class="tile"><span>Your share of bar plays</span><div><b id="t-share">–</b><small id="t-share-sub"></small></div></div>
+      <div class="tile"><span>Plays counted</span><div><b id="t-counted">–</b><small id="t-counted-sub"></small></div></div>
+      <div class="tile"><span>Songs in the catalogue</span><div><b id="t-songs">–</b><small id="t-songs-sub"></small></div></div>
+    </div>
+  </section>
+
+  <section class="wrap am-block" id="songs">
+    <h2 class="am-h">My songs <span class="soft" id="songs-sub"></span></h2>
+    <div class="pt-table-wrap">
+      <table class="pt-table">
+        <thead><tr><th>Song</th><th>Status</th><th class="n">Plays counted</th><th class="n">Share</th><th>Uploaded</th></tr></thead>
+        <tbody id="song-rows"><tr><td colspan="5" class="soft">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="grey p-section" id="upload">
+    <div class="wrap">
+      <h2 class="small-h">Upload a song.</h2>
+      <p class="lede pt-lede">Upload the final master. SONACAM fingerprints it (about a minute) so meters can recognise it; the sound file is kept by SONACAM only.</p>
+      <form class="pt-form" id="up">
+        <label class="wide">Audio file (MP3, WAV, M4A or FLAC, up to 50 MB) <input type="file" id="f-file" accept=".mp3,.wav,.m4a,.flac" required></label>
+        <label>Title <input id="f-title" maxlength="200" required></label>
+        <label>Artist <input id="f-artist" disabled></label>
+        <label>ISRC (optional) <input id="f-isrc" maxlength="20" placeholder="e.g. CM-ABC-26-00001"></label>
+        <label>ISWC (optional) <input id="f-iswc" maxlength="20" placeholder="e.g. T-123.456.789-0"></label>
+        <fieldset class="wide">
+          <legend>Owners and their shares (must add up to 100 %)</legend>
+          <div id="owners"></div>
+          <button type="button" class="more-btn" id="add-owner">+ Add an owner</button>
+          <p class="soft" id="owner-sum"></p>
+        </fieldset>
+        <label class="wide check"><input type="checkbox" id="f-consent" required> I hold the rights to this song, or am authorised by the rights holders, and agree that SONACAM monitors its plays in bars.</label>
+        <div class="wide"><button type="submit" class="pill big" id="f-go">Upload</button> <span class="soft" id="f-msg" role="status"></span></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot"><div class="wrap"><p>Fair Play artist portal · prototype built at the CIMFEST Hackathon 2026. Times are Cameroon time.</p></div></footer>
+<script type="module" src="js/portal.js"></script>
+</body>
+</html>

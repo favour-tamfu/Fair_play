@@ -5,6 +5,7 @@ import { MOCK, get, feed, fmtHm, fmtDateTime } from "./api.js";
 import { VIEW, project, outlinePath } from "./cameroon.js";
 import { loadCovers } from "./covers.js";
 import { osmMap } from "./osm.js";
+import { requireRole, showUser } from "./session.js";
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -292,11 +293,8 @@ async function finder() {
 if (PAGE === "public") { finder(); }
 else if (!name) { location.replace("sonacam-x7k2q9.html"); }
 else {
-// admin password for this SONACAM page: kept in this tab only (same key as the admin page)
-if (tokenInput) {
-  tokenInput.value = sessionStorage.getItem(TOKEN_KEY) || "";
-  tokenInput.addEventListener("change", () => { sessionStorage.setItem(TOKEN_KEY, tokenInput.value.trim()); load(); });
-}
+// D-028: SONACAM only, through the signed-in session
+showUser(await requireRole("sonacam"), $("who"));
 
 // Period switch (keeps it in the URL so the link can be shared).
 document.querySelectorAll("[data-period]").forEach((b) => b.addEventListener("click", () => {

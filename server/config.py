@@ -35,6 +35,8 @@ def _from_dotenv(key: str) -> str | None:
 # Inside docker compose DATABASE_URL points at host "db"; on the host it comes from .env (published port 55432).
 # D-020: admin actions need the header X-Admin-Token: <ADMIN_TOKEN>; empty = open (dev laptops, tests)
 ADMIN_TOKEN = os.environ.get("ADMIN_TOKEN") or _from_dotenv("ADMIN_TOKEN") or ""
+# D-028: artists sign in with their artist name and this password (prototype rule, Person B)
+ARTIST_DEFAULT_PASSWORD = os.environ.get("ARTIST_DEFAULT_PASSWORD") or _from_dotenv("ARTIST_DEFAULT_PASSWORD") or "SONACAM"
 DATABASE_URL = (os.environ.get("DATABASE_URL") or _from_dotenv("DATABASE_URL")
                 or "postgresql://fairplay:fairplay@127.0.0.1:55432/fairplay")
 
