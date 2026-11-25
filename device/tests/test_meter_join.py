@@ -71,7 +71,30 @@ def test_waits_until_approved_then_remembers(here, monkeypatch, capsys):
     assert "Waiting for approval from SONACAM" in out and meter_app.key_fingerprint(sent[0][1]["public_key_b64"]) in out
     assert "APPROVED by SONACAM" in out and len(sent) == 3
     sent.clear()
-    assert meter_app.wait_for_approval(cfg) == cfg and sent == []      # approved before: starts even offline
+    assert meter_app.wait_for_approval(cfg) == cfg and len(sent) == 1  # approved before: one quick check, then starts
+    fake_server(monkeypatch, [(0, ConnectionError("no internet"))])
+    assert meter_app.wait_for_approval(cfg) == cfg                     # no internet: still starts (reports wait)
+
+
+def test_retired_meter_asks_again_as_a_new_meter(here, monkeypatch, capsys):
+    cfg = meter_app.setup(meter="M-2001", quiet=True)
+    fake_server(monkeypatch, [(200, {"status": "approved"})])
+    assert meter_app.wait_for_approval(cfg) == cfg                       # approved once (flag kept)
+    os.makedirs(os.path.join("device", "state"), exist_ok=True)
+    open(os.path.join("device", "state", "M-2001_outbox.db"), "w").close()
+    open(os.path.join("device", "state", "M-2001.db"), "w").close()                 # the meter's counter file
+    sent = fake_server(monkeypatch, [(403, {"status": "retired"}), (202, {"status": "pending"}),
+                                     (200, {"status": "approved"})])
+    new = meter_app.wait_for_approval(cfg)
+    assert new["meter_id"] != "M-2001" and new["venue_id"] == cfg["venue_id"]
+    assert "has retired meter M-2001" in capsys.readouterr().out
+    assert sent[1][1]["meter_id"] == new["meter_id"]                     # the new meter sent its own request
+    assert not os.path.exists(meter_app._cfg_path("M-2001"))
+    assert not os.path.exists(os.path.join("device", "state", "M-2001_outbox.db"))
+    assert not os.path.exists(os.path.join("device", "state", "M-2001.db"))
+    sent.clear()
+    fake_server(monkeypatch, [(200, {"status": "approved"})])
+    assert meter_app.wait_for_approval(new) == new                       # still approved: starts as before
 
 
 def test_rejected_does_not_listen(here, monkeypatch):

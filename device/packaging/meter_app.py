@@ -138,9 +138,15 @@ def setup(meter=None, venue=None, url=None, force=False, quiet=False):
 
 
 def _forget(mid):
-    for p in (_cfg_path(mid), _pub_path(mid), os.path.join("device", "secrets", f"{mid}.seed"), _approved_flag(mid)):
-        if os.path.exists(p):
-            os.remove(p)
+    """Remove an old identity: settings, keys, approval and its queue (a retired meter's reports are refused anyway)."""
+    paths = [_cfg_path(mid), _pub_path(mid), os.path.join("device", "secrets", f"{mid}.seed"), _approved_flag(mid)]
+    paths += glob.glob(os.path.join("device", "state", f"{mid}_*")) + glob.glob(os.path.join("device", "state", f"{mid}.*"))
+    for p in paths:
+        try:
+            if os.path.exists(p):
+                os.remove(p)
+        except OSError:
+            pass                                     # a file still open: harmless, the new meter has its own names
 
 
 def _renumber(cfg):
@@ -212,7 +218,13 @@ def approval(cfg):
 def wait_for_approval(cfg):
     """Wait until SONACAM approves this meter. Returns the (maybe renumbered) config, or None to stop."""
     if os.path.exists(_approved_flag(cfg["meter_id"])):
-        return cfg                                   # approved before: start even without internet (reports wait)
+        status, _, _ = approval(cfg)
+        if status not in ("retired", "rejected", "taken"):
+            return cfg                               # still approved, or no internet: start (reports wait)
+        # SONACAM retired this meter (or its id now belongs to another key): this laptop asks again as a NEW meter
+        print(f"\nSONACAM has {'retired' if status != 'taken' else 'given away'} meter {cfg['meter_id']}. "
+              "This laptop now asks to join again as a new meter.")
+        cfg = _renumber(cfg)
     shown = old_note = offline_note = busy_note = False
     while True:
         status, detail, old = approval(cfg)
