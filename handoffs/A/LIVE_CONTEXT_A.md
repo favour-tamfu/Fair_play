@@ -2,6 +2,9 @@
 Last updated: 2026-11-25 01:05 (Cameroon time).
 
 ## 0. Latest events (newest first)
+- 01:30 User asked to direct the 2-minute motion-graphics demo film like a film-maker. Researched explainer/motion-design practice;
+  wrote **`pitch/DEMO_FILM_TREATMENT.md`** (one-song journey with match cuts, 10-shot list with VO and sound, Apple visual rules,
+  licensed music, animatic-first pipeline, schedule before 12:00). Not produced yet.
 - 01:15 User asked how to make a demo video. Advice given (no files changed): 2–3 min story = problem → meter in a bar → live play
   on the dashboard → artist sees it → fair split vs flat (7,7×) → tamper check turns red → close. Record with OBS / Win+Alt+R,
   live against B's server if possible, otherwise mock mode; keep the laptop awake (clock-drift bug).
