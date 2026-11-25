@@ -23,6 +23,7 @@
   <div class="ln-row">
     <a class="ln-title" href="#top">Fair Play</a>
     <div class="ln-links">
+      <a href="#meter">The meter</a>
       <a href="#live">Live</a>
       <a href="#trust">Trust</a>
       <a class="pill" href="#numbers">See the count</a>
@@ -83,6 +84,23 @@
         <button type="button" class="paddle" data-dir="1" aria-label="Next"><svg viewBox="0 0 36 36" aria-hidden="true"><path d="M15.5 11.5L22 18l-6.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       </div>
     </section>
+
+  <!-- The meter box (3D model): video + three views -->
+  <section class="meter-box" id="meter">
+    <div class="wrap">
+      <h2 class="center">Meet the meter.</h2>
+      <p class="intro center">A small sealed box on the bar wall. It listens for music, turns ten seconds of sound into a fingerprint, seals it and sends it to SONACAM. It keeps no sound, and speech cannot be rebuilt from what it sends.</p>
+      <figure class="mb-video">
+        <video src="assets/meter/meter-assembly.mp4" poster="assets/meter/meter-assembly-poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="The meter box assembling and coming apart"></video>
+        <figcaption>3D model of the meter: case, circuit board and lid.</figcaption>
+      </figure>
+      <div class="mb-views">
+        <figure><img src="assets/meter/01-closed-hero.jpg" alt="The meter box closed: white case, four screws, status light and label" loading="lazy"><figcaption><b>Sealed box.</b> Four screws, a status light and a label that says what it does.</figcaption></figure>
+        <figure><img src="assets/meter/03-exploded.jpg" alt="The meter box taken apart: lid, circuit board, bottom case" loading="lazy"><figcaption><b>Simple to build.</b> Lid, one circuit board, bottom case. Powered over USB-C.</figcaption></figure>
+        <figure><img src="assets/meter/05-board-top.jpg" alt="The circuit board: microphone, main module, power supply, USB-C" loading="lazy"><figcaption><b>One small board.</b> 64 × 44 mm: microphone, main module with antenna, power supply.</figcaption></figure>
+      </div>
+    </div>
+  </section>
 
   <!-- Numbers: one row, right under the starter cards -->
   <section class="numbers" id="numbers">
@@ -192,7 +210,7 @@
       <h2 class="center">From a song in a bar<br>to a fair share.</h2>
       <ol class="steps">
         <li><div class="step-img"><img src="assets/img/outdoor-bar.webp" alt="" loading="lazy"></div><span class="num">1</span><h4>A song plays.</h4><p>Music plays in the bar as it always does.</p></li>
-        <li><div class="step-img meter"><svg viewBox="0 0 120 120" aria-hidden="true"><rect x="24" y="32" width="72" height="56" rx="14" fill="#fff"/><path d="M48 52v16M56 46v28M64 50v20M72 56v8" stroke="#1d1d1f" stroke-width="4" stroke-linecap="round"/></svg></div><span class="num">2</span><h4>The meter recognises it.</h4><p>Short fingerprints are matched against the song catalogue. The sound is thrown away.</p></li>
+        <li><div class="step-img"><img src="assets/meter/02-usb-c-side.jpg" alt="The Fair Play meter box" loading="lazy"></div><span class="num">2</span><h4>The meter recognises it.</h4><p>Short fingerprints are matched against the song catalogue. The sound is thrown away.</p></li>
         <li><div class="step-img"><img src="assets/img/yaounde.webp" alt="" loading="lazy"></div><span class="num">3</span><h4>The play is counted.</h4><p>Repeats of the same song in a short time count less, so looping a song does not inflate it. Anything unusual is flagged for review.</p></li>
         <li><div class="step-img"><img src="assets/img/mic.webp" alt="" loading="lazy"></div><span class="num">4</span><h4>SONACAM shares the levy.</h4><p>SONACAM gets each artist's share and a usage report per song, and pays its members under its own rules.</p></li>
       </ol>

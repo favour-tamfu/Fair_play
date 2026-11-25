@@ -42,8 +42,16 @@ Fair Play has four pieces. In real life they look like this:
 |---|---|---|
 | **The meter** | A small sealed box on the bar wall, about the size of a phone charger: a low-cost chip (RISC-V microcontroller), a small microphone and a 4G modem. Parts cost about $5–8. It plugs into the mains and needs no Wi-Fi from the bar. | Installed by SONACAM in every bar it licenses |
 | **The SONACAM server** | SONACAM's computer system (in a data centre or the cloud). It receives the meters' reports, recognises the songs, keeps the tamper-proof log and computes each artist's share. | SONACAM |
-| **The SONACAM dashboard** | A web page: meters on a map, songs heard live, each artist's share, items to review, the log's integrity. | SONACAM staff |
-| **The artist page and upload portal** | Web pages that work on a phone: artists or labels upload their songs and owners; each artist sees where and how often their songs were played and their share. | Artists, labels |
+| **The SONACAM app** | Web pages for SONACAM (sign-in required): meters on a map, songs heard live, each artist's share and analytics, items to review, the activity log, the log's integrity. | SONACAM staff and admins |
+| **The artist portal** | Web pages that work on a phone (sign-in required): artists or labels upload their songs with the owners and their shares, and follow their own songs' plays and share. | Artists, labels |
+
+### The meter box (3D model)
+The meter is designed as a small sealed box: a two-layer circuit board (64 × 44 mm, 1.6 mm FR4) with the microphone, the main module and its antenna lead, the power supply, a USB-C power input and a status light, in a four-screw case. The label on the lid tells people in the bar that it listens for music only and keeps no sound.
+
+<p align="center"><img src="web/assets/meter/01-closed-hero.jpg" width="49%" alt="The Fair Play meter box, closed: white case, four screws, status light, label"> <img src="web/assets/meter/03-exploded.jpg" width="49%" alt="The meter box exploded: lid with screws, circuit board, bottom case"></p>
+<p align="center"><img src="web/assets/meter/05-board-top.jpg" width="49%" alt="Top of the circuit board: microphone, main module, power supply, USB-C"> <img src="web/assets/meter/02-usb-c-side.jpg" width="49%" alt="The box from the side with the USB-C power opening"></p>
+
+**Video:** [the box assembling and coming apart (20 s)](web/assets/meter/meter-assembly.mp4) · More views: [exploded side](web/assets/meter/04-exploded-side.jpg), [board underside wiring](web/assets/meter/06-underside-wiring.jpg), [power trace](web/assets/meter/07-net-3v8-highlight.jpg). The renders still carry the project's earlier working name on the board and lid labels.
 
 **What the meter does, all day, by itself:**
 1. Listens for 10 seconds every minute.
