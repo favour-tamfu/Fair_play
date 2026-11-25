@@ -425,3 +425,21 @@ div.leader b { font-family: var(--display); font-size: 24px; font-weight: 600; }
 /* day charts: bars and their labels keep a sensible width when there are only a few days */
 .chart-plot .chart i, .chart-plot .chart-x span { max-width: 48px; }
 .chart-plot .chart, .chart-plot .chart-x { justify-content: flex-start; }
+
+/* Sign-in page: fills the window (footer at the bottom, no blank space under it); one white card on the site's grey,
+   centred; the error line takes no room until there is a message. */
+body.login-page { min-height: 100vh; display: flex; flex-direction: column; background: var(--grey); }
+body.login-page main.login-wrap { flex: 1; min-height: 0; display: grid; place-items: center; padding: 64px 22px; }
+body.login-page .login-card { width: min(420px, 100%); background: #fff; border-radius: var(--r-s); padding: 44px 40px 36px; gap: 16px; }
+body.login-page .login-card .eyebrow { margin: 0; font-size: 17px; font-weight: 600; color: var(--ink-2); letter-spacing: -.022em; }
+body.login-page .login-card h1 { font-family: var(--display); font-size: 40px; line-height: 1.1; font-weight: 600; letter-spacing: 0; margin: -6px 0 0; }
+body.login-page .login-card .lede { font-size: 17px; line-height: 1.47; color: var(--ink-2); margin: 0 0 8px; letter-spacing: -.022em; }
+body.login-page .login-card label { font-size: 14px; font-weight: 600; color: var(--ink); }
+body.login-page .login-card input { background: #fff; }
+body.login-page .login-card button { align-self: stretch; margin-top: 8px; text-align: center; }
+body.login-page .login-msg { min-height: 0; font-size: 14px; color: #bf4800; }
+body.login-page .login-msg:empty { display: none; }
+body.login-page .fineprint { margin: 8px 0 0; padding-top: 16px; border-top: 1px solid rgba(0, 0, 0, .08); font-size: 12px; line-height: 1.33; color: var(--ink-3); }
+body.login-page .foot { background: var(--grey); border-top: 1px solid rgba(0, 0, 0, .08); padding-top: 14px; }
+body.login-page .foot .wrap > p:first-child { border-bottom: 0; padding-bottom: 0; }
+@media (max-width: 480px) { body.login-page .login-card { padding: 32px 22px 28px; } body.login-page .login-card h1 { font-size: 32px; } }

@@ -4,7 +4,7 @@
 import { MOCK, get, feed, fmtHm, fmtDateTime } from "./api.js";
 import { VIEW, project, outlinePath } from "./cameroon.js";
 import { loadCovers } from "./covers.js";
-import { osmMap } from "./osm.js";
+import { osmMap } from "./osm.js?v=1125c";
 import { requireRole, showUser } from "./session.js";
 
 const $ = (id) => document.getElementById(id);

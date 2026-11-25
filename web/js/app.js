@@ -3,7 +3,7 @@
 // D-009: flags are review only. D-011: every bar is metered, no sampling, no range bars.
 // D-015: no money; an artist's share = the sum of their songs' shares. D-016: no rules panels.
 import { MOCK, get, feed, fmtTime, fmtHm, fmtDateTime } from "./api.js";
-import { osmMap } from "./osm.js";
+import { osmMap } from "./osm.js?v=1125c";
 import { VIEW, project, outlinePath } from "./cameroon.js";
 import { requireRole, showUser } from "./session.js";
 

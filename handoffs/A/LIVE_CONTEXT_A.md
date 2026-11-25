@@ -50,6 +50,12 @@ and commit it locally each time** (`[A-HO] Live context: …`). It is the single
   Stylesheet links carry `?v=1125c` (browsers kept an old dash.css). Main site untouched.
   Balanced cards (user): cards in a row stretch to one height and their white panel fills it (overview + Trust); card
   titles never wrap; play-log status is plain words ("Play log intact.") instead of a green box.
+- **Maps (user: "OpenStreetMap to fit the aesthetic of any page, light and dark"):** `js/osm.js` themes every Leaflet map
+  from the background it sits on (and the system light/dark switch): grey tiles via CSS filter (still OSM tiles), dark =
+  inverted charcoal; site-style zoom buttons, attribution, pop-ups; dot colours per theme. Checked on the dashboard
+  (light) and the landing map tile (dark). Imports and page scripts now carry `?v=1125c` (browsers cached old modules).
+- **Sign-in page (user: "empty with a footer floating in the middle"):** fills the window, footer at the bottom, white
+  card on the site grey, full-width button, error line hidden until needed; lede now covers artists and SONACAM staff.
 - Previously: pushed a/work to GitHub (origin/a/work = **220b117**) at the user's request.
 - **Waiting on B**: start the public tunnel (Tailscale Funnel) per `deploy/PLAN.md` / REQUESTS **R-032** and share the
   `https://….ts.net` address. B's `main` on GitHub has moved on since our merge (origin/main = **35e7929**) — fetch and look
