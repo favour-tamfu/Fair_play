@@ -103,7 +103,7 @@ MODIFIERS_ADJUST_WEIGHTS = False
 
 # Estimation + stats runs (brief §7.3 as amended by D-011: a meter in every bar, no scaling, no unidentified)
 DEFAULT_CATCH_RATE = 0.8         # until the meter is calibrated (B-T14)
-STATS_EVERY_S = 300              # scheduler: live period, both modes, every 5 min (only if plays changed)
+STATS_EVERY_S = 15               # scheduler: live period, both modes, every 15 s when plays changed (pages update fast)
 STATS_AUTO_PERIODS = ("live",)   # mock_month / all: run after the mock import (B-T11) or POST /api/v1/stats/run
 STATS_KEEP_RUNS = 3              # older runs (and their play_weights/shares) are pruned per (period, mode)
 

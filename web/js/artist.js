@@ -22,6 +22,7 @@ const venueNames = new Map();     // venue_id -> "Name, City"
 const barLabel = (n) => String(n || "").replace(/^mock bar\s+/i, "Bar ");   // simulated bars: no "Mock" label on the page
 let mySongs = new Set();
 let lastPlay = null;              // {title, venue_id, started_at, duration_s}
+let liveLabel = "";               // "Hearing now in a bar" / "Playing now in a bar" while a live song is on
 
 function timeAgo(iso) {
   const s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
@@ -41,7 +42,7 @@ function renderNow(live) {
     return;
   }
   card.classList.toggle("live", !!live);
-  $("now-label").textContent = live ? "Playing now in a bar" : "Last heard";
+  $("now-label").textContent = live ? (liveLabel || "Playing now in a bar") : "Last heard";
   $("now-title").textContent = lastPlay.title;
   $("now-where").textContent = venueNames.get(lastPlay.venue_id) || lastPlay.venue_id || "";
   $("now-start").textContent = fmtHm(lastPlay.started_at);
@@ -157,8 +158,10 @@ async function load() {
   $("recent").innerHTML = recent.map((p) => `<div class="am-row"><img src="${coverFor(p.title || p.song_id)}" alt=""><div><b>${esc(p.title || p.song_id)}</b>
     <span>${esc((venueNames.get(p.venue_id) || p.venue_id || "").split(",")[0])}</span><span>${fmtDateTime(p.started_at)}</span></div></div>`).join("")
     || `<div class="empty">No recent plays.</div>`;
-  lastPlay = recent[0] || null;
-  renderNow(false);
+  if (!$("now").classList.contains("live")) {   // a song playing right now stays on the card while the lists reload
+    lastPlay = recent[0] || null;
+    renderNow(false);
+  }
 
   $("foot").textContent = `${shares && shares.stats_run_id ? `${shares.rule_version} · run ${shares.stats_run_id} · ` : ""}times in Cameroon time${MOCK ? " · mock data" : ""}`;
 }
@@ -295,12 +298,35 @@ $("share-link").addEventListener("click", async () => {
 
 setInterval(() => { if (lastPlay) renderNow($("now").classList.contains("live")); }, 1000);
 
-feed(({ event, data }) => {
-  if (event === "stats") { load(); return; }
-  if (event !== "play" || !mySongs.has(data.song_id) || period !== "live") return;
-  lastPlay = { title: data.title, venue_id: data.venue_id, started_at: data.started_at, duration_s: data.duration_s };
+// Live updates, fastest first (Person B: the page must not look like it missed the song):
+//   1. a meter recognises one of this artist's songs (first 10-second window) -> "Hearing now" at once
+//   2. the play is confirmed (the next window agrees)                         -> "Playing now", lists reloaded
+//   3. the scheduler recomputes the shares (within 15 s of a new play)          -> share, rank and counts reloaded
+let reloadTimer = null, liveTimer = null;
+const reloadSoon = (ms = 800) => { clearTimeout(reloadTimer); reloadTimer = setTimeout(load, ms); };
+const barName = (id) => venueNames.get(id) || id || "a bar";
+function showLive(label, title, venueId, startedAt, durationS) {
+  lastPlay = { title, venue_id: venueId, started_at: startedAt || new Date().toISOString(), duration_s: durationS || 0 };
+  liveLabel = label;
   renderNow(true);
-  toast(`🔊 ${data.title} is playing at ${venueNames.get(data.venue_id) || data.venue_id || "a bar"}`);
-  setTimeout(() => { $("now").classList.remove("live"); renderNow(false); }, 120000);
+  clearTimeout(liveTimer);
+  liveTimer = setTimeout(() => { $("now").classList.remove("live"); renderNow(false); }, 120000);
+}
+feed(({ event, data }) => {
+  if (event === "stats") { if (!data || !data.period || data.period === period) reloadSoon(200); return; }
+  if (!data || !mySongs.has(data.song_id)) return;
+  if (event === "match" && data.accepted) {
+    if (period === "live" && !$("now").classList.contains("live")) {
+      showLive("Hearing now in a bar", data.title || data.song_id, data.venue_id, new Date().toISOString(), 0);
+      toast(`🎧 ${data.title || data.song_id} recognised at ${barName(data.venue_id)}: confirming the play…`);
+    }
+    return;
+  }
+  if (event === "play") {
+    toast(`🔊 ${data.title} is playing at ${barName(data.venue_id)}: play counted`);
+    if (period !== "live") return;
+    showLive("Playing now in a bar", data.title, data.venue_id, data.started_at, data.duration_s);
+    reloadSoon();
+  }
 });
 }   // end of profile mode
