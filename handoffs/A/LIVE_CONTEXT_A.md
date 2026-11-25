@@ -1,5 +1,64 @@
 # LIVE CONTEXT — Person A / Laptop A (read this first in any new session)
-Last updated: 2026-11-25 00:55 (Cameroon time). This file is overwritten after every message so a new account/session
+Last updated: 2026-11-25 01:05 (Cameroon time).
+
+## 0. Latest events (newest first)
+- **Decision (user): tunnelling, demo only** — "it's for a government program, they'll have their own computers" (SONACAM would host
+  the stack itself). User had answered "cloudflare". deploy/PLAN.md updated: **Tailscale Funnel = main** (stable address, live feed),
+  **Cloudflare quick tunnel = backup 1** (no SSE, new address each start), ngrok = backup 2. Cloudflare Pages+Workers relay idea parked.
+- User: **"we can't rely on tunneling"** → Tailscale/ngrok plan rejected too (deploy/PLAN.md still says Funnel; to be rewritten).
+  Research: no-card + no-tunnel options: **Azure for Students** ($100 credit, no card, needs a full-time student school email;
+  VM runs B's compose unchanged, free DNS name `<label>.<region>.cloudapp.azure.com`, Caddy HTTPS) — best fit if eligible;
+  else 512 MB free containers (Render web service — card need unclear; SnapDeploy 4×512 MB, sleeps) which need B's 5 processes merged
+  into one and the in-memory index to fit 512 MB (risky). Koyeb now needs a card; Fly/Railway trials too short. Asked the user which.
+- (A's clock ~02:20; B's clock/notes run ~6 h ahead) **Merged B's main into a/work** (5fb5af7; only REQUESTS.md conflicted;
+  `scripts\test_a.ps1` → 90 passed). B's changes now on a/work — **§4 below is partly outdated, these win**:
+  sign-in with roles (`login.html`, `js/session.js`, `js/login.js`; SONACAM user `sonacam` + ADMIN_TOKEN; artists = name + `SONACAM`),
+  new artist portal (`portal.html`, `js/portal.js`; old me.js removed), public `artist.html` ranking removed → artist detail only in the
+  SONACAM app (`sonacam-x7k2q9-artist.html`), operations page rebuilt (`sonacam-x7k2q9-admin.html`: meters with key fingerprint/retire,
+  activity log, review flags, catalogue, actions), OpenStreetMap (`js/osm.js`, `vendor/leaflet`), landing aimed at SONACAM with a
+  Live / Last 30 days switch and a "Meet the meter" section (`assets/meter/`), hero screenshot now `assets/img/shot-dashboard.png`.
+  B fixed the meter clock-drift bug and tested FairPlayMeter.exe against a real server (6/6 windows matched) — see REQUESTS R-029.
+  REQUESTS renumbered by B: A's old R-017..R-020 are R-021..R-024; B's R-025..R-031; A's deploy plan is **R-032**.
+- **Operations page restyled** (user: "put SF fonts on B's new admin dash"): SF Pro on every element incl. buttons, inputs, selects,
+  IDs (no monospace), panels #f5f5f7 r18, white tables, Apple pill buttons (blue main, red danger), filter pills — appended to
+  `web/css/dash.css` under `body.d2.admin`. Checked in mock mode at 1440×900 (all elements SF Pro).
+- **Hosting plan revised — the team has no bank cards** → no Oracle/Google/AWS. `deploy/PLAN.md` now: **Tailscale Funnel on Laptop B**
+  (free, no card, stable `https://<laptop>.<tailnet>.ts.net`), backup **ngrok** free static domain; Laptop B must stay on/awake/online.
+  VM files (cloud-init, cloud compose override, Caddyfile) deleted. Nothing published yet.
+- 02:05 User confirmed → wrote **`deploy/PLAN.md`** (shared A+B plan) + `deploy/docker-compose.cloud.yml`, `deploy/Caddyfile`,
+  `deploy/cloud-init.yaml`; request **R-023** to B. Choice: **Oracle Cloud Always Free ARM VM** running B's compose unchanged + Caddy HTTPS on
+  `<ip>.sslip.io`; **fallback first: Tailscale Funnel from B's laptop**. Rejected: Render/Koyeb (512 MB, no free workers; matcher keeps
+  the fingerprint index in memory), HF Spaces (Docker now paid), Cloudflare quick tunnel (no SSE), Fly/Railway. Override validated with
+  `docker compose config` (Docker is installed on Laptop A); **nothing deployed yet**. Not pushed (needs the user's OK each time).
+  Listener change later: set `DEFAULT_SONACAM` in device/packaging/meter_app.py to the HTTPS address and rebuild.
+- 01:55 User wants the system on the internet: pick a FREE host for B's SONACAM server (API + Postgres + web pages), point the
+  listener (FairPlayMeter.exe) at it over HTTPS instead of the LAN, and write ONE shared plan for A's and B's machines with as little
+  manual configuration as possible. I restated my understanding and asked the user to confirm before writing the plan (no files yet).
+- 01:45 User wants the film built on the SONACAM leader's "the best is yet to come" and to end with "Here it is." Added
+  **Direction 2 ("The Promise")** at the top of `pitch/DEMO_FILM_TREATMENT.md`. Context found: Ateh Bazore re-elected SONACAM Board Chair
+  30 Apr 2026 (733 votes, >94 %); promises quarterly payments, 12 FCFA/crate, digital cards, WIPO Connect (105,000 works); Oct 2025
+  communiqué paid a flat 27,000 FCFA from 40M FCFA. **The quote "the best is yet to come" is NOT verified** (Cameroon Tribune paywalled);
+  the user must supply the source before it is attributed on screen.
+- 01:30 User asked to direct the 2-minute motion-graphics demo film like a film-maker. Researched explainer/motion-design practice;
+  wrote **`pitch/DEMO_FILM_TREATMENT.md`** (one-song journey with match cuts, 10-shot list with VO and sound, Apple visual rules,
+  licensed music, animatic-first pipeline, schedule before 12:00). Not produced yet.
+- 01:15 User asked how to make a demo video. Advice given (no files changed): 2–3 min story = problem → meter in a bar → live play
+  on the dashboard → artist sees it → fair split vs flat (7,7×) → tamper check turns red → close. Record with OBS / Win+Alt+R,
+  live against B's server if possible, otherwise mock mode; keep the laptop awake (clock-drift bug).
+- 01:10 User said **"Not now"** to fixing the M-07 clock-drift bug (B's R-020). Leave it unfixed until asked; keep Laptop A awake during the demo.
+  Local commits after the push (not on GitHub): aa8e632 and this update.
+- 01:05 **a/work pushed to GitHub** (user's explicit OK for this push): origin/a/work = 5ed3504. Push URL switched back to
+  `DISABLED-no-push-from-this-clone` afterwards; re-enable only on the user's say-so (`git config remote.origin.pushurl https://github.com/favour-tamfu/Fair_play.git`).
+- **B's server answers again** (192.168.1.51:8000, checked 01:00). B's main is at dd42d2c: B loaded catalogue v3 (S-000073..S-000195, 549/549
+  recognised), regenerated the mock month on 183 songs (D-021), added admin token + safe meter registration (D-020).
+- Dry-run merge of a/work into origin/main: **only REQUESTS.md conflicts** (both sides appended). Request numbers collide:
+  B's R-019 (catalogue 183, D-021) and R-020 (M-07 clock lag) vs A's R-019 (real names) and R-020 (meter exe). Renumber A's to R-021/R-022.
+- **Bug reported by B (their R-020), not fixed yet:** M-07 window_start drifts hours behind real time after pauses/sleep
+  (3 h 54 min). Cause: `device/agent/scheduler.py` windows = `t0 + samples/48000`, re-anchors only on a `None` gap. Fix: compare each
+  block's wall time to `t0 + pos/CAPTURE_RATE`; if off by > ~1 s, re-anchor; add a test with a 60 s wall-clock jump. The packaged exe has
+  the same bug (rebuild after the fix). Also keep Laptop A from sleeping during the demo.
+- Next suggested steps: (1) fix the scheduler drift + test, (2) merge origin/main into a/work resolving REQUESTS.md (renumber), re-run
+  tests, (3) test the pages live against B, (4) rebuild exe + bundle. This file is overwritten after every message so a new account/session
 knows exactly where we are. Older dated handoffs in this folder are history; this file is the current truth.
 
 ## 1. Who and where
@@ -67,4 +126,5 @@ R-017 page addresses changed (`/` = landing, dashboard `/sonacam-x7k2q9.html`) �
 1. Rebuild dashboard like a reference image in "our colours", then Apple CSS → done.
 2. Real songs instead of mock artists → done. Shorten landing → done. Apple accuracy for cards/figures/comparison/live tile, cooler gradient, circles → done.
 3. Handoff + package everything for B (art included) → done. Package the listener → exe done.
-4. **Now:** keep this live context file updated after every message (account switch coming).
+4. Keep this live context file updated after every message (account switch coming) → done, and ongoing.
+5. **"commit to b"** → pushed a/work to GitHub (5ed3504) after the user chose "Push to GitHub a/work".
