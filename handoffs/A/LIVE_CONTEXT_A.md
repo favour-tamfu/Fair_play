@@ -2,6 +2,8 @@
 Last updated: 2026-11-25 01:05 (Cameroon time).
 
 ## 0. Latest events (newest first)
+- **Pushed a/work to GitHub** on the user's "Yes, push it": origin/a/work = 220b117 (48 commits, fast-forward; includes the merge of
+  B's main, the operations-page restyle and deploy/PLAN.md). Push URL switched back to DISABLED afterwards.
 - **Decision (user): tunnelling, demo only** — "it's for a government program, they'll have their own computers" (SONACAM would host
   the stack itself). User had answered "cloudflare". deploy/PLAN.md updated: **Tailscale Funnel = main** (stable address, live feed),
   **Cloudflare quick tunnel = backup 1** (no SSE, new address each start), ngrok = backup 2. Cloudflare Pages+Workers relay idea parked.
